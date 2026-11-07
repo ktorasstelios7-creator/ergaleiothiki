@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ασφαλές σχολείο · Χώρος εργασίας ΣΕΑ</title>
+<meta name="theme-color" content="#f1f2f6">
+<link rel="icon" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700;7..72,800&family=Commissioner:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Χώρος εργασίας για πολλά περιστατικά: πίνακας με μετρητές, φάκελος ανά περιστατικό με 7 σταθερά βήματα,
+   ανώνυμη σύνοψη χωρίς ελεύθερο κείμενο, και επιλογή αποθήκευσης (συσκευή ή προσωρινή συνεδρία). */
+:root{
+  --bg:#f1f2f6; --paper:#ffffff; --ink:#1d2433; --muted:#5a6273; --line:#d9dde6; --soft:#f6f7fa;
+  --accent:#5b4fa8; --ok:#2f8f5b; --warn:#b7791f; --bad:#b4374f; --info:#2f62b3;
+  --display:"Literata", Georgia, "Times New Roman", serif;
+  --body:"Commissioner", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root{
+  --bg:#12151d; --paper:#1a1f2a; --ink:#e7eaf1; --muted:#9ca5b8; --line:#2d3444; --soft:#212735;
+  --accent:#a99ef0; --ok:#5cc58c; --warn:#e2ab4f; --bad:#f07b93; --info:#7aa6f0; color-scheme:dark; }}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16.5px; line-height:1.55; padding-bottom:70px}
+h1,h2,h3,h4{font-family:var(--display); margin:0; line-height:1.18; text-wrap:balance}
+h2{font-size:clamp(22px,3.2vw,30px); font-weight:800}
+h3{font-size:19px; font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+em{font-style:italic; color:var(--accent)}
+button,input,textarea,select{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.wrap{max-width:1080px; margin:0 auto; padding:0 18px}
+.muted{color:var(--muted)} .small{font-size:14.5px}
+[hidden]{display:none!important}
+
+header.top{background:var(--paper); border-bottom:1px solid var(--line)}
+.bar{display:flex; align-items:center; gap:12px; justify-content:space-between; padding:12px 0; flex-wrap:wrap}
+.eyebrow{font-size:12.5px; letter-spacing:.09em; font-weight:700; color:var(--muted); text-transform:uppercase}
+nav.tabs{display:flex; gap:4px; overflow-x:auto}
+nav.tabs a{white-space:nowrap; text-decoration:none; color:var(--muted); font-weight:600; font-size:15px; padding:8px 12px; border-radius:999px}
+nav.tabs a[aria-current="page"]{background:var(--ink); color:var(--paper)}
+
+.btn{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background:var(--paper); padding:9px 16px; border-radius:999px; cursor:pointer; font-weight:600; font-size:15px; text-decoration:none; color:var(--ink)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+@media (prefers-color-scheme: dark){.btn.primary{color:#12151d}}
+.btn.ghost{background:transparent}
+.btn.danger{border-color:var(--bad); color:var(--bad)}
+.btn.sm{padding:4px 12px; font-size:13.5px}
+.rowb{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+
+.hero{padding:34px 0 8px; display:grid; gap:12px}
+.hero h1{font-size:clamp(34px,6vw,58px); font-weight:800}
+.hero ul{list-style:none; padding:0; margin:0; display:grid; gap:4px; color:var(--muted); font-size:17px}
+.hero li::before{content:"—  "; color:var(--accent)}
+
+main{padding:20px 0 40px}
+.view{display:none} .view.on{display:block}
+.panel{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 20px}
+.grid2{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.dash-head{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap:14px; margin:22px 0 16px}
+.counter{display:grid; gap:2px}
+.counter .n{font-family:var(--display); font-size:46px; font-weight:800; line-height:1}
+.counter .n.hot{color:var(--bad)}
+.counter .l{font-weight:700}
+.process{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.process span{font-size:13px; padding:3px 10px; border-radius:999px; background:var(--soft); border:1px solid var(--line)}
+
+.alert{border:1px solid var(--warn); border-left:6px solid var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper)); border-radius:8px; padding:10px 14px; font-size:15px}
+.alert.bad{border-color:var(--bad); background:color-mix(in srgb, var(--bad) 8%, var(--paper))}
+.alert.ok{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 8%, var(--paper))}
+
+/* λίστα περιστατικών */
+.list{display:grid; gap:10px; margin-top:12px}
+.case{display:grid; grid-template-columns:1fr auto; gap:6px 14px; align-items:center; text-align:left; width:100%; background:var(--paper); border:1px solid var(--line); border-left:6px solid var(--sc); border-radius:12px; padding:14px 16px; cursor:pointer}
+.case:hover{border-color:var(--sc)}
+.case .code{font-family:var(--display); font-weight:800; font-size:19px}
+.case .meta{color:var(--muted); font-size:14px}
+.prog{height:6px; border-radius:6px; background:var(--soft); overflow:hidden; grid-column:1/-1}
+.prog i{display:block; height:100%; background:var(--sc)}
+.st{font-size:12.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:color-mix(in srgb, var(--sc) 15%, var(--paper)); border:1px solid color-mix(in srgb, var(--sc) 45%, transparent); white-space:nowrap}
+.due{color:var(--bad); font-weight:700}
+.empty{text-align:center; padding:40px 20px; border:2px dashed var(--line); border-radius:14px; display:grid; gap:12px; justify-items:center}
+.filters{display:flex; gap:6px; flex-wrap:wrap}
+.filters button{border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:4px 12px; font-size:14px; cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+
+/* φόρμα */
+.form{display:grid; gap:12px 16px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:12px}
+.form label{display:grid; gap:4px; font-size:14px; font-weight:600; color:var(--muted)}
+.form .wide{grid-column:1/-1}
+input[type=text],input[type=date],select,textarea{width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:9px; background:var(--paper); font-weight:400; color:var(--ink)}
+textarea{min-height:80px; resize:vertical}
+.hint{font-size:13px; font-weight:400}
+
+/* βήματα */
+.steps{display:grid; gap:12px; margin-top:16px}
+.stepc{background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+.stepc>summary{list-style:none; display:grid; grid-template-columns:44px 1fr auto; gap:12px; align-items:center; padding:14px 16px; cursor:pointer}
+.stepc>summary::-webkit-details-marker{display:none}
+.stepc .num{width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-family:var(--display); border:2px solid var(--line); background:var(--soft)}
+.stepc.done .num{background:var(--ok); border-color:var(--ok); color:#fff}
+.stepc.part .num{border-color:var(--warn)}
+.stepc .when{font-size:13.5px; color:var(--muted)}
+.stepc .cnt{font-size:13px; color:var(--muted); white-space:nowrap}
+.sbody{padding:0 16px 16px 72px; display:grid; gap:12px}
+@media (max-width:600px){.sbody{padding:0 14px 14px}}
+.goal{font-size:15px; color:var(--muted); border-left:3px solid var(--accent); padding-left:10px}
+.items{display:grid; gap:6px}
+.item{display:grid; grid-template-columns:24px 1fr; gap:8px; align-items:start; font-size:15.5px; cursor:pointer}
+.item input{width:20px; height:20px; margin-top:2px; accent-color:var(--ok)}
+.item.on span{color:var(--muted); text-decoration:line-through; text-decoration-color:color-mix(in srgb, var(--muted) 50%, transparent)}
+.verdict{padding:10px 12px; border-radius:9px; background:var(--soft); font-size:15px}
+.fu{display:grid; grid-template-columns:24px 1fr 150px auto; gap:8px; align-items:center}
+.fu input[type=date]{padding:5px 8px}
+.fu.late span{color:var(--bad); font-weight:700}
+@media (max-width:520px){.fu{grid-template-columns:24px 1fr auto} .fu input[type=date]{grid-column:2}}
+.private{font-size:13px; color:var(--muted)}
+.private::before{content:"🔒 "}
+
+/* σύνοψη */
+pre.sum{white-space:pre-wrap; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13.5px; background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:14px; margin:12px 0}
+
+/* πρωτόκολλο */
+.pstep{display:grid; grid-template-columns:44px 1fr; gap:12px; padding:14px 0; border-bottom:1px solid var(--line)}
+.pstep:last-child{border-bottom:0}
+.crit{display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); margin-top:10px}
+.crit div{background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:12px}
+
+/* ιδιωτικότητα */
+.privacy{display:grid; gap:10px}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--paper); flex-wrap:wrap}
+@media (max-width:520px){.seg{display:grid}}
+.seg button{border:0; background:transparent; padding:7px 14px; cursor:pointer; font-size:14px; font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+
+#shade{position:fixed; inset:0; z-index:10000; background:var(--bg); display:grid; place-items:center; text-align:center; padding:20px; cursor:pointer}
+#shade p{font-family:var(--display); font-size:24px; color:var(--muted)}
+#toast{position:fixed; left:50%; bottom:80px; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:999px; font-size:14.5px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:9000}
+#toast.on{opacity:1}
+footer{padding:20px 0 30px; color:var(--muted); font-size:14px; border-top:1px solid var(--line)}
+
+@media print{
+  body{background:#fff; color:#000; padding:0}
+  header.top,nav,footer,.noprint,.ergal-back,#toast{display:none!important}
+  .view{display:none!important} #v-print{display:block!important}
+  pre.sum{border:0; background:#fff; font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div id="shade" hidden role="button" tabindex="0" aria-label="Επιστροφή στην εφαρμογή"><p>Η οθόνη είναι κρυμμένη.<br><span class="small">Πατήστε για επιστροφή</span></p></div>
+
+<header class="top">
+  <div class="wrap bar">
+    <div>
+      <div class="eyebrow">Χώρος εργασίας · Καθηγητής Σ.Ε.Α.</div>
+      <strong style="font-family:var(--display); font-size:20px">Ασφαλές σχολείο</strong>
+    </div>
+    <div class="rowb">
+      <nav class="tabs" aria-label="Ενότητες">
+        <a href="#" data-v="dash">Τα περιστατικά μου</a>
+        <a href="#protokollo" data-v="protokollo">Πρωτόκολλο &amp; οδηγίες</a>
+      </nav>
+      <button class="btn sm ghost" id="hide" type="button" title="Κρύβει γρήγορα την οθόνη (πλήκτρο Esc)">Απόκρυψη οθόνης</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ ΠΙΝΑΚΑΣ ============ -->
+<section class="view" id="v-dash">
+  <div class="hero">
+    <h1>Πρώτα η <em>ασφάλεια</em>.</h1>
+    <ul>
+      <li>Ακούμε κάθε παιδί ξεχωριστά.</li>
+      <li>Καταγράφουμε με προσοχή, με κωδικούς αντί για ονόματα.</li>
+      <li>Παρακολουθούμε την πορεία ως το κλείσιμο.</li>
+    </ul>
+  </div>
+
+  <div class="dash-head">
+    <h2>Κάθε περιστατικό, <em>ένα βήμα προς την ασφάλεια.</em></h2>
+    <button class="btn primary" id="newCase" type="button">+ Νέο περιστατικό</button>
+  </div>
+
+  <div class="grid2">
+    <div class="panel counter"><span class="n" id="cActive">00</span><span class="l">Ενεργά περιστατικά</span><span class="small muted">Σε διερεύνηση ή παρακολούθηση</span></div>
+    <div class="panel counter"><span class="n" id="cDue">00</span><span class="l">Επανέλεγχοι για προσοχή</span><span class="small muted">Σήμερα και προηγούμενες ημερομηνίες</span></div>
+    <div class="panel"><h3>Μια σταθερή διαδικασία</h3><p class="small muted">7 βήματα, από την πρώτη αναφορά ως τη σύνοψη, σύμφωνα με το Παράρτημα ΙΙΙ της πολιτικής του ΥΠΑΝ.</p><div class="process" id="procChips"></div></div>
+  </div>
+
+  <div style="margin-top:28px">
+    <div class="rowb" style="justify-content:space-between">
+      <h2 style="font-size:24px">Τα περιστατικά μου</h2>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
+
+  <div class="grid2" style="margin-top:30px">
+    <div class="panel privacy">
+      <h3>Δεδομένα &amp; ιδιωτικότητα</h3>
+      <p class="small">Χρησιμοποιήστε <b>κωδικούς αντί για ονόματα</b> (π.χ. «Β2-Α», «Μαθ. Χ»). Τα στοιχεία μένουν μόνο σε αυτόν τον browser· δεν στέλνονται πουθενά και δεν συγχρονίζονται. Η σύνοψη δεν περιλαμβάνει τις ελεύθερες σημειώσεις.</p>
+      <div class="seg" role="group" aria-label="Τρόπος αποθήκευσης">
+        <button type="button" data-mode="device">Διατήρηση σε αυτή τη συσκευή</button>
+        <button type="button" data-mode="session">Προσωρινή συνεδρία</button>
+      </div>
+      <p class="small" id="modeNote"></p>
+    </div>
+    <div class="panel privacy">
+      <h3>Αντίγραφο ασφαλείας</h3>
+      <p class="small">Το αντίγραφο περιέχει <b>όλες τις σημειώσεις</b> και δεν είναι το ίδιο με την ανώνυμη σύνοψη. Φυλάξτε το με ασφάλεια.</p>
+      <div class="rowb">
+        <button class="btn" id="exportAll" type="button">Αντίγραφο όλων των περιστατικών</button>
+        <label class="btn ghost" style="cursor:pointer">Εισαγωγή αντιγράφου<input id="importFile" type="file" accept="application/json,.json" hidden></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ΠΕΡΙΣΤΑΤΙΚΟ ============ -->
+<section class="view" id="v-case">
+  <div class="rowb noprint" style="justify-content:space-between; margin-bottom:14px">
+    <a class="btn ghost sm" href="#">← Όλα τα περιστατικά</a>
+    <div class="rowb">
+      <button class="btn sm" id="sumBtn" type="button">Ανώνυμη σύνοψη</button>
+      <button class="btn sm danger" id="delCase" type="button">Διαγραφή</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="rowb" style="justify-content:space-between">
+      <h2 id="caseTitle">Περιστατικό</h2>
+      <span class="st" id="caseSt"></span>
+    </div>
+    <div class="form">
+      <label>Κωδικός περιστατικού<input id="fCode" type="text" maxlength="30" autocomplete="off"><span class="hint">Χωρίς ονόματα, π.χ. «2026-07» ή «Β3-α»</span></label>
+      <label>Ημερομηνία αναφοράς<input id="fDate" type="date"></label>
+      <label>Ποιος ανέφερε<select id="fWho"><option value="">—</option><option>Το ίδιο το παιδί</option><option>Συμμαθητής/τρια</option><option>Εκπαιδευτικός</option><option>Γονέας/κηδεμόνας</option><option>Άλλος</option></select></label>
+      <label>Κατάσταση<select id="fStatus"></select></label>
+      <label>Παιδί που υφίσταται (κωδικός)<input id="fV" type="text" maxlength="30" autocomplete="off"></label>
+      <label>Παιδί/ά που εκφοβίζουν (κωδικοί)<input id="fP" type="text" maxlength="60" autocomplete="off"></label>
+      <label>Μορφή<select id="fType"><option value="">—</option><option>Σωματικός</option><option>Λεκτικός</option><option>Κοινωνικός/σχεσιακός</option><option>Διαδικτυακός</option><option>Ρατσιστικός</option><option>Ομοφοβικός/τρανσφοβικός</option><option>Σεξουαλικός</option><option>Άλλο</option></select></label>
+      <label>Σοβαρότητα<select id="fSev"><option value="">—</option><option>Συνήθης</option><option>Σοβαρό περιστατικό</option></select></label>
+    </div>
+    <div class="alert" id="nameWarn" hidden style="margin-top:12px">Μοιάζει με ονοματεπώνυμο. Προτιμήστε κωδικό, ώστε να μη μένουν ονόματα στη συσκευή.</div>
+    <div class="alert bad" id="sevWarn" hidden style="margin-top:12px"><b>Σοβαρό περιστατικό:</b> ενημερώστε αμέσως τη Διεύθυνση. Αν υπάρχει κίνδυνος για τη σωματική ακεραιότητα ή αδίκημα, ακολουθήστε τις οδηγίες για ειδικές περιπτώσεις (Αστυνομία, Υπηρεσίες Κοινωνικής Ευημερίας, ΥΕΨ).</div>
+  </div>
+
+  <div class="steps" id="steps"></div>
+</section>
+
+<!-- ============ ΣΥΝΟΨΗ ============ -->
+<section class="view" id="v-print">
+  <div class="rowb noprint" style="justify-content:space-between">
+    <a class="btn ghost sm" id="sumBack" href="#">← Πίσω στο περιστατικό</a>
+    <div class="rowb">
+      <button class="btn sm" id="sumCopy" type="button">Αντιγραφή</button>
+      <button class="btn sm primary" id="sumPrint" type="button">Εκτύπωση / PDF</button>
+    </div>
+  </div>
+  <p class="small muted noprint" style="margin-top:12px">Η σύνοψη περιέχει μόνο κωδικούς, ημερομηνίες και ποια βήματα έγιναν. Οι ελεύθερες σημειώσεις 🔒 δεν περιλαμβάνονται.</p>
+  <pre class="sum" id="sumText"></pre>
+</section>
+
+<!-- ============ ΠΡΩΤΟΚΟΛΛΟ ============ -->
+<section class="view" id="v-protokollo">
+  <div class="panel">
+    <h2>Τα 7 βήματα με μια ματιά</h2>
+    <p class="muted" style="margin-top:6px">Συμπυκνωμένα από το Παράρτημα ΙΙΙ της εγκυκλίου του ΥΠΑΝ (11/11/2020). Για το λεκτικό κάθε συνάντησης, τις ειδικές περιπτώσεις και τις γραμμές στήριξης, ανοίξτε το πλήρες Πρωτόκολλο.</p>
+    <div class="rowb" style="margin-top:12px"><a class="btn primary" href="../protokollo-ekfovismou/">Πλήρες Πρωτόκολλο Σχολικού Εκφοβισμού →</a></div>
+    <div id="pSteps" style="margin-top:10px"></div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h2>Εκφοβισμός ή σύγκρουση;</h2>
+    <p class="muted" style="margin-top:6px">Μιλάμε για εκφοβισμό όταν ισχύουν και τα τρία:</p>
+    <div class="crit">
+      <div><b>Πρόθεση</b><p class="small muted">Η συμπεριφορά γίνεται σκόπιμα για να πληγώσει.</p></div>
+      <div><b>Επανάληψη</b><p class="small muted">Συμβαίνει ξανά και ξανά ή υπάρχει απειλή ότι θα συνεχιστεί.</p></div>
+      <div><b>Ανισορροπία δύναμης</b><p class="small muted">Το παιδί που την υφίσταται δυσκολεύεται να αμυνθεί.</p></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">Αν πρόκειται για σύγκρουση ίσων, προτιμάται η <a href="../diamesolavisi/">Σχολική Διαμεσολάβηση</a>.</p>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h3>Πηγές</h3>
+    <ul class="small">
+      <li><a href="https://enimerosi.moec.gov.cy/archeia/1/ypp11441a" target="_blank" rel="noopener">Εγκύκλιος ΥΠΑΝ, 11/11/2020: Πρόληψη και διαχείριση περιστατικών σχολικού εκφοβισμού</a></li>
+      <li><a href="https://enimerosi.moec.gov.cy/archeia/1/ypp11441d" target="_blank" rel="noopener">Παράρτημα ΙΙΙ: Πολιτική του Σχολείου – Διαχείριση σχολικού εκφοβισμού</a></li>
+    </ul>
+    <p class="small muted">Ελέγχετε πάντα αν υπάρχει νεότερη εγκύκλιος.</p>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap">Το «Ασφαλές σχολείο» είναι βοήθημα οργάνωσης. Δεν αντικαθιστά την πολιτική της σχολικής μονάδας, την Ομάδα Διαχείρισης ή την καθοδήγηση της ΥΕΨ· η επαγγελματική κρίση παραμένει στον εκπαιδευτικό.</div></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;
+const today=()=>iso(new Date());
+const addDays=(d,n)=>{const x=new Date(d+'T12:00:00'); x.setDate(x.getDate()+n); return iso(x);};
+const fmt=d=>d?d.split('-').reverse().join('/'):'—';
+function toast(t){const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),2200);}
+
+/* ---------- τα 7 βήματα ---------- */
+const STEPS=[
+ {t:'Αναφορά & άμεση ασφάλεια', s:'Αναφορά', when:'Τη στιγμή της αναφοράς ή του εντοπισμού',
+  goal:'Το παιδί που μίλησε νιώθει ότι το πήραμε στα σοβαρά και κανείς δεν κινδυνεύει τώρα.',
+  items:['Ακούσαμε το παιδί χωρίς διακοπές και το ευχαριστήσαμε που μίλησε','Δεν υποσχεθήκαμε απόλυτη μυστικότητα','Διασφαλίστηκε η άμεση ασφάλεια (χωρίστηκαν τα παιδιά, επίβλεψη)','Σύντομη γραπτή σημείωση την ίδια μέρα']},
+ {t:'Ενημέρωση της Ομάδας Διαχείρισης', s:'Ομάδα', when:'Την ίδια μέρα',
+  goal:'Το περιστατικό περνά σε όσους έχουν οριστεί να το χειριστούν.',
+  items:['Ενημερώθηκε η Ομάδα Διαχείρισης / Διεύθυνση','Ορίστηκαν 1–2 μέλη που χειρίζονται το περιστατικό','Ενημερώθηκε ο Υπεύθυνος Τμήματος']},
+ {t:'Διερεύνηση: είναι εκφοβισμός;', s:'Διερεύνηση', when:'Άμεσα, με προτεραιότητα στα σοβαρά',
+  goal:'Να ξεκαθαρίσει αν πρόκειται για εκφοβισμό ή για άλλο περιστατικό, π.χ. σύγκρουση μεταξύ ίσων.',
+  items:['Στοιχεία για χώρο, χρόνο, διάρκεια, συχνότητα','Πληροφορίες από άλλους εκπαιδευτικούς και μαθητές'],
+  crit:['Πρόθεση','Επανάληψη','Ανισορροπία δύναμης']},
+ {t:'Ξεχωριστές συναντήσεις με τα παιδιά', s:'Συναντήσεις', when:'Αμέσως μετά τη διερεύνηση, χωριστά για το καθένα',
+  goal:'Κάθε παιδί ακούγεται μόνο του: στήριξη, καθαρό μήνυμα να σταματήσει η συμπεριφορά, ρόλος για τους θεατές.',
+  items:['Σ1 · Συνάντηση με το παιδί που υφίσταται','Σ2 · Συνάντηση με το παιδί/ά που εκφοβίζουν (χωριστά, διαδοχικά)','Σ3 · Συνάντηση με τους θεατές','Κλείστηκαν νέες συναντήσεις σε μία εβδομάδα']},
+ {t:'Ενημέρωση των γονέων', s:'Γονείς', when:'Μετά τις συναντήσεις με τα παιδιά',
+  goal:'Οι γονείς ενημερώνονται χωριστά, με ηρεμία, και γίνονται συνεργάτες στο σχέδιο.',
+  items:['Σ4 · Γονείς του παιδιού που υφίσταται','Σ5 · Γονείς του παιδιού που εκφοβίζει','Συμφωνήθηκε τρόπος και συχνότητα επικοινωνίας']},
+ {t:'Μέτρα & επίσημη καταγραφή', s:'Μέτρα', when:'Μόλις αποφασιστούν τα μέτρα',
+  goal:'Στήριξη για το παιδί που υφίσταται, επανόρθωση για το παιδί που εκφοβίζει, και πλήρης καταγραφή.',
+  items:['Μέτρα στήριξης σε εφαρμογή','Επανόρθωση / μέτρα για το παιδί που εκφοβίζει','Έντυπο Καταγραφής (Παράρτημα IV)','Καταχώριση στο ΣΕΠ','Παραπομπή ΥΕΨ ή άλλη υπηρεσία (αν χρειάζεται)']},
+ {t:'Παρακολούθηση & σύνοψη', s:'Σύνοψη', when:'1η, 3η και 6η εβδομάδα',
+  goal:'Επιβεβαιώνουμε ότι ο εκφοβισμός σταμάτησε και το παιδί νιώθει ασφαλές, και μετά κλείνουμε το περιστατικό.',
+  items:['Το παιδί που υφίσταται δηλώνει ότι νιώθει ασφαλές','Ενημερώθηκαν οι γονείς για την κατάληξη','Σύνοψη & κλείσιμο περιστατικού'], fu:true}
+];
+const TOTAL=STEPS.reduce((a,s)=>a+s.items.length+(s.crit?s.crit.length:0),0);
+const STATUS=[
+ {k:'Σε διερεύνηση',c:'--warn',a:true},{k:'Σε παρακολούθηση',c:'--info',a:true},
+ {k:'Κλειστό',c:'--ok',a:false},{k:'Δεν επιβεβαιώθηκε / σύγκρουση',c:'--muted',a:false}
+];
+const stC=k=>`var(${(STATUS.find(s=>s.k===k)||STATUS[0]).c})`;
+const isActive=c=>(STATUS.find(s=>s.k===c.status)||STATUS[0]).a;
+
+/* ---------- αποθήκευση ---------- */
+const KEY='asfales-scholeio-v1', MKEY='asfales-scholeio-mode';
+let mode='session';
+try{mode=localStorage.getItem(MKEY)||'session';}catch(e){}
+let D={cases:[]};
+if(mode==='device'){try{const r=localStorage.getItem(KEY); if(r) D=Object.assign({cases:[]},JSON.parse(r));}catch(e){}}
+function save(){ if(mode!=='device') return; try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){toast('Δεν ήταν δυνατή η αποθήκευση');} }
+function setMode(m){
+  if(m===mode) return;
+  if(m==='session'){
+    if(!confirmArm('session')) { toast('Πατήστε ξανά: τα αποθηκευμένα δεδομένα θα σβηστούν από τη συσκευή'); return; }
+    try{localStorage.removeItem(KEY);}catch(e){}
+  }
+  mode=m; try{localStorage.setItem(MKEY,m);}catch(e){}
+  if(m==='device') save();
+  renderMode(); toast(m==='device'?'Τα δεδομένα κρατιούνται σε αυτή τη συσκευή':'Προσωρινή συνεδρία');
+}
+const arms={};
+function confirmArm(k){ if(arms[k]){clearTimeout(arms[k]); arms[k]=null; return true;} arms[k]=setTimeout(()=>arms[k]=null,3500); return false; }
+function renderMode(){
+  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===mode));
+  $('#modeNote').innerHTML = mode==='device'
+   ? '<span class="alert ok" style="display:block">Τα περιστατικά κρατιούνται σε αυτόν τον browser. Χρησιμοποιήστε το μόνο σε <b>προσωπική</b> συσκευή.</span>'
+   : '<span class="alert" style="display:block"><b>Προσωρινή συνεδρία:</b> τα δεδομένα χάνονται με ανανέωση ή κλείσιμο, εκτός αν εξαγάγετε αντίγραφο.</span>';
+}
+window.addEventListener('beforeunload',e=>{ if(mode==='session' && D.cases.length){ e.preventDefault(); e.returnValue=''; } });
+
+/* ---------- περιστατικά ---------- */
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function blank(){
+  const n=D.cases.length+1, y=new Date().getFullYear();
+  return {id:uid(), code:`${y}-${String(n).padStart(2,'0')}`, date:today(), who:'', status:'Σε διερεύνηση', v:'', p:'', type:'', sev:'',
+          chk:{}, sd:{}, notes:{}, fu:[], created:today()};
+}
+const get=id=>D.cases.find(c=>c.id===id);
+function progress(c){ return Object.values(c.chk).filter(Boolean).length; }
+function stepDone(c,i){ const s=STEPS[i]; const keys=[...s.items.map((_,j)=>`${i}.${j}`),...(s.crit||[]).map((_,j)=>`${i}.c${j}`)]; const d=keys.filter(k=>c.chk[k]).length; return {d,n:keys.length}; }
+function currentStep(c){ for(let i=0;i<STEPS.length;i++){const {d,n}=stepDone(c,i); if(d<n) return i;} return STEPS.length-1; }
+function dueFu(c){ const t=today(); return isActive(c)?c.fu.filter(f=>!f.done && f.date && f.date<=t):[]; }
+function nextFu(c){ return c.fu.filter(f=>!f.done && f.date).map(f=>f.date).sort()[0]; }
+
+/* ---------- πίνακας ---------- */
+let filter='Όλα';
+function renderDash(){
+  const act=D.cases.filter(isActive).length, due=D.cases.reduce((a,c)=>a+dueFu(c).length,0);
+  $('#cActive').textContent=String(act).padStart(2,'0');
+  $('#cDue').textContent=String(due).padStart(2,'0'); $('#cDue').classList.toggle('hot',due>0);
+  const F=['Όλα','Ενεργά',...STATUS.slice(2).map(s=>s.k)];
+  $('#filters').innerHTML=D.cases.length?F.map(f=>`<button type="button" data-f="${esc(f)}" aria-pressed="${f===filter}">${esc(f)}</button>`).join(''):'';
+  let L=D.cases.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(filter==='Ενεργά') L=L.filter(isActive); else if(filter!=='Όλα') L=L.filter(c=>c.status===filter);
+  if(!D.cases.length){
+    $('#list').innerHTML=`<div class="empty"><h3>Δεν υπάρχουν ακόμη περιστατικά</h3><p class="muted small">Κάθε περιστατικό κρατιέται ξεχωριστά, με τα δικά του βήματα και επανελέγχους.</p><button class="btn primary" type="button" data-new>Δημιουργία πρώτου περιστατικού</button></div>`;
+    return;
+  }
+  $('#list').innerHTML=L.length?L.map(c=>{
+    const p=Math.round(progress(c)/TOTAL*100), du=dueFu(c).length, nx=nextFu(c), cs=currentStep(c);
+    return `<button class="case" type="button" data-open="${c.id}" style="--sc:${stC(c.status)}">
+      <div><div class="code">${esc(c.code||'Χωρίς κωδικό')}</div>
+      <div class="meta">${fmt(c.date)}${c.type?' · '+esc(c.type):''}${c.sev==='Σοβαρό περιστατικό'?' · <b style="color:var(--bad)">Σοβαρό</b>':''} · Βήμα ${cs+1}: ${esc(STEPS[cs].s)}
+      ${du?` · <span class="due">${du} επανέλεγχ${du>1?'οι':'ος'} εκκρεμ${du>1?'ούν':'εί'}</span>`:(nx&&isActive(c)?` · Επόμενος επανέλεγχος ${fmt(nx)}`:'')}</div></div>
+      <span class="st">${esc(c.status)}</span>
+      <div class="prog" aria-label="Πρόοδος ${p}%"><i style="width:${p}%"></i></div></button>`;
+  }).join(''):`<p class="muted">Κανένα περιστατικό σε αυτή την κατηγορία.</p>`;
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-new]')) newCase();
+  const o=e.target.closest('[data-open]'); if(o) location.hash='#p/'+o.dataset.open;
+  const f=e.target.closest('[data-f]'); if(f){filter=f.dataset.f; renderDash();}
+  const m=e.target.closest('[data-mode]'); if(m) setMode(m.dataset.mode);
+});
+function newCase(){ const c=blank(); D.cases.push(c); save(); location.hash='#p/'+c.id; setTimeout(()=>$('#fCode').select(),50); }
+$('#newCase').onclick=newCase;
+
+/* ---------- φάκελος περιστατικού ---------- */
+let cur=null;
+const FIELDS={fCode:'code',fDate:'date',fWho:'who',fStatus:'status',fV:'v',fP:'p',fType:'type',fSev:'sev'};
+$('#fStatus').innerHTML=STATUS.map(s=>`<option>${esc(s.k)}</option>`).join('');
+const looksName=v=>/[Α-ΩΆΈΉΊΌΎΏA-Z][α-ωάέήίόύώϊϋΐΰςa-z]{2,}\s+[Α-ΩΆΈΉΊΌΎΏA-Z][α-ωάέήίόύώϊϋΐΰςa-z]{2,}/.test(v);
+function checkWarn(){ const c=cur; $('#nameWarn').hidden=!['code','v','p'].some(k=>looksName(c[k]||'')); $('#sevWarn').hidden=c.sev!=='Σοβαρό περιστατικό';
+  $('#caseTitle').textContent='Περιστατικό '+(c.code||''); const st=$('#caseSt'); st.textContent=c.status; st.style.setProperty('--sc',stC(c.status)); }
+Object.entries(FIELDS).forEach(([id,k])=>{ const el=$('#'+id); el.oninput=el.onchange=()=>{ if(!cur) return; cur[k]=el.value; save(); checkWarn(); }; });
+
+function renderCase(){
+  const c=cur; Object.entries(FIELDS).forEach(([id,k])=>$('#'+id).value=c[k]||''); checkWarn();
+  const open=currentStep(c);
+  $('#steps').innerHTML=STEPS.map((s,i)=>{
+    const {d,n}=stepDone(c,i);
+    const cls=d===n?'done':(d?'part':'');
+    const items=s.items.map((t,j)=>{const k=`${i}.${j}`; return `<label class="item${c.chk[k]?' on':''}"><input type="checkbox" data-k="${k}" ${c.chk[k]?'checked':''}><span>${esc(t)}</span></label>`;}).join('');
+    let crit='';
+    if(s.crit){
+      const ck=s.crit.map((_,j)=>c.chk[`${i}.c${j}`]); const all=ck.every(Boolean), some=ck.some(Boolean);
+      crit=`<div><b class="small">Τα τρία κριτήρια</b><div class="items" style="margin-top:6px">${s.crit.map((t,j)=>{const k=`${i}.c${j}`; return `<label class="item${c.chk[k]?' on':''}"><input type="checkbox" data-k="${k}" ${c.chk[k]?'checked':''}><span>${esc(t)}</span></label>`;}).join('')}</div></div>
+      <div class="verdict">${all?'<b>Ισχύουν και τα τρία κριτήρια:</b> αντιμετωπίζεται ως εκφοβισμός· συνεχίστε στο βήμα 4.':some?'Δεν ισχύουν όλα τα κριτήρια ακόμη. Αν μετά τη διερεύνηση πρόκειται για <b>σύγκρουση ίσων</b>, ορίστε την κατάσταση «Δεν επιβεβαιώθηκε / σύγκρουση» και εξετάστε τη <a href="../diamesolavisi/">Διαμεσολάβηση</a>.':'Σημειώστε ποια κριτήρια επιβεβαιώνονται.'}</div>`;
+    }
+    let fu='';
+    if(s.fu){
+      fu=`<div><div class="rowb" style="justify-content:space-between"><b class="small">Επανέλεγχοι</b>
+        <button class="btn sm" type="button" data-plan>${c.fu.length?'Νέος επανέλεγχος':'Προγραμματισμός 1η–3η–6η εβδομάδα'}</button></div>
+        <div class="items" style="margin-top:8px">${c.fu.length?c.fu.map((f,j)=>{const late=!f.done&&f.date&&f.date<=today();
+          return `<div class="fu${late?' late':''}"><input type="checkbox" data-fu="${j}" ${f.done?'checked':''} aria-label="Ολοκληρώθηκε"><span>${esc(f.l)}${late?' · εκκρεμεί':''}</span><input type="date" data-fud="${j}" value="${f.date||''}" aria-label="Ημερομηνία"><button class="btn sm ghost" type="button" data-fux="${j}" aria-label="Αφαίρεση">✕</button></div>`;}).join(''):'<p class="small muted">Οι ημερομηνίες υπολογίζονται από τη συνάντηση με το παιδί που υφίσταται (βήμα 4) ή, αν λείπει, από σήμερα.</p>'}</div></div>`;
+    }
+    return `<details class="stepc ${cls}" ${i===open?'open':''}><summary><span class="num">${d===n?'✓':i+1}</span><span><h3>${esc(s.t)}</h3><span class="when">${esc(s.when)}</span></span><span class="cnt">${d}/${n}</span></summary>
+      <div class="sbody"><p class="goal">${esc(s.goal)}</p><div class="items">${items}</div>${crit}${fu}
+      <div class="form" style="margin-top:0"><label>Ημερομηνία βήματος<input type="date" data-sd="${i}" value="${c.sd[i]||''}"></label>
+      <label class="wide">Σημειώσεις<textarea data-note="${i}" placeholder="Γεγονότα, όχι ερμηνείες. Με κωδικούς, χωρίς ονόματα.">${esc(c.notes[i]||'')}</textarea><span class="private">Ιδιωτικό: δεν μπαίνει στη σύνοψη</span></label></div></div></details>`;
+  }).join('');
+}
+const S=$('#steps');
+S.addEventListener('change',e=>{
+  const t=e.target, c=cur; if(!c) return;
+  if(t.dataset.k){ c.chk[t.dataset.k]=t.checked; const i=+t.dataset.k.split('.')[0]; if(t.checked&&!c.sd[i]) c.sd[i]=today();
+    if(i===3 && t.checked && c.status==='Σε διερεύνηση' && stepDone(c,3).d===stepDone(c,3).n) { c.status='Σε παρακολούθηση'; toast('Η κατάσταση άλλαξε σε «Σε παρακολούθηση»'); }
+    save(); keepOpen(()=>renderCase()); }
+  if(t.dataset.sd!==undefined){ c.sd[t.dataset.sd]=t.value; save(); }
+  if(t.dataset.fu!==undefined){ c.fu[t.dataset.fu].done=t.checked; save(); keepOpen(()=>renderCase()); }
+  if(t.dataset.fud!==undefined){ c.fu[t.dataset.fud].date=t.value; save(); keepOpen(()=>renderCase()); }
+});
+S.addEventListener('input',e=>{ const t=e.target; if(t.dataset.note!==undefined && cur){ cur.notes[t.dataset.note]=t.value; save(); } });
+S.addEventListener('click',e=>{
+  const c=cur; if(!c) return;
+  if(e.target.closest('[data-plan]')){
+    if(!c.fu.length){ const base=c.sd[3]||today(); c.fu=[['1η εβδομάδα',7],['3η εβδομάδα',21],['6η εβδομάδα · κλείσιμο',42]].map(([l,n])=>({l,date:addDays(base,n),done:false})); }
+    else c.fu.push({l:`Επανέλεγχος ${c.fu.length+1}`,date:addDays(today(),7),done:false});
+    save(); keepOpen(()=>renderCase());
+  }
+  const x=e.target.closest('[data-fux]'); if(x){ c.fu.splice(+x.dataset.fux,1); save(); keepOpen(()=>renderCase()); }
+});
+function keepOpen(fn){ const o=[...S.querySelectorAll('details')].map(d=>d.open), y=window.scrollY; fn(); S.querySelectorAll('details').forEach((d,i)=>d.open=o[i]??d.open); window.scrollTo(0,y); }
+
+$('#delCase').onclick=e=>{
+  if(!confirmArm('del')){ e.target.textContent='Πατήστε ξανά για οριστική διαγραφή'; setTimeout(()=>e.target.textContent='Διαγραφή',3500); return; }
+  D.cases=D.cases.filter(c=>c!==cur); save(); e.target.textContent='Διαγραφή'; toast('Το περιστατικό διαγράφηκε'); location.hash='';
+};
+
+/* ---------- ανώνυμη σύνοψη ---------- */
+function summary(c){
+  const L=[`ΣΥΝΟΨΗ ΠΕΡΙΣΤΑΤΙΚΟΥ ΣΧΟΛΙΚΟΥ ΕΚΦΟΒΙΣΜΟΥ`,`Κωδικός: ${c.code||'—'}`,`Ημερομηνία αναφοράς: ${fmt(c.date)} · Ανέφερε: ${c.who||'—'}`,
+    `Παιδί που υφίσταται: ${c.v||'—'} · Παιδί/ά που εκφοβίζουν: ${c.p||'—'}`,`Μορφή: ${c.type||'—'} · Σοβαρότητα: ${c.sev||'—'}`,`Κατάσταση: ${c.status}`,''];
+  STEPS.forEach((s,i)=>{ const {d,n}=stepDone(c,i); L.push(`${i+1}. ${s.t} (${d}/${n})${c.sd[i]?' · '+fmt(c.sd[i]):''}`);
+    s.items.forEach((t,j)=>L.push(`   ${c.chk[`${i}.${j}`]?'[x]':'[ ]'} ${t}`));
+    (s.crit||[]).forEach((t,j)=>L.push(`   ${c.chk[`${i}.c${j}`]?'[x]':'[ ]'} Κριτήριο: ${t}`));
+    if(s.fu) c.fu.forEach(f=>L.push(`   ${f.done?'[x]':'[ ]'} Επανέλεγχος ${f.l} · ${fmt(f.date)}`));
+  });
+  L.push('',`Συντάχθηκε: ${fmt(today())} · Οι ελεύθερες σημειώσεις δεν περιλαμβάνονται.`);
+  return L.join('\n');
+}
+$('#sumBtn').onclick=()=>location.hash='#s/'+cur.id;
+$('#sumCopy').onclick=()=>{ const t=$('#sumText').textContent; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Αντιγράφηκε'),()=>{ const r=document.createRange(); r.selectNodeContents($('#sumText')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast('Επιλέχθηκε: αντιγράψτε το'); }); };
+$('#sumPrint').onclick=()=>window.print();
+
+/* ---------- αντίγραφο ---------- */
+$('#exportAll').onclick=()=>{
+  if(!D.cases.length){ toast('Δεν υπάρχουν περιστατικά'); return; }
+  const b=new Blob([JSON.stringify({app:'asfales-scholeio',v:1,exported:new Date().toISOString(),cases:D.cases},null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`asfales-scholeio-${today()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  toast('Το αντίγραφο αποθηκεύτηκε');
+};
+$('#importFile').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+  r.onload=()=>{ try{ const j=JSON.parse(r.result); if(!Array.isArray(j.cases)) throw 0;
+      let add=0, upd=0; j.cases.forEach(c=>{ if(!c||!c.id) return; const i=D.cases.findIndex(x=>x.id===c.id); const v=Object.assign(blank(),c); if(i>=0){D.cases[i]=v; upd++;} else {D.cases.push(v); add++;} });
+      save(); renderDash(); toast(`Εισήχθησαν ${add} νέα, ενημερώθηκαν ${upd}`);
+    }catch(err){ toast('Το αρχείο δεν είναι αντίγραφο του «Ασφαλές σχολείο»'); } e.target.value=''; };
+  r.readAsText(f);
+};
+
+/* ---------- απόκρυψη οθόνης ---------- */
+const shade=$('#shade');
+const hide=()=>{shade.hidden=false; shade.focus();}, show=()=>{shade.hidden=true;};
+$('#hide').onclick=hide; shade.onclick=show; shade.onkeydown=e=>{ if(e.key==='Enter'||e.key===' ') show(); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') shade.hidden?hide():show(); });
+
+/* ---------- πρωτόκολλο ---------- */
+$('#procChips').innerHTML=STEPS.map((s,i)=>`<span>${i+1}. ${esc(s.s)}</span>`).join('');
+$('#pSteps').innerHTML=STEPS.map((s,i)=>`<div class="pstep"><span class="num" style="width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-family:var(--display);background:var(--soft);border:2px solid var(--line)">${i+1}</span><div><h3>${esc(s.t)}</h3><p class="small muted">${esc(s.when)}</p><p style="margin-top:4px">${esc(s.goal)}</p><ul class="small" style="margin:6px 0 0; padding-left:18px">${s.items.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div></div>`).join('');
+
+/* ---------- δρομολόγηση ---------- */
+function route(){
+  const h=location.hash.replace('#','');
+  let v='dash';
+  if(h.startsWith('p/')||h.startsWith('s/')){ cur=get(h.slice(2)); if(!cur){ location.hash=''; return; } v=h[0]==='p'?'case':'print'; }
+  else if(h==='protokollo') v='protokollo';
+  ['dash','case','print','protokollo'].forEach(x=>$('#v-'+x).classList.toggle('on',x===v));
+  document.querySelectorAll('nav.tabs a').forEach(a=>{ const on=a.dataset.v===v||(a.dataset.v==='dash'&&v!=='protokollo'); on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'); });
+  if(v==='dash') renderDash();
+  if(v==='case') renderCase();
+  if(v==='print'){ $('#sumText').textContent=summary(cur); $('#sumBack').href='#p/'+cur.id; }
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+renderMode(); route();
+})();
+</script>
+<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
+</body>
+</html>
