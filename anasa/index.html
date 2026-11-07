@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ανάσα για το άγχος</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a calm "route" of 10 stations, like a coastal path, with a live check-in thermometer on top and an always-reachable SOS breathing button. */
+:root{
+  --bg:#EAF1F1;--surface:#FFFFFF;--soft:#D9EBEA;--ink:#11303A;--muted:#55707A;--line:#CFDEDF;
+  --accent:#0C7880;--accent-ink:#FFFFFF;--warm:#E2892F;--warm-soft:#FBEBD9;
+  --good:#2D8A57;--warn:#C27D1E;--bad:#BF4336;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1B20;--surface:#13282E;--soft:#1A363C;--ink:#E2EEEC;--muted:#94AEB2;--line:#2A464C;
+  --accent:#43BDB9;--accent-ink:#06211F;--warm:#F0A55A;--warm-soft:#3A2A1A;
+  --good:#5CC48A;--warn:#E3A84E;--bad:#EF7B6E;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0C1B20;--surface:#13282E;--soft:#1A363C;--ink:#E2EEEC;--muted:#94AEB2;--line:#2A464C;
+  --accent:#43BDB9;--accent-ink:#06211F;--warm:#F0A55A;--warm-soft:#3A2A1A;
+  --good:#5CC48A;--warn:#E3A84E;--bad:#EF7B6E;color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2.2rem}h2{font-size:1.6rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.prose{max-width:65ch}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.3rem}
+.brand svg{flex:none}
+.top .grow{flex:1}
+.lvl{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.2}
+.lvl b{display:block;color:var(--ink);font-size:.95rem}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+main{padding:24px 0 80px}
+.view[hidden]{display:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+
+/* home */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:stretch;margin-bottom:22px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.thermo{display:flex;gap:6px;flex-wrap:wrap}
+.thermo button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-variant-numeric:tabular-nums}
+.thermo button[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:1px}
+.z1{background:color-mix(in srgb,var(--good) 25%,var(--surface))!important}
+.z2{background:color-mix(in srgb,var(--warn) 25%,var(--surface))!important}
+.z3{background:color-mix(in srgb,var(--warm) 40%,var(--surface))!important}
+.z4{background:color-mix(in srgb,var(--bad) 35%,var(--surface))!important}
+.seals{display:grid;grid-template-columns:repeat(10,minmax(0,54px));gap:10px;margin-top:6px}
+@media (max-width:620px){.seals{grid-template-columns:repeat(5,minmax(0,54px))}}
+.seal{aspect-ratio:1;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;text-decoration:none}
+.seal.on{border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink)}
+.route{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.stop{display:flex;gap:14px;align-items:flex-start;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;transition:border-color .15s,transform .15s}
+.stop:hover{border-color:var(--accent);transform:translateY(-1px)}
+.num{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-d);font-weight:700;font-size:1.1rem;background:var(--soft);color:var(--accent)}
+.stop.done .num{background:var(--accent);color:var(--accent-ink)}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.chip.ok{background:color-mix(in srgb,var(--good) 20%,var(--surface));color:var(--good)}
+.extras{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.extras a{text-decoration:none;color:var(--ink)}
+.sec-title{margin:30px 0 12px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+
+/* choices */
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;cursor:pointer;text-align:left}
+.opt:hover{border-color:var(--accent)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 15%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--surface));font-weight:600}
+.fb{font-size:.95rem;padding:10px 12px;border-radius:10px;background:var(--soft)}
+.scen{display:flex;flex-direction:column;gap:10px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.resp{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.resp .card h3{display:flex;gap:8px;align-items:baseline}
+.resp .card h3 small{font-family:var(--font-b);font-size:.8rem;color:var(--muted);font-weight:600}
+
+/* body map */
+.bodymap{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:start}
+@media (max-width:640px){.bodymap{grid-template-columns:1fr}.bodymap svg{max-width:220px;margin:0 auto;display:block}}
+.hs{cursor:pointer}
+.hs circle.dot{fill:var(--warm);stroke:var(--surface);stroke-width:3}
+.hs.seen circle.dot{fill:var(--accent)}
+.hs.sel circle.ring{stroke:var(--ink);stroke-width:3;fill:none}
+.hs:focus{outline:none}.hs:focus-visible circle.ring{stroke:var(--warm);stroke-width:4;fill:none}
+.figure{fill:var(--soft);stroke:var(--line);stroke-width:2}
+
+/* curve */
+input[type=range]{width:100%;accent-color:var(--accent)}
+.zone{font-weight:700}
+
+/* mind */
+.thought{font-family:var(--font-d);font-size:1.3rem;line-height:1.35;padding:18px;border-radius:12px;background:var(--soft)}
+.dots{display:flex;gap:6px}.dots span{width:10px;height:10px;border-radius:50%;background:var(--line)}.dots span.on{background:var(--accent)}
+
+/* tools */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tab{border:none;background:transparent;padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.breath{display:grid;place-items:center;padding:20px 0}
+.ball{width:220px;height:220px;border-radius:50%;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--accent) 55%,var(--surface)),var(--accent));color:var(--accent-ink);transform:scale(.6);transition-property:transform;transition-timing-function:ease-in-out;font-weight:700;font-size:1.2rem}
+.ball small{display:block;font-size:2rem;font-family:var(--font-d);font-variant-numeric:tabular-nums}
+.bar{height:10px;background:var(--line);border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.anchor{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+
+/* forms */
+label{font-weight:600}
+textarea,input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+textarea{min-height:76px;resize:vertical}
+.field{display:flex;flex-direction:column;gap:6px}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.steps span{font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.steps span.on{background:var(--accent);color:var(--accent-ink)}
+.sort{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+@media (max-width:520px){.sort{grid-template-columns:1fr}}
+
+/* battery */
+.battery{display:flex;align-items:center;gap:10px}
+.cell{flex:1;height:44px;border:3px solid var(--ink);border-radius:10px;padding:4px;position:relative}
+.cell::after{content:"";position:absolute;right:-11px;top:12px;width:6px;height:14px;background:var(--ink);border-radius:0 3px 3px 0}
+.cell i{display:block;height:100%;border-radius:5px;transition:width .4s,background .4s}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--surface);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.6rem;font-weight:700;color:var(--accent);min-width:110px;font-variant-numeric:tabular-nums}
+.alert{border:2px solid var(--bad);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--bad) 8%,var(--surface))}
+.country{display:flex;flex-direction:column;gap:8px}
+.country .tag{font-size:.8rem;color:var(--muted);font-weight:600}
+.country .used{font-size:.9rem;border-top:1px dashed var(--line);padding-top:8px}
+.entry{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:4px}
+.next{margin-top:22px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* SOS overlay */
+.overlay{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 96%,transparent);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px}
+.overlay[hidden]{display:none}
+.overlay .card{max-width:520px;width:100%;text-align:center}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Ανάσα, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="var(--accent)"/><path d="M7 19c3-4 6-4 10 0s7 4 10 0" stroke="var(--accent-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M9 13c2.5-2.5 5-2.5 8 0s5.5 2.5 8 0" stroke="var(--accent-ink)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/></svg>
+      Ανάσα
+    </a>
+    <div class="grow"></div>
+    <div class="lvl" id="lvl"><b>Πρώτη ανάσα</b>0 από 10 σφραγίδες</div>
+    <button class="btn sos" id="sosBtn" type="button">Χρειάζομαι ηρεμία τώρα</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- HOME -->
+<section class="view" id="v-home">
+  <div class="hero">
+    <div class="card stack">
+      <span class="eyebrow">Εφαρμογή διαχείρισης άγχους για μαθητές 13–18</span>
+      <h1>Το άγχος είναι ο συναγερμός σου. Μάθε να τον ρυθμίζεις.</h1>
+      <p class="prose muted">Δέκα σταθμοί με παιχνίδια, ασκήσεις και ερωτήσεις. Σε κάθε σταθμό κερδίζεις μια σφραγίδα και χτίζεις το δικό σου σχέδιο. Ό,τι γράφεις μένει μόνο σε αυτή τη συσκευή.</p>
+      <div class="row"><a class="btn primary" href="#alarm">Ξεκίνα από τον σταθμό 1</a><a class="btn" href="#plan">Το σχέδιό μου</a></div>
+    </div>
+    <div class="card stack" aria-labelledby="ciTitle">
+      <h3 id="ciTitle">Πόσο άγχος νιώθεις τώρα;</h3>
+      <p class="small muted">1 = καθόλου, 10 = ο συναγερμός χτυπά δυνατά</p>
+      <div class="thermo" id="thermo" role="group" aria-label="Θερμόμετρο άγχους"></div>
+      <div class="fb" id="ciFb" aria-live="polite">Διάλεξε έναν αριθμό. Κάθε φορά που μπαίνεις, μπορείς να ξανακάνεις check-in.</div>
+      <div id="spark" class="small muted"></div>
+    </div>
+  </div>
+
+  <div class="card stack">
+    <div class="row" style="justify-content:space-between"><h3>Οι σφραγίδες σου</h3><span class="small muted" id="sealTxt"></span></div>
+    <div class="seals" id="seals"></div>
+  </div>
+
+  <div class="sec-title"><h2>Η διαδρομή</h2><span class="small muted">Μπορείς να πας με τη σειρά ή όπου σε τραβάει</span></div>
+  <div class="route" id="route"></div>
+
+  <div class="sec-title"><h2>Πάντα διαθέσιμα</h2></div>
+  <div class="extras">
+    <a class="card stack" href="#journal"><h3>Ημερολόγιο άγχους</h3><p class="small muted">Γράψε τι έγινε, τι σκέφτηκες, τι βοήθησε.</p></a>
+    <a class="card stack" href="#plan"><h3>Το σχέδιό μου</h3><p class="small muted">Όλα όσα διάλεξες στους σταθμούς, σε μία σελίδα.</p></a>
+    <a class="card stack" href="#world"><h3>Ιδέες από τον κόσμο</h3><p class="small muted">Τι κάνουν τα σχολεία σε 10 χώρες.</p></a>
+    <a class="card stack" href="#teachers"><h3>Για εκπαιδευτικούς</h3><p class="small muted">Πώς να το αξιοποιήσετε στην τάξη.</p></a>
+  </div>
+</section>
+
+<!-- 1 ALARM -->
+<section class="view" id="v-alarm" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 1</span><h2>Ο συναγερμός του σώματος</h2>
+  <p class="prose">Το άγχος είναι η φυσική αντίδραση του οργανισμού μας σε μια «απειλή» που αντιλαμβανόμαστε. Η απειλή δεν χρειάζεται να είναι πραγματική ή σωματική: μπορεί να είναι ένα διαγώνισμα, ένα βλέμμα, ένα μήνυμα που δεν απαντήθηκε. Το σύστημα επιβίωσης το έχουμε από τη γέννησή μας και ενεργοποιείται αυτόματα για να μας προστατεύει.</p></div>
+  <div class="resp">
+    <div class="card stack"><h3>Πάλη <small>FIGHT</small></h3><p class="small">Μας δίνει «δύναμη» να αντιμετωπίσουμε τον κίνδυνο. Στο σχολείο μπορεί να φανεί ως θυμός, απότομη απάντηση, καβγάς.</p></div>
+    <div class="card stack"><h3>Φυγή <small>FLIGHT</small></h3><p class="small">Μας δίνει ταχύτητα να απομακρυνθούμε. Στο σχολείο φαίνεται ως αποφυγή: δικαιολογίες, απουσίες, «δεν θα το κάνω».</p></div>
+    <div class="card stack"><h3>Πάγωμα <small>FREEZE</small></h3><p class="small">Μένουμε ακίνητοι και σε επιφυλακή, όπως ένα ζώο που κρύβεται από αρπακτικό. Στο σχολείο: «άδειο» μυαλό, σιωπή, μπλοκάρισμα.</p></div>
+  </div>
+  <h3 style="margin:24px 0 10px">Παιχνίδι: ποια αντίδραση βλέπεις;</h3>
+  <div class="stack" id="alarmGame"></div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Ευτυχώς δεν ζούμε στη ζούγκλα. Ο συναγερμός σου δεν είναι χαλασμένος, απλώς είναι υπερπροστατευτικός. Όταν τον αναγνωρίζεις, μπορείς να του πεις: «Σε ευχαριστώ, το έχω».</div>
+  <div class="next"><a class="btn ghost" href="#home">Στη διαδρομή</a><a class="btn primary" href="#body">Σταθμός 2 →</a></div>
+</section>
+
+<!-- 2 BODY -->
+<section class="view" id="v-body" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 2</span><h2>Ο χάρτης του σώματος</h2>
+  <p class="prose">Όταν αγχωνόμαστε, το σώμα μάς στέλνει σήματα σε επτά συνηθισμένα σημεία. Πάτησε τις κουκκίδες για να δεις τι νιώθεις εκεί και <b>γιατί</b> το κάνει αυτό το σώμα σου.</p></div>
+  <div class="card bodymap">
+    <svg viewBox="0 0 200 380" role="group" aria-label="Χάρτης σώματος" id="bodySvg">
+      <circle class="figure" cx="100" cy="48" r="32"/>
+      <rect class="figure" x="88" y="78" width="24" height="16" rx="6"/>
+      <rect class="figure" x="58" y="90" width="84" height="140" rx="30"/>
+      <rect class="figure" x="30" y="98" width="24" height="130" rx="12" transform="rotate(8 42 98)"/>
+      <rect class="figure" x="146" y="98" width="24" height="130" rx="12" transform="rotate(-8 158 98)"/>
+      <rect class="figure" x="66" y="222" width="30" height="148" rx="14"/>
+      <rect class="figure" x="104" y="222" width="30" height="148" rx="14"/>
+      <g id="hotspots"></g>
+    </svg>
+    <div class="stack">
+      <div class="card soft stack" id="bodyInfo" aria-live="polite"><h3>Διάλεξε ένα σημείο</h3><p class="small">Κάθε αίσθηση έχει μια λειτουργία επιβίωσης. Το σώμα σου ετοιμάζεται να σε βοηθήσει.</p></div>
+      <p class="small muted" id="bodyCount"></p>
+    </div>
+  </div>
+  <h3 style="margin:24px 0 8px">Τα δικά μου σήματα</h3>
+  <p class="small muted" style="margin-bottom:10px">Ποια από αυτά νιώθεις συχνότερα όταν αγχώνεσαι; Πάτησε όσα ισχύουν.</p>
+  <div class="opts" id="symptoms"></div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Τα σήματα αυτά είναι ενοχλητικά αλλά όχι επικίνδυνα. Είναι το «καντράν» που σου λέει ότι ο συναγερμός άναψε, άρα ήρθε η ώρα για ένα εργαλείο ηρεμίας.</div>
+  <div class="next"><a class="btn ghost" href="#alarm">← Σταθμός 1</a><a class="btn primary" href="#curve">Σταθμός 3 →</a></div>
+</section>
+
+<!-- 3 CURVE -->
+<section class="view" id="v-curve" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 3</span><h2>Η καμπύλη της απόδοσης</h2>
+  <p class="prose">Λίγο άγχος δεν είναι εχθρός. Σε μέτρια επίπεδα ξυπνά τον εγκέφαλο και βελτιώνει την απόδοση. Πολύ λίγο φέρνει αδιαφορία και κακή προετοιμασία, πολύ πολύ φέρνει παρορμητικότητα, λάθη και «κενά». Μετακίνησε τον δείκτη και εξερεύνησε και τις τρεις ζώνες.</p></div>
+  <div class="card stack">
+    <svg viewBox="0 0 320 210" role="img" aria-labelledby="curveLbl" id="curveSvg" style="width:100%;max-width:560px;margin:0 auto;display:block">
+      <title id="curveLbl">Καμπύλη άγχους και απόδοσης σε σχήμα ανάποδου U</title>
+      <rect x="20" y="20" width="84" height="165" fill="var(--soft)" opacity=".6"/>
+      <rect x="104" y="20" width="112" height="165" fill="color-mix(in srgb,var(--good) 18%,transparent)"/>
+      <rect x="216" y="20" width="84" height="165" fill="color-mix(in srgb,var(--bad) 14%,transparent)"/>
+      <line x1="20" y1="185" x2="300" y2="185" stroke="var(--muted)"/>
+      <line x1="20" y1="20" x2="20" y2="185" stroke="var(--muted)"/>
+      <path id="curvePath" fill="none" stroke="var(--accent)" stroke-width="3"/>
+      <circle id="curveDot" r="9" fill="var(--warm)" stroke="var(--surface)" stroke-width="3"/>
+      <text x="160" y="203" text-anchor="middle" font-size="11" fill="var(--muted)">Άγχος →</text>
+      <text x="14" y="102" text-anchor="middle" font-size="11" fill="var(--muted)" transform="rotate(-90 14 102)">Απόδοση →</text>
+      <text x="62" y="36" text-anchor="middle" font-size="10" fill="var(--muted)">Χαμηλό</text>
+      <text x="160" y="36" text-anchor="middle" font-size="10" fill="var(--muted)">Ζώνη απόδοσης</text>
+      <text x="258" y="36" text-anchor="middle" font-size="10" fill="var(--muted)">Υπερβολικό</text>
+    </svg>
+    <label for="curveRange">Επίπεδο άγχους</label>
+    <input type="range" id="curveRange" min="0" max="100" value="50">
+    <div class="fb" id="curveFb" aria-live="polite"></div>
+    <p class="small muted" id="zonesSeen"></p>
+  </div>
+  <h3 style="margin:24px 0 8px">Αναπλαισίωση: άλλαξε τον τίτλο της ιστορίας</h3>
+  <p class="prose small" style="margin-bottom:10px">Πριν από μια παρουσίαση η καρδιά σου χτυπά δυνατά. Ποια σκέψη θα σε βοηθήσει περισσότερο;</p>
+  <div class="opts" id="reapp"></div>
+  <div class="fb" id="reappFb" style="margin-top:10px" aria-live="polite" hidden></div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Δεν χρειάζεται να μηδενίσεις το άγχος. Ο στόχος είναι να γυρίσεις στη μέση της καμπύλης. Το ίδιο καρδιοχτύπι μπορεί να σημαίνει «κινδυνεύω» ή «ετοιμάζομαι».</div>
+  <div class="next"><a class="btn ghost" href="#body">← Σταθμός 2</a><a class="btn primary" href="#mind">Σταθμός 4 →</a></div>
+</section>
+
+<!-- 4 MIND -->
+<section class="view" id="v-mind" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 4</span><h2>Τα παιχνίδια του μυαλού</h2>
+  <p class="prose">Μερικές φορές ο τρόπος που σκεφτόμαστε κάνει κάτι μικρό να μοιάζει με τεράστια καταστροφή. Αυτές οι σκέψεις-παγίδες πετάγονται αυτόματα. Τρία βήματα: <b>Πιάσ' τη</b> (ποια παγίδα είναι;), <b>Έλεγξέ τη</b> (είναι όλη η αλήθεια;), <b>Άλλαξέ τη</b> (ποια σκέψη βοηθά;).</p></div>
+  <div class="card stack" id="mindGame"></div>
+  <h3 style="margin:24px 0 8px">Τα δικά μου «πρέπει» και «δεν πρέπει»</h3>
+  <div class="grid2">
+    <div class="field"><label for="myThought">Μια σκέψη που με αγχώνει</label><textarea id="myThought" placeholder="π.χ. «Πρέπει να γράψω 20, αλλιώς θα απογοητεύσω τους γονείς μου»"></textarea></div>
+    <div class="field"><label for="myNewThought">Μια πιο δίκαιη σκέψη</label><textarea id="myNewThought" placeholder="π.χ. «Θα δώσω τον καλύτερό μου εαυτό. Οι γονείς μου νοιάζονται για μένα, όχι μόνο για τον βαθμό»"></textarea></div>
+  </div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Μια σκέψη δεν είναι γεγονός. Μπορείς να την ακούσεις, να την ελέγξεις και να διαλέξεις αν θα την πιστέψεις.</div>
+  <div class="next"><a class="btn ghost" href="#curve">← Σταθμός 3</a><a class="btn primary" href="#tools">Σταθμός 5 →</a></div>
+</section>
+
+<!-- 5 TOOLS -->
+<section class="view" id="v-tools" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 5</span><h2>Η εργαλειοθήκη ηρεμίας</h2>
+  <p class="prose">Δοκίμασε τουλάχιστον δύο εργαλεία. Δεν ταιριάζουν όλα σε όλους: κράτα αυτά που δουλεύουν για σένα.</p></div>
+  <div class="card stack">
+    <div class="tabs" role="tablist" id="toolTabs">
+      <button class="tab" role="tab" id="t-breath" aria-controls="p-breath" aria-selected="true">Αναπνοή</button>
+      <button class="tab" role="tab" id="t-ground" aria-controls="p-ground" aria-selected="false">5-4-3-2-1</button>
+      <button class="tab" role="tab" id="t-pmr" aria-controls="p-pmr" aria-selected="false">Σφίγγω-χαλαρώνω</button>
+      <button class="tab" role="tab" id="t-anchor" aria-controls="p-anchor" aria-selected="false">Φράσεις-άγκυρες</button>
+    </div>
+    <div role="tabpanel" id="p-breath" aria-labelledby="t-breath" class="stack">
+      <div class="row"><span class="small muted">Ρυθμός:</span>
+        <div class="seg" id="breathMode"><button type="button" data-m="46" aria-pressed="true">Μακριά εκπνοή 4-6</button><button type="button" data-m="box" aria-pressed="false">Κουτί 4-4-4-4</button></div></div>
+      <div class="breath"><div class="ball" id="ball"><div><span id="ballTxt">Έτοιμος;</span><small id="ballNum"></small></div></div></div>
+      <div class="row" style="justify-content:center"><button class="btn primary" id="breathStart" type="button">Ξεκίνα</button><span class="small muted" id="breathCycles">Κύκλοι: 0</span></div>
+      <p class="small muted prose" style="margin:0 auto;text-align:center">Όταν η εκπνοή είναι μεγαλύτερη από την εισπνοή, το σώμα παίρνει το μήνυμα ότι ο κίνδυνος πέρασε. Κάνε τουλάχιστον 3 κύκλους.</p>
+    </div>
+    <div role="tabpanel" id="p-ground" aria-labelledby="t-ground" class="stack" hidden></div>
+    <div role="tabpanel" id="p-pmr" aria-labelledby="t-pmr" class="stack" hidden>
+      <p class="prose">Σφίγγεις μια ομάδα μυών για 5 δευτερόλεπτα και τη χαλαρώνεις για 8. Το σώμα μαθαίνει τη διαφορά ανάμεσα σε ένταση και χαλάρωση.</p>
+      <div class="card soft stack" style="text-align:center"><h3 id="pmrPart">Πάτησε «Ξεκίνα»</h3><p id="pmrDo" class="small">6 ομάδες μυών, περίπου 1,5 λεπτό</p><div class="bar"><i id="pmrBar"></i></div></div>
+      <div class="row" style="justify-content:center"><button class="btn primary" id="pmrStart" type="button">Ξεκίνα</button></div>
+    </div>
+    <div role="tabpanel" id="p-anchor" aria-labelledby="t-anchor" class="stack" hidden>
+      <p class="prose">Μικρές φράσεις και κινήσεις που σε «δένουν» στο τώρα. Καρφίτσωσε όσες σου ταιριάζουν και θα μπουν στο σχέδιό σου.</p>
+      <div class="stack" id="anchors"></div>
+    </div>
+    <p class="small muted" id="toolCount"></p>
+  </div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Τα εργαλεία δουλεύουν καλύτερα όταν τα έχεις εξασκήσει σε ήρεμες στιγμές. Δύο λεπτά την ημέρα αρκούν.</div>
+  <div class="next"><a class="btn ghost" href="#mind">← Σταθμός 4</a><a class="btn primary" href="#problem">Σταθμός 6 →</a></div>
+</section>
+
+<!-- 6 PROBLEM -->
+<section class="view" id="v-problem" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 6</span><h2>Λύνω το πρόβλημα</h2>
+  <p class="prose">Κάποιο άγχος έχει πραγματική αιτία που μπορεί να λυθεί. Πρώτα ξεχωρίζουμε τι είναι στο χέρι μας. Μετά πάμε βήμα βήμα.</p></div>
+  <div class="card stack">
+    <h3>Ζέσταμα: στον έλεγχό μου ή όχι;</h3>
+    <div id="controlSort"></div>
+    <p class="fb small" id="controlFb" aria-live="polite">Ταξινόμησε και τα 8.</p>
+  </div>
+  <div class="card stack" style="margin-top:14px">
+    <div class="steps" id="probSteps"></div>
+    <div id="probBody" class="stack"></div>
+    <div class="row" style="justify-content:space-between"><button class="btn" id="probPrev" type="button">← Πίσω</button><button class="btn primary" id="probNext" type="button">Επόμενο →</button></div>
+  </div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Ένα μεγάλο πρόβλημα γίνεται μικρότερο όταν το σπας σε κομμάτια. Το πρώτο βήμα να είναι τόσο μικρό ώστε να το κάνεις σήμερα.</div>
+  <div class="next"><a class="btn ghost" href="#tools">← Σταθμός 5</a><a class="btn primary" href="#strengths">Σταθμός 7 →</a></div>
+</section>
+
+<!-- 7 STRENGTHS -->
+<section class="view" id="v-strengths" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 7</span><h2>Οι δυνάμεις μου</h2>
+  <p class="prose">Εσύ δεν είσαι το πρόβλημα. Το πρόβλημα είναι το πρόβλημα. Εδώ ψάχνουμε τι ήδη δουλεύει, έστω και λίγο, γιατί ό,τι δουλεύει, το κάνουμε περισσότερο.</p></div>
+  <div class="card stack">
+    <h3>Η κλίμακά μου</h3>
+    <p class="small">Αν <b>10</b> σημαίνει «το άγχος δεν με εμποδίζει να κάνω ό,τι θέλω» και <b>1</b> «με εμποδίζει σε όλα», πού είσαι σήμερα;</p>
+    <div class="thermo" id="scale" role="group" aria-label="Κλίμακα 1 έως 10"></div>
+    <div class="field"><label for="scaleWhy" id="scaleWhyLbl">Τι κάνει να είσαι εκεί και όχι πιο χαμηλά;</label><textarea id="scaleWhy"></textarea></div>
+    <div class="field"><label for="scaleUp" id="scaleUpLbl">Πώς θα καταλάβεις ότι ανέβηκες μισό βήμα; Τι θα κάνεις διαφορετικά;</label><textarea id="scaleUp"></textarea></div>
+  </div>
+  <div class="card stack" style="margin-top:14px">
+    <h3>Ψάχνω τις εξαιρέσεις</h3>
+    <div class="field"><label for="exc">Θυμήσου μια φορά που περίμενες να αγχωθείς πολύ, αλλά ήταν λίγο καλύτερα. Τι έκανες διαφορετικά; Ποιος βοήθησε;</label><textarea id="exc" placeholder="Ακόμα κι αν ήταν λίγο πιο ήπιο ή πιο σύντομο, μετράει."></textarea></div>
+    <div class="field"><label for="miracle">Φαντάσου ότι αύριο ξυπνάς και το άγχος έχει μικρύνει. Ποιο θα είναι το πρώτο μικρό σημάδι που θα προσέξεις;</label><textarea id="miracle"></textarea></div>
+  </div>
+  <div class="card stack" style="margin-top:14px">
+    <h3>Οι δυνάμεις μου</h3>
+    <p class="small muted">Διάλεξε τουλάχιστον τρεις. Ένα παιδί που φροντίζει ένα κατοικίδιο, για παράδειγμα, δείχνει υπευθυνότητα, φροντίδα και συνέπεια.</p>
+    <div class="opts" id="strengthOpts"></div>
+  </div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Αν κάτι δουλεύει, κάνε περισσότερο από αυτό. Αν δεν δουλεύει, δοκίμασε κάτι άλλο. Έχεις περισσότερους πόρους απ' όσους νομίζεις.</div>
+  <div class="next"><a class="btn ghost" href="#problem">← Σταθμός 6</a><a class="btn primary" href="#life">Σταθμός 8 →</a></div>
+</section>
+
+<!-- 8 LIFE -->
+<section class="view" id="v-life" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 8</span><h2>Η μπαταρία μου</h2>
+  <p class="prose">Το πόσο αντέχουμε το άγχος εξαρτάται και από το πώς ζούμε. Πώς πήγε η τελευταία σου εβδομάδα;</p></div>
+  <div class="card stack">
+    <div class="battery"><div class="cell" aria-hidden="true"><i id="batFill"></i></div><b id="batPct" style="min-width:60px;text-align:right;font-variant-numeric:tabular-nums">0%</b></div>
+    <div id="lifeQs" class="stack"></div>
+  </div>
+  <div class="card stack" style="margin-top:14px">
+    <h3>Ένας μικρός στόχος για αυτή την εβδομάδα</h3>
+    <p class="small muted">Γράψ' τον ως κάτι που <b>θα κάνεις</b>, όχι κάτι που θα σταματήσεις. Όχι «να μην ξενυχτάω», αλλά «να αφήνω το κινητό έξω από το δωμάτιο στις 11».</p>
+    <input type="text" id="lifeGoal" aria-label="Ο στόχος μου">
+  </div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Ύπνος, κίνηση, φαγητό και παρέα δεν λύνουν μόνα τους το άγχος, αλλά γεμίζουν την μπαταρία που χρειάζεσαι για να χρησιμοποιήσεις τα υπόλοιπα εργαλεία.</div>
+  <div class="next"><a class="btn ghost" href="#strengths">← Σταθμός 7</a><a class="btn primary" href="#exam">Σταθμός 9 →</a></div>
+</section>
+
+<!-- 9 EXAM -->
+<section class="view" id="v-exam" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 9</span><h2>Πριν το διαγώνισμα</h2>
+  <p class="prose">Διαγωνίσματα, εξετάσεις, Παγκύπριες: εδώ το άγχος χτυπά συχνότερα. Τσέκαρε όσα θα δοκιμάσεις.</p></div>
+  <div class="grid2" id="examList"></div>
+  <div class="card stack" style="margin-top:14px">
+    <h3>Αν «παγώσω» μέσα στην αίθουσα</h3>
+    <ol class="stack" style="padding-left:20px;margin:0">
+      <li>Άφησε το στυλό. Πόδια στο πάτωμα, πλάτη στην καρέκλα.</li>
+      <li>Τρεις αναπνοές με μακριά εκπνοή: μέσα στο 4, έξω στο 6.</li>
+      <li>Πες μέσα σου: «Το σώμα μου ετοιμάζεται να με βοηθήσει».</li>
+      <li>Πήγαινε σε μια ερώτηση που ξέρεις. Η επιτυχία ξεκλειδώνει τη μνήμη.</li>
+      <li>Για το δύσκολο θέμα, γράψε στο πρόχειρο ό,τι θυμάσαι, ακόμα και λέξεις-κλειδιά.</li>
+    </ol>
+  </div>
+  <div class="take" style="margin-top:16px"><b>Κράτα αυτό:</b> Το έντονο άγχος δυσκολεύει την ανάκληση από τη μνήμη. Γι' αυτό τα εργαλεία ηρεμίας είναι κομμάτι της προετοιμασίας σου, όχι χάσιμο χρόνου.</div>
+  <div class="next"><a class="btn ghost" href="#life">← Σταθμός 8</a><a class="btn primary" href="#help">Σταθμός 10 →</a></div>
+</section>
+
+<!-- 10 HELP -->
+<section class="view" id="v-help" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Σταθμός 10</span><h2>Ζητώ βοήθεια, στηρίζω έναν φίλο</h2>
+  <p class="prose">Το να ζητάς βοήθεια είναι δεξιότητα, όπως η αναπνοή. Πρώτα ας ξεχωρίσουμε το καθημερινό άγχος από το άγχος που λέει «μίλα σε κάποιον».</p></div>
+  <div class="card stack"><h3>Καθημερινό άγχος ή σήμα να μιλήσω;</h3><div class="stack" id="helpQuiz"></div></div>
+  <div class="alert" style="margin-top:14px"><b>Αν σκέφτεσαι να κάνεις κακό στον εαυτό σου ή ότι δεν αξίζει να ζεις,</b> μίλα σε έναν ενήλικα που εμπιστεύεσαι σήμερα. Αν κινδυνεύεις τώρα, κάλεσε το <b>112</b>.</div>
+  <h3 style="margin:24px 0 10px">Πού μπορώ να απευθυνθώ στην Κύπρο</h3>
+  <div class="stack">
+    <div class="line"><span class="tel">1466</span><div><b>Hope For Children</b><p class="small muted">Γραμμή στήριξης για παιδιά και οικογένειες, 24 ώρες, δωρεάν. Ψυχολογική, κοινωνική και νομική στήριξη.</p></div></div>
+    <div class="line"><span class="tel">116 111</span><div><b>Ευρωπαϊκή Γραμμή Στήριξης Παιδιών και Εφήβων</b><p class="small muted">Δωρεάν συμβουλευτική γραμμή αποκλειστικά για παιδιά και εφήβους.</p></div></div>
+    <div class="line"><span class="tel">112</span><div><b>Έκτακτη ανάγκη</b><p class="small muted">Όταν υπάρχει άμεσος κίνδυνος.</p></div></div>
+    <div class="line"><span class="tel" style="font-size:1.1rem">Στο σχολείο</span><div><b>Καθηγητής/τρια Σ.Ε.Α., Υπεύθυνος/η τμήματος, ψυχολόγος της Υ.Ε.Ψ.</b><p class="small muted">Μπορείς να ζητήσεις συνάντηση χωρίς να εξηγήσεις τον λόγο μπροστά σε άλλους.</p></div></div>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="card stack"><h3>Πώς ξεκινώ τη συζήτηση</h3>
+      <p class="small">«Κύριε/Κυρία, μπορώ να σας μιλήσω λίγο μόνος/η μου; Τελευταία αγχώνομαι πολύ.»</p>
+      <p class="small">«Μαμά/Μπαμπά, δεν θέλω να με διορθώσετε τώρα. Θέλω μόνο να με ακούσετε.»</p>
+      <p class="small">«Δεν ξέρω πώς να το πω, οπότε σας δείχνω το ημερολόγιο άγχους μου.»</p>
+      <div class="field"><label for="trusted">Οι άνθρωποι που εμπιστεύομαι</label><input type="text" id="trusted" placeholder="π.χ. η θεία μου, ο κ. ΣΕΑ, η Μαρία από το τμήμα"></div>
+    </div>
+    <div class="card stack"><h3>Όταν ένας φίλος αγχώνεται</h3>
+      <p class="small"><b>Πρόσεξε.</b> Άλλαξε κάτι; Κλείνεται, θυμώνει εύκολα, λείπει συχνά;</p>
+      <p class="small"><b>Άκου.</b> Χωρίς να κρίνεις και χωρίς να βιαστείς να διορθώσεις. «Ακούγεται δύσκολο. Είμαι εδώ.»</p>
+      <p class="small"><b>Σύνδεσε.</b> «Θες να πάμε μαζί στον/στην καθηγητή/τρια ΣΕΑ;» Δεν χρειάζεται να το λύσεις μόνος σου.</p>
+      <p class="small muted">Απόφυγε: «Μην αγχώνεσαι», «Χαλάρωσε», «Υπερβάλλεις».</p>
+    </div>
+  </div>
+  <div class="next"><a class="btn ghost" href="#exam">← Σταθμός 9</a><a class="btn primary" href="#plan">Δες το σχέδιό σου →</a></div>
+</section>
+
+<!-- JOURNAL -->
+<section class="view" id="v-journal" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Εργαλείο</span><h2>Ημερολόγιο άγχους</h2>
+  <p class="prose">Γράψε για μια φορά που ένιωσες άγχος. Με τον καιρό θα δεις μοτίβα: πότε έρχεται, τι το μεγαλώνει, τι το μικραίνει.</p></div>
+  <form class="card stack" id="jForm">
+    <div class="field"><label for="jWhat">Τι συνέβη;</label><textarea id="jWhat" required></textarea></div>
+    <div class="field"><span style="font-weight:600" id="jLvlLbl">Πόσο έντονο ήταν; (1–10)</span><div class="thermo" id="jLvl" role="group" aria-labelledby="jLvlLbl"></div></div>
+    <div class="grid2">
+      <div class="field"><label for="jBody">Τι ένιωσα στο σώμα;</label><input type="text" id="jBody"></div>
+      <div class="field"><label for="jThought">Τι σκέφτηκα;</label><input type="text" id="jThought"></div>
+      <div class="field"><label for="jDid">Πώς το χειρίστηκα;</label><input type="text" id="jDid"></div>
+      <div class="field"><label for="jNext">Τι άλλο θα μπορούσα να δοκιμάσω;</label><input type="text" id="jNext"></div>
+    </div>
+    <div class="row"><button class="btn primary" type="submit">Αποθήκευση</button><span class="small muted">Μένει μόνο σε αυτή τη συσκευή.</span></div>
+  </form>
+  <h3 style="margin:22px 0 10px">Οι καταγραφές μου</h3>
+  <div class="stack" id="jList"></div>
+</section>
+
+<!-- PLAN -->
+<section class="view" id="v-plan" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Το σχέδιό μου</span><h2>Το προσωπικό μου σχέδιο για το άγχος</h2>
+  <p class="prose">Συμπληρώνεται μόνο του από όσα διαλέγεις στους σταθμούς. Μπορείς να το αντιγράψεις και να το δείξεις σε κάποιον που εμπιστεύεσαι.</p></div>
+  <div class="grid2" id="planGrid"></div>
+  <div class="row" style="margin-top:16px"><button class="btn primary" id="copyPlan" type="button">Αντιγραφή σχεδίου</button><span class="small muted" id="copyFb" aria-live="polite"></span></div>
+  <textarea id="planText" aria-label="Κείμενο σχεδίου" readonly hidden style="margin-top:10px;min-height:200px"></textarea>
+  <div class="card stack" style="margin-top:28px">
+    <h3>Διαγραφή δεδομένων</h3>
+    <p class="small muted">Σβήνει πρόοδο, σφραγίδες, ημερολόγιο και σχέδιο από αυτή τη συσκευή.</p>
+    <div class="row"><button class="btn" id="wipe" type="button">Διαγραφή όλων</button><button class="btn" id="wipeYes" type="button" hidden style="border-color:var(--bad);color:var(--bad)">Ναι, σβήσ' τα όλα</button></div>
+  </div>
+</section>
+
+<!-- WORLD -->
+<section class="view" id="v-world" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Καλές πρακτικές</span><h2>Ιδέες από σχολεία σε όλο τον κόσμο</h2>
+  <p class="prose">Η «Ανάσα» συνδυάζει στοιχεία από προγράμματα που εφαρμόζονται και ερευνώνται σε σχολεία. Κάτω από κάθε χώρα φαίνεται τι δανειστήκαμε.</p></div>
+  <div class="grid2" id="worldGrid"></div>
+  <div class="take" style="margin-top:16px"><b>Τι μας διδάσκει η έρευνα συνολικά:</b> Τα πιο συνεπή αποτελέσματα έχουν τα προγράμματα που διδάσκουν δεξιότητες (αναγνώριση σημάτων, χαλάρωση, αλλαγή σκέψεων, επίλυση προβλημάτων) και τις εξασκούν τακτικά. Η αλλαγή του τρόπου ζωής μόνη της δεν αρκεί, όπως έδειξε η δανέζικη μελέτη.</div>
+</section>
+
+<!-- TEACHERS -->
+<section class="view" id="v-teachers" hidden>
+  <div class="vhead"><a class="back" href="#home">← Διαδρομή</a><span class="eyebrow">Για εκπαιδευτικούς</span><h2>Η «Ανάσα» στην τάξη</h2>
+  <p class="prose">Η εφαρμογή μπορεί να χρησιμοποιηθεί ατομικά, σε συνεδρίες με τον/την Καθηγητή/τρια Σ.Ε.Α. ή σε ομάδα. Μια ενδεικτική σειρά 8 συναντήσεων 40 λεπτών:</p></div>
+  <div class="card tablebox">
+    <table>
+      <thead><tr><th>Συνάντηση</th><th>Σταθμοί</th><th>Δραστηριότητα στην τάξη</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1</td><td>«Ποια εικόνα δείχνει το άγχος σου;» Ορισμός, σύστημα επιβίωσης, παιχνίδι αντιδράσεων.</td></tr>
+        <tr><td>2</td><td>2</td><td>Αφίσα σώματος με post-it (Spotlighters). Φύλλο «Όταν αισθάνομαι άγχος – σωματικά συμπτώματα».</td></tr>
+        <tr><td>3</td><td>3, 5</td><td>Καμπύλη άγχους–απόδοσης. Πρώτη εξάσκηση αναπνοής ως ομάδα.</td></tr>
+        <tr><td>4</td><td>4</td><td>«Τα παιχνίδια του μυαλού» και «Παράλογες σκέψεις». Κάθε ομάδα αναδιατυπώνει δύο «πρέπει».</td></tr>
+        <tr><td>5</td><td>5, 6</td><td>Γείωση 5-4-3-2-1, σφίγγω-χαλαρώνω. Ταξινόμηση «στον έλεγχό μου».</td></tr>
+        <tr><td>6</td><td>7, 8</td><td>Ερωτήσεις κλίμακας και εξαιρέσεων σε δυάδες. Στόχος εβδομάδας.</td></tr>
+        <tr><td>7</td><td>9</td><td>Σχέδιο πριν από διαγώνισμα. Παιχνίδι ρόλων «πάγωσα στην αίθουσα».</td></tr>
+        <tr><td>8</td><td>10</td><td>Ζητώ βοήθεια, στηρίζω φίλο. Κάθε μαθητής ολοκληρώνει το σχέδιό του.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="card stack"><h3>Αρχές</h3>
+      <p class="small"><b>Καθολικός Σχεδιασμός (UDL):</b> κείμενο, εικόνα, κίνηση και γραφή για κάθε έννοια. Οι μαθητές απαντούν προφορικά, γραπτά ή στην οθόνη.</p>
+      <p class="small"><b>Εστίαση στη λύση:</b> ρωτάμε «πότε ήταν λίγο καλύτερα;» αντί για «γιατί συμβαίνει;».</p>
+      <p class="small"><b>Εξάσκηση:</b> δύο λεπτά αναπνοής στην αρχή κάθε μαθήματος κάνουν το εργαλείο αυτόματο.</p>
+    </div>
+    <div class="card stack"><h3>Όρια</h3>
+      <p class="small">Η εφαρμογή είναι εργαλείο ψυχοεκπαίδευσης και πρόληψης. Δεν κάνει διάγνωση και δεν αντικαθιστά θεραπεία.</p>
+      <p class="small">Μαθητές με επίμονο άγχος που επηρεάζει την καθημερινότητα, ή με σημάδια κινδύνου, παραπέμπονται σύμφωνα με τη διαδικασία του σχολείου (Σ.Ε.Α., Υ.Ε.Ψ., γονείς).</p>
+      <p class="small">Τα δεδομένα μένουν στη συσκευή του μαθητή. Ο εκπαιδευτικός βλέπει μόνο ό,τι ο μαθητής επιλέξει να δείξει.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Ανάσα», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>.</p>
+  <p class="small">Βασίζεται σε υλικό του προγράμματος διαχείρισης άγχους «Τα παιγνίδια που παίζει το μυαλό», στα Spotlighters/RemixED (Erasmus+), στην προσέγγιση εστίασης στη λύση (Milner &amp; Bateman) και σε καλές πρακτικές από 10 χώρες.</p>
+</div></footer>
+
+<!-- SOS -->
+<div class="overlay" id="sos" role="dialog" aria-modal="true" aria-labelledby="sosTitle" hidden>
+  <div class="card stack">
+    <h2 id="sosTitle">Είσαι ασφαλής. Ας πάρουμε μια ανάσα.</h2>
+    <p class="muted small">Ακολούθησε τον κύκλο: μεγαλώνει όσο εισπνέεις, μικραίνει όσο εκπνέεις.</p>
+    <div class="breath"><div class="ball" id="sosBall"><div><span id="sosTxt">Εισπνοή</span><small id="sosNum"></small></div></div></div>
+    <div class="fb small" id="sosGround">Μετά από λίγες ανάσες: βρες με το βλέμμα <b>5 πράγματα</b> γύρω σου που είναι μπλε ή πράσινα.</div>
+    <p class="small">Αν χρειάζεσαι κάποιον τώρα: <b>1466</b> Hope For Children (24ωρο) · <b>116 111</b> γραμμή για εφήβους · <b>112</b> σε κίνδυνο.</p>
+    <button class="btn primary" id="sosClose" type="button" style="align-self:center">Νιώθω λίγο καλύτερα</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+const KEY='anasa-v1';
+const $=s=>document.querySelector(s);
+const el=(tag,attrs,html)=>{const e=document.createElement(tag);if(attrs)for(const k in attrs){if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k]);}if(html!=null)e.innerHTML=html;return e;};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function def(){return{done:{},checkins:[],alarm:{},hot:[],sym:[],zones:[],reapp:null,mind:{i:0,res:{}},myT:'',myNT:'',tools:[],anchors:[],control:{},prob:{step:0},scale:null,scaleWhy:'',scaleUp:'',exc:'',miracle:'',str:[],life:{},goal:'',exam:[],quiz:{},trusted:'',journal:[]};}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return Object.assign(def(),JSON.parse(r));}catch(e){}return def();}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}renderProgress();}
+
+const ST=[
+ {id:'alarm',t:'Ο συναγερμός του σώματος',d:'Πάλη, φυγή ή πάγωμα; Μάθε πώς αντιδρά το σώμα σε μια «απειλή».'},
+ {id:'body',t:'Ο χάρτης του σώματος',d:'Επτά σημεία όπου νιώθουμε το άγχος και τι κάνει το καθένα.'},
+ {id:'curve',t:'Η καμπύλη της απόδοσης',d:'Πότε το άγχος βοηθά και πότε μπλοκάρει.'},
+ {id:'mind',t:'Τα παιχνίδια του μυαλού',d:'Πιάσε, έλεγξε και άλλαξε τις σκέψεις-παγίδες.'},
+ {id:'tools',t:'Η εργαλειοθήκη ηρεμίας',d:'Αναπνοή, γείωση, χαλάρωση μυών, φράσεις-άγκυρες.'},
+ {id:'problem',t:'Λύνω το πρόβλημα',d:'Τι είναι στον έλεγχό μου και ποιο είναι το πρώτο βήμα.'},
+ {id:'strengths',t:'Οι δυνάμεις μου',d:'Κλίμακα, εξαιρέσεις και όσα ήδη δουλεύουν.'},
+ {id:'life',t:'Η μπαταρία μου',d:'Ύπνος, κίνηση, φαγητό, οθόνες, παρέα.'},
+ {id:'exam',t:'Πριν το διαγώνισμα',d:'Σχέδιο για την εβδομάδα, το βράδυ, το πρωί και την αίθουσα.'},
+ {id:'help',t:'Ζητώ βοήθεια, στηρίζω φίλο',d:'Πότε μιλάω, σε ποιον, και πώς στέκομαι δίπλα σε κάποιον.'}
+];
+const VIEWS=['home'].concat(ST.map(s=>s.id),['journal','plan','world','teachers']);
+
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);}
+function done(id){if(!S.done[id]){S.done[id]=true;save();const s=ST.find(x=>x.id===id);toast('Νέα σφραγίδα: '+s.t);renderHome();}}
+
+function level(n){return n>=9?'Οδηγός ηρεμίας':n>=6?'Ήρεμα νερά':n>=3?'Σταθερός ρυθμός':'Πρώτη ανάσα';}
+function renderProgress(){const n=ST.filter(s=>S.done[s.id]).length;$('#lvl').innerHTML='<b>'+level(n)+'</b>'+n+' από 10 σφραγίδες';}
+
+/* ---------- HOME ---------- */
+function zoneCls(n){return n<=3?'z1':n<=6?'z2':n<=8?'z3':'z4';}
+function buildThermo(box,onPick,cur){box.innerHTML='';for(let i=1;i<=10;i++){const b=el('button',{type:'button',class:zoneCls(i),'aria-pressed':String(cur===i),'aria-label':String(i)},String(i));b.onclick=()=>{box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');onPick(i);};box.appendChild(b);}}
+const CI={1:'Ήρεμα νερά. Καλή στιγμή να εξασκήσεις ένα εργαλείο, για να είναι έτοιμο όταν το χρειαστείς.',4:'Λίγο άγχος, λίγη ενέργεια. Αυτή είναι συχνά η ζώνη απόδοσης (σταθμός 3).',7:'Αρκετό άγχος. Δοκίμασε δύο λεπτά αναπνοής στην εργαλειοθήκη ηρεμίας.',9:'Ο συναγερμός χτυπά δυνατά. Πάτησε «Χρειάζομαι ηρεμία τώρα» και, αν συμβαίνει συχνά, μίλα σε κάποιον (σταθμός 10).'};
+function ciText(n){return n<=3?CI[1]:n<=6?CI[4]:n<=8?CI[7]:CI[9];}
+function renderSpark(){const c=S.checkins.slice(-12);const box=$('#spark');if(c.length<2){box.textContent=c.length?'Πρώτο check-in καταγράφηκε.':'';return;}
+ const w=240,h=46,step=w/(c.length-1);let pts=c.map((v,i)=>[i*step,h-4-(v.v-1)/9*(h-8)]);
+ const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+ const last=pts[pts.length-1];
+ box.innerHTML='<div class="row" style="gap:12px"><svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Τα τελευταία check-in"><line x1="0" y1="'+(h/2)+'" x2="'+w+'" y2="'+(h/2)+'" stroke="var(--line)" stroke-dasharray="3 3"/><path d="'+d+' L'+w+' '+h+' L0 '+h+' Z" fill="color-mix(in srgb,var(--accent) 14%,transparent)"/><path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="'+last[0]+'" cy="'+last[1]+'" r="4" fill="var(--warm)"/></svg><span>Τελευταία '+c.length+' check-in · τώρα '+c[c.length-1].v+'/10</span></div>';}
+function renderHome(){
+ const last=S.checkins.length?S.checkins[S.checkins.length-1].v:null;
+ buildThermo($('#thermo'),n=>{S.checkins.push({v:n,t:Date.now()});if(S.checkins.length>60)S.checkins.shift();save();$('#ciFb').textContent=ciText(n);renderSpark();},last);
+ if(last)$('#ciFb').textContent=ciText(last);
+ renderSpark();
+ const n=ST.filter(s=>S.done[s.id]).length;
+ $('#sealTxt').textContent=n+' / 10 · '+level(n);
+ $('#seals').innerHTML=ST.map((s,i)=>'<a class="seal'+(S.done[s.id]?' on':'')+'" href="#'+s.id+'" title="'+esc(s.t)+'" aria-label="Σταθμός '+(i+1)+(S.done[s.id]?', ολοκληρώθηκε':'')+'">'+(i+1)+'</a>').join('');
+ $('#route').innerHTML=ST.map((s,i)=>'<a class="stop'+(S.done[s.id]?' done':'')+'" href="#'+s.id+'"><span class="num">'+(i+1)+'</span><span class="stack" style="gap:4px"><b>'+esc(s.t)+'</b><span class="small muted">'+esc(s.d)+'</span><span><span class="chip'+(S.done[s.id]?' ok':'')+'">'+(S.done[s.id]?'Σφραγίδα ✓':'Νέο')+'</span></span></span></a>').join('');
+}
+
+/* ---------- 1 ALARM ---------- */
+const RN={pali:'Πάλη',fygi:'Φυγή',pagoma:'Πάγωμα'};
+const SCEN=[
+ {t:'Ο καθηγητής σε σηκώνει στον πίνακα και το μυαλό σου «αδειάζει». Δεν θυμάσαι τίποτα.',a:'pagoma',w:'Το σώμα «κοκαλώνει» για να περάσει απαρατήρητο. Γι\' αυτό αδειάζει και το μυαλό.'},
+ {t:'Ένας συμμαθητής κάνει ειρωνικό σχόλιο για τον βαθμό σου και του απαντάς απότομα, φωνάζοντας.',a:'pali',w:'Ο συναγερμός δίνει ενέργεια για «μάχη». Ο θυμός είναι συχνά άγχος που φοράει πανοπλία.'},
+ {t:'Το πρωί του διαγωνίσματος λες στη μαμά σου ότι πονάει η κοιλιά σου για να μείνεις σπίτι.',a:'fygi',w:'Η αποφυγή φέρνει ανακούφιση τώρα, αλλά κάνει τον φόβο μεγαλύτερο την επόμενη φορά.'},
+ {t:'Σε ένα πάρτι κάθεσαι σε μια γωνία, ακίνητος/η, χωρίς να μιλάς σε κανέναν.',a:'pagoma',w:'Μένεις ακίνητος/η και σε επιφυλακή, σαν να περιμένεις να περάσει ο κίνδυνος.'},
+ {t:'Όταν η παρέα αρχίζει να συζητά για βαθμούς, βρίσκεις δικαιολογία και φεύγεις.',a:'fygi',w:'Απομακρύνεσαι από αυτό που σε αγχώνει. Είναι η σύγχρονη εκδοχή του «τρέχω μακριά».'},
+ {t:'Κάποιος σε σπρώχνει στην ουρά της καντίνας και τον σπρώχνεις πίσω πριν καν το σκεφτείς.',a:'pali',w:'Ο συναγερμός αντιδρά πριν σκεφτεί ο λογικός εγκέφαλος. Είναι γρήγορος, όχι πάντα σοφός.'}
+];
+function renderAlarm(){const box=$('#alarmGame');box.innerHTML='';
+ SCEN.forEach((s,i)=>{const d=el('div',{class:'scen'});d.appendChild(el('p',null,'<b>'+(i+1)+'.</b> '+esc(s.t)));const o=el('div',{class:'opts'});const fb=el('div',{class:'fb small'});fb.hidden=true;
+  const show=()=>{const c=S.alarm[i];o.querySelectorAll('button').forEach(b=>{b.classList.remove('right','wrong');if(c){if(b.dataset.k===s.a)b.classList.add('right');else if(b.dataset.k===c)b.classList.add('wrong');}});if(c){fb.hidden=false;fb.innerHTML=(c===s.a?'<b>Σωστά: '+RN[s.a]+'.</b> ':'<b>Εδώ μοιάζει με '+RN[s.a]+'.</b> ')+esc(s.w);}};
+  ['pali','fygi','pagoma'].forEach(k=>{const b=el('button',{class:'opt',type:'button','data-k':k},RN[k]);b.onclick=()=>{S.alarm[i]=k;save();show();if(Object.keys(S.alarm).length===SCEN.length)done('alarm');};o.appendChild(b);});
+  d.appendChild(o);d.appendChild(fb);box.appendChild(d);show();});}
+
+/* ---------- 2 BODY ---------- */
+const HOT=[
+ {k:'head',x:100,y:30,n:'Κεφάλι',s:'Ανησυχίες, πονοκέφαλος, δυσκολία συγκέντρωσης, αίσθηση ότι χάνεις τον έλεγχο.',f:'Η προσοχή «κλειδώνει» πάνω στην απειλή, για να μη χάσεις τίποτα επικίνδυνο. Γι\' αυτό δυσκολεύεσαι να σκεφτείς οτιδήποτε άλλο.'},
+ {k:'mouth',x:100,y:62,n:'Στόμα',s:'Ξηροστομία, δυσκολία να καταπιείς, τρέμουλο στη φωνή.',f:'Το σώμα εξοικονομεί υγρά και ενέργεια για τις λειτουργίες επιβίωσης. Συμβαίνει συχνά σε παρουσιάσεις.'},
+ {k:'shoulders',x:64,y:100,n:'Ώμοι',s:'Ένταση, πίεση, πόνος, σφίξιμο.',f:'Οι μύες σφίγγουν για να αντέξουν ένα πιθανό χτύπημα. Όπως σφίγγεις την κοιλιά σου όταν περιμένεις μπουνιά.'},
+ {k:'chest',x:80,y:130,n:'Στήθος',s:'Πίεση, γρήγορη και ρηχή αναπνοή, «δεν μου φτάνει ο αέρας».',f:'Η αναπνοή ανεβαίνει ψηλά για να πάρεις γρήγορα περισσότερο οξυγόνο για τους μυς. Από το πολύ οξυγόνο κάποιοι ζαλίζονται.'},
+ {k:'heart',x:120,y:132,n:'Καρδιά',s:'Γρήγορος παλμός, έντονο καρδιοχτύπι.',f:'Η καρδιά στέλνει πιο γρήγορα αίμα και ενέργεια στους μυς, για να μπορείς να παλέψεις ή να τρέξεις.'},
+ {k:'stomach',x:100,y:188,n:'Στομάχι',s:'Φτερούγισμα, πόνος, ναυτία, συχνή τουαλέτα, καθόλου πείνα.',f:'Η πέψη επιβραδύνεται και το αίμα φεύγει από το στομάχι προς τους μεγάλους μυς. Η χώνεψη δεν είναι προτεραιότητα στον κίνδυνο.'},
+ {k:'hands',x:34,y:236,n:'Χέρια',s:'Ιδρωμένες παλάμες, κοκκίνισμα, ζέστη, τρέμουλο.',f:'Το σώμα δουλεύει σαν εργοστάσιο και ζεσταίνεται. Ιδρώνει για να δροσιστεί και τα αγγεία έρχονται στην επιφάνεια, γι\' αυτό κοκκινίζουμε.'}
+];
+const SYM=['Ζαλάδα','Τάση λιποθυμίας','Κοκκίνισμα στο πρόσωπο','Ζέστη στο σώμα','Στεγνό στόμα','Δυσκολία να καταπιώ','Φτερούγισμα στο στομάχι','Ιδρωμένα χέρια','Πονοκέφαλος','Θόλωση στα μάτια','Τρέμουλο στη φωνή','Έντονο καρδιοχτύπι','Συχνή τουαλέτα','Δυσκολία στην αναπνοή','«Κομμένα» πόδια'];
+let selHot=null;
+function checkBody(){if(S.hot.length>=4&&S.sym.length>=1)done('body');}
+function renderBody(){const g=$('#hotspots');g.innerHTML='';
+ HOT.forEach(h=>{const ns='http://www.w3.org/2000/svg';const a=document.createElementNS(ns,'g');a.setAttribute('class','hs'+(S.hot.includes(h.k)?' seen':'')+(selHot===h.k?' sel':''));a.setAttribute('tabindex','0');a.setAttribute('role','button');a.setAttribute('aria-label',h.n);
+  const r=document.createElementNS(ns,'circle');r.setAttribute('class','ring');r.setAttribute('cx',h.x);r.setAttribute('cy',h.y);r.setAttribute('r',15);r.setAttribute('fill','transparent');
+  const c=document.createElementNS(ns,'circle');c.setAttribute('class','dot');c.setAttribute('cx',h.x);c.setAttribute('cy',h.y);c.setAttribute('r',10);
+  a.appendChild(r);a.appendChild(c);const pick=()=>{selHot=h.k;if(!S.hot.includes(h.k))S.hot.push(h.k);save();renderBody();$('#bodyInfo').innerHTML='<h3>'+h.n+'</h3><p><b>Τι νιώθω:</b> '+esc(h.s)+'</p><p><b>Γιατί το κάνει το σώμα:</b> '+esc(h.f)+'</p>';checkBody();};
+  a.addEventListener('click',pick);a.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();g.querySelector('[aria-label="'+h.n+'"]').focus();}});g.appendChild(a);});
+ $('#bodyCount').textContent='Εξερεύνησες '+S.hot.length+' από 7 σημεία'+(S.hot.length<4?' (χρειάζονται 4 για τη σφραγίδα)':'')+'.';
+ const sb=$('#symptoms');if(!sb.childElementCount){SYM.forEach(s=>{const b=el('button',{class:'opt',type:'button','aria-pressed':String(S.sym.includes(s))},esc(s));b.onclick=()=>{const i=S.sym.indexOf(s);if(i>-1)S.sym.splice(i,1);else S.sym.push(s);b.setAttribute('aria-pressed',String(i===-1));save();checkBody();};sb.appendChild(b);});}}
+
+/* ---------- 3 CURVE ---------- */
+const cy=s=>185-150*Math.exp(-Math.pow(s-50,2)/(2*20*20));
+const cx=s=>20+2.8*s;
+function renderCurve(){let d='';for(let s=0;s<=100;s+=2)d+=(s?'L':'M')+cx(s).toFixed(1)+' '+cy(s).toFixed(1)+' ';$('#curvePath').setAttribute('d',d);updCurve();
+ const R=[{k:'a',t:'«Η καρδιά μου χτυπά γιατί θα τα κάνω χάλια. Πρέπει να ηρεμήσω αμέσως!»',ok:false,w:'Αυτή η σκέψη ερμηνεύει το καρδιοχτύπι ως κίνδυνο και ανεβάζει κι άλλο τον συναγερμό.'},
+  {k:'b',t:'«Η καρδιά μου χτυπά γιατί το σώμα μου ετοιμάζεται να με βοηθήσει. Έχω ενέργεια.»',ok:true,w:'Αυτή είναι αναπλαισίωση. Η έρευνα δείχνει ότι όταν βλέπουμε το άγχος ως ενέργεια, αποδίδουμε καλύτερα.'},
+  {k:'c',t:'«Δεν με νοιάζει καθόλου, ας πάει όπως πάει.»',ok:false,w:'Η αδιαφορία μάς ρίχνει στο αριστερό άκρο της καμπύλης: λίγο άγχος, λίγη προετοιμασία.'}];
+ const box=$('#reapp');box.innerHTML='';const fb=$('#reappFb');
+ R.forEach(r=>{const b=el('button',{class:'opt',type:'button'},esc(r.t));const mark=()=>{box.querySelectorAll('button').forEach(x=>x.classList.remove('right','wrong'));b.classList.add(r.ok?'right':'wrong');fb.hidden=false;fb.innerHTML=(r.ok?'<b>Ακριβώς.</b> ':'<b>Δοκίμασε άλλη.</b> ')+esc(r.w);};
+  b.onclick=()=>{S.reapp=r.k;if(r.ok)S.reappOk=true;save();mark();checkCurve();};box.appendChild(b);if(S.reapp===r.k)mark();});}
+function updCurve(){const s=+$('#curveRange').value;$('#curveDot').setAttribute('cx',cx(s));$('#curveDot').setAttribute('cy',cy(s));
+ let z,t;if(s<30){z='low';t='<span class="zone">Χαμηλό άγχος.</span> Βαριέμαι, αναβάλλω, δεν προετοιμάζομαι αρκετά. Λίγη πίεση εδώ θα βοηθούσε.';}else if(s<=70){z='mid';t='<span class="zone" style="color:var(--good)">Ζώνη απόδοσης.</span> Είμαι σε εγρήγορση, συγκεντρώνομαι, θυμάμαι. Το άγχος δουλεύει για μένα.';}else{z='high';t='<span class="zone" style="color:var(--bad)">Υπερβολικό άγχος.</span> Βιάζομαι, κάνω λάθη, το μυαλό «αδειάζει». Ώρα για εργαλείο ηρεμίας.';}
+ $('#curveFb').innerHTML=t;if(!S.zones.includes(z)){S.zones.push(z);save();}$('#zonesSeen').textContent='Ζώνες που εξερεύνησες: '+S.zones.length+' από 3';checkCurve();}
+function checkCurve(){if(S.zones.length>=3&&S.reappOk)done('curve');}
+
+/* ---------- 4 MIND ---------- */
+const TRAPS={cat:'Καταστροφολογία',all:'Όλα ή τίποτα',read:'Διάβασμα σκέψης',must:'Τα «πρέπει»',fort:'Μαντεία',filt:'Φίλτρο του αρνητικού',lab:'Ετικέτες'};
+const TD={cat:'Ένα μικρό γεγονός γίνεται καταστροφή στο μυαλό.',all:'Ή τέλειο ή αποτυχία, τίποτα ενδιάμεσα.',read:'Νομίζω ότι ξέρω τι σκέφτονται οι άλλοι για μένα.',must:'Αυστηροί κανόνες για το πώς πρέπει να είμαι και να με βλέπουν.',fort:'Είμαι σίγουρος/η ότι το μέλλον θα πάει άσχημα.',filt:'Βλέπω μόνο τα λάθη και αγνοώ τα θετικά.',lab:'Κολλάω μια αρνητική ταμπέλα στον εαυτό μου.'};
+const CARDS=[
+ {t:'«Αν δεν πετυχαίνω σε ό,τι κάνω, τότε είμαι μια αποτυχία!»',trap:'all',o:['all','fort','read'],alt:['Μια αποτυχία είναι ένα γεγονός, όχι ο ορισμός μου. Μαθαίνω από αυτήν.','Θα προσπαθώ τόσο πολύ που δεν θα αποτύχω ποτέ ξανά.','Δεν με νοιάζει πια τίποτα.'],ok:0},
+ {t:'«Όλοι πρέπει να με αγαπούν! Δεν αντέχω αν κάποιος δεν με συμπαθεί.»',trap:'must',o:['cat','must','filt'],alt:['Πρέπει να κάνω ό,τι μου ζητούν για να με συμπαθούν.','Θα ήθελα να με συμπαθούν, αλλά κανείς δεν αρέσει σε όλους. Έχω ανθρώπους που με εκτιμούν.','Δεν με συμπαθεί κανείς.'],ok:1},
+ {t:'«Αν οι άλλοι καταλάβουν ότι αγχώνομαι, θα με κοροϊδεύουν και δεν θα με θέλουν στην παρέα τους.»',trap:'read',o:['read','lab','all'],alt:['Πρέπει να κρύβω το άγχος μου πάση θυσία.','Θα μείνω καλύτερα μόνος/η μου.','Δεν ξέρω τι σκέφτονται. Πολλοί αγχώνονται κι αυτοί, και οι φίλοι μου θα καταλάβαιναν.'],ok:2},
+ {t:'«Θα γράψω χάλια, θα κοπώ, δεν θα περάσω πουθενά, η ζωή μου τελείωσε!»',trap:'cat',o:['filt','cat','must'],alt:['Ένα διαγώνισμα είναι ένα κομμάτι. Ακόμα κι αν δεν πάει καλά, υπάρχουν επόμενα βήματα και λύσεις.','Όλα θα πάνε τέλεια, δεν χρειάζεται να διαβάσω.','Καλύτερα να μην πάω καθόλου.'],ok:0},
+ {t:'«Πήρα 17, αλλά έκανα αυτό το χαζό λάθος στην άσκηση 3. Δεν αξίζω τίποτα.»',trap:'filt',o:['fort','read','filt'],alt:['Το 17 δεν μετράει, μετράει μόνο το λάθος.','Τα περισσότερα τα έκανα σωστά. Το λάθος μου δείχνει τι να προσέξω την επόμενη φορά.','Ο καθηγητής ήταν άδικος.'],ok:1},
+ {t:'«Ξέρω ότι θα κάνω ρεζίλι τον εαυτό μου στην παρουσίαση αύριο.»',trap:'fort',o:['fort','all','lab'],alt:['Θα πω ότι είμαι άρρωστος/η.','Σίγουρα θα πάει άσχημα, όπως πάντα.','Δεν μπορώ να ξέρω το μέλλον. Αν κάνω πρόβα δύο φορές, έχω καλές πιθανότητες να πάει εντάξει.'],ok:2},
+ {t:'«Κανένας άλλος δεν αγχώνεται σαν εμένα. Πρέπει να είμαι εντελώς χαζός/ή.»',trap:'lab',o:['must','lab','cat'],alt:['Το άγχος το νιώθουν όλοι οι άνθρωποι. Δεν είμαι χαζός/ή, είμαι άνθρωπος που μαθαίνει να το ρυθμίζει.','Είμαι ο μόνος/η μόνη που έχει πρόβλημα.','Οι άλλοι απλώς κάνουν πως δεν αγχώνονται.'],ok:0}
+];
+let mStage=0;
+function renderMind(){const box=$('#mindGame');const i=Math.min(S.mind.i,CARDS.length);
+ const dots='<div class="dots" aria-hidden="true">'+CARDS.map((c,j)=>'<span class="'+(S.mind.res[j]?'on':'')+'"></span>').join('')+'</div>';
+ if(i>=CARDS.length){box.innerHTML=dots+'<h3>Έπιασες και τις 7 παγίδες.</h3><div class="grid3">'+Object.keys(TRAPS).map(k=>'<div class="card soft stack" style="padding:14px"><b>'+TRAPS[k]+'</b><span class="small">'+TD[k]+'</span></div>').join('')+'</div><div class="row"><button class="btn" type="button" id="mindAgain">Παίξε ξανά</button></div>';$('#mindAgain').onclick=()=>{S.mind={i:0,res:{}};mStage=0;save();renderMind();};done('mind');return;}
+ const c=CARDS[i];box.innerHTML=dots+'<span class="small muted">Κάρτα '+(i+1)+' από '+CARDS.length+'</span><div class="thought">'+esc(c.t)+'</div>';
+ const p=el('p',null,mStage===0?'<b>1. Πιάσ\' τη:</b> ποια παγίδα είναι;':'<b>2–3. Έλεγξέ τη και άλλαξέ τη:</b> ποια σκέψη είναι πιο δίκαιη και βοηθητική;');box.appendChild(p);
+ const o=el('div',{class:'opts'});const fb=el('div',{class:'fb small'});fb.hidden=true;
+ if(mStage===0){c.o.forEach(k=>{const b=el('button',{class:'opt',type:'button'},TRAPS[k]);b.onclick=()=>{o.querySelectorAll('button').forEach(x=>x.classList.remove('wrong'));if(k===c.trap){b.classList.add('right');fb.hidden=false;fb.innerHTML='<b>Σωστά, '+TRAPS[k]+'.</b> '+TD[k];setTimeout(()=>{mStage=1;renderMind();},reduce?300:1400);}else{b.classList.add('wrong');fb.hidden=false;fb.textContent='Όχι ακριβώς. '+TRAPS[k]+': '+TD[k]+' Δοκίμασε ξανά.';}};o.appendChild(b);});}
+ else{c.alt.forEach((a,j)=>{const b=el('button',{class:'opt',type:'button'},esc(a));b.onclick=()=>{o.querySelectorAll('button').forEach(x=>x.classList.remove('wrong'));if(j===c.ok){b.classList.add('right');S.mind.res[i]=1;save();fb.hidden=false;fb.innerHTML='<b>Αυτή είναι!</b> Δεν είναι «ροζ» σκέψη, είναι πιο ακριβής.';const n=el('button',{class:'btn primary',type:'button'},i+1<CARDS.length?'Επόμενη κάρτα →':'Ολοκλήρωση');n.onclick=()=>{S.mind.i=i+1;mStage=0;save();renderMind();};box.appendChild(n);o.querySelectorAll('button').forEach(x=>x.disabled=true);}else{b.classList.add('wrong');fb.hidden=false;fb.textContent='Αυτή η σκέψη κρατά το άγχος ψηλά ή σε κάνει να αποφεύγεις. Δοκίμασε άλλη.';}};o.appendChild(b);});}
+ box.appendChild(o);box.appendChild(fb);}
+
+/* ---------- 5 TOOLS ---------- */
+function useTool(k){if(!S.tools.includes(k)){S.tools.push(k);save();}$('#toolCount').textContent='Εργαλεία που δοκίμασες: '+S.tools.length+' από 4'+(S.tools.length<2?' (χρειάζονται 2 για τη σφραγίδα)':'');if(S.tools.length>=2)done('tools');}
+function tabs(){const ts=document.querySelectorAll('#toolTabs .tab');ts.forEach(t=>t.onclick=()=>{ts.forEach(x=>{x.setAttribute('aria-selected',String(x===t));document.getElementById(x.getAttribute('aria-controls')).hidden=x!==t;});});}
+/* breathing engine */
+function Breather(ball,txt,num,onCycle){let timer=null,running=false,mode='46',cycles=0;
+ const P={'46':[['Εισπνοή',4,1],['Εκπνοή',6,.6]],'box':[['Εισπνοή',4,1],['Κράτα',4,1],['Εκπνοή',4,.6],['Κράτα',4,.6]]};
+ function run(pi,left){if(!running)return;const ph=P[mode][pi];if(left===ph[1]){ball.style.transitionDuration=reduce?'0s':ph[1]+'s';ball.style.transform='scale('+ph[2]+')';txt.textContent=ph[0];}
+  num.textContent=left;timer=setTimeout(()=>{if(left>1)run(pi,left-1);else{const np=(pi+1)%P[mode].length;if(np===0){cycles++;onCycle&&onCycle(cycles);}run(np,P[mode][np][1]);}},1000);}
+ return{start(){running=true;cycles=0;onCycle&&onCycle(0);run(0,P[mode][0][1]);},stop(){running=false;clearTimeout(timer);ball.style.transitionDuration='1s';ball.style.transform='scale(.6)';txt.textContent='Έτοιμος;';num.textContent='';},set(m){mode=m;},get on(){return running;}};}
+let br;
+function initBreath(){br=Breather($('#ball'),$('#ballTxt'),$('#ballNum'),c=>{$('#breathCycles').textContent='Κύκλοι: '+c;if(c>=3)useTool('breath');});
+ $('#breathStart').onclick=()=>{if(br.on){br.stop();$('#breathStart').textContent='Ξεκίνα';}else{br.start();$('#breathStart').textContent='Σταμάτα';}};
+ document.querySelectorAll('#breathMode button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#breathMode button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));br.set(b.dataset.m);if(br.on){br.stop();br.start();}});}
+const GR=[[5,'πράγματα που <b>βλέπεις</b>','π.χ. το παράθυρο, ένα μπλε στυλό'],[4,'πράγματα που <b>αγγίζεις</b>','π.χ. το θρανίο, το ύφασμα της μπλούζας'],[3,'ήχους που <b>ακούς</b>','π.χ. πουλιά, ένα αυτοκίνητο'],[2,'πράγματα που <b>μυρίζεις</b>','ή δύο αγαπημένες μυρωδιές'],[1,'πράγμα που <b>γεύεσαι</b>','ή μια γεύση που σου αρέσει']];
+let gi=0;
+function renderGround(){const p=$('#p-ground');if(gi>=GR.length){p.innerHTML='<div class="card soft stack" style="text-align:center"><h3>Είσαι εδώ, τώρα.</h3><p class="small">Η γείωση τραβά την προσοχή από τις σκέψεις του άγχους στις αισθήσεις σου.</p></div><div class="row" style="justify-content:center"><button class="btn" type="button" id="gAgain">Ξανά</button></div>';$('#gAgain').onclick=()=>{gi=0;renderGround();};useTool('ground');return;}
+ const g=GR[gi];p.innerHTML='<p class="prose">Κοίτα γύρω σου. Δεν χρειάζεται να γράψεις, αρκεί να τα παρατηρήσεις.</p><div class="card soft stack" style="text-align:center"><div style="font-family:var(--font-d);font-size:3rem;line-height:1;color:var(--accent)">'+g[0]+'</div><h3>'+g[1]+'</h3><input type="text" id="gIn" aria-label="Σημειώσεις" placeholder="'+g[2]+'"></div><div class="row" style="justify-content:center"><button class="btn primary" type="button" id="gNext">'+(gi<4?'Επόμενο':'Τέλος')+'</button></div>';$('#gNext').onclick=()=>{gi++;renderGround();};}
+const PMR=[['Χέρια','Σφίξε τις γροθιές σου δυνατά.'],['Μπράτσα','Λύγισε τους αγκώνες και σφίξε τους δικέφαλους.'],['Ώμοι','Ανέβασε τους ώμους μέχρι τα αυτιά.'],['Πρόσωπο','Σφίξε τα μάτια και τα χείλη.'],['Κοιλιά','Σφίξε την κοιλιά σαν να περιμένεις χτύπημα.'],['Πόδια','Τέντωσε τα πόδια και τράβα τα δάχτυλα προς τα πάνω.']];
+let pmrT=null;
+function initPMR(){$('#pmrStart').onclick=()=>{if(pmrT){clearTimeout(pmrT);pmrT=null;$('#pmrStart').textContent='Ξεκίνα';$('#pmrPart').textContent='Σταμάτησε';return;}$('#pmrStart').textContent='Σταμάτα';let i=0,phase=0,t=0;const total=PMR.length*13;let el2=0;
+ const tick=()=>{const [n,d]=PMR[i];const lim=phase===0?5:8;$('#pmrPart').textContent=n+' · '+(phase===0?'σφίξε':'χαλάρωσε')+' '+(lim-t);$('#pmrDo').textContent=phase===0?d:'Άφησέ τα να χαλαρώσουν. Νιώσε τη διαφορά.';$('#pmrBar').style.width=(el2/total*100)+'%';t++;el2++;
+  if(t>=lim){t=0;if(phase===0)phase=1;else{phase=0;i++;}}
+  if(i>=PMR.length){$('#pmrPart').textContent='Μπράβο!';$('#pmrDo').textContent='Πώς νιώθει το σώμα σου τώρα;';$('#pmrBar').style.width='100%';$('#pmrStart').textContent='Ξανά';pmrT=null;useTool('pmr');return;}
+  pmrT=setTimeout(tick,1000);};tick();};}
+const ANCH=['Μέτρα αργά μέχρι το 10.','Πάρε μια βαθιά αναπνοή με μακριά εκπνοή.','Άλλαξε θέση στο σώμα σου. Κάθισε πίσω στην καρέκλα.','Φαντάσου μια όμορφη εικόνα: ένα μέρος όπου νιώθεις ασφαλής.','«Μην το παίρνεις προσωπικά.»','«Ο κάθε άνθρωπος έχει δικαίωμα στη δική του άποψη.»','«Άσ\' το να φύγει.»','«Υπάρχουν λύσεις.»','«Αυτό δεν είναι δικό μου πρόβλημα.»','«Το έχω ξαναπεράσει. Θα το περάσω και τώρα.»'];
+function renderAnchors(){const b=$('#anchors');b.innerHTML='';ANCH.forEach(a=>{const on=S.anchors.includes(a);const r=el('div',{class:'anchor'});r.appendChild(el('span',null,esc(a)));const btn=el('button',{class:'btn'+(on?' primary':''),type:'button','aria-pressed':String(on)},on?'Καρφιτσωμένο':'Καρφίτσωσε');btn.onclick=()=>{const i=S.anchors.indexOf(a);if(i>-1)S.anchors.splice(i,1);else S.anchors.push(a);save();if(S.anchors.length)useTool('anchor');renderAnchors();};r.appendChild(btn);b.appendChild(r);});}
+
+/* ---------- 6 PROBLEM ---------- */
+const CTRL=[['Πόσες ώρες διαβάζω',1],['Ποια θέματα θα πέσουν στο διαγώνισμα',0],['Αν θα ζητήσω βοήθεια',1],['Τι σκέφτονται οι άλλοι για μένα',0],['Πόσο κοιμάμαι πριν από το διαγώνισμα',1],['Ο καιρός την ημέρα της εκδρομής',0],['Πώς μιλάω στον εαυτό μου',1],['Αν ο φίλος μου θα απαντήσει στο μήνυμα',0]];
+function renderControl(){const b=$('#controlSort');b.innerHTML='';CTRL.forEach((c,i)=>{const r=el('div',{class:'sort'});r.appendChild(el('span',null,esc(c[0])));const o=el('div',{class:'opts'});
+ [[1,'Στον έλεγχό μου'],[0,'Εκτός ελέγχου']].forEach(([v,l])=>{const bt=el('button',{class:'opt',type:'button'},l);if(S.control[i]!=null&&S.control[i]===v)bt.classList.add(v===c[1]?'right':'wrong');bt.onclick=()=>{S.control[i]=v;save();renderControl();};o.appendChild(bt);});r.appendChild(o);b.appendChild(r);});
+ const n=Object.keys(S.control).length,ok=CTRL.filter((c,i)=>S.control[i]===c[1]).length;$('#controlFb').textContent=n<CTRL.length?'Ταξινόμησες '+n+' από 8.':ok+' από 8 σωστά. Η ενέργειά σου πάει καλύτερα σε ό,τι είναι στον έλεγχό σου. Για τα υπόλοιπα, δοκίμασε μια φράση-άγκυρα: «Άσ\' το να φύγει».';}
+const PS=[
+ {k:'what',l:'Τι ακριβώς με αγχώνει;',h:'Γράψ\' το συγκεκριμένα. Όχι «το σχολείο», αλλά «το διαγώνισμα Χημείας την Πέμπτη».'},
+ {k:'mine',l:'Ποιο κομμάτι είναι στον έλεγχό μου;',h:'π.χ. πόσο και πώς θα διαβάσω, αν θα ρωτήσω τον καθηγητή, πότε θα κοιμηθώ.'},
+ {k:'ideas',l:'Τρεις (ή περισσότερες) πιθανές λύσεις',h:'Γράψε ό,τι σου έρθει, ακόμα και αστείο. Τώρα δεν κρίνουμε.'},
+ {k:'first',l:'Διαλέγω μία λύση. Ποιο είναι το πρώτο μικρό βήμα; Πότε και πού;',h:'π.χ. «Σήμερα στις 6 θα λύσω 3 ασκήσεις από το κεφάλαιο 2 στο γραφείο μου».'},
+ {k:'who',l:'Ποιος μπορεί να με βοηθήσει;',h:'Ένας φίλος, ο καθηγητής, ένας γονιός, ο/η Καθηγητής/τρια ΣΕΑ.'}
+];
+function renderProb(){const st=S.prob.step||0;$('#probSteps').innerHTML=PS.map((p,i)=>'<span class="'+(i<=st?'on':'')+'">'+(i+1)+'</span>').join('')+'<span class="'+(st>=PS.length?'on':'')+'">Σχέδιο</span>';
+ const body=$('#probBody');
+ if(st>=PS.length){body.innerHTML='<h3>Το σχέδιο δράσης μου</h3>'+PS.map(p=>'<div><b class="small">'+p.l+'</b><p>'+(esc(S.prob[p.k])||'<span class="muted">—</span>')+'</p></div>').join('')+'<p class="fb small">Μετά το πρώτο βήμα, ρώτα τον εαυτό σου: δούλεψε; Αν ναι, κάνε περισσότερο από αυτό. Αν όχι, δοκίμασε την επόμενη ιδέα.</p>';$('#probNext').textContent='Από την αρχή';$('#probPrev').disabled=false;done('problem');return;}
+ const p=PS[st];body.innerHTML='<div class="field"><label for="probIn">'+(st+1)+'. '+p.l+'</label><p class="small muted">'+p.h+'</p><textarea id="probIn"></textarea></div>';const ta=$('#probIn');ta.value=S.prob[p.k]||'';ta.oninput=()=>{S.prob[p.k]=ta.value;save();};
+ $('#probPrev').disabled=st===0;$('#probNext').textContent=st===PS.length-1?'Δες το σχέδιο →':'Επόμενο →';}
+function initProb(){$('#probNext').onclick=()=>{const st=S.prob.step||0;if(st>=PS.length){S.prob.step=0;save();renderProb();return;}if(!(S.prob[PS[st].k]||'').trim()){toast('Γράψε κάτι, έστω λίγες λέξεις.');return;}S.prob.step=st+1;save();renderProb();};
+ $('#probPrev').onclick=()=>{S.prob.step=Math.max(0,(S.prob.step||0)-1);save();renderProb();};}
+
+/* ---------- 7 STRENGTHS ---------- */
+const STR=['Επιμονή','Χιούμορ','Φροντίζω τους άλλους','Δημιουργικότητα','Οργάνωση','Θάρρος','Ευγένεια','Περιέργεια','Ομαδικότητα','Ειλικρίνεια','Ακούω τους άλλους','Αθλητικότητα','Μουσικότητα','Υπευθυνότητα','Υπομονή','Δικαιοσύνη','Αισιοδοξία','Πρακτικό μυαλό'];
+function checkStr(){if(S.scale&&S.exc.trim()&&S.str.length>=3)done('strengths');}
+function renderStr(){buildThermo($('#scale'),n=>{S.scale=n;save();$('#scaleWhyLbl').textContent='Τι κάνει να είσαι στο '+n+' και όχι πιο χαμηλά;';$('#scaleUpLbl').textContent='Πώς θα φαινόταν το '+(Math.min(10,n+0.5)).toString().replace('.',',')+'; Τι θα κάνεις διαφορετικά;';checkStr();},S.scale);
+ if(S.scale){$('#scaleWhyLbl').textContent='Τι κάνει να είσαι στο '+S.scale+' και όχι πιο χαμηλά;';}
+ [['scaleWhy','scaleWhy'],['scaleUp','scaleUp'],['exc','exc'],['miracle','miracle']].forEach(([id,k])=>{const t=document.getElementById(id);t.value=S[k]||'';t.oninput=()=>{S[k]=t.value;save();checkStr();};});
+ const b=$('#strengthOpts');b.innerHTML='';STR.forEach(s=>{const on=S.str.includes(s);const bt=el('button',{class:'opt',type:'button','aria-pressed':String(on)},esc(s));bt.onclick=()=>{const i=S.str.indexOf(s);if(i>-1)S.str.splice(i,1);else S.str.push(s);bt.setAttribute('aria-pressed',String(i===-1));save();checkStr();};b.appendChild(bt);});}
+
+/* ---------- 8 LIFE ---------- */
+const LQ=[
+ {k:'sleep',q:'Ύπνος',o:['Λιγότερο από 6 ώρες','6–7 ώρες','7–8 ώρες','8+ ώρες'],tip:['Οι έφηβοι χρειάζονται 8–10 ώρες. Ο κουρασμένος εγκέφαλος βλέπει πιο εύκολα απειλές.','','','Τέλεια, ο ύπνος είναι το πιο δυνατό φάρμακο κατά του άγχους.']},
+ {k:'move',q:'Κίνηση (που ιδρώνεις λίγο)',o:['Καθόλου','1 φορά','2–3 φορές','4+ φορές'],tip:['Ακόμα και 20 λεπτά περπάτημα «καίνε» την αδρεναλίνη του άγχους.','','','']},
+ {k:'food',q:'Κανονικά γεύματα, μαζί και πρωινό',o:['Σχεδόν ποτέ','Μερικές μέρες','Τις περισσότερες','Κάθε μέρα'],tip:['Όταν πεινάμε, το σώμα νιώθει σαν σε συναγερμό. Ένα απλό πρωινό βοηθά.','','','']},
+ {k:'screen',q:'Οθόνη την τελευταία ώρα πριν τον ύπνο',o:['Πάντα','Συχνά','Μερικές φορές','Σχεδόν ποτέ'],tip:['Τα social το βράδυ κρατούν το μυαλό σε επιφυλακή και κόβουν ύπνο.','','','']},
+ {k:'people',q:'Χρόνος με ανθρώπους που με κάνουν να νιώθω καλά',o:['Καθόλου','Λίγο','Αρκετό','Πολύ'],tip:['Η παρέα και το «ανήκω» προστατεύουν από το άγχος. Ένα μήνυμα σε έναν φίλο είναι αρχή.','','','']}
+];
+function renderLife(){const b=$('#lifeQs');b.innerHTML='';LQ.forEach(q=>{const r=el('div',{class:'stack',style:'gap:6px'});r.appendChild(el('b',null,q.q));const sg=el('div',{class:'seg',role:'group','aria-label':q.q});const tip=el('p',{class:'small muted'});
+ q.o.forEach((o,i)=>{const bt=el('button',{type:'button','aria-pressed':String(S.life[q.k]===i)},o);bt.onclick=()=>{S.life[q.k]=i;save();renderLife();};sg.appendChild(bt);});
+ if(S.life[q.k]!=null&&q.tip[S.life[q.k]])tip.textContent=q.tip[S.life[q.k]];r.appendChild(sg);r.appendChild(tip);b.appendChild(r);});
+ const ans=LQ.filter(q=>S.life[q.k]!=null);const pct=ans.length?Math.round(ans.reduce((a,q)=>a+S.life[q.k],0)/(ans.length*3)*100):0;
+ $('#batFill').style.width=Math.max(pct,4)+'%';$('#batFill').style.background=pct<35?'var(--bad)':pct<65?'var(--warn)':'var(--good)';$('#batPct').textContent=ans.length?pct+'%':'—';
+ const g=$('#lifeGoal');g.value=S.goal;g.oninput=()=>{S.goal=g.value;save();checkLife();};checkLife();}
+function checkLife(){if(LQ.every(q=>S.life[q.k]!=null)&&S.goal.trim().length>3)done('life');}
+
+/* ---------- 9 EXAM ---------- */
+const EX=[
+ ['Την εβδομάδα πριν',['Χωρίζω την ύλη σε μικρά κομμάτια ανά μέρα','Λύνω παλιά θέματα σε χρόνο εξέτασης','Διαβάζω με διαλείμματα (25 λεπτά διάβασμα, 5 ξεκούραση)','Εξηγώ την ύλη σε κάποιον άλλον']],
+ ['Το βράδυ πριν',['Ετοιμάζω τσάντα, στυλό, ταυτότητα','Σταματώ το διάβασμα μία ώρα πριν τον ύπνο','Αφήνω το κινητό έξω από το δωμάτιο']],
+ ['Το πρωί',['Τρώω πρωινό, έστω κάτι μικρό','Δύο λεπτά αναπνοή 4-6','Λέω στον εαυτό μου: «Έχω προετοιμαστεί όσο μπορούσα»','Δεν μπαίνω σε συζητήσεις «τι διάβασες εσύ;» πριν την αίθουσα']],
+ ['Μέσα στην αίθουσα',['Διαβάζω όλα τα θέματα και ξεκινώ από το πιο εύκολο','Μοιράζω τον χρόνο μου','Αν κολλήσω, προχωρώ και επιστρέφω μετά']],
+ ['Μετά',['Δεν κάνω «νεκροψία» με τους συμμαθητές','Κάνω κάτι ευχάριστο','Γράφω τι πήγε καλά και τι θα αλλάξω']]
+];
+function renderExam(){const b=$('#examList');b.innerHTML='';EX.forEach((g,gi)=>{const c=el('div',{class:'card stack'});c.appendChild(el('h3',null,g[0]));g[1].forEach((t,ti)=>{const id='ex'+gi+'_'+ti;const lab=el('label',{style:'display:flex;gap:10px;align-items:flex-start;font-weight:400;cursor:pointer'});const cb=el('input',{type:'checkbox',id:id,style:'width:20px;height:20px;margin-top:3px;accent-color:var(--accent)'});cb.checked=S.exam.includes(id);cb.onchange=()=>{const i=S.exam.indexOf(id);if(cb.checked&&i===-1)S.exam.push(id);if(!cb.checked&&i>-1)S.exam.splice(i,1);save();if(S.exam.length>=5)done('exam');};lab.appendChild(cb);lab.appendChild(el('span',null,esc(t)));c.appendChild(lab);});b.appendChild(c);});}
+function examText(){const out=[];EX.forEach((g,gi)=>g[1].forEach((t,ti)=>{if(S.exam.includes('ex'+gi+'_'+ti))out.push(t);}));return out;}
+
+/* ---------- 10 HELP ---------- */
+const HQ=[['Αγχώνομαι το βράδυ πριν από μια παρουσίαση.',0,'Φυσιολογικό. Το άγχος σε ετοιμάζει για κάτι σημαντικό και περνά μετά.'],
+ ['Εδώ και εβδομάδες δεν κοιμάμαι καλά και βρίσκω τρόπους να μην έρχομαι στο σχολείο.',1,'Όταν το άγχος κρατά εβδομάδες και σε κάνει να αποφεύγεις, είναι ώρα να μιλήσεις σε κάποιον.'],
+ ['Νιώθω φτερούγισμα στο στομάχι πριν από τον αγώνα.',0,'Φυσιολογικό. Είναι η ενέργεια που χρειάζεσαι για να παίξεις.'],
+ ['Το άγχος δεν φεύγει σχεδόν ποτέ και με εμποδίζει να κάνω πράγματα που αγαπώ.',1,'Αυτό είναι σήμα να μιλήσεις. Δεν χρειάζεται να το κουβαλάς μόνος/η.'],
+ ['Οι ίδιες ανησυχίες γυρίζουν συνέχεια στο μυαλό μου και δεν μπορώ να τις σταματήσω.',1,'Όταν οι σκέψεις κολλάνε και επαναλαμβάνονται, ένας ειδικός μπορεί να σε βοηθήσει να ξεκολλήσουν.'],
+ ['Αγχώθηκα πολύ όταν μάλωσα με έναν φίλο, αλλά σε λίγες ώρες ηρέμησα.',0,'Φυσιολογικό. Το άγχος ανέβηκε και κατέβηκε, όπως πρέπει.']];
+function renderHelp(){const b=$('#helpQuiz');b.innerHTML='';HQ.forEach((q,i)=>{const d=el('div',{class:'scen'});d.appendChild(el('p',null,esc(q[0])));const o=el('div',{class:'opts'});const fb=el('div',{class:'fb small'});fb.hidden=S.quiz[i]==null;
+ [[0,'Καθημερινό άγχος'],[1,'Σήμα να μιλήσω σε κάποιον']].forEach(([v,l])=>{const bt=el('button',{class:'opt',type:'button'},l);if(S.quiz[i]===v)bt.classList.add(v===q[1]?'right':'wrong');if(S.quiz[i]!=null&&v===q[1])bt.classList.add('right');bt.onclick=()=>{S.quiz[i]=v;save();renderHelp();if(Object.keys(S.quiz).length===HQ.length)done('help');};o.appendChild(bt);});
+ if(S.quiz[i]!=null)fb.textContent=q[2];d.appendChild(o);d.appendChild(fb);b.appendChild(d);});
+ const t=$('#trusted');t.value=S.trusted;t.oninput=()=>{S.trusted=t.value;save();};}
+
+/* ---------- JOURNAL ---------- */
+let jl=null;
+function renderJournal(){buildThermo($('#jLvl'),n=>{jl=n;},jl);const L=$('#jList');if(!S.journal.length){L.innerHTML='<p class="muted small">Δεν υπάρχουν ακόμα καταγραφές. Παράδειγμα: «Δευτέρα, πριν το τεστ Μαθηματικών · 7/10 · καρδιοχτύπι · "θα τα ξεχάσω όλα" · έκανα 3 αναπνοές · την επόμενη φορά θα λύσω μια άσκηση το πρωί».</p>';return;}
+ L.innerHTML='';S.journal.slice().reverse().forEach(e=>{const d=el('div',{class:'entry'});const dt=new Date(e.t);d.innerHTML='<div class="row" style="justify-content:space-between"><b>'+dt.toLocaleDateString('el-GR',{weekday:'long',day:'numeric',month:'long'})+'</b>'+(e.l?'<span class="chip">'+e.l+'/10</span>':'')+'</div><p>'+esc(e.what)+'</p>'+[['Σώμα',e.body],['Σκέψη',e.thought],['Το χειρίστηκα',e.did],['Θα δοκιμάσω',e.next]].filter(x=>x[1]).map(x=>'<p class="small"><b>'+x[0]+':</b> '+esc(x[1])+'</p>').join('');const del=el('button',{class:'btn ghost small',type:'button',style:'align-self:flex-start;padding:4px 10px'},'Διαγραφή');del.onclick=()=>{S.journal=S.journal.filter(x=>x.t!==e.t);save();renderJournal();};d.appendChild(del);L.appendChild(d);});}
+function initJournal(){$('#jForm').addEventListener('submit',ev=>{ev.preventDefault();const w=$('#jWhat').value.trim();if(!w)return;S.journal.push({t:Date.now(),what:w,l:jl,body:$('#jBody').value.trim(),thought:$('#jThought').value.trim(),did:$('#jDid').value.trim(),next:$('#jNext').value.trim()});save();ev.target.reset();jl=null;toast('Η καταγραφή αποθηκεύτηκε.');renderJournal();});}
+
+/* ---------- PLAN ---------- */
+function planData(){return[
+ ['Τα σήματα του σώματός μου',S.sym],
+ ['Η σκέψη που με αγχώνει και η πιο δίκαιη εκδοχή',[S.myT&&('Παλιά: '+S.myT),S.myNT&&('Νέα: '+S.myNT)].filter(Boolean)],
+ ['Τα εργαλεία ηρεμίας μου',S.tools.map(k=>({breath:'Αναπνοή',ground:'Γείωση 5-4-3-2-1',pmr:'Σφίγγω-χαλαρώνω',anchor:'Φράσεις-άγκυρες'}[k])).concat(S.anchors)],
+ ['Το πρόβλημα και το πρώτο μου βήμα',[S.prob.what&&('Πρόβλημα: '+S.prob.what),S.prob.mine&&('Στον έλεγχό μου: '+S.prob.mine),S.prob.first&&('Πρώτο βήμα: '+S.prob.first),S.prob.who&&('Βοήθεια από: '+S.prob.who)].filter(Boolean)],
+ ['Οι δυνάμεις μου',S.str.concat(S.scale?['Κλίμακα σήμερα: '+S.scale+'/10']:[],S.exc?['Εξαίρεση: '+S.exc]:[])],
+ ['Ο στόχος της εβδομάδας',S.goal?[S.goal]:[]],
+ ['Πριν το διαγώνισμα θα…',examText()],
+ ['Οι άνθρωποι που εμπιστεύομαι',(S.trusted?[S.trusted]:[]).concat(['1466 Hope For Children (24ωρο)','116 111 γραμμή για εφήβους','112 σε κίνδυνο'])]
+];}
+function renderPlan(){const g=$('#planGrid');g.innerHTML=planData().map(([t,items])=>'<div class="card stack"><h3>'+t+'</h3>'+(items.length?'<ul style="margin:0;padding-left:20px" class="stack small">'+items.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul>':'<p class="small muted">Συμπληρώνεται από τους σταθμούς.</p>')+'</div>').join('');}
+function initPlan(){$('#copyPlan').onclick=async()=>{const txt='ΤΟ ΣΧΕΔΙΟ ΜΟΥ ΓΙΑ ΤΟ ΑΓΧΟΣ (Ανάσα)\n\n'+planData().map(([t,i])=>t+':\n'+(i.length?i.map(x=>'- '+x).join('\n'):'-')).join('\n\n');try{await navigator.clipboard.writeText(txt);$('#copyFb').textContent='Αντιγράφηκε.';}catch(e){const ta=$('#planText');ta.hidden=false;ta.value=txt;ta.focus();ta.select();$('#copyFb').textContent='Επίλεξε το κείμενο παρακάτω και αντέγραψέ το.';}};
+ $('#wipe').onclick=()=>{$('#wipeYes').hidden=false;};$('#wipeYes').onclick=()=>{S=def();save();try{localStorage.removeItem(KEY);}catch(e){}$('#wipeYes').hidden=true;toast('Όλα σβήστηκαν.');location.hash='#home';rerender('home');};}
+
+/* ---------- WORLD ---------- */
+const WORLD=[
+ ['Ελλάδα','Εργαστήρια Δεξιοτήτων «Ζω καλύτερα – Ευ Ζην»','Θεματική για την ψυχική και συναισθηματική υγεία, από το Νηπιαγωγείο ως το Γυμνάσιο, με έτοιμα προγράμματα του ΙΕΠ. Δραστηριότητες όπως «το κουτί των αποθεμάτων» βοηθούν τους μαθητές να ονομάσουν ό,τι τους αγχώνει και να βρουν δυνάμεις και λύσεις.','Σταθμοί 6 και 7: ονομάζω το πρόβλημα, βρίσκω δυνάμεις.'],
+ ['Κύπρος · Ισπανία · Δανία · Φινλανδία','Spotlighters και RemixED (Erasmus+)','Μαθήματα για την «επιστήμη του στρες»: σύστημα επιβίωσης, αισθήσεις άγχους, στρες και απόδοση, τρόποι σκέψης για το στρες, τρόπος ζωής. Το RemixED το προσάρμοσε για σχολεία με τον Καθολικό Σχεδιασμό για τη Μάθηση, και εφαρμόστηκε και στο Λύκειο Αρχαγγέλου.','Σταθμοί 1, 2, 3 και η αρχή UDL σε όλη την εφαρμογή.'],
+ ['Αγγλία','FRIENDS for Life · Clear Fear for Schools','Το FRIENDS είναι πρόγραμμα 10 εβδομάδων βασισμένο στη γνωσιακή-συμπεριφορική προσέγγιση, που αναγνωρίστηκε από τον ΠΟΥ. Μαθαίνει στα παιδιά να αναγνωρίζουν συναισθήματα, να χαλαρώνουν και να εντοπίζουν μη βοηθητικές σκέψεις. Το Clear Fear της stem4 μεταφέρει τις ίδιες ιδέες σε ψηφιακή μορφή για όλο το σχολείο.','Σταθμοί 4 και 5: σκέψεις-παγίδες, χαλάρωση.'],
+ ['Γερμανία','SNAKE «Stress nicht als Katastrophe empfinden» · LessStress','Πρόγραμμα για τις τάξεις 7–9, με βασική ενότητα επίλυσης προβλημάτων και επιπλέον ενότητες για σκέψεις, κοινωνική στήριξη, χαλάρωση και διαχείριση χρόνου. Το LessStress δοκιμάζει μια πολύ σύντομη, 90λεπτη εκδοχή με ρύθμιση συναισθημάτων, ενσυνειδητότητα και αυτοσυμπόνια.','Σταθμός 6: λύνω το πρόβλημα βήμα βήμα.'],
+ ['Δανία','Healthy High School','Μεγάλη τυχαιοποιημένη μελέτη σε λύκεια με εκπαιδευτικό υλικό, εφαρμογή κινητού, αλλαγές στο σχολικό περιβάλλον και εργαστήρια από μαθητές, με έμφαση σε άγχος, ύπνο, κίνηση, γεύματα και αίσθημα του «ανήκω». Μετά από 9 μήνες δεν βρέθηκε μετρήσιμη διαφορά στο άγχος, άρα ο τρόπος ζωής χρειάζεται να συνδυάζεται με δεξιότητες.','Σταθμός 8: η μπαταρία μου, μαζί με τους άλλους σταθμούς.'],
+ ['Σουηδία','DISA','Πρόγραμμα 10 εβδομαδιαίων ομαδικών συναντήσεων για μαθητές 13–15 ετών, βασισμένο στη γνωσιακή-συμπεριφορική προσέγγιση. Οι μαθητές είπαν ότι έμαθαν να κατευθύνουν τις σκέψεις τους, απέκτησαν αυτοπεποίθηση, διαχειρίζονταν καλύτερα το άγχος και έκαναν περισσότερες ευχάριστες δραστηριότητες.','Σταθμοί 4 και 8: σκέψεις και ευχάριστες δραστηριότητες.'],
+ ['Ισπανία','Super Skills for Life · UP-A','Διαγνωστικά «ευρύ» πρόγραμμα πρόληψης για άγχος και κατάθλιψη, με γνωσιακές-συμπεριφορικές τεχνικές και βίντεο-ανατροφοδότηση για την κοινωνική έκθεση. Υπάρχει και πολυμεσική εκδοχή που κάνουν τα παιδιά μόνα τους.','Η ίδια η «Ανάσα»: αυτοκαθοδηγούμενη, με άμεση ανατροφοδότηση.'],
+ ['Ιταλία','Πρόγραμμα Gaia · MINDhEARTH','Το Gaia είναι 12 εβδομάδες ενσυνειδητότητας για επίγνωση του σώματος, των συναισθημάτων και της σύνδεσης με τη φύση, για εφήβους γύρω στα 14. Το MINDhEARTH συνδυάζει ενσυνειδητότητα με δραστηριότητες στη φύση σε λύκεια.','Σταθμός 5: γείωση 5-4-3-2-1 και «φαντάσου μια όμορφη εικόνα».'],
+ ['Ιαπωνία','Mindfulness and Awareness Program (MAP)','Οκτώ σύντομες συναντήσεις των 20 λεπτών από τον σχολικό σύμβουλο για μαθητές 12–13 ετών. Βελτίωσε τη ρύθμιση συναισθημάτων και μείωσε το άγχος, με το όφελος να μεγαλώνει στη μέτρηση παρακολούθησης. Νεότερα ιαπωνικά προγράμματα προσθέτουν ενότητα για το πώς ζητάμε βοήθεια.','Σύντομες, συχνές ασκήσεις και σταθμός 10.'],
+ ['Σιγκαπούρη','Αγωγή Ψυχικής Υγείας στο CCE','Μαθήματα για όλες τις τάξεις: διάκριση στρες και «δυσφορίας», αντιμετώπιση αυτόματων αρνητικών σκέψεων («Stamping out ANTs»), ρύθμιση συναισθημάτων, αναζήτηση βοήθειας. Κάθε σχολείο έχει δομή στήριξης από συνομηλίκους και τακτικά check-in ευεξίας.','Θερμόμετρο check-in, σταθμός 4 και 10 (στηρίζω φίλο).']
+];
+function renderWorld(){$('#worldGrid').innerHTML=WORLD.map(w=>'<div class="card country"><span class="tag">'+w[0]+'</span><h3>'+w[1]+'</h3><p class="small">'+w[2]+'</p><p class="used"><b>Στην Ανάσα:</b> '+w[3]+'</p></div>').join('');}
+
+/* ---------- SOS ---------- */
+let sosBr;
+function initSOS(){sosBr=Breather($('#sosBall'),$('#sosTxt'),$('#sosNum'),c=>{const msgs=['Μετά από λίγες ανάσες: βρες με το βλέμμα <b>5 πράγματα</b> γύρω σου που είναι μπλε ή πράσινα.','Τώρα νιώσε <b>τα πόδια σου</b> να πατούν στο πάτωμα.','Πες μέσα σου: <b>«Είναι άγχος. Θα περάσει. Είμαι ασφαλής.»</b>','Άκουσε <b>3 ήχους</b> γύρω σου.'];$('#sosGround').innerHTML=msgs[c%msgs.length];});
+ $('#sosBtn').onclick=()=>{$('#sos').hidden=false;sosBr.start();$('#sosClose').focus();};
+ const close=()=>{$('#sos').hidden=true;sosBr.stop();$('#sosBtn').focus();};
+ $('#sosClose').onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sos').hidden)close();});}
+
+/* ---------- ROUTER ---------- */
+function rerender(v){
+ if(v==='home')renderHome();else if(v==='alarm')renderAlarm();else if(v==='body')renderBody();else if(v==='curve')renderCurve();else if(v==='mind'){renderMind();$('#myThought').value=S.myT;$('#myNewThought').value=S.myNT;}
+ else if(v==='tools'){renderAnchors();renderGround();useToolLabel();}else if(v==='problem'){renderControl();renderProb();}else if(v==='strengths')renderStr();else if(v==='life')renderLife();else if(v==='exam')renderExam();else if(v==='help')renderHelp();
+ else if(v==='journal')renderJournal();else if(v==='plan')renderPlan();else if(v==='world')renderWorld();}
+function useToolLabel(){$('#toolCount').textContent='Εργαλεία που δοκίμασες: '+S.tools.length+' από 4'+(S.tools.length<2?' (χρειάζονται 2 για τη σφραγίδα)':'');}
+function route(){let v=(location.hash||'#home').slice(1);if(!VIEWS.includes(v))v='home';document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);if(br&&br.on&&v!=='tools'){br.stop();$('#breathStart').textContent='Ξεκίνα';}rerender(v);window.scrollTo(0,0);}
+
+/* init */
+$('#myThought').oninput=e=>{S.myT=e.target.value;save();};$('#myNewThought').oninput=e=>{S.myNT=e.target.value;save();};
+$('#curveRange').oninput=updCurve;
+tabs();initBreath();initPMR();initProb();initJournal();initPlan();initSOS();renderProgress();
+window.addEventListener('hashchange',route);route();
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 // Εργαλειοθήκη: αποθηκεύει τις σελίδες που έχουν ανοιχτεί, ώστε να ανοίγουν και χωρίς internet.
 // Πάντα δοκιμάζει πρώτα το δίκτυο, για να φαίνονται αμέσως οι νέες εκδόσεις.
-const CACHE = 'ergaleiothiki-v1';
+const CACHE = 'ergaleiothiki-v2';
 self.addEventListener('install', e => { self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
 self.addEventListener('fetch', e => {
