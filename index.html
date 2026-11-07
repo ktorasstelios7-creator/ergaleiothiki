@@ -1,5 +1,18 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Σύγχρονη Εργαλειοθήκη</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Commissioner:wght@400;500;600&display=swap">
 <style>
 /* Layout: τρεις «διάδρομοι» (ενότητες), ο καθένας με το δικό του χρώμα-ταμπέλα, και οι «πόρτες» των εργαλείων σε πλέγμα */
@@ -58,13 +71,31 @@ footer{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-wrap:
 footer strong{color:var(--ink);font-weight:600}
 @media (prefers-reduced-motion:reduce){.door,.go::after{transition:none}.door:hover{transform:none}}
 </style>
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+header.brand{display:flex;flex-direction:row;gap:26px;align-items:center}
+.brand img{width:132px;height:132px;flex:0 0 auto}
+.brand .txt{display:flex;flex-direction:column;gap:14px}
+header{max-width:900px}
+@media (max-width:640px){header.brand{flex-direction:column;align-items:flex-start}.brand img{width:104px;height:104px}}
+.install{display:none;border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:12px 16px;font-size:14.5px;color:var(--muted);gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.install.on{display:flex}
+.install b{color:var(--ink)}
+.install button{font:inherit;border:1px solid var(--line);background:transparent;border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--ink)}
+</style>
+</head>
+<body>
+
 
 <div class="wrap">
-  <header>
-    <div class="eyebrow">ΣΥΜΒΟΥΛΕΥΤΙΚΗ &amp; ΕΠΑΓΓΕΛΜΑΤΙΚΗ ΑΓΩΓΗ</div>
+  <header class="brand">
+    <img src="icons/logo.png" alt="Λογότυπο: Εργαλειοθήκη για εκπαιδευτικούς και μαθητές" width="132" height="132">
+    <div class="txt"><div class="eyebrow">ΣΥΜΒΟΥΛΕΥΤΙΚΗ &amp; ΕΠΑΓΓΕΛΜΑΤΙΚΗ ΑΓΩΓΗ</div>
     <h1>Σύγχρονη Εργαλειοθήκη για εκπαιδευτικούς και μαθητές</h1>
-    <p class="lede">Διαδραστικά εργαλεία, οδηγοί και παρουσιάσεις για την επαγγελματική αγωγή, το σχολικό κλίμα και τη στήριξη του εκπαιδευτικού στην τάξη.</p>
+    <p class="lede">Διαδραστικά εργαλεία, οδηγοί και παρουσιάσεις για την επαγγελματική αγωγή, το σχολικό κλίμα και τη στήριξη του εκπαιδευτικού στην τάξη.</p></div>
   </header>
+  <div class="install" id="install"><span><b>Βάλ' το στην αρχική οθόνη:</b> <span id="installHow"></span></span><button type="button" id="installX">Κλείσιμο</button></div>
 
   <div class="bar">
     <div class="filters" role="group" aria-label="Φίλτρο κοινού">
@@ -92,14 +123,14 @@ footer strong{color:var(--ink);font-weight:600}
           <p>Οι επιλογές μαθημάτων και κατευθύνσεων για τη Β΄ και Γ΄ Λυκείου και πώς συνδέονται με τις σπουδές που ονειρεύεσαι.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Α΄ Λυκείου</span></div>
           <span class="go">Άνοιγμα</span></div></a>
-      <a class="door" data-a="st" href="proorismos/" target="_blank" rel="noopener">
+      <a class="door" data-a="st" href="proorismos/">
         <div class="plate"><span>Γ΄ ΛΥΚΕΙΟΥ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div>
         <div class="inner"><h3>Ο προορισμός σου</h3>
           <div class="sub">Διαδραστικό εργαλείο</div>
           <p>Οδηγός για τις Παγκύπριες Εξετάσεις Πρόσβασης: πώς λειτουργούν, πώς επιλέγεις σχολές και πώς οργανώνεις τη χρονιά.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Γ΄ Λυκείου</span></div>
           <span class="go">Άνοιγμα</span></div></a>
-      <a class="door" data-a="st te" href="anakefalaiosi/" target="_blank" rel="noopener">
+      <a class="door" data-a="st te" href="anakefalaiosi/">
         <div class="plate"><span>ΕΠΑΝΑΛΗΨΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg></div>
         <div class="inner"><h3>Ανακεφαλαίωση: η διεργασία της Επαγγελματικής Αγωγής</h3>
           <div class="sub">Διαδραστικό εργαλείο</div>
@@ -113,20 +144,20 @@ footer strong{color:var(--ink);font-weight:600}
   <section class="zone z2" id="climate">
     <div class="zhead"><h2>Σχολικό κλίμα</h2><p>Πρόληψη του εκφοβισμού, επίλυση συγκρούσεων και ένταξη στην παρέα.</p></div>
     <div class="grid three">
-      <a class="door" data-a="st te" href="bullied-proof/" target="_blank" rel="noopener">
+      <a class="door" data-a="st te" href="bullied-proof/">
         <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
         <div class="inner"><h3>Bullied Proof</h3>
           <p>Διαδραστική εφαρμογή κατά του εκφοβισμού, με ιδέες από προγράμματα της Δανίας, της Σουηδίας, της Γερμανίας, της Ελλάδας, της Ισπανίας και του Ηνωμένου Βασιλείου.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
           <span class="go">Άνοιγμα</span></div></a>
-      <a class="door" data-a="te" href="protokollo-ekfovismou/" target="_blank" rel="noopener">
+      <a class="door" data-a="te" href="protokollo-ekfovismou/">
         <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/><path d="M9 17h6"/></svg></div>
         <div class="inner"><h3>Πρωτόκολλο Σχολικού Εκφοβισμού</h3>
           <div class="sub">Διαχείριση περιστατικού βήμα προς βήμα</div>
           <p>Τα βήματα της πολιτικής του ΥΠΑΝ, εκφοβισμός ή σύγκρουση, λεκτικό για κάθε συνάντηση, ειδικές περιπτώσεις, φάκελος περιστατικού και γραμμές στήριξης.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Πρωτόκολλο</span></div>
           <span class="go">Άνοιγμα</span></div></a>
-      <a class="door" data-a="st te" href="diamesolavisi/" target="_blank" rel="noopener">
+      <a class="door" data-a="st te" href="diamesolavisi/">
         <div class="plate"><span>ΣΥΓΚΡΟΥΣΕΙΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-3 3 3 3-3 5 5"/><path d="M3 16h5M16 16h5"/></svg></div>
         <div class="inner"><h3>Σχολική Διαμεσολάβηση</h3>
           <p>Πώς δύο μαθητές σε σύγκρουση βρίσκουν μαζί λύση με τη βοήθεια ενός ουδέτερου διαμεσολαβητή: αρχές, στάδια και πρακτική.</p>
@@ -138,7 +169,7 @@ footer strong{color:var(--ink);font-weight:600}
           <p>Οι μαθητές ανοίγουν «παρέες» για το διάλειμμα και όποιος είναι μόνος βρίσκει πού να κάτσει, με εβδομαδιαίες προκλήσεις και έγκριση από τον υπεύθυνο.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εφαρμογή</span></div>
           <span class="go">Άνοιγμα</span></div></a>
-      <a class="door" data-a="st te" href="parea/" target="_blank" rel="noopener">
+      <a class="door" data-a="st te" href="parea/">
         <div class="plate"><span>ΚΟΙΝΩΝΙΚΟΠΟΙΗΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="17" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="20" cy="15" r="2"/><path d="M5.5 15.5 10.5 8.5M13.8 8l4.6 5.6"/></svg></div>
         <div class="inner"><h3>Παρέα</h3>
           <div class="sub">Έξι σταθμοί ως την παρέα</div>
@@ -159,7 +190,7 @@ footer strong{color:var(--ink);font-weight:600}
           <p>Τι κρύβει η δύσκολη συμπεριφορά, πώς χτίζεται η σχέση, η παρέμβαση στον χρόνο, η συνάντηση επίλυσης και μια λίστα ελέγχου για την τάξη.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Οδηγός</span></div>
           <span class="go">Άνοιγμα</span></div></a>
-      <a class="door" data-a="te" href="dyskoles-symperifores/" target="_blank" rel="noopener">
+      <a class="door" data-a="te" href="dyskoles-symperifores/">
         <div class="plate"><span>ΣΥΜΠΕΡΙΦΟΡΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/><path d="M17 15l2 2 3-4"/></svg></div>
         <div class="inner"><h3>Δύσκολες Συμπεριφορές: Σχέδιο Δράσης</h3>
           <div class="sub">Βήμα προς βήμα, για όλη τη σχολική μονάδα</div>
@@ -209,4 +240,19 @@ btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.f)));
 try{const s=localStorage.getItem('sea-filter'); if(s) apply(s);}catch(e){}
 </script>
 
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+(function(){
+ var standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+ var seen=false; try{seen=localStorage.getItem('ergal-install-hint')==='x';}catch(e){}
+ if(standalone||seen) return;
+ var ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), android=/Android/.test(ua);
+ var how=document.getElementById('installHow'), box=document.getElementById('install');
+ if(ios){how.textContent='στο Safari πατήστε Κοινοποίηση (το τετράγωνο με το βέλος) → «Προσθήκη στην οθόνη Αφετηρίας».';}
+ else if(android){how.textContent='στο Chrome πατήστε το μενού ⋮ → «Εγκατάσταση εφαρμογής» ή «Προσθήκη στην αρχική οθόνη».';}
+ else return;
+ box.classList.add('on');
+ document.getElementById('installX').onclick=function(){box.classList.remove('on');try{localStorage.setItem('ergal-install-hint','x');}catch(e){}};
+})();
+</script>
 </body></html>
