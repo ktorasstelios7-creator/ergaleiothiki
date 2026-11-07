@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Παρέα: Η διαδρομή της αυλής</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;600;800;900&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Plan: a school-yard board game. Six stations on a winding route, one per country's practice.
+   Navy "chalkboard" ink, sticky-note yellow as the single bold accent, teal for progress, pink for care. */
+:root{
+  --bg:#edf1f7; --surface:#ffffff; --ink:#13233f; --muted:#56637d; --line:#d3dbe8;
+  --accent:#ffbf1f; --accent-ink:#13233f; --teal:#1b827c; --pink:#d83c60; --soft:#f6f8fc;
+  --display:"Commissioner", "Segoe UI", system-ui, sans-serif;
+  --body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  --r:14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1829; --surface:#16243d; --ink:#e9eff9; --muted:#9dafcb; --line:#2a3b5a;
+    --accent:#ffc93d; --accent-ink:#13233f; --teal:#4cc3ba; --pink:#ff6f8e; --soft:#1b2c49;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1829; --surface:#16243d; --ink:#e9eff9; --muted:#9dafcb; --line:#2a3b5a;
+  --accent:#ffc93d; --accent-ink:#13233f; --teal:#4cc3ba; --pink:#ff6f8e; --soft:#1b2c49;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:18px; line-height:1.5}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.1}
+h2{font-size:clamp(26px,4vw,36px); font-weight:900; letter-spacing:-.02em}
+h3{font-size:20px; font-weight:800}
+p{margin:0}
+a{color:var(--teal)}
+button,input,textarea,select{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--teal); outline-offset:2px}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px}
+
+/* Top bar */
+.top{position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--line)}
+.top .wrap{display:flex; align-items:center; gap:14px; padding-top:10px; padding-bottom:10px; flex-wrap:wrap}
+.brand{font-family:var(--display); font-weight:900; font-size:24px; letter-spacing:-.03em; text-decoration:none; color:var(--ink); display:flex; align-items:center; gap:8px}
+.brand i{display:inline-block; width:18px; height:18px; border-radius:50%; background:var(--accent); box-shadow:10px 0 0 var(--teal), 20px 0 0 var(--pink); margin-right:22px}
+.spacer{flex:1}
+.xp{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:14px}
+.xpbar{width:120px; height:10px; border-radius:6px; background:var(--line); overflow:hidden}
+.xpbar b{display:block; height:100%; background:var(--teal); width:0; transition:width .4s}
+.seg{display:inline-flex; border:2px solid var(--ink); border-radius:999px; overflow:hidden}
+.seg button{border:0; background:transparent; padding:4px 12px; font-family:var(--display); font-weight:700; font-size:14px; cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+.navlinks{display:flex; gap:6px; flex-wrap:wrap}
+.navlinks a{font-family:var(--display); font-weight:600; font-size:14px; color:var(--ink); text-decoration:none; padding:5px 10px; border-radius:999px}
+.navlinks a:hover,.navlinks a[aria-current="page"]{background:var(--surface)}
+
+/* Hero */
+.hero{padding:34px 0 10px; display:grid; gap:18px}
+.hero h1{font-size:clamp(40px,8vw,84px); font-weight:900; letter-spacing:-.045em}
+.hero h1 span{background:var(--accent); color:var(--accent-ink); padding:0 .12em; border-radius:8px; box-decoration-break:clone; -webkit-box-decoration-break:clone}
+.lede{max-width:62ch; color:var(--muted); font-size:20px}
+.mapbox{background:var(--surface); border:2px solid var(--ink); border-radius:22px; padding:10px; position:relative; overflow:hidden}
+.mapbox svg{display:block; width:100%; height:auto}
+.route{fill:none; stroke:var(--ink); stroke-width:4; stroke-dasharray:2 14; stroke-linecap:round}
+.route-done{fill:none; stroke:var(--teal); stroke-width:8; stroke-linecap:round; opacity:.35}
+.st{cursor:pointer}
+.st circle.base{fill:var(--soft); stroke:var(--ink); stroke-width:3; transition:transform .2s}
+.st.done circle.base{fill:var(--teal); stroke:var(--teal)}
+.st:hover circle.base,.st:focus circle.base{fill:var(--accent)}
+.st text{font-family:var(--display); fill:var(--ink)}
+.st .code{font-weight:900; font-size:22px}
+.st.done .code{fill:#fff}
+.st .lbl{font-weight:700; font-size:17px}
+.st .num{font-weight:600; font-size:13px; fill:var(--muted)}
+.yard{fill:none; stroke:var(--line); stroke-width:2}
+
+.stations{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; margin:18px 0 8px}
+.scard{display:grid; gap:6px; text-decoration:none; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:14px 16px; border-left:8px solid var(--line)}
+.scard:hover{border-color:var(--ink)}
+.scard.done{border-left-color:var(--teal)}
+.scard .row{display:flex; justify-content:space-between; align-items:center; gap:8px}
+.chip{font-family:var(--display); font-weight:800; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:6px; background:var(--soft); border:1px solid var(--line)}
+.chip.ok{background:var(--teal); color:#fff; border-color:var(--teal)}
+.scard strong{font-family:var(--display); font-size:18px}
+.scard small{color:var(--muted); font-size:15px}
+
+/* Panels */
+.view{display:none; padding:26px 0 60px}
+.view.on{display:block}
+.vhead{display:grid; gap:10px; margin-bottom:20px}
+.origin{display:flex; gap:10px; align-items:center; color:var(--muted); font-size:16px; flex-wrap:wrap}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:20px; display:grid; gap:14px; align-content:start}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px}
+.why{background:var(--soft); border-left:5px solid var(--accent); padding:12px 16px; border-radius:0 10px 10px 0; font-size:16px; color:var(--muted); max-width:75ch}
+.btn{border:2px solid var(--ink); background:var(--surface); border-radius:12px; padding:9px 16px; font-family:var(--display); font-weight:700; font-size:15px; cursor:pointer; transition:transform .1s}
+.btn:hover{transform:translateY(-1px)}
+a.btn{color:var(--ink); display:inline-block}
+.btn.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent-ink)}
+.btn.ghost{border-color:var(--line)}
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+.row-btns{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+label{font-weight:500}
+input[type=text],textarea,select{width:100%; background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:9px 12px}
+textarea{min-height:110px; resize:vertical}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+
+/* Mood thermometer */
+.mood{display:grid; grid-template-columns:repeat(5,1fr); gap:6px}
+.mood button{border:2px solid var(--line); background:var(--soft); border-radius:12px; padding:12px 4px; cursor:pointer; display:grid; gap:4px; justify-items:center; font-family:var(--display); font-weight:700; font-size:14px}
+.mood button .bar{width:16px; border-radius:4px; background:var(--teal)}
+.mood button[aria-pressed="true"]{border-color:var(--ink); background:var(--accent); color:var(--accent-ink)}
+.history{display:flex; gap:4px; align-items:flex-end; height:56px}
+.history i{flex:1; max-width:22px; background:var(--teal); border-radius:4px 4px 0 0; opacity:.8}
+
+/* Cards deck */
+.deck{min-height:200px; display:grid; place-items:center; text-align:center; padding:28px; border-radius:20px; border:2px solid var(--ink); background:var(--accent); color:var(--accent-ink); transform:rotate(-1.2deg)}
+.deck p{font-family:var(--display); font-weight:800; font-size:clamp(20px,3vw,28px); line-height:1.25; max-width:28ch}
+.deck .lvl{font-family:var(--display); font-size:13px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; opacity:.7; margin-bottom:8px}
+
+/* Bingo */
+.bingo{display:grid; grid-template-columns:repeat(4,1fr); gap:6px}
+.bingo button{aspect-ratio:1/1; border:1px solid var(--line); background:var(--soft); border-radius:10px; padding:6px; font-size:14px; line-height:1.2; cursor:pointer; display:grid; place-items:center; text-align:center}
+.bingo button.on{background:var(--teal); color:#fff; border-color:var(--teal)}
+.bingo button small{display:block; font-weight:700; font-size:12px; margin-top:3px}
+@media (max-width:480px){ .bingo button{font-size:12px; padding:3px} }
+
+/* Scenarios */
+.scn{display:grid; gap:14px}
+.dots{display:flex; gap:6px}
+.dots i{width:28px; height:6px; border-radius:3px; background:var(--line)}
+.dots i.best{background:var(--teal)} .dots i.ok{background:var(--accent)} .dots i.cur{background:var(--ink)}
+.situ{font-size:21px; font-family:var(--display); font-weight:600; line-height:1.35}
+.opts{display:grid; gap:8px}
+.opts button{text-align:left; border:2px solid var(--line); background:var(--soft); border-radius:12px; padding:12px 14px; cursor:pointer; font-size:17px}
+.opts button:hover:not(:disabled){border-color:var(--ink)}
+.opts button.picked.best{border-color:var(--teal); background:color-mix(in srgb, var(--teal) 16%, var(--surface))}
+.opts button.picked.ok{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 22%, var(--surface))}
+.opts button.picked.weak{border-color:var(--pink); background:color-mix(in srgb, var(--pink) 12%, var(--surface))}
+.fb{border-radius:12px; padding:12px 14px; background:var(--soft); border:1px dashed var(--line)}
+.fb b{font-family:var(--display)}
+
+/* Ladder */
+.ladder{display:grid; gap:8px; counter-reset:step}
+.ladder label{display:flex; gap:12px; align-items:flex-start; padding:10px 12px; border-radius:12px; background:var(--soft); border:1px solid var(--line); cursor:pointer}
+.ladder input{width:22px; height:22px; margin-top:2px; accent-color:var(--teal)}
+.ladder label.on{border-color:var(--teal)}
+.goals{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px}
+.goals button{border:2px solid var(--line); background:var(--soft); border-radius:12px; padding:10px 12px; text-align:left; cursor:pointer; font-family:var(--display); font-weight:700; font-size:15px}
+.goals button[aria-pressed="true"]{border-color:var(--ink); background:var(--accent); color:var(--accent-ink)}
+input[type=range]{width:100%; accent-color:var(--teal)}
+
+/* Chips select */
+.picks{display:flex; flex-wrap:wrap; gap:6px}
+.picks button{border:1px solid var(--line); background:var(--soft); border-radius:999px; padding:5px 12px; cursor:pointer; font-size:15px}
+.picks button[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.tcard{border:2px dashed var(--ink); border-radius:16px; padding:16px; display:grid; gap:6px; background:var(--soft)}
+.tcard h3{font-size:17px}
+.offers{display:grid; gap:8px}
+
+/* Pledge card */
+.pass{border-radius:18px; padding:18px; background:var(--ink); color:var(--bg); display:grid; gap:6px; max-width:420px}
+.pass .t{font-family:var(--display); font-weight:900; font-size:22px}
+.pass .n{font-family:var(--display); font-weight:700; font-size:28px; color:var(--accent)}
+
+/* Teacher */
+.timer{font-family:var(--display); font-weight:900; font-size:56px; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.groups{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:8px}
+.groups div{background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:10px 12px; font-size:16px}
+.groups b{font-family:var(--display); display:block; margin-bottom:4px}
+
+/* Practices */
+.prac{display:grid; gap:14px}
+.pc{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; display:grid; gap:8px; grid-template-columns:72px 1fr}
+.pc .flag{font-family:var(--display); font-weight:900; font-size:30px; color:var(--teal)}
+.pc .body{display:grid; gap:6px}
+.pc ul{margin:0; padding-left:20px; color:var(--muted); font-size:16px}
+@media (max-width:520px){ .pc{grid-template-columns:1fr} }
+
+.help{background:var(--surface); border:2px solid var(--pink); border-radius:var(--r); padding:18px 20px; display:grid; gap:8px}
+.help .big{font-family:var(--display); font-weight:900; font-size:30px; color:var(--pink)}
+
+.badges{display:flex; gap:8px; flex-wrap:wrap}
+.badge{font-family:var(--display); font-weight:700; font-size:14px; padding:6px 12px; border-radius:999px; border:1px dashed var(--line); color:var(--muted)}
+.badge.on{border:1px solid var(--teal); background:var(--teal); color:#fff}
+
+.lockbox{max-width:440px; margin:40px auto; background:var(--surface); border:2px solid var(--ink); border-radius:22px; padding:28px; display:grid; gap:14px; justify-items:start}
+.lockform{display:grid; grid-template-columns:1fr auto; gap:8px; width:100%; align-items:end}
+.lockform label{grid-column:1/-1; font-weight:700}
+.lk{display:inline-block; width:9px; height:8px; border-radius:2px; background:currentColor; position:relative; margin-left:3px; vertical-align:1px; opacity:.7}
+.lk::before{content:""; position:absolute; left:1px; top:-5px; width:5px; height:6px; border:1.5px solid currentColor; border-bottom:0; border-radius:4px 4px 0 0}
+body.unlocked .lk{display:none}
+.toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--bg); padding:10px 18px; border-radius:999px; font-family:var(--display); font-weight:800; opacity:0; transition:all .25s; pointer-events:none; z-index:50}
+.toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; color:var(--muted); font-size:15px}
+
+@media (prefers-reduced-motion: no-preference){
+  .route{animation:march 30s linear infinite}
+  @keyframes march{to{stroke-dashoffset:-320}}
+}
+@media (max-width:640px){ .xpbar{width:70px} .navlinks{width:100%} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home"><i aria-hidden="true"></i>Παρέα</a>
+    <nav class="navlinks" aria-label="Κύριο μενού">
+      <a href="#home" data-nav="home">Διαδρομή</a>
+      <a href="#praktikes" data-nav="praktikes">Καλές πρακτικές <span class="lk" aria-label="κλειδωμένο"></span></a>
+      <a href="#teacher" data-nav="teacher">Για εκπαιδευτικούς <span class="lk" aria-label="κλειδωμένο"></span></a>
+      <a href="#help" data-nav="help">Χρειάζομαι βοήθεια</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="seg" role="group" aria-label="Ηλικία">
+      <button id="band13" type="button" data-band="13">13–15</button>
+      <button id="band16" type="button" data-band="16">16–18</button>
+    </div>
+    <div class="xp" title="Πόντοι εμπειρίας">
+      <span id="lvlName">Παρατηρητής</span>
+      <div class="xpbar" aria-hidden="true"><b id="xpFill"></b></div>
+      <span id="xpNum">0 XP</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- HOME -->
+<section class="view" id="v-home">
+  <div class="hero">
+    <h1>Έξι σταθμοί ως την <span>παρέα</span>.</h1>
+    <p class="lede">Ένα παιχνίδι για όσους δυσκολεύονται να «μπουν» στην τάξη. Κάθε σταθμός βασίζεται σε ένα πρόγραμμα που δουλεύει σε σχολεία της Δανίας, της Σουηδίας, της Γερμανίας, της Ιταλίας, της Ισπανίας και της Ελλάδας. Μικρά βήματα, πόντοι, και κανείς δεν σε βαθμολογεί.</p>
+  </div>
+  <div class="mapbox">
+    <svg viewBox="0 0 900 310" role="img" aria-label="Χάρτης διαδρομής με έξι σταθμούς">
+      <rect class="yard" x="14" y="14" width="872" height="282" rx="18"/>
+      <path class="route-done" id="routeDone" d=""/>
+      <path class="route" d="M80 205 C150 205,160 95,230 95 S 330 215,380 215 S 470 85,530 85 S 620 205,680 205 S 780 95,830 95"/>
+      <g id="stationsSvg"></g>
+    </svg>
+  </div>
+  <div class="stations" id="stationList"></div>
+  <div class="panel" style="margin-top:12px">
+    <div class="row-btns" style="justify-content:space-between">
+      <h3>Τα σήματά μου</h3>
+      <label class="small muted" for="nick">Ψευδώνυμο <input id="nick" type="text" maxlength="24" placeholder="π.χ. Νεφέλη" style="width:180px; display:inline-block; margin-left:6px"></label>
+    </div>
+    <div class="badges" id="badges"></div>
+  </div>
+</section>
+
+<!-- DK -->
+<section class="view" id="v-dk">
+  <div class="vhead">
+    <div class="origin"><span class="chip">Σταθμός 1 · Δανία</span> Από το «Klassens tid» και τη μέτρηση «trivsel»</div>
+    <h2>Το θερμόμετρο της μέρας</h2>
+    <p class="why">Στη Δανία η τάξη έχει κάθε εβδομάδα μια δική της ώρα για το πώς είναι η ομάδα, και κάθε χρόνο οι μαθητές απαντούν σε έρευνα ευημερίας ανεξάρτητη από τους βαθμούς. Η ιδέα: σκέφτομαι πώς είμαι εγώ, αλλά και πώς είναι η ομάδα.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Πώς είσαι σήμερα στο σχολείο;</h3>
+      <div class="mood" id="moodSelf"></div>
+      <h3>Πώς σου φαίνεται η τάξη σήμερα;</h3>
+      <div class="mood" id="moodClass"></div>
+      <button class="btn primary" id="saveCheck" type="button">Καταγραφή (+5 XP)</button>
+      <div class="fb" id="checkFb" hidden></div>
+    </div>
+    <div class="panel">
+      <h3>Οι τελευταίες μου μέρες</h3>
+      <div class="history" id="hist" aria-label="Ιστορικό διάθεσης"></div>
+      <p class="small muted" id="histNote">Κάνε την πρώτη σου καταγραφή για να δεις τη γραμμή σου.</p>
+      <h3>Μικρή ιδέα για σήμερα</h3>
+      <p id="tipToday" class="small"></p>
+    </div>
+  </div>
+</section>
+
+<!-- GR -->
+<section class="view" id="v-gr">
+  <div class="vhead">
+    <div class="origin"><span class="chip">Σταθμός 2 · Ελλάδα</span> Από τα Εργαστήρια Δεξιοτήτων, κύκλος «Ενδιαφέρομαι και Ενεργώ»</div>
+    <h2>Σπάσε τον πάγο</h2>
+    <p class="why">Τα Εργαστήρια Δεξιοτήτων στηρίζονται σε βιωματική μάθηση: κοινωνικές δεξιότητες, ενσυναίσθηση, συνεργασία. Εδώ η εξάσκηση γίνεται με κάρτες συζήτησης και ένα μπίνγκο γνωριμίας για την τάξη ή την αυλή.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <div class="row-btns" style="justify-content:space-between">
+        <h3>Κάρτες συζήτησης</h3>
+        <div class="picks" id="lvlPicks" role="group" aria-label="Επίπεδο">
+          <button type="button" data-lvl="0" aria-pressed="true">Χαλαρό</button>
+          <button type="button" data-lvl="1" aria-pressed="false">Λίγο πιο μέσα</button>
+          <button type="button" data-lvl="2" aria-pressed="false">Βαθιά</button>
+        </div>
+      </div>
+      <div class="deck" id="deck"><div><div class="lvl" id="deckLvl">Χαλαρό</div><p id="deckQ"></p></div></div>
+      <div class="row-btns">
+        <button class="btn" id="nextCard" type="button">Άλλη κάρτα</button>
+        <button class="btn primary" id="askedCard" type="button">Τη ρώτησα σε κάποιον (+5 XP)</button>
+      </div>
+      <p class="small muted">Παίζεται σε ζευγάρια: ο ένας τραβάει κάρτα και ρωτά, ο άλλος απαντά και ρωτά πίσω. Μπορείς πάντα να πεις «πάσο».</p>
+    </div>
+    <div class="panel">
+      <h3>Μπίνγκο γνωριμίας: Βρες κάποιον που…</h3>
+      <label for="bingoName" class="small">Όνομα συμμαθητή (προαιρετικό, γράψ' το πριν πατήσεις κουτί)</label>
+      <input id="bingoName" type="text" maxlength="20" placeholder="π.χ. Ανδρέας">
+      <div class="bingo" id="bingo"></div>
+      <div class="row-btns"><span class="small muted" id="bingoStat">0 / 16 κουτιά</span><button class="btn ghost" id="bingoReset" type="button">Νέο φύλλο</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- DE -->
+<section class="view" id="v-de">
+  <div class="vhead">
+    <div class="origin"><span class="chip">Σταθμός 3 · Γερμανία</span> Από το Lions‑Quest «Erwachsen werden / Erwachsen handeln»</div>
+    <h2>Εγώ στη σκηνή</h2>
+    <p class="why">Το πιο διαδεδομένο πρόγραμμα δεξιοτήτων ζωής στη Γερμανία ξεκινά από μια απλή ιδέα: την κοινωνική συμπεριφορά δεν τη μαθαίνεις από βιβλία, αλλά δοκιμάζοντας. Εδώ δοκιμάζεις αντιδράσεις σε πραγματικές σχολικές στιγμές, χωρίς ρίσκο.</p>
+  </div>
+  <div class="panel scn" id="scnDe"></div>
+</section>
+
+<!-- SE -->
+<section class="view" id="v-se">
+  <div class="vhead">
+    <div class="origin"><span class="chip">Σταθμός 4 · Σουηδία</span> Από το SKOLKONTAKT, εκπαίδευση κοινωνικών δεξιοτήτων σε ομάδες μέσα στο σχολείο</div>
+    <h2>Η σκάλα μου</h2>
+    <p class="why">Στο σουηδικό πρόγραμμα κάθε μαθητής θέτει έναν δικό του κοινωνικό στόχο και μετράει πόσο τον πέτυχε. Διάλεξε έναν στόχο, ανέβα τη σκάλα σκαλί‑σκαλί και σημείωσε πώς νιώθεις πριν και μετά.</p>
+  </div>
+  <div class="panel">
+    <h3>1. Διάλεξε στόχο</h3>
+    <div class="goals" id="goals"></div>
+    <div id="ladderBox" hidden style="display:grid; gap:14px">
+      <h3>2. Πόσο κοντά είσαι στον στόχο σήμερα;</h3>
+      <div><input type="range" id="before" min="1" max="5" step="1" aria-label="Αρχική εκτίμηση"><div class="small muted" id="beforeLbl"></div></div>
+      <h3>3. Ανέβα τη σκάλα</h3>
+      <div class="ladder" id="ladder"></div>
+      <div id="afterBox" hidden>
+        <h3>4. Και τώρα;</h3>
+        <input type="range" id="after" min="1" max="5" step="1" aria-label="Τελική εκτίμηση">
+        <div class="small muted" id="afterLbl"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IT -->
+<section class="view" id="v-it">
+  <div class="vhead">
+    <div class="origin"><span class="chip">Σταθμός 5 · Ιταλία</span> Από το peer tutoring «La Banca del Tempo»</div>
+    <h2>Η Τράπεζα Χρόνου</h2>
+    <p class="why">Σε σχολεία της Ιταλίας οι μαθητές ανταλλάσσουν χρόνο: βοηθώ σε κάτι που ξέρω, παίρνω βοήθεια σε κάτι που δεν ξέρω. Η έρευνα έδειξε ότι κερδίζουν κυρίως όσοι προσφέρουν, γιατί χτίζουν δίκτυα στήριξης. Όλοι κάτι ξέρουν να κάνουν.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Μπορώ να προσφέρω…</h3>
+      <div class="picks" id="giveP"></div>
+      <h3>Θα ήθελα να μάθω…</h3>
+      <div class="picks" id="getP"></div>
+      <h3>Χρόνος</h3>
+      <div class="picks" id="timeP"></div>
+      <button class="btn primary" id="makeCard" type="button">Φτιάξε την κάρτα μου (+15 XP)</button>
+    </div>
+    <div class="panel">
+      <h3>Οι κάρτες μου</h3>
+      <div class="offers" id="offers"><p class="small muted">Δεν έχεις φτιάξει ακόμα κάρτα. Διάλεξε τουλάχιστον ένα πράγμα που προσφέρεις.</p></div>
+      <p class="small muted">Η κάρτα μένει μόνο σε αυτή τη συσκευή. Αντίγραψέ τη και δώσ' τη στον/στην εκπαιδευτικό ή κόλλησέ τη στον πίνακα ανακοινώσεων της τάξης.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ES -->
+<section class="view" id="v-es">
+  <div class="vhead">
+    <div class="origin"><span class="chip">Σταθμός 6 · Ισπανία</span> Από τα «Alumnos ayudantes» και το πρόγραμμα TEI (Tutoría Entre Iguales)</div>
+    <h2>Ο Βοηθός</h2>
+    <p class="why">Στην Ισπανία μαθητές μεγαλύτερων τάξεων γίνονται εθελοντικά «βοηθοί» ή συναισθηματικοί μέντορες των μικρότερων, με επίσημη κάρτα στην αρχή της χρονιάς. Το τελευταίο βήμα της διαδρομής: από αυτόν που χρειάζεται παρέα, γίνεσαι κι εσύ αυτός που την προσφέρει.</p>
+  </div>
+  <div class="panel scn" id="scnEs"></div>
+  <div class="panel" id="pledgePanel" style="margin-top:16px">
+    <h3>Η κάρτα του Βοηθού</h3>
+    <p class="small muted">Διάβασε τις τρεις δεσμεύσεις. Αν συμφωνείς, πάτα «Δεσμεύομαι».</p>
+    <div class="ladder">
+      <label><input type="checkbox" class="pl"> Προσέχω ποιος μένει μόνος και κάνω το πρώτο βήμα: ένα «γεια», μια θέση δίπλα μου.</label>
+      <label><input type="checkbox" class="pl"> Ακούω χωρίς να κρίνω και κρατώ για μένα όσα μου λένε, εκτός αν κάποιος κινδυνεύει.</label>
+      <label><input type="checkbox" class="pl"> Όταν κάτι είναι πάνω από τις δυνάμεις μου, ζητάω βοήθεια από ενήλικα του σχολείου.</label>
+    </div>
+    <button class="btn primary" id="pledgeBtn" type="button" disabled>Δεσμεύομαι (+20 XP)</button>
+    <div id="passBox"></div>
+  </div>
+</section>
+
+<!-- LOCK -->
+<section class="view" id="v-lock">
+  <div class="lockbox">
+    <svg viewBox="0 0 48 48" width="56" height="56" aria-hidden="true"><rect x="9" y="21" width="30" height="22" rx="5" fill="var(--accent)" stroke="var(--ink)" stroke-width="3"/><path d="M16 21v-6a8 8 0 0 1 16 0v6" fill="none" stroke="var(--ink)" stroke-width="3"/><circle cx="24" cy="31" r="3" fill="var(--ink)"/><path d="M24 33v4" stroke="var(--ink)" stroke-width="3"/></svg>
+    <h2>Χώρος εκπαιδευτικών</h2>
+    <p class="muted">Η σελίδα «<span id="lockTarget">Για εκπαιδευτικούς</span>» είναι για τους εκπαιδευτικούς. Αν είσαι μαθητής ή μαθήτρια, <a href="#home">γύρνα στη διαδρομή</a>.</p>
+    <form id="lockForm" class="lockform" autocomplete="off">
+      <label for="pw">Κωδικός</label>
+      <input type="password" id="pw" autocomplete="current-password">
+      <button class="btn primary" type="submit">Είσοδος</button>
+    </form>
+    <p class="small" id="pwErr" role="alert" style="color:var(--pink)"></p>
+  </div>
+</section>
+
+<!-- PRACTICES -->
+<section class="view" id="v-praktikes">
+  <div class="vhead">
+    <div class="row-btns" style="justify-content:space-between"><span class="chip">Χώρος εκπαιδευτικών</span><button class="btn ghost relock" type="button">Κλείδωμα ξανά</button></div>
+    <h2>Οι καλές πρακτικές πίσω από την εφαρμογή</h2>
+    <p class="lede">Τι κάνουν σχολεία σε έξι χώρες για τους μαθητές που δυσκολεύονται να κοινωνικοποιηθούν, και πώς το μεταφέρει η «Παρέα».</p>
+  </div>
+  <div class="prac" id="prac"></div>
+</section>
+
+<!-- TEACHER -->
+<section class="view" id="v-teacher">
+  <div class="vhead">
+    <div class="row-btns" style="justify-content:space-between"><span class="chip">Χώρος εκπαιδευτικών</span><button class="btn ghost relock" type="button">Κλείδωμα ξανά</button></div>
+    <h2>Η ώρα της τάξης: εργαλεία για τον εκπαιδευτικό</h2>
+    <p class="why">Για την ώρα του Υπεύθυνου Τμήματος, τα Εργαστήρια Δεξιοτήτων ή μια συνάντηση Σ.Ε.Α. Πρόταση: 45 λεπτά = θερμόμετρο (5′) → δραστηριότητα σε μικτές ομάδες (25′) → κύκλος κλεισίματος (10′) → μία δέσμευση για την εβδομάδα (5′).</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Τυχαίες μικτές ομάδες</h3>
+      <p class="small muted">Γράψτε τα ονόματα των μαθητών, ένα σε κάθε γραμμή, ή επικολλήστε τον κατάλογο της τάξης (από Excel, Word, email ή το σύστημα του σχολείου). Η αρίθμηση και τα κενά αφαιρούνται αυτόματα.</p>
+      <label for="names" class="small">Κατάλογος τάξης</label>
+      <textarea id="names" rows="10" spellcheck="false" placeholder="π.χ.
+Παπαδόπουλος Γιώργος
+Κωνσταντίνου Μαρία
+Ιωάννου Ανδρέας
+…"></textarea>
+      <div class="row-btns" style="justify-content:space-between">
+        <span class="small" id="nameCount">0 μαθητές</span>
+        <div class="row-btns">
+          <label class="btn ghost" for="nameFile" style="cursor:pointer">Άνοιγμα αρχείου .txt / .csv</label>
+          <input type="file" id="nameFile" accept=".txt,.csv,text/plain,text/csv" hidden>
+          <button class="btn ghost" id="nameDemo" type="button">Δοκιμαστικά ονόματα</button>
+          <button class="btn ghost" id="nameClear" type="button">Καθαρισμός</button>
+        </div>
+      </div>
+      <div class="small muted" id="namePreview"></div>
+      <div class="row-btns">
+        <label for="gsize" class="small">Άτομα ανά ομάδα</label>
+        <select id="gsize" style="width:auto"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+        <button class="btn primary" id="makeGroups" type="button">Ανακάτεψε</button>
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+    <div class="panel">
+      <h3>Δραστηριότητα της εβδομάδας</h3>
+      <div class="tcard"><h3 id="actT"></h3><p id="actD" class="small"></p><p id="actO" class="small muted"></p></div>
+      <button class="btn" id="nextAct" type="button">Άλλη δραστηριότητα</button>
+      <h3>Χρονόμετρο</h3>
+      <div class="timer" id="timer" aria-live="polite">05:00</div>
+      <div class="row-btns">
+        <button class="btn ghost" type="button" data-min="3">3′</button>
+        <button class="btn ghost" type="button" data-min="5">5′</button>
+        <button class="btn ghost" type="button" data-min="10">10′</button>
+        <button class="btn ghost" type="button" data-min="25">25′</button>
+        <button class="btn primary" id="tGo" type="button">Έναρξη</button>
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h3>Πώς να το χρησιμοποιήσετε με μαθητές που απομονώνονται</h3>
+    <ul class="small" style="margin:0; padding-left:20px; display:grid; gap:6px">
+      <li>Μην ξεχωρίζετε δημόσια τον μαθητή. Δώστε την εφαρμογή σε όλη την τάξη· έτσι τη χρησιμοποιεί κι εκείνος χωρίς στίγμα.</li>
+      <li>Ξεκινήστε από ζευγάρια και τριάδες, όχι από μεγάλη ομάδα. Ταιριάξτε τον με έναν συμμαθητή που έχει δηλώσει Βοηθός.</li>
+      <li>Ο σταθμός «Η σκάλα μου» δουλεύει καλύτερα σε ιδιωτική συνάντηση: διαλέγετε μαζί στόχο και τον ξαναβλέπετε σε μία εβδομάδα.</li>
+      <li>Αν το θερμόμετρο δείχνει επίμονα χαμηλά, αυτό είναι σήμα για συζήτηση με τον Σύμβουλο Σ.Ε.Α. ή τον ψυχολόγο του σχολείου.</li>
+      <li>Η πρόοδος αποθηκεύεται μόνο στη συσκευή του μαθητή. Η εφαρμογή δεν στέλνει δεδομένα πουθενά.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- HELP -->
+<section class="view" id="v-help">
+  <div class="vhead">
+    <h2>Αν δυσκολεύεσαι πολύ</h2>
+    <p class="lede">Το να νιώθεις μόνος/η στο σχολείο συμβαίνει σε πολλούς, και δεν φταις εσύ. Αν κρατάει καιρό ή σε βαραίνει, μίλα με κάποιον.</p>
+  </div>
+  <div class="grid2">
+    <div class="help">
+      <h3>Μέσα στο σχολείο</h3>
+      <p>Ο/η Σύμβουλος Σ.Ε.Α., ο/η ψυχολόγος του σχολείου, ο/η υπεύθυνος του τμήματός σου ή ένας καθηγητής που εμπιστεύεσαι.</p>
+    </div>
+    <div class="help">
+      <h3>Γραμμή για παιδιά και εφήβους</h3>
+      <div class="big">116 111</div>
+      <p class="small">Ευρωπαϊκή γραμμή για παιδιά και εφήβους, δωρεάν.</p>
+      <div class="big">1466</div>
+      <p class="small">Γραμμή Hope For Children.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:16px">Σε άμεσο κίνδυνο: 112.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap row-btns" style="justify-content:space-between">
+    <span>«Παρέα» · για μαθητές 13–18 · η πρόοδος μένει μόνο σε αυτή τη συσκευή.</span>
+    <button class="btn ghost" id="resetAll" type="button">Μηδενισμός προόδου</button>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+/* ---------- data ---------- */
+const STATIONS=[
+ {id:'dk',code:'DK',name:'Το θερμόμετρο',country:'Δανία',x:80,y:205,desc:'Πώς είμαι εγώ, πώς είναι η τάξη.'},
+ {id:'gr',code:'GR',name:'Σπάσε τον πάγο',country:'Ελλάδα',x:230,y:95,desc:'Κάρτες συζήτησης και μπίνγκο γνωριμίας.'},
+ {id:'de',code:'DE',name:'Εγώ στη σκηνή',country:'Γερμανία',x:380,y:215,desc:'Δοκίμασε αντιδράσεις σε δύσκολες στιγμές.'},
+ {id:'se',code:'SE',name:'Η σκάλα μου',country:'Σουηδία',x:530,y:85,desc:'Ένας προσωπικός στόχος, βήμα‑βήμα.'},
+ {id:'it',code:'IT',name:'Τράπεζα Χρόνου',country:'Ιταλία',x:680,y:205,desc:'Τι προσφέρω, τι θέλω να μάθω.'},
+ {id:'es',code:'ES',name:'Ο Βοηθός',country:'Ισπανία',x:830,y:95,desc:'Γίνε εσύ η παρέα κάποιου άλλου.'}
+];
+const LEVELS=[[0,'Παρατηρητής'],[40,'Εξερευνητής'],[100,'Γεφυροποιός'],[180,'Συνδετικός κρίκος'],[280,'Ψυχή της παρέας']];
+const MOODS=['Πολύ δύσκολα','Όχι καλά','Έτσι κι έτσι','Καλά','Πολύ καλά'];
+const TIPS=[
+ 'Σήμερα αρκεί κάτι μικρό: πες «καλημέρα» με το όνομα σε έναν συμμαθητή. Αν θέλεις να μιλήσεις σε κάποιον μεγάλο, δες τη σελίδα «Χρειάζομαι βοήθεια».',
+ 'Διάλεξε έναν άνθρωπο που σου φαίνεται ήρεμος και ρώτα κάτι πρακτικό: «Τι είχαμε για αύριο;». Οι πρακτικές ερωτήσεις είναι η πιο εύκολη αρχή.',
+ 'Κάτσε σε ένα διάλειμμα κοντά σε μια ομάδα που μιλάει για κάτι που ξέρεις. Δεν χρειάζεται να μιλήσεις αμέσως· ακούγοντας μπαίνεις στο θέμα.',
+ 'Καλή μέρα για να τραβήξεις μια κάρτα στον σταθμό «Σπάσε τον πάγο» και να τη ρωτήσεις σε κάποιον.',
+ 'Έχεις ενέργεια σήμερα. Κοίτα γύρω σου: μήπως κάποιος άλλος είναι μόνος; Ένα «θες να έρθεις;» μπορεί να του φτιάξει τη μέρα.'
+];
+const CARDS={
+ '13':[
+  ['Ποιο τραγούδι ακούς ξανά και ξανά αυτή την εβδομάδα;','Αν το σχολείο είχε ένα καινούργιο μάθημα της επιλογής σου, ποιο θα ήταν;','Πρωινό: γλυκό ή αλμυρό;','Ποιο game, σειρά ή βίντεο σε κράτησε τελευταία;','Αν μπορούσες να έχεις ένα ζώο, ποιο θα ήταν και πώς θα το έλεγες;','Ποια είναι η καλύτερη μέρα της εβδομάδας και γιατί;'],
+  ['Τι κάνεις καλά που οι περισσότεροι στην τάξη ίσως δεν ξέρουν;','Ποια ήταν η πιο αστεία στιγμή σου φέτος;','Αν είχες ένα ελεύθερο Σάββατο χωρίς καμία υποχρέωση, τι θα έκανες;','Σε ποιο μέρος νιώθεις πιο άνετα;','Ποιο είναι κάτι που θέλεις να μάθεις φέτος, εκτός μαθημάτων;'],
+  ['Πότε ένιωσες τελευταία φορά περήφανος/η για τον εαυτό σου;','Τι κάνει έναν άνθρωπο καλό φίλο για σένα;','Τι θα ήθελες να ξέρουν οι άλλοι για σένα χωρίς να χρειαστεί να το πεις;','Τι σε βοηθάει όταν έχεις μια κακή μέρα;']
+ ],
+ '16':[
+  ['Ποια εφαρμογή ανοίγεις πρώτη το πρωί;','Ποιο μέρος θέλεις οπωσδήποτε να επισκεφτείς πριν τα 25;','Ποιο ήταν το καλύτερο φαγητό που έφαγες τον τελευταίο μήνα;','Ποια σειρά ή podcast θα πρότεινες σε έναν άγνωστο;','Αν μπορούσες να αλλάξεις έναν κανόνα του σχολείου, ποιον;','Καλοκαίρι στη θάλασσα ή στο βουνό;'],
+  ['Τι κάνεις όταν θέλεις να «αδειάσει» το μυαλό σου;','Τι δουλειά σε βλέπεις να κάνεις και τι θα σε εξέπληττε να κάνεις;','Ποια είναι μια άποψη που άλλαξες τα τελευταία χρόνια;','Ποιος άνθρωπος σε έχει επηρεάσει χωρίς να το ξέρει;','Τι σε κάνει να γελάς ακόμα κι όταν είσαι κουρασμένος/η;'],
+  ['Τι σε κάνει να νιώθεις ότι ανήκεις κάπου;','Ποια συμβουλή θα έδινες στον εαυτό σου της Α΄ Γυμνασίου;','Τι φοβάσαι λίγο για το μετά το σχολείο, και τι σε ενθουσιάζει;','Πότε ένιωσες ότι κάποιος σε κατάλαβε πραγματικά;']
+ ]
+};
+const BINGO=['έχει κατοικίδιο','παίζει μουσικό όργανο','γεννήθηκε σε άλλη πόλη ή χώρα','αγαπά το ίδιο φαγητό με σένα','είδε πρόσφατα την ίδια σειρά με σένα','ξέρει να μαγειρεύει κάτι','κάνει κάποιο άθλημα','μιλά τρίτη γλώσσα','έχει γενέθλια τον ίδιο μήνα με σένα','του/της αρέσει να ζωγραφίζει','διάβασε φέτος βιβλίο εκτός σχολείου','θέλει να πάει στην ίδια χώρα με σένα','ξυπνά πριν τις 7','παίζει το ίδιο game με σένα','έχει μεγαλύτερο αδερφό ή αδερφή','έχει κάνει εθελοντισμό'];
+const SC_DE={
+ '13':[
+  {s:'Διάλειμμα. Όλοι έχουν παρέα κι εσύ στέκεσαι κοντά στο κυλικείο. Δίπλα σου τρία παιδιά της τάξης συζητούν για ένα παιχνίδι που ξέρεις καλά.',o:[
+   ['Πλησιάζω λίγο, ακούω και κάνω μια ερώτηση: «Σε ποια πίστα είστε;»','best','Μια ερώτηση πάνω στο θέμα τους είναι η πιο εύκολη είσοδος. Δεν χρειάζεται να είσαι αστείος/α ή εντυπωσιακός/ή, αρκεί το ενδιαφέρον.'],
+   ['Βγάζω το κινητό για να φαίνομαι απασχολημένος/η.','weak','Σε προστατεύει από την αμηχανία, αλλά δείχνει στους άλλους «μη με ενοχλείτε». Δοκίμασέ το μια άλλη φορά με το κινητό στην τσέπη.'],
+   ['Περιμένω μήπως με δουν και με φωνάξουν.','ok','Συμβαίνει, αλλά σπάνια. Οι άλλοι συχνά δεν καταλαβαίνουν ότι θέλεις να μπεις. Ένα μικρό σήμα από σένα βοηθά πολύ.']]},
+  {s:'Ομαδική εργασία με τρία παιδιά που δεν ξέρεις καλά. Κάθεστε όλοι και κανείς δεν μιλάει.',o:[
+   ['Λέω: «Να μοιράσουμε ποιος κάνει τι;» και προτείνω να γράφω εγώ.','best','Όταν σπάει η σιωπή με κάτι πρακτικό, όλοι ανακουφίζονται. Και ο ρόλος σού δίνει λόγο να μιλάς χωρίς άγχος.'],
+   ['Κάνω όλη τη δουλειά μόνος/η μου στο σπίτι.','weak','Η εργασία βγαίνει, αλλά χάνεις την ευκαιρία να γνωρίσεις τρεις ανθρώπους. Και οι άλλοι ίσως ένιωσαν παραγκωνισμένοι.'],
+   ['Περιμένω να ξεκινήσει κάποιος άλλος.','ok','Φυσικό. Δοκίμασε όμως να πεις έστω μία ιδέα μέσα στα πρώτα πέντε λεπτά· μετά γίνεται πιο εύκολο.']]},
+  {s:'Στο group της τάξης γράφουν για βόλτα το Σάββατο. Κανείς δεν σε ανέφερε.',o:[
+   ['Γράφω: «Ακούγεται ωραίο, μπορώ να έρθω κι εγώ;»','best','Συνήθως δεν σε ανέφεραν απλώς επειδή δεν το σκέφτηκαν. Μια απλή, φιλική ερώτηση ανοίγει την πόρτα.'],
+   ['Βγαίνω από το group.','weak','Καταλαβαίνω ότι πονάει, αλλά έτσι χάνεις και τις επόμενες ευκαιρίες. Αν σε πληγώνει συχνά, μίλα με κάποιον που εμπιστεύεσαι.'],
+   ['Γράφω κάτι ειρωνικό, τύπου «ωραία, ευχαριστώ για την πρόσκληση».','weak','Η ειρωνεία κρύβει το ότι θες να είσαι εκεί. Οι άλλοι συνήθως αμύνονται αντί να σε καλέσουν.']]},
+  {s:'Κάποιος σχολιάζει άσχημα το ντύσιμό σου μπροστά σε άλλους.',o:[
+   ['Λέω ήρεμα «Δεν μου αρέσει αυτό, σταμάτα» και απομακρύνομαι. Αν ξανασυμβεί, το λέω σε έναν καθηγητή.','best','Καθαρό όριο χωρίς επίθεση. Και δεν είναι «κάρφωμα» να ζητάς βοήθεια όταν κάτι επαναλαμβάνεται: είναι το δικαίωμά σου.'],
+   ['Απαντώ με μια χειρότερη προσβολή.','weak','Ίσως νιώσεις καλύτερα για ένα λεπτό, αλλά συνήθως φουντώνει η κόντρα και μπορεί να βρεθείς εσύ σε μπελάδες.'],
+   ['Κάνω πως δεν άκουσα και το κρατάω μέσα μου.','ok','Μερικές φορές είναι η πιο ασφαλής λύση στη στιγμή. Μην το κρατήσεις όμως για πάντα· πες το σε κάποιον.']]}
+ ],
+ '16':[
+  {s:'Πρώτη μέρα σε νέο τμήμα (νέα ομάδα προσανατολισμού). Δεν ξέρεις κανέναν.',o:[
+   ['Συστήνομαι στον/στη διπλανό/ή και ρωτάω πώς είναι ο καθηγητής του μαθήματος.','best','Η κοινή κατάσταση (όλοι είστε καινούργιοι) είναι το καλύτερο θέμα. Οι περισσότεροι περιμένουν ακριβώς αυτό το πρώτο βήμα.'],
+   ['Περιμένω να περάσει ο πρώτος μήνας να δω ποιοι είναι.','ok','Η παρατήρηση έχει αξία, αλλά οι παρέες σχηματίζονται τις πρώτες εβδομάδες. Δοκίμασε τουλάχιστον ένα «γεια» τη μέρα.'],
+   ['Μιλάω μόνο με τους παλιούς μου φίλους στα μηνύματα.','weak','Οι παλιοί φίλοι είναι στήριγμα, αλλά δεν σε βοηθούν να χτίσεις κάτι εδώ. Κράτα και τα δύο.']]},
+  {s:'Η παρέα οργανώνει πάρτι γενεθλίων. Τα μεγάλα πλήθη σε κουράζουν πολύ.',o:[
+   ['Πάω για μία ώρα, έχοντας κανονίσει από πριν πότε φεύγω, και προτείνω μετά έναν καφέ πιο μικρό.','best','Σέβεσαι τα όριά σου και μένεις μέσα στην παρέα. Οι ήσυχοι άνθρωποι συχνά συνδέονται καλύτερα ένας‑ένας.'],
+   ['Λέω ότι είμαι άρρωστος/η.','weak','Γλιτώνεις το άγχος, αλλά αν γίνεται συχνά οι άλλοι σταματούν να σε καλούν. Η ειλικρίνεια («τα πολλά άτομα με κουράζουν») συνήθως γίνεται σεβαστή.'],
+   ['Πάω και μένω ως το τέλος, ενώ νιώθω χάλια.','ok','Θέλει κουράγιο, αλλά δεν χρειάζεται να υποφέρεις για να ανήκεις. Μια αρχή είναι μια αρχή.']]},
+  {s:'Σε συζήτηση μέσα στην τάξη έχεις διαφορετική άποψη από σχεδόν όλους.',o:[
+   ['Λέω: «Το βλέπω λίγο αλλιώς» και εξηγώ με ένα παράδειγμα.','best','Η διαφωνία με σεβασμό δείχνει αυτοπεποίθηση. Συχνά κάποιος άλλος σκεφτόταν το ίδιο και τώρα βρίσκεις σύμμαχο.'],
+   ['Σωπαίνω για να μη φανώ περίεργος/η.','ok','Κατανοητό, αλλά έτσι οι άλλοι δεν σε γνωρίζουν πραγματικά. Μπορείς να το πεις μετά σε έναν συμμαθητή ιδιαιτέρως.'],
+   ['Λέω ότι όλοι κάνουν λάθος.','weak','Η άποψή σου μπορεί να είναι σωστή, αλλά ο τρόπος κλείνει τη συζήτηση και φέρνει άμυνα.']]},
+  {s:'Ένας φίλος σου σταμάτησε ξαφνικά να σου μιλάει και δεν ξέρεις γιατί.',o:[
+   ['Του μιλάω ιδιαιτέρως: «Νιώθω ότι κάτι άλλαξε. Όλα καλά μεταξύ μας;»','best','Μιλάς για το πώς νιώθεις χωρίς να κατηγορείς. Του δίνεις χώρο να εξηγήσει· ίσως δεν έχει καν σχέση με σένα.'],
+   ['Τον αγνοώ κι εγώ.','weak','Η σιωπή απέναντι στη σιωπή συνήθως τελειώνει τη φιλία χωρίς να μάθει κανείς τι έγινε.'],
+   ['Ρωτάω τους άλλους τι λέει για μένα.','ok','Θέλεις να καταλάβεις, και είναι λογικό. Όμως οι ιστορίες από τρίτους συχνά μπερδεύουν τα πράγματα περισσότερο.']]}
+ ]
+};
+const SC_ES=[
+ {s:'Ένας νέος μαθητής ήρθε στην τάξη πριν από μία εβδομάδα. Στα διαλείμματα κάθεται μόνος στα σκαλιά.',o:[
+  ['Του λέω: «Εμείς είμαστε στο γήπεδο, θες να έρθεις;»','best','Συγκεκριμένη πρόσκληση με τόπο είναι πολύ πιο εύκολο να ειπωθεί «ναι» από ένα γενικό «αν θες κάτι, πες μου».'],
+  ['Σκέφτομαι ότι μάλλον του αρέσει να είναι μόνος.','ok','Μπορεί. Αλλά ένα «γεια» δεν κοστίζει τίποτα και του αφήνει την επιλογή.'],
+  ['Περιμένω να τον βοηθήσουν οι καθηγητές.','weak','Οι ενήλικες δεν είναι στην αυλή όπως είσαι εσύ. Οι συνομήλικοι κάνουν τη μεγαλύτερη διαφορά.']]},
+ {s:'Βλέπεις έναν μικρότερο μαθητή να τον πειράζουν κάθε μέρα στην ουρά του κυλικείου.',o:[
+  ['Τον πλησιάζω μετά, του λέω ότι το είδα και ρωτάω αν θέλει να πάμε μαζί σε έναν καθηγητή.','best','Αυτό κάνουν οι «compañeros ayudantes»: στέκονται δίπλα, δεν λύνουν μόνοι τους. Κι εσύ μένεις ασφαλής.'],
+  ['Γελάω κι εγώ για να μη γίνω ο επόμενος στόχος.','weak','Ο φόβος είναι αληθινός. Όμως το γέλιο των θεατών δίνει δύναμη σε αυτόν που πειράζει.'],
+  ['Δεν ανακατεύομαι, δεν είναι δική μου δουλειά.','ok','Δεν χρειάζεται να μπεις στη μέση. Μπορείς όμως να το πεις διακριτικά σε έναν ενήλικα· αυτό είναι ήδη βοήθεια.']]},
+ {s:'Βρίσκεις μια συμμαθήτρια να κλαίει στο τέλος του διαδρόμου.',o:[
+  ['Τη ρωτάω: «Είσαι καλά; Θες να κάτσω λίγο μαζί σου ή προτιμάς να είσαι μόνη;»','best','Δίνεις δύο επιλογές και σέβεσαι την απάντηση. Δεν χρειάζεται να έχεις λύσεις· η παρουσία σου αρκεί.'],
+  ['Της λέω «Μην κλαις, δεν είναι τίποτα».','weak','Το λες για καλό, αλλά ακούγεται σαν να μη μετράει αυτό που νιώθει.'],
+  ['Φεύγω για να μη φέρω σε δύσκολη θέση κανέναν.','ok','Η διακριτικότητα είναι σεβασμός, αλλά μια ερώτηση της δίνει την ευκαιρία να μη νιώσει μόνη.']]},
+ {s:'Στη Φυσική Αγωγή φτιάχνετε ομάδες. Ένα παιδί μένει πάντα τελευταίο.',o:[
+  ['Όταν έρχεται η σειρά μου, τον/τη διαλέγω νωρίς.','best','Μία κίνηση αλλάζει το μήνυμα για όλη την τάξη. Και την επόμενη φορά κάποιος άλλος μπορεί να κάνει το ίδιο.'],
+  ['Προτείνω στον καθηγητή να φτιάχνει ο ίδιος τις ομάδες.','ok','Καλή ιδέα για όλους. Κι αν δεν γίνει, μπορείς ακόμα να τον/τη διαλέξεις εσύ.'],
+  ['Διαλέγω τους καλύτερους, θέλω να κερδίσουμε.','weak','Το παιχνίδι κρατάει 40 λεπτά· το αίσθημα του «πάντα τελευταίος» πολύ περισσότερο.']]}
+];
+const GOALS=[
+ {t:'Να μιλάω πιο εύκολα με συμμαθητές',s:['Χαιρετώ με το όνομα δύο συμμαθητές σήμερα.','Κάνω μια ερώτηση σε κάποιον για το μάθημα.','Στο διάλειμμα κάθομαι κοντά σε μια ομάδα και λέω κάτι.','Προτείνω κάτι κοινό: διάβασμα μαζί, μια βόλτα, ένα παιχνίδι.']},
+ {t:'Να βρω άτομα με κοινά ενδιαφέροντα',s:['Γράφω τρία πράγματα που μου αρέσουν πολύ.','Ψάχνω έναν όμιλο, ομάδα ή δράση του σχολείου πάνω σε ένα από αυτά.','Πάω σε μία συνάντηση, έστω για να δω.','Μιλάω με ένα άτομο που γνώρισα εκεί.']},
+ {t:'Να νιώθω άνετα στις ομαδικές εργασίες',s:['Λέω μία ιδέα, έστω μικρή.','Αναλαμβάνω έναν συγκεκριμένο ρόλο.','Ρωτάω τη γνώμη ενός μέλους που δεν έχει μιλήσει.','Παρουσιάζω ένα κομμάτι της εργασίας.']},
+ {t:'Να κρατήσω μια φιλία ζωντανή',s:['Στέλνω μήνυμα σε κάποιον με τον οποίο έχουμε καιρό να μιλήσουμε.','Θυμάμαι κάτι που μου είπε και τον ρωτάω πώς πήγε.','Προτείνω να κάνουμε κάτι μαζί.','Του λέω ένα «ευχαριστώ» για κάτι συγκεκριμένο.']}
+];
+const SCALE=['1 · Πολύ μακριά','2 · Μακριά','3 · Στη μέση','4 · Κοντά','5 · Τα κατάφερα'];
+const GIVE=['Βοήθεια σε μαθηματικά','Βοήθεια σε γλώσσα / έκθεση','Αγγλικά ή άλλη γλώσσα','Υπολογιστές και κινητά','Μουσική','Ζωγραφική / σχέδιο','Αθλητισμός','Μαγειρική','Video / μοντάζ','Games','Ακρόαση: είμαι καλός/ή στο να ακούω'];
+const TIMES=['15 λεπτά','30 λεπτά','1 ώρα','Μία φορά την εβδομάδα'];
+const ACTS=[
+ ['Κύκλος ευχαριστιών','Ο καθένας λέει ένα «ευχαριστώ» σε κάποιον της τάξης για κάτι μικρό αυτής της εβδομάδας. Ο εκπαιδευτικός ξεκινά πρώτος.','Από το Klassens tid (Δανία)'],
+ ['Οι κανόνες της παρέας μας','Σε τριάδες γράφουν τρεις κανόνες για το πώς θέλουν να φέρονται στην τάξη. Η ολομέλεια κρατά πέντε και τους κολλάει στον τοίχο.','Από το Lions‑Quest (Γερμανία)'],
+ ['Χάρτης ταλέντων','Κάθε μαθητής γράφει σε χαρτάκι κάτι που μπορεί να διδάξει σε 10 λεπτά. Φτιάχνετε τον πίνακα της Τράπεζας Χρόνου της τάξης.','Από τη Banca del Tempo (Ιταλία)'],
+ ['Ζευγάρια‑γέφυρες','Οι μαθητές που δήλωσαν Βοηθοί κάνουν ζευγάρι με μαθητές μικρότερης τάξης για ένα κοινό μικρό project ενός μήνα.','Από το TEI (Ισπανία)'],
+ ['Το μπίνγκο γνωριμίας','10 λεπτά ελεύθερης κίνησης με το μπίνγκο του σταθμού 2. Μετά: «Τι έμαθες για κάποιον που δεν ήξερες;»','Από τα Εργαστήρια Δεξιοτήτων (Ελλάδα)'],
+ ['Ένα σκαλί την εβδομάδα','Ο καθένας γράφει ιδιωτικά ένα μικρό κοινωνικό βήμα για την εβδομάδα. Την επόμενη φορά μοιράζεται όποιος θέλει πώς πήγε.','Από το SKOLKONTAKT (Σουηδία)'],
+ ['Θέατρο σε 3 λεπτά','Οι ομάδες παίρνουν ένα σενάριο από τον σταθμό 3 και παίζουν δύο εκδοχές: την «κλειστή» και την «ανοιχτή» αντίδραση.','Από το Lions‑Quest (Γερμανία)']
+];
+const PRAC=[
+ {c:'DK',n:'Δανία',t:'Klassens tid και μέτρηση «trivsel»',p:['Μια σταθερή ώρα κάθε εβδομάδα όπου η τάξη συζητά πώς είναι η ομάδα, όχι μόνο ο καθένας χωριστά.','Ετήσια εθνική έρευνα ευημερίας των μαθητών, ανεξάρτητη από τις επιδόσεις.','Έρευνα σε 29.086 μαθητές λυκείου έδειξε ότι 27,5% βιώνει τουλάχιστον μία μορφή κοινωνικής αποσύνδεσης στο σχολείο, και ότι η μοναξιά είναι ο κρίκος με τα ψυχικά προβλήματα.','Νέο ενιαίο πρόγραμμα «Our School Strength» (Mary Foundation, Børns Vilkår, Save the Children).'],a:'Σταθμός 1 «Το θερμόμετρο» + δραστηριότητες για την ώρα της τάξης.',src:[['Frontiers: Social disconnectedness in Danish high schools','https://www.frontiersin.org/articles/10.3389/fnbeh.2021.632906'],['Mary Foundation: Our School Strength','https://www.maryfonden.dk/en/?p=3762']]},
+ {c:'GR',n:'Ελλάδα',t:'Εργαστήρια Δεξιοτήτων',p:['Υποχρεωτική διδακτική ενότητα στο Γυμνάσιο (1 ώρα την εβδομάδα) με βιωματική και ανακαλυπτική μάθηση.','Ο θεματικός κύκλος «Ενδιαφέρομαι και Ενεργώ – Κοινωνική Συναίσθηση και Ευθύνη» καλλιεργεί ενσυναίσθηση, επικοινωνία, συνεργασία, επίλυση συγκρούσεων.','Αξιοποιεί τεχνικές θεάτρου, παιχνιδιού και ομαδικής εργασίας.'],a:'Σταθμός 2 «Σπάσε τον πάγο»: κάρτες συζήτησης και μπίνγκο γνωριμίας.',src:[['ΙΕΠ: Πλαίσιο Προγράμματος Σπουδών Εργαστηρίων Δεξιοτήτων','https://www.iep.edu.gr/wp-content/uploads/2025/01/2024-08-02_ΦΕΚ_3567-ΕΡΓ.ΔΕΞ.pdf'],['ΣΚΑΪ: Τι διδάσκεται στα Εργαστήρια Δεξιοτήτων','https://www.skai.gr/news/greece/ergastiria-deksiotiton-ti-tha-didasketai-sto-neo-ypoxreotiko-mathima/amp']]},
+ {c:'DE',n:'Γερμανία',t:'Lions‑Quest και buddY',p:['Το Lions‑Quest είναι το πιο διαδεδομένο πρόγραμμα δεξιοτήτων ζωής στη Γερμανία: «Erwachsen werden» για 10–14 ετών, «Erwachsen handeln» από την 9η τάξη.','Μελέτες δείχνουν ότι βελτιώνει το κλίμα της τάξης και την κοινωνική συμπεριφορά.','Το πρόγραμμα buddY («Aufeinander achten. Füreinander da sein. Miteinander lernen.»): μαθητές αναλαμβάνουν μικρότερους, βοηθούν στο διάβασμα, γίνονται διαμεσολαβητές.'],a:'Σταθμός 3 «Εγώ στη σκηνή»: σενάρια με επιλογές και ανατροφοδότηση.',src:[['KKH: Lions‑Quest','https://www.kkh.de/leistungen/praevention-vorsorge/gesundheitsfoerderung-setting/lions-quest'],['Bildungsserver: Das buddY‑Programm','https://www.bildungsserver.de/bildung+innovation/bildungplusartikel.html?artid=971']]},
+ {c:'SE',n:'Σουηδία',t:'SKOLKONTAKT',p:['Ομαδική εκπαίδευση κοινωνικών δεξιοτήτων μέσα στο κανονικό σχολείο, για μαθητές με αυτισμό ή κοινωνικές δυσκολίες (μέση ηλικία 17,5 στην πιλοτική μελέτη).','Κάθε μαθητής θέτει προσωπικούς κοινωνικούς στόχους· στην ομάδα του προγράμματος επιτεύχθηκε μεγαλύτερο ποσοστό στόχων.','Μαθητές, εκπαιδευτικοί και διευθυντές ανέφεραν καλύτερη φοίτηση και καλύτερο σχολικό κλίμα.'],a:'Σταθμός 4 «Η σκάλα μου»: στόχος, μικρά βήματα, αυτοαξιολόγηση πριν/μετά.',src:[['Frontiers: SKOLKONTAKT pilot RCT','https://frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2023.1128288/text']]},
+ {c:'IT',n:'Ιταλία',t:'Peer tutoring «La Banca del Tempo»',p:['Πρόγραμμα σε σχολεία δευτεροβάθμιας για την κοινωνικοσυναισθηματική αγωγή, απέναντι σε άγχος, εκφοβισμό και δυσκολίες στις σχέσεις.','Μαθητές προσφέρουν βοήθεια σε συμμαθητές· η μελέτη του Πανεπιστημίου Bozen έδειξε ότι ενισχύεται η ευημερία και χτίζονται δίκτυα στήριξης.','Συναφείς πρακτικές peer education εφαρμόζονται και ως διαπολιτισμική ένταξη μαθητών με μεταναστευτική βιογραφία.'],a:'Σταθμός 5 «Τράπεζα Χρόνου»: κάρτα προσφοράς και ανάγκης.',src:[['unibz: Il peer tutoring a scuola','https://www.unibz.it/en/news/article/francesca-schir'],['OAPEN: La Banca del Tempo','https://library.oapen.org/handle/20.500.12657/106417']]},
+ {c:'ES',n:'Ισπανία',t:'Alumnos ayudantes και TEI',p:['Οι «συμμαθητές βοηθοί» εκπαιδεύονται για να δίνουν συναισθηματική στήριξη σε συνομηλίκους· ωφελούνται και οι ίδιοι στις κοινωνικές τους δεξιότητες.','TEI (Tutoría Entre Iguales): μαθητές της 3ης τάξης ESO γίνονται εθελοντικά συναισθηματικοί μέντορες των μαθητών της 1ης, με επίσημη τελετή, κάρτα και δίπλωμα.','Η εγγύτητα των συνομηλίκων βοηθά να εντοπίζεται νωρίς η δυσφορία.'],a:'Σταθμός 6 «Ο Βοηθός»: σενάρια βοήθειας και κάρτα δέσμευσης.',src:[['Infocop: Compañeros ayudantes','https://www.infocop.es/?p=14176'],['Xunta de Galicia: Programa TEI','https://www.edu.xunta.gal/centros/ceiplaxe/system/files/TEI%20pdf_0.pdf']]}
+];
+
+/* ---------- state ---------- */
+const KEY='parea-v1';
+const blank=()=>({band:'13',xp:0,nick:'',checks:[],cards:0,bingo:{},bingoXp:0,de:{},es:{},goal:null,steps:[false,false,false,false],before:2,after:3,afterSet:false,offers:[],pledge:false,lines:0,give:[],get:[],time:null,lvl:0});
+let S=blank();
+try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(blank(),JSON.parse(raw));}catch(e){}
+function boot(data){ if(data && data.xp!==undefined) S=Object.assign(blank(),data); renderAll(); route(); }
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+try{window.claude?.hot?.snapshot?.(()=>S);}catch(e){}
+
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let toastT;
+function toast(msg){const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1800);}
+function gain(n,msg){S.xp+=n; save(); renderXp(); renderHome(); toast('+'+n+' XP'+(msg?' · '+msg:''));}
+
+/* ---------- completion ---------- */
+function deDone(){return SC_DE[S.band].every((_,i)=>S.de[S.band+'-'+i]);}
+function done(id){
+ switch(id){
+  case 'dk':return S.checks.length>0;
+  case 'gr':return S.cards>=3||S.lines>0;
+  case 'de':return deDone();
+  case 'se':return S.steps.filter(Boolean).length>=2;
+  case 'it':return S.offers.length>0;
+  case 'es':return S.pledge && Object.keys(S.es).length>=2;
+ }}
+
+/* ---------- XP / level ---------- */
+function level(){let i=0; LEVELS.forEach((l,k)=>{if(S.xp>=l[0]) i=k;}); return i;}
+function renderXp(){
+ const i=level(); const cur=LEVELS[i][0], nxt=LEVELS[i+1]?LEVELS[i+1][0]:cur;
+ $('#lvlName').textContent=LEVELS[i][1];
+ $('#xpNum').textContent=S.xp+' XP';
+ $('#xpFill').style.width=(nxt===cur?100:Math.round((S.xp-cur)/(nxt-cur)*100))+'%';
+ if(i>S.lvl){S.lvl=i; save(); setTimeout(()=>toast('Νέο επίπεδο: '+LEVELS[i][1]),1900);}
+ ['13','16'].forEach(b=>$('#band'+b).setAttribute('aria-pressed',S.band===b));
+}
+
+/* ---------- home ---------- */
+function renderHome(){
+ const g=$('#stationsSvg'); let svg='';
+ let lastDone=-1;
+ STATIONS.forEach((s,i)=>{
+  const d=done(s.id); if(d) lastDone=i;
+  const above=s.y<150;
+  svg+=`<a href="#${s.id}" class="st${d?' done':''}" aria-label="Σταθμός ${i+1}: ${esc(s.name)}, ${esc(s.country)}${d?', ολοκληρώθηκε':''}">
+   <circle class="base" cx="${s.x}" cy="${s.y}" r="34"/>
+   <text class="code" x="${s.x}" y="${s.y+8}" text-anchor="middle">${s.code}</text>
+   <text class="lbl" x="${s.x}" y="${above?s.y-50:s.y+60}" text-anchor="middle">${esc(s.name)}</text>
+   <text class="num" x="${s.x}" y="${above?s.y-68:s.y+78}" text-anchor="middle">${i+1} · ${esc(s.country)}</text></a>`;
+ });
+ g.innerHTML=svg;
+ // highlight progress along the route up to the last consecutive done station
+ let k=-1; for(let i=0;i<STATIONS.length;i++){ if(done(STATIONS[i].id)) k=i; else break; }
+ const segs=['M80 205','C150 205,160 95,230 95','S 330 215,380 215','S 470 85,530 85','S 620 205,680 205','S 780 95,830 95'];
+ $('#routeDone').setAttribute('d', k>0?segs.slice(0,k+1).join(' '):'');
+ $('#stationList').innerHTML=STATIONS.map((s,i)=>{const d=done(s.id);return `<a class="scard${d?' done':''}" href="#${s.id}">
+  <div class="row"><span class="chip">${i+1} · ${esc(s.country)}</span>${d?'<span class="chip ok">Έτοιμο</span>':''}</div>
+  <strong>${esc(s.name)}</strong><small>${esc(s.desc)}</small></a>`;}).join('');
+ $('#badges').innerHTML=STATIONS.map(s=>`<span class="badge${done(s.id)?' on':''}">${esc(s.name)}</span>`).join('')+
+  `<span class="badge${S.lines>0?' on':''}">Μπίνγκο!</span><span class="badge${S.checks.length>=5?' on':''}">5 μέρες θερμόμετρο</span><span class="badge${S.steps.every(Boolean)?' on':''}">Κορυφή της σκάλας</span>`;
+}
+
+/* ---------- DK ---------- */
+let mSelf=null,mClass=null;
+function moodRow(el,cb,getv){
+ el.innerHTML=MOODS.map((m,i)=>`<button type="button" data-v="${i}" aria-pressed="false"><span class="bar" style="height:${8+i*7}px"></span>${m}</button>`).join('');
+ el.onclick=e=>{const b=e.target.closest('button'); if(!b) return; cb(+b.dataset.v); [...el.children].forEach(x=>x.setAttribute('aria-pressed',x===b));};
+}
+function renderDk(){
+ moodRow($('#moodSelf'),v=>mSelf=v); moodRow($('#moodClass'),v=>mClass=v);
+ const h=S.checks.slice(-14);
+ $('#hist').innerHTML=h.map(c=>`<i style="height:${12+c.s*11}px" title="${esc(c.d)}: ${MOODS[c.s]}"></i>`).join('');
+ $('#histNote').textContent=h.length?`${S.checks.length} καταγραφές. Η στήλη δείχνει πώς ένιωθες εσύ.`:'Κάνε την πρώτη σου καταγραφή για να δεις τη γραμμή σου.';
+ const last=S.checks[S.checks.length-1];
+ $('#tipToday').textContent=TIPS[last?last.s:2];
+}
+$('#saveCheck').onclick=()=>{
+ if(mSelf===null){toast('Διάλεξε πρώτα πώς είσαι'); return;}
+ const d=new Date().toLocaleDateString('el-GR');
+ S.checks.push({d,s:mSelf,c:mClass===null?-1:mClass});
+ let msg='Καταγράφηκε.';
+ if(mSelf<=1) msg='Ευχαριστώ που το είπες. Αν κρατάει μέρες, μίλα με έναν ενήλικα που εμπιστεύεσαι: <a href="#help">δες ποιον</a>.';
+ else if(mClass!==null && mClass<=1) msg='Η τάξη δεν είναι σε καλή μέρα. Ίσως αξίζει να το πείτε στην ώρα της τάξης.';
+ else if(mSelf>=3) msg='Ωραία! Μπορείς να μοιραστείς λίγη από αυτή την ενέργεια: ποιος δίπλα σου μοιάζει μόνος σήμερα;';
+ $('#checkFb').innerHTML=msg; $('#checkFb').hidden=false;
+ gain(5); renderDk();
+};
+
+/* ---------- GR ---------- */
+let lvl=0, cardIx=0;
+function drawCard(){const deck=CARDS[S.band][lvl]; cardIx=(cardIx+1+Math.floor(Math.random()*(deck.length-1)))%deck.length; $('#deckQ').textContent=deck[cardIx]; $('#deckLvl').textContent=['Χαλαρό','Λίγο πιο μέσα','Βαθιά'][lvl];}
+$('#lvlPicks').onclick=e=>{const b=e.target.closest('button'); if(!b) return; lvl=+b.dataset.lvl; [...$('#lvlPicks').children].forEach(x=>x.setAttribute('aria-pressed',x===b)); drawCard();};
+$('#nextCard').onclick=drawCard;
+$('#askedCard').onclick=()=>{S.cards++; gain(5, S.cards===3?'Σταθμός ολοκληρώθηκε':''); drawCard();};
+function lines(){const on=i=>!!S.bingo[i]; let n=0;
+ for(let r=0;r<4;r++){ if([0,1,2,3].every(c=>on(r*4+c))) n++; if([0,1,2,3].every(c=>on(c*4+r))) n++; }
+ if([0,5,10,15].every(on)) n++; if([3,6,9,12].every(on)) n++; return n;}
+function renderBingo(){
+ $('#bingo').innerHTML=BINGO.map((t,i)=>{const v=S.bingo[i]; return `<button type="button" class="${v?'on':''}" data-i="${i}" aria-pressed="${!!v}">${esc(t)}${v&&v!==true?`<small>${esc(v)}</small>`:''}</button>`;}).join('');
+ $('#bingoStat').textContent=`${Object.keys(S.bingo).length} / 16 κουτιά · ${lines()} γραμμές`;
+}
+$('#bingo').onclick=e=>{const b=e.target.closest('button'); if(!b) return; const i=b.dataset.i;
+ if(S.bingo[i]){delete S.bingo[i];} else {S.bingo[i]=$('#bingoName').value.trim()||true; $('#bingoName').value='';}
+ const L=lines(); if(L>S.lines){S.lines=L; gain(20,'Μπίνγκο!');} else if(S.bingo[i] && S.bingoXp<48){S.bingoXp+=3; gain(3);} else save();
+ renderBingo();};
+$('#bingoReset').onclick=()=>{S.bingo={}; save(); renderBingo();};
+
+/* ---------- Scenarios ---------- */
+function scenario(el,list,store,prefix,onDone,next){
+ const allDone=()=>list.every((_,i)=>store[prefix+i]);
+ let ix=list.findIndex((_,i)=>!store[prefix+i]); if(ix<0) ix=list.length;
+ function dots(){return `<div class="dots">${list.map((_,i)=>`<i class="${i===ix?'cur':(store[prefix+i]?(list[i].o[store[prefix+i]-1][1]==='best'?'best':'ok'):'')}"></i>`).join('')}</div>`;}
+ function summary(){
+  const best=list.filter((x,i)=>store[prefix+i] && x.o[store[prefix+i]-1][1]==='best').length;
+  const missing=list.length-list.filter((_,i)=>store[prefix+i]).length;
+  el.innerHTML=`${dots()}
+   <h3>${missing?'Σχεδόν τελείωσες!':'Ολοκλήρωσες τον σταθμό!'}</h3>
+   <p>${missing?`Σου ${missing===1?'μένει 1 σενάριο':'μένουν '+missing+' σενάρια'} χωρίς απάντηση.`:`Διάλεξες τη «δυνατή επιλογή» σε ${best} από ${list.length} σενάρια. Θυμήσου: στην πραγματική ζωή δεν χρειάζεται να είσαι τέλειος/α· ένα μικρό βήμα αρκεί.`}</p>
+   <div class="row-btns">
+    ${missing?`<button class="btn primary" type="button" data-goto="${list.findIndex((_,i)=>!store[prefix+i])}">Συνέχισε στο επόμενο σενάριο</button>`:(next[0].startsWith('#')?`<a class="btn primary" href="${next[0]}" style="text-decoration:none">${next[1]}</a>`:`<button class="btn primary" type="button" data-scroll="${next[0]}">${next[1]}</button>`)}
+    <button class="btn ghost" type="button" data-goto="0">Ξαναδές τα σενάρια</button>
+    <a class="btn ghost" href="#home" style="text-decoration:none">Πίσω στον χάρτη</a>
+   </div>`;
+ }
+ function draw(){
+  if(ix>=list.length){summary(); return;}
+  const sc=list[ix], key=prefix+ix, ans=store[key], last=ix===list.length-1;
+  el.innerHTML=`<div class="row-btns" style="justify-content:space-between">${dots()}<span class="small muted">Σενάριο ${ix+1} από ${list.length}</span></div>
+   <p class="situ">${esc(sc.s)}</p>
+   <div class="opts">${sc.o.map((o,j)=>`<button type="button" data-j="${j}" ${ans?'disabled':''} class="${ans===j+1?'picked '+o[1]:''}">${esc(o[0])}</button>`).join('')}</div>
+   ${ans?`<div class="fb"><b>${{best:'Δυνατή επιλογή.',ok:'Καταλαβαίνω γιατί.',weak:'Κατανοητό, αλλά…'}[sc.o[ans-1][1]]}</b> ${esc(sc.o[ans-1][2])}</div>`:'<p class="small muted">Δεν υπάρχει «λάθος» άνθρωπος, μόνο επιλογές που ανοίγουν ή κλείνουν πόρτες. Διάλεξε αυτό που θα έκανες στ\' αλήθεια.</p>'}
+   <div class="row-btns"><button class="btn ghost" type="button" data-nav="-1" ${ix===0?'disabled':''}>Προηγούμενο</button><button class="btn ${ans?'primary':''}" type="button" data-nav="1" ${!ans&&last?'disabled':''}>${last?'Ολοκλήρωση':'Επόμενο'}</button>${ans?'<button class="btn ghost" type="button" data-retry="1">Δοκίμασε άλλη απάντηση</button>':''}</div>`;
+ }
+ el.onclick=e=>{
+  const o=e.target.closest('[data-j]'), n=e.target.closest('[data-nav]'), r=e.target.closest('[data-retry]'), g=e.target.closest('[data-goto]'), sc=e.target.closest('[data-scroll]');
+  if(o){const j=+o.dataset.j, key=prefix+ix, first=!store[key]; store[key]=j+1; const q=list[ix].o[j][1];
+   if(first) gain(q==='best'?15:5, allDone()&&prefix!=='e-'?'Σταθμός ολοκληρώθηκε':''); else save(); if(onDone) onDone(); draw();}
+  else if(n){ix=Math.max(0,Math.min(list.length,ix+ +n.dataset.nav)); draw(); el.scrollIntoView({block:'nearest'});}
+  else if(r){delete store[prefix+ix]; save(); renderHome(); draw();}
+  else if(g){ix=+g.dataset.goto; draw();}
+  else if(sc){const t=document.getElementById(sc.dataset.scroll); if(t) t.scrollIntoView({behavior:'smooth',block:'start'});}
+ };
+ draw();
+}
+function renderScen(){ scenario($('#scnDe'),SC_DE[S.band],S.de,S.band+'-',null,['#se','Επόμενος σταθμός: Η σκάλα μου →']); scenario($('#scnEs'),SC_ES,S.es,'e-',()=>renderPass(),['pledgePanel','Πάμε στην κάρτα του Βοηθού ↓']); }
+
+/* ---------- SE ---------- */
+function renderGoals(){
+ $('#goals').innerHTML=GOALS.map((g,i)=>`<button type="button" data-g="${i}" aria-pressed="${S.goal===i}">${esc(g.t)}</button>`).join('');
+ const box=$('#ladderBox'); box.hidden=S.goal===null; box.style.display=S.goal===null?'none':'grid';
+ if(S.goal===null) return;
+ $('#before').value=S.before; $('#beforeLbl').textContent=SCALE[S.before-1];
+ $('#ladder').innerHTML=GOALS[S.goal].s.map((t,i)=>`<label class="${S.steps[i]?'on':''}"><input type="checkbox" data-s="${i}" ${S.steps[i]?'checked':''}><span><b>Σκαλί ${i+1}.</b> ${esc(t)}</span></label>`).join('');
+ const any=S.steps.some(Boolean); $('#afterBox').hidden=!any;
+ $('#after').value=S.after; $('#afterLbl').textContent=SCALE[S.after-1]+(S.afterSet && S.after>S.before?` · Ανέβηκες ${S.after-S.before} ${S.after-S.before===1?'σκαλί':'σκαλιά'} στην κλίμακα!`:'');
+}
+$('#goals').onclick=e=>{const b=e.target.closest('button'); if(!b) return; const g=+b.dataset.g; if(S.goal!==g){S.goal=g; S.steps=[false,false,false,false]; S.afterSet=false;} save(); renderGoals();};
+$('#before').oninput=e=>{S.before=+e.target.value; save(); $('#beforeLbl').textContent=SCALE[S.before-1];};
+$('#after').oninput=e=>{S.after=+e.target.value; const first=!S.afterSet; S.afterSet=true; if(first) gain(5,'Αυτοαξιολόγηση'); else save(); renderGoals();};
+$('#ladder').onchange=e=>{const i=+e.target.dataset.s; S.steps[i]=e.target.checked; if(e.target.checked) gain(10, S.steps.every(Boolean)?'Κορυφή!':'Σκαλί '+(i+1)); else save(); renderGoals();};
+
+/* ---------- IT ---------- */
+function picks(el,arr,key,multi){
+ el.innerHTML=arr.map(t=>`<button type="button" aria-pressed="${multi?S[key].includes(t):S[key]===t}">${esc(t)}</button>`).join('');
+ el.onclick=e=>{const b=e.target.closest('button'); if(!b) return; const t=b.textContent;
+  if(multi){const a=S[key]; const k=a.indexOf(t); k<0?a.push(t):a.splice(k,1);} else S[key]=S[key]===t?null:t;
+  save(); picks(el,arr,key,multi);};
+}
+function renderIt(){
+ picks($('#giveP'),GIVE,'give',true); picks($('#getP'),GIVE.filter(x=>!x.startsWith('Ακρόαση')),'get',true); picks($('#timeP'),TIMES,'time',false);
+ const o=$('#offers');
+ if(!S.offers.length){o.innerHTML='<p class="small muted">Δεν έχεις φτιάξει ακόμα κάρτα. Διάλεξε τουλάχιστον ένα πράγμα που προσφέρεις.</p>'; return;}
+ o.innerHTML=S.offers.map((c,i)=>`<div class="tcard"><h3>Τράπεζα Χρόνου · ${esc(c.n||'Μαθητής/τρια')}</h3>
+  <p class="small"><b>Προσφέρω:</b> ${esc(c.g.join(', '))}</p>${c.w.length?`<p class="small"><b>Θέλω να μάθω:</b> ${esc(c.w.join(', '))}</p>`:''}<p class="small"><b>Χρόνος:</b> ${esc(c.t||'όποτε μπορώ')}</p>
+  <div class="row-btns"><button class="btn ghost" type="button" data-copy="${i}">Αντιγραφή</button><button class="btn ghost" type="button" data-del="${i}">Διαγραφή</button></div></div>`).join('');
+}
+$('#makeCard').onclick=()=>{ if(!S.give.length){toast('Διάλεξε κάτι που προσφέρεις'); return;}
+ S.offers.unshift({n:S.nick,g:[...S.give],w:[...S.get],t:S.time}); S.give=[]; S.get=[]; S.time=null;
+ gain(15,S.offers.length===1?'Σταθμός ολοκληρώθηκε':''); renderIt();};
+$('#offers').onclick=e=>{const c=e.target.closest('[data-copy]'), d=e.target.closest('[data-del]');
+ if(c){const x=S.offers[+c.dataset.copy]; const txt=`Τράπεζα Χρόνου – ${x.n||'Μαθητής/τρια'}\nΠροσφέρω: ${x.g.join(', ')}\n${x.w.length?'Θέλω να μάθω: '+x.w.join(', ')+'\n':''}Χρόνος: ${x.t||'όποτε μπορώ'}`;
+  try{navigator.clipboard.writeText(txt).then(()=>toast('Αντιγράφηκε'),()=>toast('Επίλεξε το κείμενο και αντίγραψέ το'));}catch(err){toast('Επίλεξε το κείμενο και αντίγραψέ το');}}
+ if(d){S.offers.splice(+d.dataset.del,1); save(); renderIt(); renderHome();}};
+
+/* ---------- ES pledge ---------- */
+function renderPass(){
+ const pl=[...document.querySelectorAll('.pl')];
+ pl.forEach(p=>{p.checked=S.pledge||p.checked; p.closest('label').classList.toggle('on',p.checked);});
+ $('#pledgeBtn').disabled=S.pledge||!pl.every(p=>p.checked);
+ $('#pledgeBtn').textContent=S.pledge?'Έχεις δεσμευτεί':'Δεσμεύομαι (+20 XP)';
+ $('#passBox').innerHTML=S.pledge?`<div class="pass"><span class="small">Κάρτα Βοηθού · σχολική χρονιά ${schoolYear()}</span><span class="n">${esc(S.nick||'Βοηθός')}</span><span class="t">Δεν αφήνω κανέναν μόνο.</span><span class="small">Ζήτα από τον/την υπεύθυνο του τμήματος να υπογράψει την κάρτα σου.</span></div>`:'';
+}
+function schoolYear(){const d=new Date(); const y=d.getMonth()>=8?d.getFullYear():d.getFullYear()-1; return y+'–'+String(y+1).slice(2);}
+document.querySelectorAll('.pl').forEach(p=>p.onchange=renderPass);
+$('#pledgeBtn').onclick=()=>{S.pledge=true; gain(20,'Είσαι Βοηθός'); renderPass();};
+
+/* ---------- Practices ---------- */
+$('#prac').innerHTML=PRAC.map(p=>`<article class="pc"><div class="flag">${p.c}</div><div class="body"><h3>${esc(p.n)} · ${esc(p.t)}</h3><ul>${p.p.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p class="small"><b>Στην εφαρμογή:</b> ${esc(p.a)}</p><p class="small">Πηγές: ${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · ')}</p></div></article>`).join('');
+
+/* ---------- Teacher ---------- */
+let actIx=0;
+function showAct(){const a=ACTS[actIx]; $('#actT').textContent=a[0]; $('#actD').textContent=a[1]; $('#actO').textContent=a[2];}
+$('#nextAct').onclick=()=>{actIx=(actIx+1)%ACTS.length; showAct();};
+const DEMO_NAMES='Άννα\nΜιχάλης\nΕλένη\nΓιώργος\nΣοφία\nΆρης\nΜαρίνα\nΝίκος\nΧριστίνα\nΠαύλος\nΔέσποινα\nΚώστας';
+const NAMES_KEY='parea-class-list';
+function parseNames(txt){
+ const out=[];
+ txt.replace(/\r/g,'').split('\n').forEach(line=>{
+  line=line.trim(); if(!line) return;
+  if(/^(α\/?α|αα|a\/a|επώνυμο|επωνυμο|όνομα|ονομα|ονοματεπώνυμο|μαθητ)/i.test(line)) return; // header rows
+  if(/[\t;]/.test(line)){ // spreadsheet row: keep first two text cells (e.g. Επώνυμο + Όνομα)
+   const cells=line.split(/[\t;]/).map(c=>c.replace(/^"|"$/g,'').trim()).filter(c=>c && !/^[\d\s.\-\/]+$/.test(c));
+   if(cells.length) out.push(cells.slice(0,2).join(' '));
+   return;
+  }
+  line.split(',').forEach(part=>{
+   const n=part.replace(/^\s*(\d+|[α-ωa-z])[\.\)\-:]\s*/i,'').replace(/^[-•*·]\s*/,'').replace(/\s+/g,' ').trim();
+   if(n && !/^\d+$/.test(n)) out.push(n);
+  });
+ });
+ return [...new Set(out)];
+}
+function updateNames(){
+ const list=parseNames($('#names').value);
+ $('#nameCount').textContent=list.length===1?'1 μαθητής':list.length+' μαθητές';
+ $('#namePreview').textContent=list.length?'Θα χρησιμοποιηθούν: '+list.slice(0,40).join(' · ')+(list.length>40?' …':''):'';
+ $('#makeGroups').disabled=list.length<2;
+ try{localStorage.setItem(NAMES_KEY,$('#names').value);}catch(e){}
+ return list;
+}
+try{const v=localStorage.getItem(NAMES_KEY); $('#names').value=v!==null?v:DEMO_NAMES;}catch(e){$('#names').value=DEMO_NAMES;}
+$('#names').addEventListener('input',updateNames);
+$('#nameDemo').onclick=()=>{$('#names').value=DEMO_NAMES; updateNames();};
+$('#nameClear').onclick=()=>{$('#names').value=''; $('#groups').innerHTML=''; updateNames(); $('#names').focus();};
+$('#nameFile').onchange=e=>{const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+ r.onload=()=>{$('#names').value=r.result; updateNames(); toast('Φορτώθηκε: '+f.name);}; r.onerror=()=>toast('Το αρχείο δεν διαβάστηκε. Δοκιμάστε .txt ή .csv');
+ r.readAsText(f); e.target.value='';};
+updateNames();
+$('#makeGroups').onclick=()=>{
+ const names=updateNames(); if(names.length<2){toast('Χρειάζονται τουλάχιστον 2 ονόματα'); return;}
+ for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [names[i],names[j]]=[names[j],names[i]];}
+ const size=+$('#gsize').value; const n=Math.max(1,Math.round(names.length/size)); const gs=Array.from({length:n},()=>[]);
+ names.forEach((x,i)=>gs[i%n].push(x));
+ $('#groups').innerHTML=gs.map((g,i)=>`<div><b>Ομάδα ${i+1}</b>${g.map(esc).join('<br>')}</div>`).join('');
+};
+let tLeft=300, tRun=null;
+function tShow(){$('#timer').textContent=String(Math.floor(tLeft/60)).padStart(2,'0')+':'+String(tLeft%60).padStart(2,'0');}
+document.querySelectorAll('[data-min]').forEach(b=>b.onclick=()=>{clearInterval(tRun); tRun=null; tLeft=+b.dataset.min*60; $('#tGo').textContent='Έναρξη'; tShow();});
+$('#tGo').onclick=()=>{ if(tRun){clearInterval(tRun); tRun=null; $('#tGo').textContent='Συνέχεια'; return;}
+ $('#tGo').textContent='Παύση'; tRun=setInterval(()=>{tLeft--; tShow(); if(tLeft<=0){clearInterval(tRun); tRun=null; $('#tGo').textContent='Έναρξη'; tLeft=0; tShow(); toast('Τέλος χρόνου');}},1000);};
+
+/* ---------- global ---------- */
+document.querySelectorAll('[data-band]').forEach(b=>b.onclick=()=>{S.band=b.dataset.band; save(); renderXp(); renderScen(); drawCard(); renderHome();});
+$('#nick').oninput=e=>{S.nick=e.target.value; save(); renderPass();};
+let resetArm=false;
+$('#resetAll').onclick=e=>{ if(!resetArm){resetArm=true; e.target.textContent='Πάτα ξανά για επιβεβαίωση'; setTimeout(()=>{resetArm=false; e.target.textContent='Μηδενισμός προόδου';},3000); return;}
+ const band=S.band; S=blank(); S.band=band; save(); resetArm=false; e.target.textContent='Μηδενισμός προόδου'; document.querySelectorAll('.pl').forEach(p=>p.checked=false); renderAll(); toast('Η πρόοδος μηδενίστηκε');};
+
+const VIEWS=['home','dk','gr','de','se','it','es','praktikes','teacher','help','lock'];
+const LOCKED=['praktikes','teacher'];
+const PW_HASH='2ev84vk7ni';
+const UKEY='parea-teacher-ok';
+function cyrb53(str,seed=7){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
+let unlocked=false; try{unlocked=sessionStorage.getItem(UKEY)===PW_HASH;}catch(e){}
+let lockWant='teacher';
+function setUnlocked(v){unlocked=v; document.body.classList.toggle('unlocked',v); try{v?sessionStorage.setItem(UKEY,PW_HASH):sessionStorage.removeItem(UKEY);}catch(e){}}
+setUnlocked(unlocked);
+$('#lockForm').addEventListener('submit',e=>{e.preventDefault();
+ const v=$('#pw').value.trim().toLowerCase();
+ if(cyrb53('parea-'+v)===PW_HASH){setUnlocked(true); $('#pw').value=''; $('#pwErr').textContent=''; location.hash='#'+lockWant; route();}
+ else {$('#pwErr').textContent='Λάθος κωδικός. Δοκίμασε ξανά.'; $('#pw').select();}});
+document.querySelectorAll('.relock').forEach(b=>b.onclick=()=>{setUnlocked(false); location.hash='#home'; toast('Ο χώρος εκπαιδευτικών κλείδωσε');});
+function route(){
+ const h=location.hash.replace('#',''); let v=VIEWS.includes(h)&&h!=='lock'?h:'home';
+ if(LOCKED.includes(v)&&!unlocked){lockWant=v; $('#lockTarget').textContent=v==='teacher'?'Για εκπαιδευτικούς':'Καλές πρακτικές'; v='lock'; setTimeout(()=>{try{$('#pw').focus();}catch(e){}},50);}
+ VIEWS.forEach(x=>$('#v-'+x).classList.toggle('on',x===v));
+ document.querySelectorAll('[data-nav]').forEach(a=>{ if(a.tagName==='A') a.toggleAttribute('aria-current',false); });
+ const cur=document.querySelector(`a[data-nav="${v==='lock'?lockWant:v}"]`); if(cur) cur.setAttribute('aria-current','page');
+ if(h && VIEWS.includes(h)) window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+function renderAll(){ $('#nick').value=S.nick||''; renderXp(); renderHome(); renderDk(); drawCard(); renderBingo(); renderScen(); renderGoals(); renderIt(); renderPass(); showAct(); tShow(); }
+
+const H=window.claude&&window.claude.hot;
+if(H&&H.ready) H.ready(boot); else boot((H&&H.data)||{});
+})();
+</script>
+</body>
+</html>

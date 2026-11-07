@@ -1,0 +1,825 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Σχολική Διαμεσολάβηση</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Commissioner:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky module rail on the left, one reading column on the right; two "party" hues (A = blue, B = coral) meet at a neutral mediator green. */
+:root{
+  --bg:#f5f6f3; --surface:#ffffff; --sunk:#eceee9; --line:#d9ddd5;
+  --fg:#1d2321; --muted:#5d6762;
+  --med:#2f7a62; --med-soft:#dcefe7;
+  --a:#3a5fae; --a-soft:#e3e9f7;
+  --b:#c4573a; --b-soft:#f8e4dc;
+  --warn:#b07a12; --warn-soft:#f7ecd3;
+  --display:"Literata",Georgia,"Times New Roman",serif;
+  --body:"Commissioner","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141917; --surface:#1c2220; --sunk:#232b28; --line:#33403b;
+  --fg:#e7ece9; --muted:#9caaa4;
+  --med:#6cc3a4; --med-soft:#1f3a31;
+  --a:#8eaaf0; --a-soft:#232d47;
+  --b:#f08f72; --b-soft:#43261d;
+  --warn:#e6b54f; --warn-soft:#3b301a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141917; --surface:#1c2220; --sunk:#232b28; --line:#33403b;
+  --fg:#e7ece9; --muted:#9caaa4;
+  --med:#6cc3a4; --med-soft:#1f3a31;
+  --a:#8eaaf0; --a-soft:#232d47;
+  --b:#f08f72; --b-soft:#43261d;
+  --warn:#e6b54f; --warn-soft:#3b301a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(1.9rem,4vw,2.6rem);font-weight:700}
+h2{font-size:1.6rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--med);outline-offset:2px}
+.eyebrow{font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--med)}
+.muted{color:var(--muted)}
+
+.shell{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:260px minmax(0,1fr);gap:40px;padding-block:28px 64px}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;display:flex;flex-direction:column;gap:2px}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:18px}
+.brand svg{flex:none}
+.brand b{font-family:var(--display);font-size:1.05rem;line-height:1.2}
+.brand small{display:block;color:var(--muted);font-size:.78rem}
+.navbtn{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;font-size:.92rem;color:var(--muted)}
+.navbtn:hover{background:var(--sunk);color:var(--fg)}
+.navbtn[aria-current="true"]{background:var(--surface);color:var(--fg);font-weight:600;box-shadow:0 0 0 1px var(--line)}
+.navbtn .n{width:22px;height:22px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:700;background:var(--sunk);color:var(--muted);font-variant-numeric:tabular-nums}
+.navbtn.done .n{background:var(--med);color:var(--surface)}
+.navgroup{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:14px 10px 4px;font-weight:600}
+.progress{margin-top:16px;padding:12px;border-radius:var(--r);background:var(--sunk);font-size:.82rem}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--med);transition:width .3s}
+.mobilenav{display:none}
+
+main{min-width:0}
+section.mod{display:flex;flex-direction:column;gap:28px}
+.lead{font-size:1.1rem;max-width:68ch;color:var(--muted)}
+.prose{max-width:68ch;display:flex;flex-direction:column;gap:12px}
+.block{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.quote{font-family:var(--display);font-size:1.2rem;line-height:1.5;border-left:3px solid var(--med);padding:4px 0 4px 18px;max-width:62ch}
+.quote cite{display:block;font-family:var(--body);font-size:.85rem;font-style:normal;color:var(--muted);margin-top:8px}
+.note{background:var(--med-soft);border-radius:var(--r);padding:14px 18px;max-width:68ch}
+.warnbox{background:var(--warn-soft);border-radius:var(--r);padding:14px 18px;max-width:68ch}
+ul.clean{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.9rem}
+button.chip:hover{border-color:var(--med)}
+button.chip[aria-pressed="true"]{background:var(--med);border-color:var(--med);color:var(--surface)}
+.btn{border:1px solid var(--med);background:var(--med);color:var(--surface);border-radius:8px;padding:9px 16px;font-weight:600;font-size:.92rem}
+.btn.ghost{background:transparent;color:var(--med)}
+.btn:hover{filter:brightness(1.08)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pa{color:var(--a);font-weight:700}.pb{color:var(--b);font-weight:700}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.03em}
+.tag.a{background:var(--a-soft);color:var(--a)}.tag.b{background:var(--b-soft);color:var(--b)}.tag.m{background:var(--med-soft);color:var(--med)}.tag.w{background:var(--warn-soft);color:var(--warn)}
+.complete{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px;margin-top:8px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:center}
+.hero svg{width:100%;height:auto;max-width:420px}
+.modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.modcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px}
+.modcard:hover{border-color:var(--med)}
+.modcard .k{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.modcard b{font-family:var(--display);font-size:1.05rem}
+.modcard span{font-size:.88rem;color:var(--muted)}
+
+/* iceberg */
+.iceberg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.berg{border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.berg .top{background:var(--b-soft);padding:22px;text-align:center}
+.berg .top b{font-family:var(--display);font-size:1.6rem;color:var(--b)}
+.berg .under{background:var(--a-soft);padding:18px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:140px}
+.berg .under button{border:1px dashed var(--a);background:transparent;color:var(--a);border-radius:999px;padding:6px 14px;font-size:.9rem}
+.berg .under button.on{background:var(--a);color:var(--surface);border-style:solid}
+
+/* stepper */
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.steps button{flex:1 1 140px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;text-align:left;font-size:.88rem}
+.steps button[aria-pressed="true"]{border-color:var(--med);background:var(--med-soft)}
+.steps button small{display:block;color:var(--muted);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:10px 14px;border-bottom:2px solid transparent;color:var(--muted);font-weight:600;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--med)}
+
+/* flip */
+.flip{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;min-height:130px;display:flex;flex-direction:column;gap:8px}
+.flip .back{display:none;color:var(--muted);font-size:.92rem}
+.flip.open .back{display:block}
+.flip .hint{font-size:.75rem;color:var(--med);font-weight:600;margin-top:auto}
+
+/* curve */
+.curvewrap{overflow-x:auto}
+.curve{width:100%;min-width:560px;height:auto;display:block}
+.curve .pt{cursor:pointer}
+.curve .pt circle{transition:r .15s}
+.curve .pt:hover circle,.curve .pt.on circle{r:13}
+.phase{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.phase h4{margin:0 0 6px;font-size:.8rem;letter-spacing:.07em;text-transform:uppercase}
+
+/* quiz */
+.q{display:flex;flex-direction:column;gap:10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 14px}
+.opt:hover:not(:disabled){border-color:var(--med)}
+.opt.right{border-color:var(--med);background:var(--med-soft)}
+.opt.wrong{border-color:var(--b);background:var(--b-soft)}
+.opt:disabled{cursor:default}
+.fb{font-size:.92rem;padding:10px 14px;border-radius:8px;background:var(--sunk)}
+
+/* practice */
+textarea,input[type=text],select{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:76px;resize:vertical}
+.speaker{font-family:var(--display);font-size:1.1rem;background:var(--b-soft);border-radius:var(--r);padding:14px 18px}
+.model{display:none;background:var(--med-soft);border-radius:8px;padding:12px 16px}
+.model.show{display:block}
+.imsg{font-family:var(--display);font-size:1.2rem;background:var(--a-soft);border-radius:var(--r);padding:16px 20px;min-height:60px}
+.formrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted);font-weight:500}
+
+/* process */
+.proc{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px}
+.proclist{display:flex;flex-direction:column;gap:4px}
+.proclist button{text-align:left;border:1px solid transparent;background:none;border-radius:8px;padding:8px 10px;font-size:.9rem;display:flex;gap:8px;align-items:baseline}
+.proclist button span{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:700;font-size:.8rem}
+.proclist button[aria-pressed="true"]{background:var(--surface);border-color:var(--line);font-weight:600}
+.script{display:flex;flex-direction:column;gap:12px}
+.line{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:start}
+.line .who{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding-top:3px}
+.say{font-family:var(--display);font-size:1.08rem}
+.order{display:flex;gap:6px;align-items:center;font-size:.85rem}
+.tools{display:flex;gap:6px}
+.tools span{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-weight:700;font-size:.8rem;background:var(--med-soft);color:var(--med)}
+
+/* phrases */
+.phr{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.phr:last-child{border-bottom:0}
+.phr .t{font-family:var(--display)}
+.copy{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:4px 10px;font-size:.78rem;flex:none}
+
+/* scenarios */
+.scen{display:flex;flex-direction:column;gap:10px}
+.timer{font-variant-numeric:tabular-nums;font-family:var(--display);font-size:3rem;font-weight:700;line-height:1}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.role{border-radius:8px;padding:10px 12px;background:var(--sunk);font-size:.9rem}
+.role b{display:block}
+
+/* videos */
+.vid{display:flex;flex-direction:column;gap:10px}
+.vid .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.8rem;color:var(--muted)}
+.vid code{font-size:.78rem;background:var(--sunk);padding:2px 6px;border-radius:4px;word-break:break-all}
+
+/* forms */
+.paper{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:28px;display:flex;flex-direction:column;gap:16px;max-width:760px}
+.paper h3{text-align:center;letter-spacing:.06em;text-transform:uppercase;font-size:1rem}
+.checks{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem}
+.checks label{display:flex;gap:6px;align-items:center}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:20px;padding-block:16px 48px}
+  nav.rail{display:none}
+  .mobilenav{display:flex;flex-direction:column;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:5;border-bottom:1px solid var(--line)}
+  .hero,.iceberg,.proc{grid-template-columns:minmax(0,1fr)}
+  .hero svg{max-width:300px}
+  .line{grid-template-columns:minmax(0,1fr);gap:2px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="Ενότητες"></nav>
+  <main>
+    <div class="mobilenav">
+      <label class="f" for="mobsel">Ενότητα</label>
+      <select id="mobsel"></select>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- Δεδομένα ---------- */
+const MODS=[
+ {id:"arxi",g:"Ξεκίνημα",t:"Καλώς ήρθατε",d:"Τι περιέχει το εγχειρίδιο και πώς να το χρησιμοποιήσετε"},
+ {id:"orismos",g:"Μέρος Α · Θυμός & σύγκρουση",t:"Τι είναι η διαμεσολάβηση",d:"Ορισμός, στόχοι, αποκαταστατική δικαιοσύνη"},
+ {id:"thymos",g:"Μέρος Α · Θυμός & σύγκρουση",t:"Κατανοώντας τον θυμό",d:"Τι κρύβεται πίσω του, πώς λειτουργεί, τρεις θεωρίες"},
+ {id:"kyklos",g:"Μέρος Α · Θυμός & σύγκρουση",t:"Ο κύκλος της κλιμάκωσης",d:"Επτά φάσεις και τι κάνουμε σε καθεμία"},
+ {id:"apoklimakosi",g:"Μέρος Α · Θυμός & σύγκρουση",t:"Αποκλιμάκωση στην τάξη",d:"Τα ναι, τα όχι, το «ταίριασμα στη διάθεση»"},
+ {id:"dexiotites",g:"Μέρος Β · Διαμεσολάβηση",t:"Δεξιότητες επικοινωνίας",d:"Ενεργητική ακρόαση, αντανάκλαση, μηνύματα «εγώ»"},
+ {id:"arxes",g:"Μέρος Β · Διαμεσολάβηση",t:"Αρχές επίλυσης συγκρούσεων",d:"Συμφέροντα αντί για θέσεις, λύση με κέρδος για όλους"},
+ {id:"diadikasia",g:"Μέρος Β · Διαμεσολάβηση",t:"Η διαδικασία βήμα προς βήμα",d:"Το σενάριο των δύο διαμεσολαβητών"},
+ {id:"frasies",g:"Εργαλεία",t:"Τράπεζα φράσεων",d:"Ερωτήσεις και επαναδιατυπώσεις έτοιμες για χρήση"},
+ {id:"senaria",g:"Εργαλεία",t:"Παιχνίδι ρόλων",d:"Σενάρια, ρόλοι, χρονόμετρο, ανατροφοδότηση"},
+ {id:"askiseis",g:"Εργαλεία",t:"Ασκήσεις ομάδας",d:"Γνωριμία, μη λεκτική επικοινωνία, κλείσιμο"},
+ {id:"video",g:"Εργαλεία",t:"Βιντεοθήκη",d:"Πότε δείχνουμε κάθε βίντεο και τι συζητάμε"},
+ {id:"entypa",g:"Εργαλεία",t:"Έντυπα",d:"Αίτημα και συμβόλαιο διαμεσολάβησης"},
+ {id:"quiz",g:"Αξιολόγηση",t:"Τελικό κουίζ",d:"Ελέγξτε τι μάθατε"}
+];
+
+const store={get(k,d){try{const v=localStorage.getItem("dm:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+ set(k,v){try{localStorage.setItem("dm:"+k,JSON.stringify(v))}catch(e){}}};
+let done=new Set(store.get("done",[]));
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1600)}
+function copyText(txt,el){
+  const ok=()=>toast("Αντιγράφηκε");
+  try{navigator.clipboard.writeText(txt).then(ok,()=>fallback())}catch(e){fallback()}
+  function fallback(){if(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Επιλέχθηκε · πατήστε Αντιγραφή")}}
+}
+
+/* ---------- Πλοήγηση ---------- */
+function renderNav(cur){
+  let html=`<div class="brand">${logo(34)}<div><b>Σχολική Διαμεσολάβηση</b><small>Εγχειρίδιο εκπαίδευσης</small></div></div>`;
+  let g="";
+  MODS.forEach((m,i)=>{
+    if(m.g!==g){g=m.g;html+=`<div class="navgroup">${esc(g)}</div>`}
+    html+=`<button class="navbtn ${done.has(m.id)?"done":""}" data-go="${m.id}" aria-current="${m.id===cur}"><span class="n">${done.has(m.id)?"✓":i}</span>${esc(m.t)}</button>`;
+  });
+  const pct=Math.round(done.size/MODS.length*100);
+  html+=`<div class="progress">Πρόοδος: <b>${done.size}</b> από ${MODS.length} ενότητες<div class="bar"><i style="width:${pct}%"></i></div></div>`;
+  $("#rail").innerHTML=html;
+  $("#mobsel").innerHTML=MODS.map((m,i)=>`<option value="${m.id}" ${m.id===cur?"selected":""}>${i}. ${esc(m.t)}${done.has(m.id)?" ✓":""}</option>`).join("");
+}
+function go(id){
+  if(!MODS.find(m=>m.id===id))id="arxi";
+  renderNav(id);
+  $("#view").innerHTML=VIEWS[id]();
+  if(INIT[id])INIT[id]();
+  attachComplete(id);
+  try{history.replaceState(null,"","#"+id)}catch(e){}
+  store.set("last",id);
+  window.scrollTo({top:0});
+}
+function completeBar(id){
+  const i=MODS.findIndex(m=>m.id===id),next=MODS[i+1];
+  return `<div class="complete"><button class="btn ${done.has(id)?"ghost":""}" id="markdone">${done.has(id)?"✓ Ολοκληρώθηκε":"Σημείωση ως ολοκληρωμένη"}</button>${next?`<button class="btn ghost" data-go="${next.id}">Επόμενο: ${esc(next.t)} →</button>`:""}</div>`;
+}
+function attachComplete(id){
+  const b=$("#markdone");if(!b)return;
+  b.onclick=()=>{done.has(id)?done.delete(id):done.add(id);store.set("done",[...done]);go(id)};
+}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g){e.preventDefault();go(g.dataset.go)}});
+$("#mobsel").addEventListener("change",e=>go(e.target.value));
+
+function logo(s){return `<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="20" r="10" fill="var(--a)" opacity=".85"/><circle cx="27" cy="20" r="10" fill="var(--b)" opacity=".85"/><path d="M20 12.7a10 10 0 0 1 0 14.6a10 10 0 0 1 0-14.6z" fill="var(--med)"/></svg>`}
+function head(id,extra=""){const i=MODS.findIndex(m=>m.id===id),m=MODS[i];return `<header class="block"><div class="eyebrow">${esc(m.g)} · Ενότητα ${i}</div><h1>${esc(m.t)}</h1>${extra}</header>`}
+
+/* ---------- Ενότητες ---------- */
+const VIEWS={},INIT={};
+
+VIEWS.arxi=()=>`<section class="mod">
+ <div class="hero">
+  <div class="block">
+   <div class="eyebrow">Εκπαίδευση εκπαιδευτικών</div>
+   <h1>Διαμεσολάβηση βήμα προς βήμα</h1>
+   <p class="lead">Ένα διαδραστικό εγχειρίδιο για τη διαχείριση του θυμού και την ειρηνική επίλυση συγκρούσεων στο σχολείο. Βασίζεται στο υλικό εκπαίδευσης της Ομάδας Άμεσης Παρέμβασης.</p>
+   <div class="row"><button class="btn" data-go="${store.get("last","orismos")==="arxi"?"orismos":store.get("last","orismos")}">${done.size?"Συνέχεια από εκεί που σταματήσατε":"Ξεκινήστε"} →</button><button class="btn ghost" data-go="diadikasia">Πάω κατευθείαν στη διαδικασία</button></div>
+  </div>
+  <svg viewBox="0 0 320 232" role="img" aria-label="Δύο πλευρές και ο διαμεσολαβητής στη μέση">
+   <circle cx="110" cy="110" r="80" fill="var(--a)" opacity=".18"/><circle cx="210" cy="110" r="80" fill="var(--b)" opacity=".18"/>
+   <path d="M160 43.7a80 80 0 0 1 0 132.6a80 80 0 0 1 0-132.6z" fill="var(--med)" opacity=".35"/>
+   <text x="80" y="114" text-anchor="middle" font-family="Literata,serif" font-size="30" font-weight="700" fill="var(--a)">Α</text>
+   <text x="240" y="114" text-anchor="middle" font-family="Literata,serif" font-size="30" font-weight="700" fill="var(--b)">Β</text>
+   <text x="160" y="106" text-anchor="middle" font-size="11" font-weight="700" fill="var(--med)">ΚΟΙΝΟ</text>
+   <text x="160" y="121" text-anchor="middle" font-size="11" font-weight="700" fill="var(--med)">ΕΔΑΦΟΣ</text>
+   <text x="160" y="206" text-anchor="middle" font-size="12" fill="var(--muted)">Ο διαμεσολαβητής ελέγχει τη διαδικασία</text>
+   <text x="160" y="222" text-anchor="middle" font-size="12" fill="var(--muted)">τα μέρη ελέγχουν τη λύση</text>
+  </svg>
+ </div>
+ <div class="block"><h2>Οι ενότητες</h2>
+ <div class="modgrid">${MODS.slice(1).map((m,i)=>`<button class="modcard" data-go="${m.id}"><span class="k">${i+1} · ${esc(m.g)}${done.has(m.id)?" · ✓":""}</span><b>${esc(m.t)}</b><span>${esc(m.d)}</span></button>`).join("")}</div></div>
+ <div class="grid g3">
+  <div class="card"><h3>Μέρος Α</h3><p class="muted">Θεωρητικές γνώσεις για τη σύγκρουση, τον θυμό, την επικοινωνία και την ειρηνική επίλυση διαφορών.</p></div>
+  <div class="card"><h3>Μέρος Β</h3><p class="muted">Βιωματική εκπαίδευση: ενσυναίσθηση, αυτοέλεγχος, αλληλοσεβασμός, υπευθυνότητα, υπομονή, αμεροληψία.</p></div>
+  <div class="card"><h3>Πρακτική</h3><p class="muted">Εξάσκηση στη διαδικασία με παιχνίδι ρόλων σε ομάδες των 5–6, με παρατηρητές και ανατροφοδότηση.</p></div>
+ </div>
+ <p class="muted" style="font-size:.85rem">Η πρόοδός σας αποθηκεύεται μόνο σε αυτόν τον browser.</p>
+</section>`;
+
+VIEWS.orismos=()=>`<section class="mod">${head("orismos",`<p class="lead">Πριν από τις τεχνικές, ας συμφωνήσουμε τι εννοούμε όταν λέμε «σχολική διαμεσολάβηση» και τι επιδιώκουμε με αυτήν.</p>`)}
+ <blockquote class="quote" style="margin:0">Η διαδικασία ειρηνικής επίλυσης μιας σύγκρουσης, στο πλαίσιο της σχολικής ζωής, μεταξύ δύο ή περισσότερων διαφωνούντων με τη βοήθεια τρίτου, του διαμεσολαβητή.<cite>Βάσω Αρτινοπούλου, 2010</cite></blockquote>
+ <div class="grid g2">
+  <div class="card"><div class="eyebrow">Μέσα από</div><ul class="clean" style="margin-top:8px"><li>μια δομημένη διαδικασία με σαφή όρια</li><li>ενεργητική συμμετοχή και άμεση επικοινωνία των μερών</li></ul></div>
+  <div class="card"><div class="eyebrow">Με σκοπό</div><ul class="clean" style="margin-top:8px"><li>μια εποικοδομητική επίλυση της διαφωνίας</li><li>με μέγιστο κέρδος και για τα δύο μέρη</li></ul></div>
+ </div>
+ <div class="block"><h2>Τι πετυχαίνει η εκπαίδευση στη διαμεσολάβηση</h2>
+ <p class="muted">Βοηθά μαθητές και εκπαιδευτικούς να κατανοήσουν τη φύση της σύγκρουσης και στοχεύει (Jones, 2004):</p>
+ <div class="grid g3">
+  <div class="card"><b>Ασφαλές περιβάλλον</b><p class="muted">Ένα ασφαλές και εποικοδομητικό περιβάλλον μάθησης.</p></div>
+  <div class="card"><b>Ανάπτυξη</b><p class="muted">Κοινωνική και συναισθηματική ανάπτυξη όλων των εμπλεκομένων.</p></div>
+  <div class="card"><b>Κοινότητα</b><p class="muted">Μια κοινότητα όπου οι συγκρούσεις είναι μέρος της υγιούς ανάπτυξης.</p></div>
+ </div></div>
+ <div class="block"><h2>Διαμεσολάβηση και αποκαταστατική δικαιοσύνη</h2>
+ <p class="prose">Η αποκαταστατική δικαιοσύνη (Restorative Justice) δεν σταματά στην τιμωρία. Η διαμεσολάβηση είναι το εργαλείο της (Karp & Breslin, 2001). Πατήστε κάθε στόχο:</p>
+ <div class="grid g3" id="rj"></div></div>
+ <div class="block"><h2>Τρεις βασικοί κανόνες της διαδικασίας</h2>
+ <div class="grid g3">
+  <div class="card"><span class="tag m">ΟΥΔΕΤΕΡΟΤΗΤΑ</span><p style="margin-top:8px">Ο διαμεσολαβητής μένει ουδέτερος και φροντίζει τις ισορροπίες. Προετοιμάζεται μέσα από εκπαίδευση, πρακτική εξάσκηση και εποπτεία.</p></div>
+  <div class="card"><span class="tag a">ΕΛΕΓΧΟΣ</span><p style="margin-top:8px">Ο διαμεσολαβητής ελέγχει τη <b>διαδικασία</b>. Τα μέρη ελέγχουν το <b>αποτέλεσμα</b>. Μόνο λύσεις που προτείνουν τα ίδια τα μέρη εφαρμόζονται πραγματικά.</p></div>
+  <div class="card"><span class="tag b">ΕΘΕΛΟΝΤΙΚΗ ΣΥΜΜΕΤΟΧΗ</span><p style="margin-top:8px">Αν τα μέρη δεν δεχτούν, ακολουθείται η συνηθισμένη διαδικασία του σχολείου.</p></div>
+ </div></div>
+ ${completeBar("orismos")}</section>`;
+INIT.orismos=()=>{
+ const items=[["Ο δράστης","Διευθέτηση της συμπεριφοράς του θύτη/δράστη: αναλαμβάνει ευθύνη αντί απλώς να τιμωρείται."],["Το θύμα","Αποκατάσταση της βλάβης και του θύματος: ακούγεται τι έπαθε και τι χρειάζεται."],["Η σχέση","Επανόρθωση των σχέσεων και της επικοινωνίας των ατόμων, ώστε να συνυπάρχουν ξανά στο σχολείο."]];
+ $("#rj").innerHTML=items.map(([a,b])=>`<button class="flip"><b>${a}</b><span class="back">${b}</span><span class="hint">Πατήστε για να δείτε</span></button>`).join("");
+ $("#rj").querySelectorAll(".flip").forEach(f=>f.onclick=()=>f.classList.toggle("open"));
+};
+
+VIEWS.thymos=()=>`<section class="mod">${head("thymos",`<p class="lead">Ο θυμός είναι φυσιολογικό συναίσθημα. Το ζητούμενο είναι να τον καταλαβαίνουμε, σε εμάς και στους μαθητές μας, πριν γίνει έκρηξη.</p>`)}
+ <blockquote class="quote" style="margin:0">«Οποιοσδήποτε μπορεί να θυμώσει· είναι πολύ εύκολο. Αλλά το να είσαι θυμωμένος με το σωστό άτομο, στον σωστό βαθμό, τη σωστή ώρα, για τον σωστό λόγο και με τον σωστό τρόπο, αυτό είναι το δύσκολο.»<cite>Αριστοτέλης</cite></blockquote>
+
+ <div class="block"><h2>Τι κρύβεται κάτω από τον θυμό;</h2>
+ <div class="iceberg">
+  <div class="berg"><div class="top"><b>ΘΥΜΟΣ</b><p class="muted" style="font-size:.85rem">αυτό που βλέπουμε</p></div>
+   <div class="under" id="berg"></div></div>
+  <div class="prose"><p>Ο θυμός θεωρείται <b>δευτερεύον συναίσθημα</b>. Από κάτω βρίσκονται άλλα, πιο ευάλωτα συναισθήματα. Πατήστε τα για να τα φέρετε στην επιφάνεια.</p>
+  <div class="note"><b>Θυμός = απειλή.</b> Συνοπτικά, αυτό που νιώθουμε όταν θυμώνουμε είναι ότι κάτι μας απειλεί.</div>
+  <p class="muted">Σπάνια πίσω από τον συστηματικό θυμό υπάρχουν συναισθηματικές διαταραχές ή διαταραχές προσωπικότητας. Τότε χρειάζεται ειδική αντιμετώπιση.</p></div>
+ </div></div>
+
+ <div class="block"><h2>Ο θυμός ως πυροτέχνημα</h2>
+ <p class="muted">Fiendler & Ecton, 1986. Δείτε τα τρία στάδια:</p>
+ <div class="steps" id="fw"></div>
+ <div class="card" id="fwout"></div>
+ <p class="prose">Μια άλλη εικόνα είναι η <b>θύελλα</b>: χρειάζονται συγκεκριμένες συνθήκες για να ξεσπάσει, αλλά μπορούμε να μάθουμε να διαβάζουμε τις ενδείξεις και να προστατευτούμε. Μερικές φορές ξεσπά απότομα, γι' αυτό πρέπει να ξέρουμε πώς να την αντιμετωπίσουμε.</p>
+ <div class="card"><div class="eyebrow">Ενδείξεις ότι έρχεται ξέσπασμα</div><div class="chips" style="margin-top:10px">${["Ένταση της φωνής","Βλέμμα","Έκφραση προσώπου","Στάση του σώματος","Κινητικότητα","Συσπείρωση ομάδων"].map(x=>`<span class="chip">${x}</span>`).join("")}</div></div>
+ </div>
+
+ <div class="block"><h2>Τι συμβαίνει στο σώμα</h2>
+ <div class="grid g2">
+  <div class="card"><ul class="clean"><li>Σφιγμένο στομάχι, εφίδρωση</li><li>Κόκκινο και μετά χλωμό πρόσωπο</li><li>Τεντωμένοι μύες</li><li>Γρήγορη αναπνοή, γρήγοροι παλμοί, αυξημένη πίεση</li><li>Διεσταλμένες κόρες ματιών</li><li>Μικρές, έντονες, γρήγορες κινήσεις</li></ul></div>
+  <div class="prose"><p>Ο εγκέφαλος στέλνει μήνυμα και η αδρεναλίνη ετοιμάζει το σώμα για μάχη. Το αίμα φεύγει από το στομάχι και το πρόσωπο προς τους μύες. Αυτό βοηθά αν παλεύουμε με θηρία ή τρέχουμε σε αγώνα.</p><p>Σε όλες τις άλλες περιπτώσεις <b>ο συστηματικός θυμός φθείρει το σώμα</b>. Όσο πιο συχνά θυμώνουμε, τόσο πιο εύκολα θυμώνουμε ξανά, και μετά από κάθε ξέσπασμα ακολουθούν κενό, ενοχή και υπερευαισθησία.</p></div>
+ </div></div>
+
+ <div class="block"><h2>Τρεις θεωρίες, τρεις φακοί</h2>
+ <div class="tabs" role="tablist" id="thtabs"></div>
+ <div class="card" id="thout"></div></div>
+
+ <div class="block"><h2>Γνωσιακά λάθη που πυροδοτούν θυμό</h2>
+ <p class="muted">Κατά τον Aaron Beck. Πατήστε κάθε κάρτα για ένα σχολικό παράδειγμα.</p>
+ <div class="grid g2" id="cog"></div>
+ <div class="note"><b>Παράδειγμα:</b> Ένας γνωστός περνά δίπλα μας και δεν μας χαιρετά. «Με αγνόησε επίτηδες» ή «Δεν με είδε»; Η ερμηνεία, όχι το γεγονός, ορίζει πόσος θυμός θα ακολουθήσει. Η διαμεσολάβηση δουλεύει ακριβώς εδώ: κάθε πλευρά ακούει την ιστορία της άλλης και βλέπει πού έκανε λάθος η δική της ερμηνεία.</div>
+ </div>
+
+ <div class="block"><h2>Θυμός: φίλος ή εχθρός;</h2>
+ <div class="grid g2">
+  <div class="card"><span class="tag m">ΕΠΟΙΚΟΔΟΜΗΤΙΚΟΣ</span><p style="margin-top:8px">Ο φυσιολογικός θυμός μάς κινητοποιεί να βρούμε λύσεις. Μπορεί επίσης να λειτουργήσει ως κάθαρση για μαζεμένα συναισθήματα απελπισίας και αβοηθητότητας.</p></div>
+  <div class="card"><span class="tag b">ΚΑΤΑΣΤΡΟΦΙΚΟΣ</span><p style="margin-top:8px">Ο προβληματικός θυμός δημιουργεί προβλήματα αντί να τα λύνει. Φέρνει άμεσο αποτέλεσμα, αλλά μακροπρόθεσμα το κόστος είναι τεράστιο.</p></div>
+ </div>
+ <p class="muted">Η «πίτα του θυμού» του Potter-Efron: τομείς της ζωής που επηρεάζονται.</p>
+ <div class="chips">${["Υγεία: σωματική, συναισθηματική, πνευματική","Οικογένεια","Σχολείο","Φίλοι & συνομήλικοι","Νόμος","Οικονομικά","Σύστημα αξιών"].map(x=>`<span class="chip">${x}</span>`).join("")}</div>
+ <div class="grid g2">
+  <div class="card"><b>Οικογένεια</b><p class="muted">Θυμωμένοι γονείς έχουν θυμωμένα παιδιά, που γίνονται οι επόμενοι θυμωμένοι γονείς. Δεν απαντάμε στον θυμό του παιδιού με ίσο ή μεγαλύτερο θυμό, ούτε υποτασσόμαστε σε αυτόν.</p></div>
+  <div class="card"><b>Συνομήλικοι</b><p class="muted">Όσο καλύτερα συναναστρέφεται ένα παιδί με συνομηλίκους, τόσο καλύτερες σχέσεις θα έχει αργότερα. Οι δυσκολίες φαίνονται ήδη από το νηπιαγωγείο.</p></div>
+ </div></div>
+
+ <div class="block"><h2>Ποιες ανάγκες προσπαθεί να καλύψει;</h2>
+ <p class="muted">Βασικές ανθρώπινες ανάγκες κατά τον Glasser (1986). Όποιος δεν ελέγχει τον θυμό του θα προσπαθήσει να τις καλύψει παραβιάζοντας κανόνες ή δικαιώματα άλλων (Maslow, 1968).</p>
+ <div class="grid g3">${[["Επιβίωση","και αναπαραγωγή"],["Αγάπη","και αίσθημα του ανήκειν"],["Δύναμη","αναγνώριση, αξία"],["Ελευθερία","επιλογή, αυτονομία"],["Διασκέδαση","χαρά, μάθηση"]].map(([a,b])=>`<div class="card"><b>${a}</b><p class="muted">${b}</p></div>`).join("")}</div>
+ </div>
+ <div class="note"><b>Περίληψη.</b> Τρεις παράγοντες στον θυμό: <b>σκέψη, συναίσθημα, συμπεριφορά</b>. Τρία μοντέλα ερμηνείας: <b>συμπεριφορικό, ψυχοδυναμικό, γνωσιοσυμπεριφορικό</b>.</div>
+ ${completeBar("thymos")}</section>`;
+INIT.thymos=()=>{
+ const em=["φόβος","ντροπή","απογοήτευση","τραύμα","εκμετάλλευση","ζήλια","απώλεια"];
+ $("#berg").innerHTML=em.map(e=>`<button>${e}</button>`).join("");
+ $("#berg").querySelectorAll("button").forEach(b=>b.onclick=()=>b.classList.toggle("on"));
+ const fw=[["Σπίρτο","Ο πυροδότης","Ένα γεγονός: μια παρατήρηση, μια κοροϊδία, ένα «όχι». Ερώτηση για εμάς: τι μας πυροδοτεί; Μπορούμε να μάθουμε να το εντοπίζουμε νωρίς;"],["Φυτίλι","Το μυαλό","Σκέψεις και συναισθήματα: «Με έχει στο μάτι», «Δεν είναι δίκαιο». Εδώ μπορεί ακόμη να σβήσει η φλόγα, αν αλλάξει η ερμηνεία."],["Έκρηξη","Σώμα και συμπεριφορά","Το σώμα ετοιμάζεται για μάχη και η συμπεριφορά παίρνει τη μορφή πυροτεχνήματος σε έκρηξη."]];
+ const show=i=>{$("#fw").querySelectorAll("button").forEach((b,j)=>b.setAttribute("aria-pressed",i===j));$("#fwout").innerHTML=`<h3>${fw[i][0]}: ${fw[i][1]}</h3><p style="margin-top:6px">${fw[i][2]}</p>`};
+ $("#fw").innerHTML=fw.map((f,i)=>`<button><small>Στάδιο ${i+1}</small>${f[0]}</button>`).join("");
+ $("#fw").querySelectorAll("button").forEach((b,i)=>b.onclick=()=>show(i));show(0);
+ const th=[["Συμπεριφορισμός","Οι αντιδράσεις μας διαμορφώνονται από τις θετικές και αρνητικές εμπειρίες που ζήσαμε, κυρίως σε μικρή ηλικία. Για να αλλάξει μια συμπεριφορά, πρώτα εξηγούμε τι αναμένεται και διδάσκουμε πώς επιτυγχάνεται. Μετά ενισχύουμε θετικά (για να διατηρηθεί) ή αρνητικά (για να εξαλειφθεί).","<b>Πριν από κάθε παρέμβαση ρωτάμε:</b> 1. Τι γνωρίζει το άτομο; 2. Τι χρειάζεται να γνωρίζει; 3. Πώς θα το εφαρμόσει;<br><br>Γι' αυτό χρειάζεται κοινός κώδικας συμπεριφοράς στο σχολείο: δεν εννοούμε όλοι το ίδιο όταν λέμε «μιλάμε με σεβασμό»."],["Ψυχοδυναμική","Το συναίσθημα καθορίζει τη συμπεριφορά. Ο θυμός βοηθά το άτομο να λειτουργεί, να προστατεύεται και να αμύνεται.","<b>Μετατόπιση:</b> ένα παιδί που ζει με βίαιο πατέρα στρέφει τον θυμό του σε άλλους ως άμυνα.<br><b>Προβολή:</b> θυμώνουμε με κάποιον χωρίς φανερή αιτία, γιατί μας θυμίζει κάποιον άλλο (π.χ. θυμός προς πρόσωπα εξουσίας).<br><br>Οι μαθητές βλέπουν το σχολείο σαν μια άλλη οικογένεια: μετρούν αποδοχή, ασφάλεια και αυταξία, και αντιδρούν ανάλογα. Όλοι χρειάζεται να νιώθουν ότι ανήκουν."],["Γνωσιοσυμπεριφορισμός","Η σκέψη καθορίζει το συναίσθημα και τη συμπεριφορά. Όποιος μάθει να παρατηρεί τον τρόπο που σκέφτεται μπορεί να αλλάξει και το πώς νιώθει και πώς φέρεται.","Κάθε γεγονός περνά από μια υποκειμενική «μετάφραση» που μπορεί να έχει λάθη: τα <b>γνωσιακά λάθη</b>.<br><br>Παράδειγμα: «Ο καθηγητής μού μίλησε απότομα». Πρώτη αντίδραση: να του επιτεθώ. Εναλλακτικά, μαθαίνω να σκέφτομαι γρήγορα άλλες ερμηνείες και να μη βγάζω αυθαίρετα συμπεράσματα."]];
+ const tshow=i=>{$("#thtabs").querySelectorAll("button").forEach((b,j)=>b.setAttribute("aria-selected",i===j));$("#thout").innerHTML=`<div class="grid g2"><div class="prose"><h3>${th[i][0]}</h3><p>${th[i][1]}</p></div><div class="note">${th[i][2]}</div></div>`};
+ $("#thtabs").innerHTML=th.map(t=>`<button role="tab">${t[0]}</button>`).join("");
+ $("#thtabs").querySelectorAll("button").forEach((b,i)=>b.onclick=()=>tshow(i));tshow(0);
+ const cg=[["«Όλα ή τίποτα»","«Αφού δεν πήρα 20, απέτυχα εντελώς.» Ένα μικρό λάθος γίνεται ολική καταστροφή."],["Το άκαμπτο «πρέπει»","«Ο καθηγητής πρέπει να με προσέχει πάντα.» Όταν το «πρέπει» δεν τηρείται, ακολουθεί θυμός."],["«Μαύρο–άσπρο»","«Ή είσαι μαζί μου ή είσαι εναντίον μου.» Δεν υπάρχει ενδιάμεσο."],["Λανθασμένες πεποιθήσεις για το άδικο","«Δεν είναι δίκαιο!» Πολλά επιθετικά παιδιά κρίνουν πολύ μεροληπτικά τι είναι δίκαιο, ανάλογα με το πώς έμαθαν."]];
+ $("#cog").innerHTML=cg.map(c=>`<button class="flip"><b>${c[0]}</b><span class="back">${c[1]}</span><span class="hint">Πατήστε για παράδειγμα</span></button>`).join("");
+ $("#cog").querySelectorAll(".flip").forEach(f=>f.onclick=()=>f.classList.toggle("open"));
+};
+
+const PHASES=[
+ {n:"Ηρεμία",x:40,y:200,d:"Ο μαθητής είναι συνεργάσιμος, συγκεντρωμένος, συμμετέχει και δέχεται την επιβράβευση.",s:"Υπακοή, συμμετοχή, καλή διάθεση.",do:"Ο καλύτερος τρόπος να προλάβουμε τα επεισόδια είναι να κρατάμε τους μαθητές σε αυτή τη φάση. Γνωρίζουμε κάθε μαθητή: όνομα, προσωπικότητα, συμπεριφορά.",no:"Να θεωρούμε την ηρεμία δεδομένη."},
+ {n:"Πυροδότηση",x:120,y:180,d:"Ο μαθητής ερμηνεύει κάτι εξωτερικό ως απειλή για την αυτοεικόνα του. Το σώμα δεν έχει ακόμη αντιδράσει και ο μαθητής ακόμη ακούει. Είναι η καλύτερη στιγμή για να προλάβουμε την κλιμάκωση.",s:"Στο σχολείο: δυσκολίες στο μάθημα, αλλαγές, κοροϊδία, ένταση με καθηγητή. Εκτός: οικονομικές δυσκολίες, οικογενειακές συγκρούσεις, πείνα.",do:"Παρατηρούμε. Αλλάζουμε δραστηριότητα, αποσπούμε την προσοχή, δείχνουμε ότι ακούμε.",no:"Να αγνοήσουμε τα σημάδια ελπίζοντας ότι θα περάσουν."},
+ {n:"Ένταση",x:195,y:145,d:"Συνήθως η μεγαλύτερη σε διάρκεια φάση. Ο μαθητής ξεκόβει από το μάθημα. Αν δεν παρέμβουμε, περνά στην κλιμάκωση.",s:"«Κάρφωμα» με τα μάτια, τρέμουλο στο πόδι, χτύπημα μολυβιού, αλλαγή θέσης (συνήθως στο πίσω μέρος), υπερευαισθησία σε κριτική.",do:"Πλησιάζουμε διακριτικά. Προτείνουμε βαθιές αναπνοές. Του ζητάμε να κάνει κάτι για εμάς (π.χ. να πάει ένα φυλλάδιο στη γραμματεία).",no:"Δημόσια παρατήρηση ή ειρωνεία."},
+ {n:"Κλιμάκωση",x:265,y:95,d:"Σώμα και μυαλό ετοιμάζονται για μάχη. Λιγότερο περιθώριο για οδηγίες, αλλά ο μαθητής μπορεί ακόμη να ακολουθήσει κάποιες.",s:"Διαπληκτισμός, άρνηση εργασίας, προκλητικότητα προς τον καθηγητή, απόπειρα να τον παρασύρει σε καβγά.",do:"Ψυχραιμία για να αποφύγουμε το «καθρέφτισμα». Ταίριασμα στη διάθεση και σταδιακή μείωση της έντασης. Απομάκρυνση από τον χώρο.",no:"Επίδειξη δύναμης, απειλές, ηθικοδιδασκαλία."},
+ {n:"Κρίση",x:340,y:40,d:"Το ξέσπασμα. Ο μαθητής σχεδόν δεν μπορεί να ακούσει οδηγίες ή να σκεφτεί τη ζημιά που κάνει. Συνήθως διαρκεί λίγο.",s:"Σωματική βία, αυτοτραυματισμός, καταστροφή περιουσίας, ανεξέλεγκτο κλάμα.",do:"Ασφάλεια για όλους. Λίγα λόγια, ήρεμη φωνή, ανοιχτή παλάμη. Απομάκρυνση της τάξης ή συνοδεία του μαθητή εκτός.",no:"Συζήτηση, ανάλυση, αναφορά σε συνέπειες εκείνη τη στιγμή."},
+ {n:"Αποκλιμάκωση",x:420,y:110,d:"Ο θυμός καταλαγιάζει, αλλά το σώμα επανέρχεται αργά. Ο μαθητής νιώθει σύγχυση, ίσως ενοχή, και είναι ευάλωτος. Υπάρχει κίνδυνος νέου κύκλου.",s:"Υπερευαισθησία, απόσυρση, σύγχυση.",do:"Συνεχίζουμε την προσεκτική διαχείριση. Του λέμε ότι σύντομα θα δουλέψουμε μαζί για λύση.",no:"Να «κλείσουμε» το θέμα αμέσως ή να επιβάλουμε ποινή επιτόπου."},
+ {n:"Μετά την κρίση",x:500,y:190,d:"Το άτομο χρειάζεται να ηρεμήσει και να ξεκουραστεί. Η επικοινωνία επανέρχεται. Ο μαθητής μπορεί να νιώσει λύπη και μεταμέλεια.",s:"Ηρεμία, κούραση, μεταμέλεια.",do:"Στοχεύουμε στη μεταμέλεια για τη συμπεριφορά, όχι στην ενοχοποίηση του προσώπου. Πρώτη παρέμβαση τουλάχιστον 2 ώρες μετά. Διαμεσολάβηση 2 έως 5 μέρες μετά.",no:"Επίθεση στην αυτοεικόνα του μαθητή: τον βάζει σε άμυνα και κρατά ζωντανό τον θυμό."}
+];
+VIEWS.kyklos=()=>`<section class="mod">${head("kyklos",`<p class="lead">Ένα επεισόδιο θυμού ακολουθεί προβλέψιμη πορεία. Αν ξέρουμε σε ποια φάση βρίσκεται ο μαθητής, ξέρουμε τι βοηθά και τι χειροτερεύει την κατάσταση.</p>`)}
+ <div class="card"><div class="curvewrap"><svg class="curve" viewBox="0 0 540 250" id="curve" role="group" aria-label="Καμπύλη κλιμάκωσης έντασης">
+  <line x1="20" y1="220" x2="530" y2="220" stroke="var(--line)"/>
+  <text x="22" y="16" font-size="11" fill="var(--muted)">ένταση ↑</text>
+  <text x="528" y="240" font-size="11" fill="var(--muted)" text-anchor="end">χρόνος →</text>
+  <path d="M20 205 C 90 205, 120 185, 160 165 S 260 110, 300 70 S 335 30, 345 38 S 390 90, 420 115 S 480 195, 530 205" fill="none" stroke="var(--b)" stroke-width="3" opacity=".7"/>
+  ${PHASES.map((p,i)=>`<g class="pt" data-i="${i}" tabindex="0" role="button" aria-label="${p.n}"><circle cx="${p.x}" cy="${p.y}" r="10" fill="var(--surface)" stroke="var(--b)" stroke-width="3"/><text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)">${i+1}</text><text x="${p.x}" y="${p.y<60?p.y-18:p.y+28}" text-anchor="middle" font-size="11" fill="var(--muted)">${p.n}</text></g>`).join("")}
+ </svg></div><p class="muted" style="font-size:.8rem;margin-top:6px">Προσαρμογή από το IRIS Center (Vanderbilt). Πατήστε κάθε σημείο.</p></div>
+ <div id="phout" class="block"></div>
+ <div class="block"><h2>Πότε παρεμβαίνουμε</h2>
+ <div class="grid g3">
+  <div class="card"><div class="timer" style="font-size:2.2rem">2 ώρες</div><p class="muted">τουλάχιστον μετά τη λήξη του επεισοδίου για την πρώτη παρέμβαση. Σε μικρότερα παιδιά μπορεί να είναι λιγότερο.</p></div>
+  <div class="card"><div class="timer" style="font-size:2.2rem">Επόμενη μέρα</div><p class="muted">ξεκινά η προετοιμασία των μερών για τη διαμεσολάβηση.</p></div>
+  <div class="card"><div class="timer" style="font-size:2.2rem">2–5 μέρες</div><p class="muted">μετά το επεισόδιο: η καλύτερη στιγμή για διαμεσολάβηση ή παρέμβαση του ΒΔ/Διευθυντή. Όχι αργότερα.</p></div>
+ </div>
+ <div class="warnbox">Μεγάλη καθυστέρηση στέλνει το μήνυμα ότι δεν μας ενδιαφέρει και οδηγεί σε νέο κύκλο σύγκρουσης. Βιαστική επίλυση ενώ υπάρχει ακόμη ένταση οδηγεί επίσης σε νέα αντιπαράθεση.</div>
+ </div>
+ <div class="block"><h2>Δοκιμάστε: σε ποια φάση βρίσκεται;</h2><div id="phq"></div></div>
+ ${completeBar("kyklos")}</section>`;
+INIT.kyklos=()=>{
+ const show=i=>{const p=PHASES[i];
+  $("#curve").querySelectorAll(".pt").forEach((g,j)=>g.classList.toggle("on",i===j));
+  $("#phout").innerHTML=`<h2>${i+1}. ${p.n}</h2><p class="prose">${p.d}</p><div class="phase"><div class="card"><h4 style="color:var(--muted)">Τι βλέπουμε</h4>${p.s}</div><div class="card" style="background:var(--med-soft);border-color:transparent"><h4 style="color:var(--med)">Τι κάνουμε</h4>${p.do}</div><div class="card" style="background:var(--b-soft);border-color:transparent"><h4 style="color:var(--b)">Τι αποφεύγουμε</h4>${p.no}</div></div>`};
+ $("#curve").querySelectorAll(".pt").forEach(g=>{g.onclick=()=>show(+g.dataset.i);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show(+g.dataset.i)}}});
+ show(1);
+ quiz("#phq",[
+  {q:"Ο Νίκος κοιτάζει επίμονα τον καθηγητή, χτυπά το μολύβι στο θρανίο και έχει μετακινηθεί στο πίσω θρανίο.",o:["Ηρεμία","Ένταση","Κρίση"],a:1,e:"Είναι τα τυπικά σημάδια της έντασης. Ακόμη προλαβαίνουμε με απόσπαση προσοχής ή αλλαγή δραστηριότητας."},
+  {q:"Η Ελένη κλωτσά ένα θρανίο και φωνάζει. Δεν ακούει τίποτα από όσα της λέτε.",o:["Κλιμάκωση","Κρίση","Μετά την κρίση"],a:1,e:"Στην κρίση ο μαθητής δεν μπορεί να ακούσει οδηγίες. Προτεραιότητα έχει η ασφάλεια, όχι η συζήτηση."},
+  {q:"Μια ώρα μετά το επεισόδιο, ο Άρης κάθεται σιωπηλός, αλλά τινάζεται με το παραμικρό σχόλιο.",o:["Αποκλιμάκωση","Ηρεμία","Πυροδότηση"],a:0,e:"Ο θυμός υποχωρεί, αλλά ο μαθητής είναι ακόμη ευάλωτος. Μια παρατήρηση τώρα μπορεί να ξεκινήσει νέο κύκλο."}
+ ]);
+};
+
+VIEWS.apoklimakosi=()=>`<section class="mod">${head("apoklimakosi",`<p class="lead">Δεν μπορούμε να ελέγξουμε τη συμπεριφορά ενός ανθρώπου που ξεσπά. Μπορούμε να ελέγξουμε πώς απαντάμε εμείς.</p>`)}
+ <div class="grid g2">
+  <div class="card"><span class="tag m">ΝΑΙ</span><ul class="clean" style="margin-top:10px">
+   <li><b>Ψυχραιμία</b>, για να αποφύγουμε το «φαινόμενο του καθρεφτίσματος»</li>
+   <li><b>Απόσπαση προσοχής</b> και αλλαγή δραστηριότητας στην τάξη</li>
+   <li><b>Μετακίνηση</b> εκτός του χώρου έντασης: «Πήγαινε στη γραμματεία να φωτοτυπήσουν αυτό το φυλλάδιο»</li>
+   <li><b>Φυσική επαφή</b>: ζεστό βλέμμα, ελαφρύ άγγιγμα στον ώμο, μόνο αν γνωρίζουμε καλά τον μαθητή</li>
+   <li><b>Χιούμορ</b> με προσοχή: το γέλιο είναι αντίδοτο στον θυμό</li>
+   <li><b>Απλή επικοινωνία</b>: ο μαθητής νιώθει ότι τον ακούμε και ότι έχει έλεγχο</li>
+   <li><b>Χαλάρωση</b>: βαθιές αναπνοές, τέντωμα και χαλάρωση μυών, μουσική</li></ul></div>
+  <div class="card"><span class="tag b">ΟΧΙ</span><ul class="clean" style="margin-top:10px">
+   <li>Να αγνοήσουμε τι συμβαίνει</li><li>Ηθικοδιδασκαλία και ανάλυση πάνω στην ένταση</li><li>Απειλές και αναφορά σε συνέπειες εκείνη τη στιγμή</li><li>Επιβλητική φωνή, ύφος ή στάση σώματος</li><li>Ανταγωνισμός επίδειξης δύναμης</li></ul>
+   <p class="muted" style="margin-top:12px">Φράσεις που σίγουρα χειροτερεύουν την κατάσταση:</p>
+   <div class="chips" style="margin-top:6px">${["«Σύνελθε!»","«Σε θεωρούσα πιο ώριμο!»","«Μην είσαι βλάκας»","«Έλα τώρα! Μην αρχίζεις!»"].map(x=>`<span class="chip" style="text-decoration:line-through;text-decoration-color:var(--b)">${x}</span>`).join("")}</div></div>
+ </div>
+ <div class="note">Ιδανικά, αυτές οι διαδικασίες συμφωνούνται από όλο τον Σύλλογο Διδασκόντων. Για παράδειγμα: πού ακριβώς πηγαίνει ο μαθητής όταν του ζητάμε να βγει να ηρεμήσει;</div>
+
+ <div class="block"><h2>Η τεχνική «ταίριασμα στη διάθεση»</h2>
+ <p class="prose">Ξεκινάμε με λίγη ένταση, αρκετά χαμηλότερη από του μαθητή, και τη μειώνουμε σταδιακά. Αν φανούμε εντελώς ήρεμοι ενώ ο μαθητής είναι σε κρίση, θα νιώσει ότι δεν τον καταλαβαίνουμε και θα ανεβάσει την ένταση για να μας «φτάσει».</p>
+ <div class="card"><label class="f" for="mood">Μετακινήστε το ρυθμιστικό για να δείτε πώς ο εκπαιδευτικός ακολουθεί και μετά οδηγεί προς τα κάτω.</label>
+ <input type="range" id="mood" min="0" max="100" value="0" style="width:100%;margin-top:12px;accent-color:var(--med)">
+ <svg viewBox="0 0 500 140" style="width:100%;height:auto;margin-top:8px" aria-hidden="true">
+  <path id="stuLine" fill="none" stroke="var(--b)" stroke-width="3"/><path id="tchLine" fill="none" stroke="var(--med)" stroke-width="3" stroke-dasharray="6 4"/>
+  <text x="8" y="132" font-size="11" fill="var(--b)">— μαθητής</text><text x="90" y="132" font-size="11" fill="var(--med)">- - εκπαιδευτικός</text>
+ </svg><p id="moodtxt" class="muted"></p></div>
+ <div class="card"><b>Η ανοιχτή παλάμη.</b> <span class="muted">Πρόσωπο ήρεμο, φωνή χαμηλή. Το χέρι μπροστά στο ύψος του στήθους, παλάμη ανοιχτή προς τον άλλον, δάχτυλα προς τα πάνω, κινείται πάνω-κάτω όλο και πιο αργά. Η παλάμη δείχνει ειρηνική πρόθεση. Η κίνηση δείχνει μείωση της έντασης.</span></div>
+ </div>
+
+ <div class="block"><h2>Όταν ηρεμήσει: τέσσερις ερωτήσεις</h2>
+ <div class="steps">${["Τι έγινε;","Ποια προβλήματα δημιουργήθηκαν;","Πώς αισθάνεσαι;","Ποια λύση προτείνεις;"].map((q,i)=>`<button aria-pressed="false" tabindex="-1"><small>Ερώτηση ${i+1}</small>${q}</button>`).join("")}</div>
+ <p class="prose">Χρησιμοποιούμε καλή ακρόαση, επαναδιατύπωση και αντανάκλαση συναισθημάτων: «Βλέπω ότι με αυτό που έγινε θύμωσες και αναστατώθηκες.» <b>Επικυρώνουμε το δικαίωμα στο συναίσθημα, όχι τη συμπεριφορά.</b></p>
+ <div class="warnbox">Αν υπήρξε ανεπίτρεπτη συμπεριφορά, το λέμε ήρεμα και χωρίς συναίσθημα: «Αυτό που συνέβη δεν είναι σωστό. Ως σχολείο δεν το αποδεχόμαστε και θα το διαχειριστούμε.» Τις ποινές τις αποφασίζουμε στο τέλος της ημέρας ή καλύτερα την επόμενη, με λογική και όχι με συναίσθημα.</div>
+ </div>
+
+ <div class="block"><h2>Τρία στυλ θυμού</h2>
+ <div class="grid g3">
+  <div class="card"><span class="tag b">ΕΠΙΘΕΤΙΚΟ</span><p class="muted" style="margin-top:8px">Απειλή, αδιαλλαξία, βία, επίρριψη ευθυνών.</p></div>
+  <div class="card"><span class="tag w">ΠΑΘΗΤΙΚΟ-ΕΠΙΘΕΤΙΚΟ</span><p class="muted" style="margin-top:8px">Συγκρατημένος θυμός, φαινομενική ηρεμία, εκδικητικότητα, υπόσκαψη, φήμες.</p></div>
+  <div class="card"><span class="tag m">ΔΙΕΚΔΙΚΗΤΙΚΟ</span><p class="muted" style="margin-top:8px">Εκφράζει τον θυμό σταθερά, χωρίς να χάνει τον έλεγχο, μιλώντας για τον εαυτό του.</p></div>
+ </div>
+ <h3>Ταξινομήστε τις φράσεις</h3><div id="styles" class="block"></div><p id="stscore" class="muted"></p></div>
+ ${completeBar("apoklimakosi")}</section>`;
+INIT.apoklimakosi=()=>{
+ const r=$("#mood"),stu=[[0,40],[60,30],[120,20],[180,15],[240,25],[300,50],[360,80],[420,100],[490,110]];
+ const draw=()=>{const v=+r.value/100;
+  const sp=stu.map(([x,y])=>`${x+5},${y}`).join(" L");
+  $("#stuLine").setAttribute("d","M"+sp);
+  const tch=stu.map(([x,y],i)=>{const k=i/(stu.length-1);let ty;if(k<=v){const gap=20+40*k;ty=Math.min(120,y+gap)}else{ty=null}return ty==null?null:`${x+5},${ty}`}).filter(Boolean);
+  $("#tchLine").setAttribute("d",tch.length?"M"+tch.join(" L"):"");
+  $("#moodtxt").textContent=v<.3?"Στην αρχή: δείχνουμε ότι το παίρνουμε στα σοβαρά, με λίγη ένταση στη φωνή, πάντα κάτω από το επίπεδο του μαθητή.":v<.7?"Στη συνέχεια: χαμηλώνουμε σταδιακά φωνή και ρυθμό. Ο μαθητής μάς ακολουθεί προς τα κάτω.":"Στο τέλος: ήρεμο πρόσωπο, χαμηλή φωνή. Τώρα μπορεί να ξεκινήσει η επικοινωνία."};
+ r.oninput=draw;r.value=100;draw();
+ const ph=[["«Θα δεις τι θα πάθεις!»","Ε"],["«Κάνε ό,τι νομίζεις…»","Π"],["«Αισθάνομαι θυμό όταν μου μιλάς άσχημα.»","Δ"],["«Εσύ φταις για όλα!»","Ε"],["«Σιγά το πράγμα… ποιος νοιάζεται;»","Π"],["«Δεν εκτιμώ τα σχόλιά σου. Με μειώνουν. Αν υπάρχει πρόβλημα, ας το συζητήσουμε.»","Δ"],["«Πάντα κάνεις αυτό…»","Ε"],["«Σου ζήτησα να σταματήσεις!»","Δ"],["«Ούτως ή άλλως δεν ήθελα…»","Π"]];
+ const L={Ε:"Επιθετικό",Π:"Παθητικο-επιθετικό",Δ:"Διεκδικητικό"};let score=0,ans=0;
+ $("#styles").innerHTML=ph.map(([p],i)=>`<div class="card row" style="justify-content:space-between" data-i="${i}"><span class="say" style="min-width:0;flex:1 1 240px">${p}</span><span class="row">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${L[k]}</button>`).join("")}</span></div>`).join("");
+ $("#styles").querySelectorAll(".card").forEach(c=>{const i=+c.dataset.i;c.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  if(c.dataset.done)return;c.dataset.done=1;ans++;const ok=b.dataset.k===ph[i][1];if(ok)score++;
+  b.setAttribute("aria-pressed","true");if(!ok){b.style.background="var(--b)";b.style.borderColor="var(--b)";b.style.color="var(--surface)";c.querySelector(`[data-k="${ph[i][1]}"]`).style.borderColor="var(--med)"}
+  $("#stscore").textContent=`Σωστές: ${score} από ${ans}${ans===ph.length?" · Ολοκληρώθηκε":""}`})});
+};
+
+const LISTEN=[
+ {s:"«Το σχολείο είναι βλακεία. Δεν καταλαβαίνω γιατί πρέπει να πηγαίνω κάθε μέρα!»",m:"«Δεν σου αρέσει το σχολείο και θεωρείς βλακεία να είσαι εκεί καθημερινά. Σωστά;»"},
+ {s:"«Ναι! Σήμερα ο Κώστας μού έκανε φάρσα και όλοι γελούσαν μαζί μου.»",m:"«Ο Κώστας σού έκανε πλάκα και οι άλλοι γέλασαν μαζί σου; Φαίνεσαι πληγωμένος.»"},
+ {s:"«Δεν είναι δουλειά σου! Έχω αρκετά προβλήματα και δεν χρειάζομαι εσένα να μου λες τι να κάνω!»",m:"«Νιώθεις ότι έχεις ήδη πολλά στο κεφάλι σου και θέλεις να σε αφήσουν να τα χειριστείς μόνος σου.»"},
+ {s:"«Έπρεπε να κάνουμε όλη η ομάδα μαζί την εργασία, αλλά εσύ, όπως πάντα, ξεκίνησες μόνος σου χωρίς να ρωτήσεις κανέναν!»",m:"«Σε ενόχλησε που η εργασία ξεκίνησε χωρίς να συμμετέχει η ομάδα. Θα ήθελες να αποφασίζετε μαζί.»"},
+ {s:"«Παράτα με! Δεν ξαναπαίζω μαζί σου! Πάντα κλέβεις! Θέλεις μόνο να κερδίζεις εσύ.»",m:"«Είσαι θυμωμένος γιατί νιώθεις ότι το παιχνίδι δεν παίζεται δίκαια.»"},
+ {s:"«Όποια ιδέα κι αν έχω, ποτέ δεν είναι αρκετά καλή. Μου φέρεσαι σαν να είμαι βλάκας!»",m:"«Νιώθεις ότι οι ιδέες σου δεν εκτιμώνται και αυτό σε πληγώνει. Το κατάλαβα σωστά;»"}
+];
+const FEEL=[["«Δεν το καταλαβαίνω! Παραιτούμαι!»","απογοήτευση"],["«Τέλεια! Οκτώ μέρες μέχρι τα Χριστούγεννα!»","ενθουσιασμός, ανυπομονησία"],["«Κοίτα τι ζωγράφισα!»","περηφάνια, ανάγκη αναγνώρισης"],["«Θα καλέσετε τους γονείς μου;»","φόβος, ανησυχία"],["«Ουφ! Δεν έχει τίποτα ενδιαφέρον!»","βαρεμάρα"],["«Δεν θα τα καταφέρω ποτέ όπως οι άλλοι!»","ανεπάρκεια, αποθάρρυνση"],["«Με έχει στο μάτι! Ποτέ δεν θυμώνει με τους άλλους, μόνο με μένα!»","αδικία, θυμός"],["«Αγόρασα καινούργιο ποδήλατο!»","χαρά"],["«Εντάξει, δεν έπρεπε να τον χτυπήσω.»","μεταμέλεια, ντροπή"]];
+VIEWS.dexiotites=()=>`<section class="mod">${head("dexiotites",`<p class="lead">Η ενεργητική ακρόαση είναι η σημαντικότερη δεξιότητα του διαμεσολαβητή. Με αυτήν ο άλλος νιώθει ότι τον ακούμε, και εμείς ελέγχουμε αν καταλάβαμε σωστά.</p>`)}
+ <div class="block"><h2>Οι δεξιότητες</h2><div class="tabs" role="tablist" id="sktabs"></div><div class="card" id="skout"></div>
+ <div class="chips">${["Παράφραση","Αντανάκλαση συναισθημάτων","Ενθαρρυντικές φράσεις","Ανοιχτές ερωτήσεις","Θετική αναπλαισίωση","Περίληψη","Κατάλληλη γλώσσα σώματος","Δημιουργία εναλλακτικών λύσεων"].map(x=>`<span class="chip">${x}</span>`).join("")}</div></div>
+
+ <div class="block"><h2>Εξάσκηση στην καλή ακρόαση</h2>
+ <p class="muted">Γράψτε τη δική σας απάντηση και μετά συγκρίνετε με ένα παράδειγμα. Δεν υπάρχει μία σωστή διατύπωση.</p>
+ <div class="card block"><div class="row" style="justify-content:space-between"><span class="eyebrow" id="lnum"></span><span class="row"><button class="btn ghost" id="lprev">←</button><button class="btn ghost" id="lnext">→</button></span></div>
+ <div class="speaker" id="lsp"></div>
+ <label class="f" for="lans">Η απάντησή σας</label><textarea id="lans" placeholder="π.χ. «Νιώθεις… γιατί…, σωστά;»"></textarea>
+ <div class="row"><button class="btn" id="lshow">Δείξε παράδειγμα</button></div>
+ <div class="model" id="lmod"></div></div></div>
+
+ <div class="block"><h2>Ποιο συναίσθημα κρύβεται πίσω από τη φράση;</h2>
+ <div class="grid g3" id="feel"></div></div>
+
+ <div class="block"><h2>Από το «Εσύ…!» στο «Εγώ νιώθω…»</h2>
+ <div class="grid g2">
+  <div class="card"><span class="tag b">ΚΑΤΗΓΟΡΙΑ</span><p class="say" style="margin-top:8px">«Εσύ δεν αφήνεις ποτέ κανέναν άλλο να μιλήσει!»</p></div>
+  <div class="card"><span class="tag m">ΜΗΝΥΜΑ «ΕΓΩ»</span><p class="say" style="margin-top:8px">«Όταν με διακόπτεις, νιώθω εκνευρισμό και χάνω τη συγκέντρωσή μου.»</p></div>
+ </div>
+ <details class="card"><summary><b>Γιατί βλάπτουν οι κατηγορηματικές φράσεις</b></summary><ul class="clean" style="margin-top:10px">
+  <li>Βάζουν τον συνομιλητή σε άμυνα και ενισχύουν την αντιπαράθεση</li>
+  <li>Οδηγούν σε αλληλοκατηγορίες: «Είσαι πάντα τόσο αργός!» «Ναι; Κι εσύ είσαι βλάκας!»</li>
+  <li>Μειώνουν την αυτοπεποίθηση: «Δεν μπορώ να βασιστώ πάνω σου!»</li>
+  <li>Δείχνουν έλλειψη σεβασμού: «Συμπεριφέρεσαι σαν μωρό!»</li>
+  <li>Επιδιώκουν υπακοή μέσω εκφοβισμού</li>
+  <li>Δείχνουν το πρόβλημα μόνο από τη μία πλευρά</li>
+  <li>Δεν αφήνουν χώρο για ανάληψη ευθύνης και επανόρθωση</li></ul></details>
+ <div class="card block"><h3>Φτιάξτε το δικό σας μήνυμα «εγώ»</h3>
+  <div class="formrow">
+   <label class="f" for="im1">Όταν…<input type="text" id="im1" value="οδηγείς τόσο γρήγορα"></label>
+   <label class="f" for="im2">νιώθω…<input type="text" id="im2" value="φόβο"></label>
+   <label class="f" for="im3">γιατί…<input type="text" id="im3" value="σκέφτομαι ότι θα έχουμε ατύχημα"></label>
+   <label class="f" for="im4">θα ήθελα… (προαιρετικό)<input type="text" id="im4" value=""></label>
+  </div>
+  <div class="imsg" id="imout"></div>
+  <div class="row"><button class="btn ghost" id="imcopy">Αντιγραφή</button></div></div>
+ </div>
+ ${completeBar("dexiotites")}</section>`;
+INIT.dexiotites=()=>{
+ const sk=[["Ενθάρρυνση","Να δείξω ενδιαφέρον και να ενθαρρύνω την έκφραση.","Ουδέτερες λέξεις. Ούτε συμφωνώ ούτε διαφωνώ. Δείχνω ενδιαφέρον με τον τόνο της φωνής.","«Πες μου λίγο περισσότερο γι' αυτό.»"],["Διευκρίνιση","Να γίνει η ιστορία πιο ξεκάθαρη, να πάρουμε περισσότερες πληροφορίες, να φανούν νέες ερμηνείες.","Ερωτήσεις και προσεκτική επαναδιατύπωση.","«Πότε συνέβη αυτό;» «Πόσο συχνά συμβαίνει;»"],["Επαναδιατύπωση","Να δείξουμε ότι παρακολουθούμε και να ελέγξουμε αν καταλάβαμε σωστά.","Λέμε με δικά μας λόγια αυτό που ακούσαμε.","«Άρα θα ήθελες να σε εμπιστεύονται περισσότερο οι γονείς σου, σωστά;»"],["Αντανάκλαση","Να δείξουμε ότι κατανοούμε τα συναισθήματα και να βοηθήσουμε τον ομιλητή να τα αναγνωρίσει.","Ονομάζουμε το συναίσθημα που ακούμε.","«Φαίνεσαι αναστατωμένος.»"],["Περίληψη","Να αξιολογήσουμε την πρόοδο της συνάντησης και να τονίσουμε τα θετικά σημεία και ιδέες.","Συνοψίζουμε τα βασικά σημεία και των δύο πλευρών.","«Μέχρι τώρα ακούσαμε ότι… και ότι… Συμφωνείτε και οι δύο ότι…»"],["Αναγνώριση","Να δείξουμε τα θετικά σημεία και την προσπάθεια των μερών.","Αναγνωρίζουμε τη σημασία που έχουν τα θέματα για τον καθένα και εκτιμούμε κάθε πρόοδο.","«Είναι πολύ θετικό που θέλετε να λύσετε το πρόβλημα μεταξύ σας.»"]];
+ const show=i=>{$("#sktabs").querySelectorAll("button").forEach((b,j)=>b.setAttribute("aria-selected",i===j));const s=sk[i];
+  $("#skout").innerHTML=`<div class="grid g3"><div><div class="eyebrow">Στόχος</div><p>${s[1]}</p></div><div><div class="eyebrow">Τρόπος</div><p>${s[2]}</p></div><div><div class="eyebrow">Παράδειγμα</div><p class="say">${s[3]}</p></div></div>`};
+ $("#sktabs").innerHTML=sk.map(s=>`<button role="tab">${s[0]}</button>`).join("");
+ $("#sktabs").querySelectorAll("button").forEach((b,i)=>b.onclick=()=>show(i));show(0);
+ let li=0;const drafts=store.get("listen",{});
+ const ls=()=>{$("#lnum").textContent=`Φράση ${li+1} από ${LISTEN.length}`;$("#lsp").textContent=LISTEN[li].s;$("#lans").value=drafts[li]||"";$("#lmod").classList.remove("show");$("#lmod").innerHTML=`<b>Παράδειγμα απάντησης:</b> <span class="say">${LISTEN[li].m}</span>`};
+ $("#lans").oninput=e=>{drafts[li]=e.target.value;store.set("listen",drafts)};
+ $("#lprev").onclick=()=>{li=(li+LISTEN.length-1)%LISTEN.length;ls()};$("#lnext").onclick=()=>{li=(li+1)%LISTEN.length;ls()};
+ $("#lshow").onclick=()=>$("#lmod").classList.add("show");ls();
+ $("#feel").innerHTML=FEEL.map(f=>`<button class="flip"><span class="say">${f[0]}</span><span class="back">${f[1]}</span><span class="hint">Μαντέψτε, μετά πατήστε</span></button>`).join("");
+ $("#feel").querySelectorAll(".flip").forEach(f=>f.onclick=()=>f.classList.toggle("open"));
+ const im=()=>{const v=[1,2,3,4].map(i=>$("#im"+i).value.trim());let s=`«Όταν ${v[0]||"…"}, νιώθω ${v[1]||"…"}${v[2]?`, γιατί ${v[2]}`:""}.`;if(v[3])s+=` Θα ήθελα ${v[3]}.`;$("#imout").textContent=s+"»"};
+ [1,2,3,4].forEach(i=>$("#im"+i).oninput=im);im();
+ $("#imcopy").onclick=()=>copyText($("#imout").textContent,$("#imout"));
+};
+
+VIEWS.arxes=()=>`<section class="mod">${head("arxes",`<p class="lead">Η δομημένη επίλυση συγκρούσεων στηρίζεται σε λίγες, σταθερές αρχές. Ισχύουν με ή χωρίς διαμεσολαβητή.</p>`)}
+ <div class="grid g2">
+  <div class="card"><h3>1. Χωρίζουμε τα άτομα από το πρόβλημα</h3><p class="muted">Ενθαρρύνουμε τα μέρη να συνεργαστούν απέναντι στο κοινό τους πρόβλημα, όχι το ένα απέναντι στο άλλο.</p></div>
+  <div class="card"><h3>2. Συμφέροντα, όχι θέσεις</h3><p class="muted">Η θέση είναι η εικόνα που προβάλλει κάποιος. Το συμφέρον δείχνει τις πραγματικές του ανάγκες και κίνητρα.</p></div>
+  <div class="card"><h3>3. Δημιουργούμε επιλογές λύσης</h3><p class="muted">Δεν βιαζόμαστε να βρούμε λύση. Εξετάζουμε εναλλακτικές, τα υπέρ και τα κατά. Κλειδί: καμία κριτική στις ιδέες όσο τις συγκεντρώνουμε.</p></div>
+  <div class="card"><h3>4. Αντικειμενικά κριτήρια</h3><p class="muted">Τα μέρη βρίσκουν μαζί μια δίκαιη λύση, με κριτήρια δικαιοσύνης, όχι προς το συμφέρον μόνο του ενός.</p></div>
+ </div>
+ <div class="card"><div class="eyebrow">Επιπλέον αρχές</div><div class="chips" style="margin-top:10px">${["Εθελοντική συμμετοχή","Διατήρηση ισορροπιών","Λύση από τους ίδιους","Κέρδος και για τα δύο μέρη","Χρονοδιάγραμμα εφαρμογής","Μακροπρόθεσμη αξιολόγηση της λύσης"].map(x=>`<span class="chip">${x}</span>`).join("")}</div></div>
+
+ <div class="block"><h2>Θέση ή συμφέρον;</h2>
+ <p class="prose">Σενάριο: η Άντρια (Β' Λυκείου) χρησιμοποιεί το κινητό στο μάθημα. Ο καθηγητής τής λέει να το βάλει στην τσάντα, εκείνη τον φωτογραφίζει, εκείνος τη διώχνει και επιμένει να πάει στο πειθαρχικό. Ταξινομήστε κάθε δήλωση.</p>
+ <div id="posint" class="block"></div><p id="piscore" class="muted"></p></div>
+
+ <div class="block"><h2>Οδηγός για τα μέρη: ειρηνική επίλυση</h2>
+ <div class="grid g2">${["Έχεις δικαίωμα στην άποψή σου. Ο άλλος μπορεί να συμφωνεί ή να διαφωνεί.","Μίλα με ειλικρίνεια.","Άκουσε προσεκτικά.","Εξέτασε πιθανές λύσεις.","Λειτούργησε συμβιβαστικά: πες τι θέλεις και τι είσαι έτοιμος να κάνεις.","Σκέψου τις συνέπειες αν δεν βρεθεί λύση.","Διαπραγματεύσου με δίκαιο τρόπο.","Επιδίωξε λύση με κέρδος και για τους δύο."].map(x=>`<div class="card" style="padding:14px 16px">${x}</div>`).join("")}</div></div>
+ ${completeBar("arxes")}</section>`;
+INIT.arxes=()=>{
+ const it=[["«Πρέπει να πάει στο πειθαρχικό.»","Θ"],["Ο καθηγητής θέλει να νιώθει ότι τον σέβονται μπροστά στην τάξη.","Σ"],["«Δεν έκανα τίποτα, όλοι έχουν κινητό.»","Θ"],["Η Άντρια δεν θέλει να ντροπιαστεί μπροστά στους συμμαθητές της.","Σ"],["Ο καθηγητής ανησυχεί για το πού θα καταλήξει η φωτογραφία.","Σ"],["«Δεν ξαναμπαίνω σε αυτό το μάθημα.»","Θ"]];
+ let sc=0,n=0;
+ $("#posint").innerHTML=it.map(([t],i)=>`<div class="card row" style="justify-content:space-between" data-i="${i}"><span style="flex:1 1 240px;min-width:0">${t}</span><span class="row"><button class="chip" data-k="Θ">Θέση</button><button class="chip" data-k="Σ">Συμφέρον</button></span></div>`).join("");
+ $("#posint").querySelectorAll(".card").forEach(c=>c.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  if(c.dataset.done)return;c.dataset.done=1;n++;const ok=b.dataset.k===it[+c.dataset.i][1];if(ok)sc++;
+  b.setAttribute("aria-pressed","true");if(!ok){b.style.background="var(--b)";b.style.borderColor="var(--b)";b.style.color="var(--surface)"}
+  $("#piscore").textContent=`Σωστές: ${sc} από ${n}`+(n===it.length?". Στη διαμεσολάβηση δουλεύουμε με τα συμφέροντα: σεβασμός, όχι ντροπή, ασφάλεια της εικόνας. Εκεί βρίσκεται το κοινό έδαφος.":"")}));
+};
+
+const STEPS=[
+ {t:"Προετοιμασία",who:"Πριν τη συνάντηση",lines:[["Συντονιστής","Ενημερώνει χωριστά τα δύο μέρη για τη διαδικασία και τους κανόνες, θέτει στόχους και εξασφαλίζει τη συναίνεσή τους."]],tip:"Χρόνος: την επόμενη μέρα του επεισοδίου, ώστε η συνάντηση να γίνει 2–5 μέρες μετά."},
+ {t:"Καλωσόρισμα",lines:[["Διαμεσολαβητής 1","«Καλώς ήρθατε. Σας ευχαριστούμε που είστε εδώ.»"],["Διαμεσολαβητής 2","Εξηγεί τον σκοπό της συνάντησης."],["Διαμεσολαβητής 1","«Εμείς συντονίζουμε τη συνάντηση, αλλά δεν θα βρούμε εμείς τη λύση. Τη λύση θα τη βρείτε εσείς.»"]]},
+ {t:"Κανόνες",lines:[["Διαμεσολαβητής 2","«Είμαστε εδώ εθελοντικά. Οι διαμεσολαβητές μένουμε ουδέτεροι. Κανόνες: ειλικρίνεια, εχεμύθεια, σεβασμός, ευγένεια. Δεν διακόπτουμε, δεν βρίζουμε, δεν απειλούμε, δεν ασκούμε βία. Ψάχνουμε λύση δίκαιη και για τους δύο.»"],["Διαμεσολαβητής 2","«Θα σας κάνουμε κάποιες ερωτήσεις για να καταλάβουμε τις θέσεις σας. Μετά θα συζητήσετε μεταξύ σας τις καλύτερες λύσεις.»"]],tip:"Ρωτήστε κάθε μέρος: «Συμφωνείς με τους κανόνες;»"},
+ {t:"Τι έγινε;",ord:"ab",tools:"ΑΔΕ",lines:[["Διαμεσολαβητής 1","«Πείτε μας τι έγινε. Ποιος θέλει να ξεκινήσει πρώτος;» … «Είναι εντάξει μαζί σου;»"],["Διαμεσολαβητής","Κάνει περίληψη και ρωτά αν κατάλαβε σωστά."]]},
+ {t:"Ποια προβλήματα;",ord:"ba",tools:"ΑΔΕ",lines:[["Διαμεσολαβητής 2","«Ποια είναι τα προβλήματα μετά από αυτή τη σύγκρουση;»"],["Διαμεσολαβητής","Κάνει περίληψη και ρωτά αν κατάλαβε σωστά."]],tip:"Τώρα ξεκινά το μέρος Β, για να υπάρχει ισορροπία."},
+ {t:"Πώς νιώθετε;",ord:"ba",tools:"ΑΕ",lines:[["Διαμεσολαβητής 1","«Πώς αισθάνεστε με την κατάσταση αυτή;»"],["Διαμεσολαβητής","Αντανακλά τα συναισθήματα, κάνει περίληψη και ρωτά αν κατάλαβε σωστά."]]},
+ {t:"Λύσεις",ord:"ba",tools:"ΑΕ",lines:[["Διαμεσολαβητής 2","«Τι προτείνετε για να λυθεί το πρόβλημα; Ποιοι τρόποι υπάρχουν για να βγείτε και οι δύο κερδισμένοι; Ποια τα υπέρ και τα κατά; Ποια λύση προτιμάτε;»"],["Διαμεσολαβητής","Καταγράφει κάθε πρόταση χωρίς κριτική, κάνει περίληψη και ρωτά αν συμφωνούν."]]},
+ {t:"Πώς θα πετύχει;",ord:"ab",tools:"ΑΕ",lines:[["Διαμεσολαβητής 1","«Υπάρχει κάτι που μπορεί να σας δυσκολέψει σε αυτή τη λύση; Πώς θα την εφαρμόσετε;»"],["Διαμεσολαβητής","Από το γενικό στο συγκεκριμένο: ποιος, τι, πότε. Περίληψη, ανταλλαγή ιδεών, ενθάρρυνση."]]},
+ {t:"Συμφωνία",lines:[["Διαμεσολαβητής 2","Γράφει την τελική συμφωνία, τη διαβάζει δυνατά, ρωτά αν θέλουν να προσθέσουν κάτι. Όλοι υπογράφουν το συμβόλαιο."]],tip:"Αν δεν τηρηθεί η συμφωνία, το θέμα παραπέμπεται στον αρμόδιο ΒΔ."},
+ {t:"Επιβράβευση & κλείσιμο",lines:[["Διαμεσολαβητής 1","«Σας ευχαριστούμε για τη συμμετοχή και την προσπάθεια που κάνατε για να βρεθεί η καλύτερη λύση.»"],["Διαμεσολαβητής 1","«Σε μία εβδομάδα θα σας καλέσουμε σε μια συνάντηση 5 λεπτών για να δούμε μαζί πώς πάει.»"]]}
+];
+VIEWS.diadikasia=()=>`<section class="mod">${head("diadikasia",`<p class="lead">Δύο διαμεσολαβητές εναλλάσσονται στις ερωτήσεις. Σε κάθε στάδιο ακούν, διευκρινίζουν και επαναδιατυπώνουν πριν προχωρήσουν.</p>`)}
+ <div class="card row" style="gap:20px">
+  <div class="tools"><span>Α</span></div><span class="muted">Ακρόαση</span>
+  <div class="tools"><span>Δ</span></div><span class="muted">Διευκρινίσεις</span>
+  <div class="tools"><span>Ε</span></div><span class="muted">Επαναδιατύπωση</span>
+  <span class="tag a">Α</span><span class="muted">πρώτο μέρος</span><span class="tag b">Β</span><span class="muted">δεύτερο μέρος</span>
+ </div>
+ <div class="proc">
+  <div class="proclist" id="plist"></div>
+  <div class="card script" id="pout"></div>
+ </div>
+ <div class="block"><h2>Όταν κολλάει</h2><p class="prose">Μερικές φορές η διαμεσολάβηση φτάνει σε αδιέξοδο. Τότε είναι χρήσιμο να κάνουμε διάλειμμα και να έχουμε <b>ξεχωριστές, ατομικές συναντήσεις</b> με κάθε μέρος.</p></div>
+ <div class="block"><h2>Λίστα ελέγχου για τον διαμεσολαβητή</h2><div id="chk" class="block"></div></div>
+ ${completeBar("diadikasia")}</section>`;
+INIT.diadikasia=()=>{
+ const show=i=>{const s=STEPS[i];
+  $("#plist").querySelectorAll("button").forEach((b,j)=>b.setAttribute("aria-pressed",i===j));
+  const ord=s.ord?`<div class="order"><span class="muted">Σειρά:</span>${s.ord==="ab"?`<span class="tag a">Α</span>→<span class="tag b">Β</span>`:`<span class="tag b">Β</span>→<span class="tag a">Α</span>`}</div>`:"";
+  const tools=s.tools?`<div class="row"><span class="muted" style="font-size:.85rem">Εργαλεία:</span><div class="tools">${[...s.tools].map(t=>`<span>${t}</span>`).join("")}</div></div>`:"";
+  $("#pout").innerHTML=`<div class="row" style="justify-content:space-between"><div><div class="eyebrow">${i===0?"Πριν τη συνάντηση":"Στάδιο "+i+" από "+(STEPS.length-1)}</div><h2>${s.t}</h2></div>${ord}</div>${tools}
+  ${s.lines.map(([w,t])=>`<div class="line"><span class="who" style="color:${w.includes("2")?"var(--b)":"var(--a)"}">${w}</span><span class="${t.startsWith("«")?"say":""}">${t}</span></div>`).join("")}
+  ${s.tip?`<div class="note">${s.tip}</div>`:""}
+  <div class="row" style="justify-content:space-between;margin-top:6px"><button class="btn ghost" ${i===0?"disabled":""} id="pp">← Προηγούμενο</button><button class="btn" ${i===STEPS.length-1?"disabled":""} id="pn">Επόμενο →</button></div>`;
+  $("#pp").onclick=()=>show(i-1);$("#pn").onclick=()=>show(i+1)};
+ $("#plist").innerHTML=STEPS.map((s,i)=>`<button><span>${i===0?"·":i}</span>${s.t}</button>`).join("");
+ $("#plist").querySelectorAll("button").forEach((b,i)=>b.onclick=()=>show(i));show(0);
+ const cl=["Ενημέρωσα και τα δύο μέρη και πήρα τη συναίνεσή τους","Είπα τους κανόνες και ρώτησα αν συμφωνούν","Άκουσα και τις δύο ιστορίες χωρίς να κρίνω","Έκανα περίληψη μετά από κάθε τοποθέτηση","Αντανακλούσα τα συναισθήματα","Οι λύσεις προτάθηκαν από τα μέρη, όχι από εμένα","Η συμφωνία είναι συγκεκριμένη: ποιος, τι, πότε","Ορίσαμε συνάντηση παρακολούθησης σε μία εβδομάδα"];
+ const st=store.get("chk",{});
+ $("#chk").innerHTML=cl.map((c,i)=>`<label class="row" style="gap:10px"><input type="checkbox" id="ck${i}" ${st[i]?"checked":""} style="width:18px;height:18px;accent-color:var(--med)"> ${c}</label>`).join("");
+ cl.forEach((_,i)=>$("#ck"+i).onchange=e=>{st[i]=e.target.checked;store.set("chk",st)});
+};
+
+const PHRASES=[
+ ["Διευκρίνιση","Βοήθησέ με να καταλάβω καλύτερα αυτό που θέλεις να πεις."],["Διευκρίνιση","Πες μου λίγο περισσότερο γι' αυτό."],["Διευκρίνιση","Όταν λες ___, τι ακριβώς εννοείς;"],["Διευκρίνιση","Δεν είμαι σίγουρος ότι κατάλαβα σωστά τι εννοείς."],["Διευκρίνιση","Μπορείς να μας δώσεις ένα παράδειγμα;"],["Διευκρίνιση","Θα ήθελες να προσθέσεις κάτι άλλο;"],["Διευκρίνιση","Χμ… (σιωπή και βλεμματική επαφή που καλεί τον άλλον να πει περισσότερα)"],
+ ["Συναίσθημα","Πώς αισθάνεσαι για όσα είπες ότι έγιναν;"],["Συναίσθημα","Τι αισθάνεσαι τώρα για όσα περιγράφεις;"],["Συναίσθημα","Φαίνεσαι προβληματισμένος για ___."],["Συναίσθημα","Δεν φαίνεσαι σίγουρος για ___."],["Συναίσθημα","Φαίνεσαι ___ (χαρούμενος, θυμωμένος, απειλημένος…) για αυτό που συμβαίνει."],["Συναίσθημα","Φαίνεται να αισθάνεσαι ___. Το έχω καταλάβει σωστά;"],
+ ["Εμβάθυνση","Τι σκέφτεσαι για ___;"],["Εμβάθυνση","Τι θα μπορούσε να σημαίνει αυτό;"],["Εμβάθυνση","Τι άλλο θα μπορούσε να συμβαίνει;"],["Εμβάθυνση","Τι νομίζεις ότι βρίσκεται πίσω από αυτό;"],["Εμβάθυνση","Ποια πράγματα (ιδέες, συναισθήματα, γεγονότα) σε ενοχλούν;"],["Εμβάθυνση","Είναι αυτό διαφορετικό από ό,τι περίμενες;"],["Εμβάθυνση","Βρίσκεις ομοιότητες με άλλες εμπειρίες που είχες;"],
+ ["Λύσεις","Με ποιους τρόπους χειρίστηκες παρόμοια περιστατικά στο παρελθόν;"],["Λύσεις","Σκέφτηκες κάποιους τρόπους για να λυθεί αυτό το ζήτημα;"],["Λύσεις","Αναρωτιέμαι γιατί είναι έτσι τα πράγματα. Υπάρχουν ιδέες;"],["Λύσεις","Ποιες άλλες επιλογές μπορούμε να εξετάσουμε;"],
+ ["Επαναδιατύπωση","Έχω την εντύπωση ότι αισθάνεσαι ___."],["Επαναδιατύπωση","Νομίζω ότι αυτό που λες είναι ___."],["Επαναδιατύπωση","Μου φαίνεται ότι λες ___."],["Επαναδιατύπωση","Σε ακούω να λες ___. Άσε με να δω αν το καταλαβαίνω σωστά."],["Επαναδιατύπωση","Αναρωτιέμαι αν αυτό που λες είναι ότι ___."],["Επαναδιατύπωση","Αν κατάλαβα σωστά, μερικά από όσα λες είναι ___."],["Επαναδιατύπωση","Άρα ο τρόπος που το βλέπεις είναι ___."],["Επαναδιατύπωση","Από τη μια ακούω ___ και από την άλλη νιώθω ___."],["Επαναδιατύπωση","Φαίνεται να λες / νιώθεις / θέλεις ___."]
+];
+VIEWS.frasies=()=>`<section class="mod">${head("frasies",`<p class="lead">Φράσεις για να ανοίξετε τη συζήτηση, να εμβαθύνετε και να ελέγξετε αν καταλάβατε σωστά. Οι κενές θέσεις ___ συμπληρώνονται με τα λόγια του ομιλητή.</p>`)}
+ <div class="row"><input type="text" id="psearch" placeholder="Αναζήτηση φράσης…" style="flex:1 1 220px;max-width:340px" aria-label="Αναζήτηση φράσης"><div class="chips" id="pcat"></div></div>
+ <div class="card" style="padding:0" id="plist2"></div>
+ ${completeBar("frasies")}</section>`;
+INIT.frasies=()=>{
+ const cats=["Όλες",...new Set(PHRASES.map(p=>p[0]))];let cur="Όλες";
+ const rend=()=>{const q=$("#psearch").value.trim().toLowerCase();
+  const L=PHRASES.filter(p=>(cur==="Όλες"||p[0]===cur)&&p[1].toLowerCase().includes(q));
+  $("#plist2").innerHTML=L.length?L.map(p=>`<div class="phr"><div style="min-width:0"><span class="tag m">${p[0]}</span> <span class="t">${p[1]}</span></div><button class="copy">Αντιγραφή</button></div>`).join(""):`<p class="muted" style="padding:16px">Καμία φράση δεν ταιριάζει. Δοκιμάστε άλλη λέξη.</p>`;
+  $("#plist2").querySelectorAll(".copy").forEach(b=>b.onclick=()=>copyText(b.previousElementSibling.querySelector(".t").textContent,b.previousElementSibling.querySelector(".t")))};
+ $("#pcat").innerHTML=cats.map(c=>`<button class="chip" aria-pressed="${c===cur}">${c}</button>`).join("");
+ $("#pcat").querySelectorAll("button").forEach(b=>b.onclick=()=>{cur=b.textContent;$("#pcat").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));rend()});
+ $("#psearch").oninput=rend;rend();
+};
+
+const SCEN=[
+ {t:"Ο υπερκινητικός μαθητής",k:"Καθηγητής–μαθητής",a:"Μάριος, Α' Λυκείου",b:"Καθηγήτρια Ιστορίας",d:"Ο Μάριος είναι υπερκινητικός και παρορμητικός και δυσκολεύεται να κάτσει πολλή ώρα στο θρανίο. Συχνά δέχεται παρατηρήσεις και οι γονείς του καλούνται όταν αποβάλλεται. Στην Ιστορία, η καθηγήτρια του έκανε επανειλημμένα παρατήρηση γιατί δεν έφερε βιβλία και μιλούσε. Ο Μάριος την κατηγόρησε ότι τον έχει βάλει στο μάτι. Η κατάσταση οξύνθηκε και έφυγε από την τάξη χωρίς άδεια, βρίζοντας και χτυπώντας δυνατά την πόρτα."},
+ {t:"Κινητό στην τάξη",k:"Καθηγητής–μαθήτρια",a:"Άντρια, Β' Λυκείου",b:"Καθηγητής",d:"Παρότι απαγορεύονται τα κινητά, η Άντρια χρησιμοποιεί το δικό της στο μάθημα. Ο καθηγητής τής λέει να το βάλει στην τσάντα. Εκείνη προσποιείται ότι το κάνει, αλλά τον φωτογραφίζει. Έξαλλος, ο καθηγητής τη διώχνει από την τάξη και επιμένει να πάει στο πειθαρχικό."},
+ {t:"Καθυστέρηση με καφέ",k:"Καθηγητής–μαθητής",a:"Μαθητής",b:"Καθηγητής",d:"Ο μαθητής μπαίνει καθυστερημένα στην τάξη κρατώντας καφέ. Ο καθηγητής εκνευρίζεται και του ζητά να φύγει. Η συζήτηση οξύνεται και ο μαθητής αρνείται να φύγει, κάνοντας φασαρία."},
+ {t:"Φόρτιση στο μάθημα",k:"Καθηγητής–μαθήτρια",a:"Μαθήτρια",b:"Καθηγητής",d:"Η μαθήτρια βάζει το κινητό στη φόρτιση την ώρα του μαθήματος. Στις υποδείξεις του καθηγητή γίνεται εριστική και αντιδραστική."},
+ {t:"Καβγάς στο διάλειμμα",k:"Μαθητής–μαθητής",a:"Πρώτος μαθητής",b:"Δεύτερος μαθητής",d:"Δύο μαθητές τσακώνονται στην αυλή. Ο πρώτος έμαθε ότι ο άλλος φλέρταρε την κοπέλα του. Πιάνονται στα χέρια, αλλά τους χωρίζουν πριν γίνει κάτι χειρότερο."},
+ {t:"Συστηματική κοροϊδία",k:"Μαθήτρια–μαθήτρια",a:"Μαθήτρια που κοροϊδεύεται",b:"Μαθήτρια που κοροϊδεύει",d:"Μια μαθήτρια κοροϊδεύεται τακτικά από συμμαθήτρια για το διάβασμα, το ντύσιμο, τη συμμετοχή στην τάξη και τον φίλο της. Η άλλη τη θεωρεί «σπασίκλα» και «συντηρητική»."},
+ {t:"Ειρωνεία προς καθηγήτρια",k:"Καθηγήτρια–μαθητής",a:"Μαθητής",b:"Καθηγήτρια",d:"Ο μαθητής ειρωνεύεται συστηματικά και μεγαλόφωνα την καθηγήτρια. Θεωρεί ότι δίνει σημασία μόνο στους «καλούς» μαθητές."},
+ {t:"Στην αυλή χωρίς άδεια",k:"ΒΔ–μαθητές",a:"Δύο μαθητές και μια μαθήτρια",b:"Βοηθός Διευθυντής",d:"Ο ΒΔ ζητά από τρεις μαθητές που βρίσκονται χωρίς άδεια στην αυλή να γυρίσουν στο μάθημα. Αντί να συμμορφωθούν, ξεκινά έντονη συζήτηση με απειλές και από τις δύο πλευρές."},
+ {t:"Η κλειδωμένη πόρτα",k:"Καθηγήτρια–τμήμα",a:"Εκπρόσωποι τμήματος",b:"Καθηγήτρια",d:"Μαθητές κλείνουν με ταινία την πόρτα της τάξης. Η καθηγήτρια εκνευρίζεται και τους καταγγέλλει. Κανείς δεν λέει ποιος το έκανε, και όλη η τάξη κινδυνεύει να χάσει την εκδρομή."},
+ {t:"«Με έχει βάλει στο μάτι»",k:"Καθηγητής–μαθήτρια",a:"Μαριάννα",b:"Εκπαιδευτικός",d:"Κατά τη διάρκεια του μαθήματος, η Μαριάννα μιλά συνεχώς με τη διπλανή της, δεν παρακολουθεί και δεν κρατά σημειώσεις. Όταν δέχεται παρατήρηση, αντιδρά άσχημα και φωνάζει ότι ο καθηγητής την έχει βάλει στο μάτι."},
+ {t:"Ο στάσιμος μαθητής",k:"Καθηγήτρια–μαθητής",a:"Κώστας",b:"Καθηγήτρια Ελληνικών",d:"Ο Κώστας έμεινε στάσιμος και φέτος είναι πολύ αντιδραστικός. Πιστεύει ότι κανείς στο σχολείο δεν θέλει να τον βοηθήσει. Είναι ιδιαίτερα εριστικός με την καθηγήτρια των Ελληνικών. Δεν καταλαβαίνει Ιστορία."},
+ {t:"Δύο μέρες αποβολή",k:"ΒΔ–μαθήτρια",a:"Άρτεμις",b:"Βοηθός Διευθυντής",d:"Ο ΒΔ καλεί την Άρτεμις στο γραφείο για καταγγελίες ότι χρησιμοποιεί συνεχώς το κινητό και αντιδρά αρνητικά στους περισσότερους καθηγητές. Πηγαίνει απρόθυμα και συγκρούονται. Θεωρεί ότι δύο μέρες αποβολή είναι πολλές και ότι το σχολείο την έχει στοχοποιήσει."},
+ {t:"Όριο απουσιών",k:"Υ.Τ.–μαθητής",a:"Μάριος",b:"Υπεύθυνος Τμήματος",d:"Ο Μάριος μένει συχνά εκτός τάξης και μαζεύει απουσίες. Είναι αντιδραστικός και απρόθυμος να συνεργαστεί όταν ο Υ.Τ. του επισημαίνει ότι κινδυνεύει να ξεπεράσει το όριο."},
+ {t:"Θυμωμένοι γονείς",k:"Σχολείο–γονείς",a:"Γονείς του Αντρέα",b:"Υ.Τ. και ΒΔ",d:"Ο Αντρέας κάνει συχνά φασαρία. Πρόσφατα ξέσπασε: κλώτσησε θρανία, βγήκε από την τάξη, έβρισε την καθηγήτρια και μετά έβαλε τα κλάματα. Πήρε 4 μέρες αποβολή. Οι γονείς είναι θυμωμένοι γιατί το σχολείο δεν καταλαβαίνει ότι το παιδί τους έχει συναισθηματικές και μαθησιακές δυσκολίες. Στη συνάντηση η ένταση είναι μεγάλη."}
+];
+VIEWS.senaria=()=>`<section class="mod">${head("senaria",`<p class="lead">Χωριστείτε σε ομάδες των 5 ή 6. Ορίστε δύο διαμεσολαβητές, έναν ή δύο παρατηρητές και τα δύο μέρη της σύγκρουσης. Έχετε 15 λεπτά για τη διαμεσολάβηση και 5 για ανατροφοδότηση.</p>`)}
+ <div class="card block" id="active"></div>
+ <div class="block"><h2>Όλα τα σενάρια</h2><div class="grid g2" id="sclist"></div></div>
+ ${completeBar("senaria")}</section>`;
+let timerH=null;
+INIT.senaria=()=>{
+ clearInterval(timerH);
+ $("#sclist").innerHTML=SCEN.map((s,i)=>`<button class="modcard" data-s="${i}"><span class="k">${s.k}</span><b>${s.t}</b><span>${esc(s.d.slice(0,110))}…</span></button>`).join("");
+ $("#sclist").querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{pick(+b.dataset.s);$("#active").scrollIntoView({behavior:"smooth",block:"start"})});
+ let left=900,phase=0,run=false;
+ function pick(i){const s=SCEN[i];clearInterval(timerH);run=false;left=900;phase=0;
+  $("#active").innerHTML=`<div class="row" style="justify-content:space-between"><div><div class="eyebrow">${s.k}</div><h2>${s.t}</h2></div><button class="btn ghost" id="rnd">Τυχαίο σενάριο</button></div>
+  <p class="prose">${s.d}</p>
+  <div class="roles"><div class="role"><b class="pa">Μέρος Α</b>${s.a}</div><div class="role"><b class="pb">Μέρος Β</b>${s.b}</div><div class="role"><b style="color:var(--med)">2 διαμεσολαβητές</b>Εναλλάσσονται στις ερωτήσεις</div><div class="role"><b>1–2 παρατηρητές</b>Κρατούν σημειώσεις</div></div>
+  <div class="grid g2" style="align-items:center"><div><div class="eyebrow" id="tlabel">Διαμεσολάβηση · 15 λεπτά</div><div class="timer" id="tval">15:00</div></div>
+  <div class="row"><button class="btn" id="tgo">Έναρξη</button><button class="btn ghost" id="treset">Επαναφορά</button><button class="btn ghost" id="tfb">Πάμε στην ανατροφοδότηση</button></div></div>
+  <details class="card"><summary><b>Ερωτήσεις των παρατηρητών</b></summary><p class="muted" style="margin-top:8px">Οι παρατηρητές ρωτούν τον καθένα, ενώ είναι ακόμη στον ρόλο του:</p><ol style="margin:6px 0 0;padding-left:1.2em"><li>Τι πήγε καλά;</li><li>Τι θα άλλαζες;</li><li>Πώς ένιωσες στον ρόλο σου;</li><li>Βγες από τον ρόλο σου και πες το πραγματικό σου όνομα.</li></ol><p class="muted" style="margin-top:8px">Στο τέλος δίνουν ανατροφοδότηση στην ομάδα: τι πήγε καλά και ποια σημεία χρειάζονται περισσότερη εξάσκηση.</p></details>`;
+  const fmt=()=>{$("#tval").textContent=`${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;$("#tlabel").textContent=phase?"Ανατροφοδότηση · 5 λεπτά":"Διαμεσολάβηση · 15 λεπτά"};
+  const tick=()=>{if(left>0){left--;fmt()}else if(!phase){phase=1;left=300;fmt();toast("Τέλος χρόνου. Ώρα για ανατροφοδότηση.")}else{clearInterval(timerH);run=false;$("#tgo").textContent="Έναρξη";toast("Η άσκηση ολοκληρώθηκε")}};
+  $("#tgo").onclick=()=>{if(run){clearInterval(timerH);run=false;$("#tgo").textContent="Συνέχεια"}else{timerH=setInterval(tick,1000);run=true;$("#tgo").textContent="Παύση"}};
+  $("#treset").onclick=()=>{clearInterval(timerH);run=false;left=900;phase=0;$("#tgo").textContent="Έναρξη";fmt()};
+  $("#tfb").onclick=()=>{phase=1;left=300;fmt()};
+  $("#rnd").onclick=()=>pick(Math.floor(Math.random()*SCEN.length));fmt()}
+ pick(0);
+};
+
+const EX=[
+ {t:"Για μένα",w:"Γνωριμία",d:"Ο καθένας συμπληρώνει και μοιράζεται:",s:["Οι αγαπημένες μου δραστηριότητες είναι…","Δεν μου αρέσει να πρέπει να κάνω…","Όταν βλέπω άλλους να τσακώνονται νιώθω…","Θυμώνω όταν…","Χαλαρώνω με…"]},
+ {t:"Δύο αλήθειες και ένα ψέμα",w:"Γνωριμία",d:"Γρήγορη άσκηση που ζεσταίνει την ομάδα.",s:["Γράψτε σε ένα χαρτί δύο αλήθειες και ένα ψέμα για τον εαυτό σας.","Παρουσιάστε τα στην ολομέλεια.","Οι υπόλοιποι προσπαθούν να βρουν ποιο είναι το ψέμα."]},
+ {t:"Μη λεκτική επικοινωνία",w:"Δεξιότητες",d:"Δείχνει πόσα λέμε χωρίς λόγια, και πόσα παρερμηνεύουμε.",s:["Γίνετε ζευγάρι με κάποιον που δεν γνωρίζετε καλά.","Χωρίς να μιλήσετε, πείτε του σε 2–3 λεπτά πληροφορίες για εσάς (ενδιαφέροντα, οικογένεια κ.λπ.).","Ο άλλος ακούει χωρίς να μιλά.","Πίσω στην ομάδα, λέει όσα κατάλαβε.","Αντιστρέψτε τους ρόλους."]},
+ {t:"Γράφω στον αέρα",w:"Δεξιότητες",d:"Άσκηση στην αρχή του Μέρους Β. Τις οδηγίες τις δίνει ο συντονιστής.",s:["Ο συντονιστής δίνει τις οδηγίες προφορικά.","Συζήτηση: τι καταλάβαμε, τι παρερμηνεύσαμε, γιατί;"]},
+ {t:"Ο χαρτοπόλεμος",w:"Σύγκρουση",d:"Δείχνει τη μετάβαση από το «κερδίζω–χάνεις» στο «κερδίζουμε και οι δύο».",s:["Χωριστείτε σε δύο ομάδες.","Ο καθένας κάνει ένα φύλλο χαρτί μπάλα.","Σταθείτε η μια ομάδα απέναντι στην άλλη.","Ρίξτε τα «σκουπίδια» σας στον χώρο των άλλων. Στόχος: να μείνει καθαρός ο δικός σας χώρος.","Τώρα βρείτε μια λύση με την οποία κερδίζουν και οι δύο ομάδες."]},
+ {t:"Μια επιθυμία ο καθένας",w:"Κλείσιμο",d:"Άσκηση για το τέλος της συνάντησης.",s:["Ο καθένας εκφράζει μια επιθυμία ξεκινώντας με «Θέλω να…» και όχι «Θα ήθελα…».","Κρατάμε γρήγορο ρυθμό, χωρίς σχόλια και συζήτηση."]}
+];
+VIEWS.askiseis=()=>`<section class="mod">${head("askiseis",`<p class="lead">Βιωματικές ασκήσεις από την εκπαίδευση, για γνωριμία, εξάσκηση δεξιοτήτων και κλείσιμο.</p>`)}
+ <div class="grid g2">${EX.map(e=>`<div class="card block" style="gap:10px"><div class="row" style="justify-content:space-between"><h3>${e.t}</h3><span class="tag ${e.w==="Σύγκρουση"?"b":e.w==="Δεξιότητες"?"a":"m"}">${e.w.toUpperCase()}</span></div><p class="muted">${e.d}</p><ol style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px">${e.s.map(x=>`<li>${x}</li>`).join("")}</ol></div>`).join("")}</div>
+ ${completeBar("askiseis")}</section>`;
+
+const VIDS=[
+ {t:"What Happens When We Get Angry",f:"θυμος/1.What Happens When We Get Angry.mp4",dur:"1:16",m:"thymos",w:"Εισαγωγή στον θυμό",q:["Τι αλλάζει στο σώμα όταν θυμώνουμε;","Ποια σημάδια μπορούμε να αναγνωρίσουμε σε έναν μαθητή πριν το ξέσπασμα;"]},
+ {t:"The Ugly: Provocative Class Reaction",f:"θυμος/2.The Ugly-Provocative Class Reaction.mp4",dur:"0:38",m:"apoklimakosi",w:"Τι να μην κάνουμε",q:["Τι έκανε ο εκπαιδευτικός που ανέβασε την ένταση;","Σε ποια φάση του κύκλου ήταν ο μαθητής;"]},
+ {t:"The Bad: Defusing Anger and Aggression",f:"θυμος/3.The Bad-Defusing Anger and Aggression.mp4",dur:"1:49",m:"apoklimakosi",w:"Τι να μην κάνουμε",q:["Ποιες κινήσεις, φράσεις ή στάσεις σώματος χειροτέρεψαν την κατάσταση;","Τι θα αλλάζατε;"]},
+ {t:"The Good: Safe Strategies for Secondary School Educators",f:"θυμος/4.The Good-Defusing Anger and Aggression  Safe Strategies for Secondary School Educators.mp4",dur:"1:41",m:"apoklimakosi",w:"Τι λειτουργεί",q:["Ποιες τεχνικές αποκλιμάκωσης αναγνωρίζετε;","Πώς χρησιμοποιήθηκαν φωνή, απόσταση και σώμα;"]},
+ {t:"Ενσυναίσθηση",f:"ΒΙΝΤΕΟ/Ενσυναίσθηση Ο καλύτερος τρόπος να κάνεις έναν άνθρωπο να νιώσει καλύτερα είναι....mp4",dur:"2:53",m:"dexiotites",w:"Ενσυναίσθηση",q:["Ποια η διαφορά ανάμεσα στην ενσυναίσθηση και τη συμπάθεια;","Ποιες φράσεις μας βγάζουν από τη σύνδεση με τον άλλον;"]},
+ {t:"Dr Seuss' The Zax",f:"ΒΙΝΤΕΟ/Dr Seuss' The Zax.mp4",dur:"3:44",m:"arxes",w:"Θέσεις και συμφέροντα",q:["Ποια είναι η θέση του καθενός; Ποιο είναι το πραγματικό του συμφέρον;","Τι κόστισε η αδιαλλαξία;","Ποια λύση θα έβγαζε και τους δύο κερδισμένους;"]},
+ {t:"The Fly",f:"ΒΙΝΤΕΟ/▶ The Fly.mp4",dur:"2:48",m:"kyklos",w:"Κλιμάκωση",q:["Πού ξεκίνησε η σύγκρουση και πότε έγινε δυσανάλογη;","Ποιο ήταν το κόστος της αντίδρασης σε σχέση με την αιτία;"]},
+ {t:"Teamwork",f:"ΒΙΝΤΕΟ/Teamwork funny.mp4",dur:"0:33",m:"arxes",w:"Συνεργασία",q:["Τι άλλαξε όταν δούλεψαν μαζί;","Πώς μοιάζει αυτό με τη λύση κοινού κέρδους;"]},
+ {t:"Graffiti (Pfizer)",f:"ΒΙΝΤΕΟ/Graffiti - Pfizer Commercial.wmv",dur:"—",m:"dexiotites",w:"Ερμηνείες και επικοινωνία",q:["Τι υποθέσαμε στην αρχή; Τι αποδείχτηκε;","Πώς συνδέεται με τα γνωσιακά λάθη;"],note:"Αρχείο .wmv: σε Mac ανοίγει με VLC."}
+];
+VIEWS.video=()=>`<section class="mod">${head("video",`<p class="lead">Τα βίντεο της εκπαίδευσης, με τη θέση τους στο πρόγραμμα και ερωτήσεις για συζήτηση. Τα αρχεία βρίσκονται στον φάκελο ΔΙΑΜΕΣΟΛΑΒΗΣΗ του υπολογιστή σας.</p>`)}
+ <div class="note">Προτεινόμενη σειρά για τον θυμό: <b>The Ugly → The Bad → The Good</b>. Πρώτα βλέπουμε τι χειροτερεύει την κατάσταση και μετά τι τη βελτιώνει.</div>
+ <div class="grid g2">${VIDS.map(v=>`<div class="card vid"><div class="row" style="justify-content:space-between"><h3>${v.t}</h3><span class="tag m">${v.w.toUpperCase()}</span></div>
+  <div class="meta"><span>Διάρκεια ${v.dur}</span>·<button class="chip" data-go="${v.m}" style="padding:2px 10px;font-size:.78rem">Ενότητα: ${MODS.find(m=>m.id===v.m).t}</button></div>
+  <code>${esc(v.f)}</code>${v.note?`<p class="muted" style="font-size:.85rem">${v.note}</p>`:""}
+  <div><div class="eyebrow" style="color:var(--muted)">Για συζήτηση</div><ul class="clean" style="margin-top:4px">${v.q.map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`).join("")}</div>
+ ${completeBar("video")}</section>`;
+
+VIEWS.entypa=()=>`<section class="mod">${head("entypa",`<p class="lead">Τα δύο έντυπα της διαδικασίας. Συμπληρώστε τα εδώ και αντιγράψτε το κείμενο για να το επικολλήσετε σε έγγραφο ή email.</p>`)}
+ <div class="tabs" role="tablist" id="ftabs"><button role="tab" aria-selected="true" data-f="req">Αίτημα διαμεσολάβησης</button><button role="tab" aria-selected="false" data-f="con">Συμβόλαιο διαμεσολάβησης</button></div>
+ <form class="paper" id="freq" onsubmit="return false">
+  <h3>Αίτημα διαμεσολάβησης</h3>
+  <div class="formrow"><label class="f" for="r_school">Σχολείο<input type="text" id="r_school"></label><label class="f" for="r_date">Ημερομηνία<input type="text" id="r_date"></label></div>
+  <p>Προς τον Υπεύθυνο Συντονιστή Διαμεσολάβησης. Παρακαλείστε να διευθετήσετε διαμεσολαβητική συνάντηση μεταξύ των:</p>
+  ${[1,2,3].map(i=>`<div class="formrow"><label class="f" for="r_p${i}">Όνομα ${i}<input type="text" id="r_p${i}"></label><label class="f" for="r_r${i}">Ιδιότητα / Τμήμα<input type="text" id="r_r${i}"></label></div>`).join("")}
+  <div class="formrow"><label class="f" for="r_how">Η ενημέρωση έγινε με<select id="r_how"><option>Προσωπικό αίτημα</option><option>Προφορική αναφορά/καταγγελία</option><option>Γραπτή καταγγελία</option></select></label><label class="f" for="r_ref">Παραπέμπων (όνομα, ιδιότητα)<input type="text" id="r_ref"></label></div>
+  <div class="eyebrow">Συμπληρώνεται από τον Συντονιστή</div>
+  <div class="formrow"><label class="f" for="r_m1">Διαμεσολαβητής 1<input type="text" id="r_m1"></label><label class="f" for="r_m2">Διαμεσολαβητής 2<input type="text" id="r_m2"></label><label class="f" for="r_room">Αίθουσα / περίοδος<input type="text" id="r_room"></label></div>
+  <p class="muted" style="font-size:.85rem">Αντίγραφο της συμφωνίας δίνεται στον υπεύθυνο ΒΔ για αναστολή της γραπτής καταγγελίας.</p>
+  <div class="row"><button class="btn" type="button" id="reqcopy">Αντιγραφή ως κείμενο</button><button class="btn ghost" type="button" id="reqclear">Καθαρισμός</button></div>
+ </form>
+ <form class="paper" id="fcon" hidden onsubmit="return false">
+  <h3>Συμβόλαιο διαμεσολάβησης</h3>
+  <div class="formrow"><label class="f" for="c_date">Ημερομηνία<input type="text" id="c_date"></label><label class="f" for="c_no">Αριθμός συνάντησης<input type="text" id="c_no"></label></div>
+  <div class="formrow"><label class="f" for="c_m1">Διαμεσολαβητής 1 (όνομα, ιδιότητα)<input type="text" id="c_m1"></label><label class="f" for="c_m2">Διαμεσολαβητής 2<input type="text" id="c_m2"></label></div>
+  <div class="formrow"><label class="f" for="c_p1">Συμμετέχων 1 (όνομα, τμήμα/ιδιότητα)<input type="text" id="c_p1"></label><label class="f" for="c_p2">Συμμετέχων 2<input type="text" id="c_p2"></label></div>
+  <p>Οι συμμετέχοντες προσήλθαν εθελοντικά και δέχτηκαν τους κανόνες:</p>
+  <div class="checks">${["Εθελοντική συμμετοχή","Εχεμύθεια","Σεβασμός","Δεν διακόπτουμε","Χωρίς υβριστικές φράσεις","Δεν απειλούμε, δεν εκβιάζουμε","Απαγορεύεται η βία","Τηρούμε τη συμφωνία στο χρονοδιάγραμμα"].map((x,i)=>`<label><input type="checkbox" id="c_k${i}" checked style="accent-color:var(--med)">${x}</label>`).join("")}</div>
+  <label class="f" for="c_prob">Διαφάνηκε ότι το πρόβλημα είναι<textarea id="c_prob"></textarea></label>
+  <label class="f" for="c_agr">Συμφωνήθηκαν από κοινού τα εξής<textarea id="c_agr" style="min-height:110px"></textarea></label>
+  <label class="f" for="c_time">Χρονοδιάγραμμα<input type="text" id="c_time"></label>
+  <p class="muted" style="font-size:.85rem">Αν δεν τηρηθούν τα συμφωνηθέντα, το ζήτημα παραπέμπεται στον αρμόδιο ΒΔ. Υπογραφές: συμμετέχοντες, διαμεσολαβητές, εποπτεύον μέλος.</p>
+  <div class="row"><button class="btn" type="button" id="concopy">Αντιγραφή ως κείμενο</button><button class="btn ghost" type="button" id="conclear">Καθαρισμός</button></div>
+ </form>
+ ${completeBar("entypa")}</section>`;
+INIT.entypa=()=>{
+ $("#ftabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("#ftabs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));$("#freq").hidden=b.dataset.f!=="req";$("#fcon").hidden=b.dataset.f!=="con"});
+ const forms=store.get("forms",{});
+ document.querySelectorAll(".paper input[type=text],.paper textarea,.paper select").forEach(el=>{if(forms[el.id]!=null)el.value=forms[el.id];el.oninput=el.onchange=()=>{forms[el.id]=el.value;store.set("forms",forms)}});
+ const v=id=>$("#"+id).value.trim()||"________";
+ $("#reqcopy").onclick=()=>copyText(`ΑΙΤΗΜΑ ΔΙΑΜΕΣΟΛΑΒΗΣΗΣ\nΣχολείο: ${v("r_school")}   Ημερομηνία: ${v("r_date")}\n\nΠρος Υπεύθυνο Συντονιστή Διαμεσολάβησης,\nΠαρακαλείστε να διευθετήσετε διαμεσολαβητική συνάντηση μεταξύ των:\n${[1,2,3].filter(i=>$("#r_p"+i).value.trim()).map(i=>`- ${v("r_p"+i)}, ${v("r_r"+i)}`).join("\n")||"- ________"}\n\nΗ ενημέρωση έγινε με: ${$("#r_how").value}. Παραπέμπων: ${v("r_ref")}\n\nΔιαμεσολαβητές: ${v("r_m1")}, ${v("r_m2")}\nΑίθουσα / περίοδος: ${v("r_room")}\nΑντίγραφο της συμφωνίας δίνεται στον υπεύθυνο ΒΔ για αναστολή της γραπτής καταγγελίας.`);
+ $("#concopy").onclick=()=>copyText(`ΣΥΜΒΟΛΑΙΟ ΔΙΑΜΕΣΟΛΑΒΗΣΗΣ\nΗμερομηνία: ${v("c_date")}   Αρ. συνάντησης: ${v("c_no")}\nΔιαμεσολαβητές: ${v("c_m1")}, ${v("c_m2")}\nΣυμμετέχοντες: ${v("c_p1")}, ${v("c_p2")}\n\nΟι συμμετέχοντες προσήλθαν εθελοντικά και δέχτηκαν τους κανόνες: ${[...document.querySelectorAll("#fcon .checks input")].filter(c=>c.checked).map(c=>c.parentElement.textContent.trim()).join(", ")}.\n\nΤο πρόβλημα:\n${v("c_prob")}\n\nΣυμφωνήθηκαν από κοινού:\n${v("c_agr")}\n\nΧρονοδιάγραμμα: ${v("c_time")}\nΑν δεν τηρηθούν τα συμφωνηθέντα, το ζήτημα παραπέμπεται στον αρμόδιο ΒΔ.\n\nΥπογραφές:\nΣυμμετέχων 1 ________  Συμμετέχων 2 ________\nΔιαμεσολαβητής 1 ________  Διαμεσολαβητής 2 ________\nΕποπτεύον μέλος ________`);
+ const clr=f=>()=>{document.querySelectorAll(`#${f} input[type=text],#${f} textarea`).forEach(el=>{el.value="";forms[el.id]="";});store.set("forms",forms);toast("Καθαρίστηκε")};
+ $("#reqclear").onclick=clr("freq");$("#conclear").onclick=clr("fcon");
+};
+
+const FINAL=[
+ {q:"Ποιος ελέγχει το αποτέλεσμα της διαμεσολάβησης;",o:["Ο διαμεσολαβητής","Τα συγκρουόμενα μέρη","Ο Διευθυντής"],a:1,e:"Ο διαμεσολαβητής ελέγχει τη διαδικασία. Τα μέρη ελέγχουν τη λύση, γι' αυτό και την εφαρμόζουν."},
+ {q:"Ο θυμός θεωρείται…",o:["πρωτογενές συναίσθημα","δευτερεύον συναίσθημα που κρύβει άλλα","πάντα ένδειξη διαταραχής"],a:1,e:"Κάτω από τον θυμό βρίσκονται φόβος, ντροπή, απογοήτευση, ζήλια, απώλεια."},
+ {q:"Ποια είναι η καλύτερη φάση για να προλάβουμε την κλιμάκωση;",o:["Η πυροδότηση","Η κρίση","Η αποκλιμάκωση"],a:0,e:"Στην πυροδότηση το σώμα δεν έχει αντιδράσει ακόμη και ο μαθητής ακόμη ακούει."},
+ {q:"Πότε γίνεται ιδανικά η διαμεσολάβηση μετά από ένα επεισόδιο;",o:["Αμέσως","2 έως 5 μέρες μετά","Μετά από δύο εβδομάδες"],a:1,e:"Πρώτη παρέμβαση τουλάχιστον 2 ώρες μετά, προετοιμασία την επόμενη μέρα, διαμεσολάβηση 2–5 μέρες μετά."},
+ {q:"Ένας μαθητής ουρλιάζει. Ποια αντίδραση ακολουθεί την τεχνική «ταίριασμα στη διάθεση»;",o:["Απόλυτη ηρεμία και σιωπή","Λίγη ένταση, χαμηλότερη από του μαθητή, που μειώνεται σταδιακά","Ίδια ένταση για να δείξουμε ποιος έχει τον έλεγχο"],a:1,e:"Η απόλυτη ηρεμία μπορεί να εκνευρίσει. Η ίση ένταση είναι καθρέφτισμα."},
+ {q:"«Αισθάνομαι θυμό όταν μου μιλάς άσχημα.» Ποιο στυλ θυμού είναι;",o:["Επιθετικό","Παθητικο-επιθετικό","Διεκδικητικό"],a:2,e:"Εκφράζει τον θυμό σταθερά και μιλά για τον εαυτό του."},
+ {q:"«Άρα θα ήθελες να σε εμπιστεύονται περισσότερο οι γονείς σου, σωστά;» Ποια δεξιότητα είναι;",o:["Επαναδιατύπωση","Ενθάρρυνση","Αναγνώριση"],a:0,e:"Λέμε με δικά μας λόγια αυτό που ακούσαμε και ελέγχουμε αν το καταλάβαμε σωστά."},
+ {q:"Στη δομημένη επίλυση εστιάζουμε…",o:["στις θέσεις των μερών","στα κοινά συμφέροντα","σε όποιον έχει δίκιο"],a:1,e:"Οι θέσεις είναι εικόνα. Τα συμφέροντα δείχνουν τις πραγματικές ανάγκες."},
+ {q:"Στο στάδιο «Ποια προβλήματα;» ποιος μιλά πρώτος;",o:["Το μέρος Α","Το μέρος Β","Όποιος θέλει"],a:1,e:"Στην ιστορία ξεκινά ο Α. Μετά ξεκινά ο Β, για να υπάρχει ισορροπία."},
+ {q:"Η διαμεσολάβηση φτάνει σε αδιέξοδο. Τι κάνουμε;",o:["Προτείνουμε εμείς λύση","Διακόπτουμε για ατομικές συναντήσεις με κάθε μέρος","Τερματίζουμε και επιβάλλουμε ποινή"],a:1,e:"Οι ξεχωριστές συναντήσεις βοηθούν να ξεμπλοκάρει η διαδικασία."},
+ {q:"Ποια φράση θα χειροτερέψει σίγουρα την κατάσταση;",o:["«Βλέπω ότι θύμωσες με αυτό που έγινε.»","«Σε θεωρούσα πιο ώριμο!»","«Πες μου λίγο περισσότερο.»"],a:1,e:"Ο μαθητής την εκλαμβάνει ως επίθεση στο πρόσωπό του."},
+ {q:"Μετά το επεισόδιο, η παρέμβαση στοχεύει…",o:["στην ενοχοποίηση του μαθητή","στη μεταμέλεια για τη συμπεριφορά","στο να ξεχαστεί το θέμα"],a:1,e:"Κάθε πλήγμα στην αυτοεικόνα βάζει τον μαθητή σε άμυνα."}
+];
+VIEWS.quiz=()=>`<section class="mod">${head("quiz",`<p class="lead">Δώδεκα ερωτήσεις από όλο το εγχειρίδιο. Κάθε απάντηση συνοδεύεται από εξήγηση.</p>`)}
+ <div id="fq"></div><div class="card" id="fqres" hidden></div>
+ ${completeBar("quiz")}</section>`;
+INIT.quiz=()=>quiz("#fq",FINAL,(s,n)=>{const r=$("#fqres");r.hidden=false;r.innerHTML=`<h2>${s} / ${n}</h2><p class="muted">${s>=10?"Εξαιρετικά. Είστε έτοιμοι για παιχνίδι ρόλων.":s>=7?"Καλή βάση. Ξαναδείτε τις ενότητες όπου κάνατε λάθος.":"Αξίζει μια δεύτερη ανάγνωση των ενοτήτων Μέρους Α και της διαδικασίας."}</p><div class="row" style="margin-top:10px"><button class="btn" data-go="senaria">Πάμε στο παιχνίδι ρόλων</button><button class="btn ghost" id="redo">Ξανά από την αρχή</button></div>`;$("#redo").onclick=()=>go("quiz")});
+
+function quiz(sel,qs,onEnd){
+ let s=0,n=0;
+ $(sel).innerHTML=qs.map((q,i)=>`<div class="card q" data-i="${i}" style="margin-bottom:12px"><div class="eyebrow" style="color:var(--muted)">Ερώτηση ${i+1} από ${qs.length}</div><b>${q.q}</b><div class="opts">${q.o.map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join("")}</div><div class="fb" hidden></div></div>`).join("");
+ $(sel).querySelectorAll(".q").forEach(c=>{const q=qs[+c.dataset.i];c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  const j=+b.dataset.j,ok=j===q.a;n++;if(ok)s++;
+  c.querySelectorAll(".opt").forEach((x,k)=>{x.disabled=true;if(k===q.a)x.classList.add("right")});if(!ok)b.classList.add("wrong");
+  const fb=c.querySelector(".fb");fb.hidden=false;fb.innerHTML=`<b style="color:${ok?"var(--med)":"var(--b)"}">${ok?"Σωστά.":"Όχι ακριβώς."}</b> ${q.e}`;
+  if(n===qs.length&&onEnd)onEnd(s,n)})});
+}
+
+/* ---------- Εκκίνηση ---------- */
+const h=(location.hash||"").slice(1);
+go(MODS.some(m=>m.id===h)?h:"arxi");
+</script>
+
+</body></html>

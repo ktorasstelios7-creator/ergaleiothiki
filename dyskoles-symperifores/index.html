@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Δύσκολες Συμπεριφορές: Σχέδιο Δράσης</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700;7..72,800&family=Commissioner:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Plan: a school "protocol binder". A numbered step rail coded by support tier (1 all, 2 targeted, 3 intensive),
+   role chips colour-coded so every person can find their part, and spoken lines set apart as speech. */
+:root{
+  --bg:#f1f2f6; --paper:#ffffff; --ink:#1d2433; --muted:#5a6273; --line:#d9dde6; --soft:#f6f7fa;
+  --accent:#5b4fa8;
+  --t1:#2f8f5b; --t2:#b7791f; --t3:#b4374f;
+  --r-st:#0f7c8c; --r-pe:#2f8f5b; --r-te:#2f62b3; --r-yt:#b7791f; --r-bd:#a3324f; --r-ks:#5b4fa8; --r-pa:#c2582d; --r-me:#7a5c3a;
+  --display:"Literata", Georgia, "Times New Roman", serif;
+  --body:"Commissioner", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12151d; --paper:#1a1f2a; --ink:#e7eaf1; --muted:#9ca5b8; --line:#2d3444; --soft:#212735;
+  --accent:#a99ef0; --t1:#5cc58c; --t2:#e2ab4f; --t3:#f07b93;
+  --r-st:#46c1d1; --r-pe:#5cc58c; --r-te:#7aa6f0; --r-yt:#e2ab4f; --r-bd:#f07b93; --r-ks:#a99ef0; --r-pa:#f0956a; --r-me:#c9a27a;
+  color-scheme:dark; }}
+:root[data-theme="dark"]{
+  --bg:#12151d; --paper:#1a1f2a; --ink:#e7eaf1; --muted:#9ca5b8; --line:#2d3444; --soft:#212735;
+  --accent:#a99ef0; --t1:#5cc58c; --t2:#e2ab4f; --t3:#f07b93;
+  --r-st:#46c1d1; --r-pe:#5cc58c; --r-te:#7aa6f0; --r-yt:#e2ab4f; --r-bd:#f07b93; --r-ks:#a99ef0; --r-pa:#f0956a; --r-me:#c9a27a;
+  color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16.5px; line-height:1.55}
+h1,h2,h3,h4{font-family:var(--display); margin:0; line-height:1.18; text-wrap:balance}
+h2{font-size:clamp(24px,3.4vw,32px); font-weight:800}
+h3{font-size:20px; font-weight:700}
+h4{font-size:16.5px; font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea,select{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.wrap{max-width:1180px; margin:0 auto; padding:0 18px}
+.muted{color:var(--muted)} .small{font-size:14.5px}
+
+header.top{background:var(--paper); border-bottom:1px solid var(--line)}
+.head{display:grid; gap:10px; padding:26px 0 14px}
+.eyebrow{font-size:12.5px; letter-spacing:.09em; font-weight:700; color:var(--muted)}
+.head h1{font-size:clamp(28px,4.6vw,44px); font-weight:800}
+.head .lede{color:var(--muted); max-width:72ch; font-size:17px}
+.persona{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px 14px; background:var(--soft); border:1px solid var(--line); border-radius:10px; font-size:14.5px}
+.persona input{width:170px; padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:var(--paper)}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--paper)}
+.seg button{border:0; background:transparent; padding:5px 12px; cursor:pointer; font-size:14px; font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+nav.tabs{position:sticky; top:0; z-index:20; background:var(--paper); border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex; gap:4px; overflow-x:auto}
+nav.tabs a{white-space:nowrap; text-decoration:none; color:var(--muted); font-weight:600; font-size:15px; padding:12px 12px 10px; border-bottom:3px solid transparent}
+nav.tabs a:hover{color:var(--ink)}
+nav.tabs a[aria-current="page"]{color:var(--ink); border-bottom-color:var(--accent)}
+
+main{padding:26px 0 70px}
+.view{display:none} .view.on{display:block}
+.vhead{display:grid; gap:8px; margin-bottom:20px; max-width:80ch}
+.alert{border:1px solid var(--t3); border-left:6px solid var(--t3); background:color-mix(in srgb, var(--t3) 8%, var(--paper)); border-radius:8px; padding:12px 16px; font-size:15px}
+
+/* chips */
+.chip{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; padding:2px 9px; border-radius:999px; border:1px solid color-mix(in srgb, var(--c) 45%, transparent); background:color-mix(in srgb, var(--c) 12%, var(--paper)); color:var(--ink); white-space:nowrap}
+.chip::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--c)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.tier{font-size:12px; font-weight:700; letter-spacing:.05em; padding:2px 8px; border-radius:6px; color:#fff; background:var(--tc)}
+:root[data-theme="dark"] .tier{color:#12151d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tier{color:#12151d}}
+
+/* Plan timeline */
+.legend{display:flex; flex-wrap:wrap; gap:16px; margin-bottom:18px; font-size:14.5px; color:var(--muted)}
+.legend span{display:inline-flex; gap:8px; align-items:center}
+.legend i{width:14px; height:14px; border-radius:4px; background:var(--tc)}
+.rail{display:grid; gap:0; position:relative}
+.step{display:grid; grid-template-columns:64px 1fr; gap:0 18px; position:relative}
+.step .num{position:relative; display:flex; justify-content:center}
+.step .num::after{content:""; position:absolute; top:44px; bottom:0; width:3px; background:var(--line)}
+.step:last-child .num::after{display:none}
+.step .num b{font-family:var(--display); font-weight:800; font-size:20px; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--paper); border:3px solid var(--tc); color:var(--ink); z-index:1}
+.scard{background:var(--paper); border:1px solid var(--line); border-left:5px solid var(--tc); border-radius:10px; padding:16px 18px; margin-bottom:16px; display:grid; gap:10px}
+.scard .row{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; justify-content:space-between}
+.scard .when{font-size:14px; color:var(--muted); font-weight:600}
+.scard ul{margin:0; padding-left:20px; display:grid; gap:4px}
+.scard .goal{font-size:15.5px}
+.cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px}
+.box{background:var(--soft); border-radius:8px; padding:10px 12px; font-size:14.5px; display:grid; gap:6px; align-content:start}
+.box h4{font-family:var(--body); font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.mlinks{display:flex; flex-wrap:wrap; gap:6px}
+.mlink{border:1px solid var(--accent); color:var(--accent); background:transparent; border-radius:8px; padding:4px 10px; font-size:14px; font-weight:600; cursor:pointer}
+.mlink:hover{background:color-mix(in srgb, var(--accent) 10%, transparent)}
+.next{font-size:14.5px; border-top:1px dashed var(--line); padding-top:8px}
+.next b{color:var(--tc)}
+
+/* Meetings */
+.mgrid{display:grid; grid-template-columns:300px 1fr; gap:18px; align-items:start}
+@media (max-width:860px){ .mgrid{grid-template-columns:1fr} .mlist{position:static !important; max-height:none !important} }
+.mlist{position:sticky; top:58px; display:grid; gap:6px; max-height:calc(100vh - 80px); overflow:auto; padding-right:4px}
+.mitem{text-align:left; border:1px solid var(--line); background:var(--paper); border-radius:10px; padding:9px 12px; cursor:pointer; display:grid; gap:4px}
+.mitem .t{font-weight:600; font-size:14.5px; line-height:1.3}
+.mitem .k{font-size:12px; color:var(--muted); font-weight:700; letter-spacing:.05em}
+.mitem[aria-current="true"]{border-color:var(--accent); box-shadow:inset 4px 0 0 var(--accent)}
+.mitem .dots{display:flex; gap:3px}
+.mitem .dots i{width:8px; height:8px; border-radius:50%; background:var(--c)}
+.rolefilter{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px}
+.rolefilter button{cursor:pointer}
+.rolefilter button[aria-pressed="false"]{opacity:.45}
+.mdetail{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:22px; display:grid; gap:16px}
+.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px}
+.facts div{background:var(--soft); border-radius:8px; padding:8px 10px; font-size:14px}
+.facts b{display:block; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.script{display:grid; gap:8px}
+.script h4{margin-top:8px; color:var(--accent); font-family:var(--body); font-size:13px; letter-spacing:.07em; text-transform:uppercase}
+.say{position:relative; padding:9px 14px 9px 40px; background:color-mix(in srgb, var(--who, var(--accent)) 7%, var(--paper)); border:1px solid color-mix(in srgb, var(--who, var(--accent)) 25%, var(--line)); border-radius:10px; font-family:var(--display); font-size:16.5px; line-height:1.5}
+.say::before{content:"«"; position:absolute; left:13px; top:4px; font-size:26px; color:var(--who, var(--accent)); font-family:var(--display)}
+.say .spk{display:block; font-family:var(--body); font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--who, var(--muted)); margin-bottom:2px}
+.say em{font-family:var(--body); font-style:normal; font-size:12.5px; color:var(--muted); background:var(--soft); padding:0 6px; border-radius:4px; margin-left:4px}
+.do{font-size:15px; color:var(--ink); padding-left:14px; border-left:3px solid var(--line)}
+.avoid{border:1px solid color-mix(in srgb, var(--t3) 40%, var(--line)); border-radius:10px; padding:10px 14px; display:grid; gap:4px; align-content:start; background:color-mix(in srgb, var(--t3) 5%, var(--paper))}
+.avoid h4{color:var(--t3); font-family:var(--body); font-size:13px; letter-spacing:.07em; text-transform:uppercase}
+.avoid li{text-decoration:line-through; text-decoration-color:color-mix(in srgb, var(--t3) 60%, transparent); font-family:var(--display)}
+.avoid ul{margin:0; padding-left:18px}
+.btn{border:1px solid var(--ink); background:var(--paper); border-radius:8px; padding:7px 14px; font-weight:600; font-size:14.5px; cursor:pointer}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#12151d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#12151d}}
+.btn.ghost{border-color:var(--line)}
+.rowb{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.origin{font-size:13.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:10px}
+
+/* Roles */
+.rolepick{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
+.rolepick button{cursor:pointer; font-size:14px; padding:6px 12px}
+.rolepick button[aria-pressed="true"]{outline:2px solid var(--c); outline-offset:1px; font-weight:700}
+.rolecard{background:var(--paper); border:1px solid var(--line); border-top:6px solid var(--c); border-radius:12px; padding:20px; display:grid; gap:14px}
+.rsteps{display:grid; gap:8px}
+.rstep{display:grid; grid-template-columns:40px 1fr; gap:10px; align-items:start; padding:8px 0; border-bottom:1px solid var(--line)}
+.rstep:last-child{border-bottom:0}
+.rstep b.n{font-family:var(--display); font-weight:800; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; border:2px solid var(--tc); font-size:15px}
+
+/* De-escalation */
+.wave{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:10px}
+.wave svg{display:block; width:100%; height:auto}
+.wave .ph{cursor:pointer}
+.wave .ph rect{fill:transparent}
+.wave .ph:hover rect, .wave .ph[aria-pressed="true"] rect{fill:color-mix(in srgb, var(--accent) 10%, transparent)}
+.wave text{font-family:var(--body); fill:var(--ink); font-size:13px; font-weight:600}
+.wave .curve{fill:none; stroke:var(--t3); stroke-width:4}
+.wave .area{fill:color-mix(in srgb, var(--t3) 12%, transparent)}
+.phdetail{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; margin-top:14px}
+.panel{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:18px; display:grid; gap:10px; align-content:start}
+
+/* Case */
+.form{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+.form label{display:grid; gap:4px; font-size:14px; font-weight:600}
+.form input,.form textarea,.form select{border:1px solid var(--line); border-radius:8px; padding:8px 10px; background:var(--soft); font-weight:400}
+.form textarea{min-height:70px; resize:vertical}
+.form .wide{grid-column:1/-1}
+.check{display:grid; gap:6px}
+.crow{display:grid; grid-template-columns:28px 1fr 150px; gap:10px; align-items:center; padding:8px 10px; border:1px solid var(--line); border-left:5px solid var(--tc); border-radius:8px; background:var(--paper)}
+.crow.done{opacity:.7}
+.crow.done .ct{text-decoration:line-through}
+.crow input[type=checkbox]{width:20px; height:20px; accent-color:var(--accent)}
+.crow input[type=date]{border:1px solid var(--line); border-radius:6px; padding:4px 6px; background:var(--soft); font-size:13.5px}
+@media (max-width:560px){ .crow{grid-template-columns:28px 1fr} .crow input[type=date]{grid-column:2} }
+.cardtbl{border-collapse:collapse; width:100%; font-size:14px; font-variant-numeric:tabular-nums}
+.cardtbl th,.cardtbl td{border:1px solid var(--line); padding:6px; text-align:center}
+.cardtbl th:first-child,.cardtbl td:first-child{text-align:left; min-width:180px}
+.cardtbl td button{width:34px; height:30px; border-radius:6px; border:1px solid var(--line); background:var(--soft); cursor:pointer; font-weight:700}
+.cardtbl td button.v2{background:var(--t1); color:#fff; border-color:var(--t1)}
+.cardtbl td button.v1{background:var(--t2); color:#fff; border-color:var(--t2)}
+.cardtbl td button.v0{background:var(--t3); color:#fff; border-color:var(--t3)}
+.tblwrap{overflow-x:auto}
+.hist{display:flex; align-items:flex-end; gap:6px; height:90px; padding:6px 0; border-bottom:1px solid var(--line); position:relative}
+.hist .bar{flex:0 0 26px; background:var(--accent); border-radius:4px 4px 0 0; position:relative}
+.hist .bar.ok{background:var(--t1)}
+.hist .goalline{position:absolute; left:0; right:0; border-top:2px dashed var(--t2)}
+.pct{font-family:var(--display); font-size:34px; font-weight:800; font-variant-numeric:tabular-nums}
+
+/* World */
+.world{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px}
+.wcard{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:16px 18px; display:grid; gap:8px; align-content:start}
+.wcard .cc{font-family:var(--display); font-weight:800; font-size:13px; letter-spacing:.08em; color:var(--accent)}
+.wcard ul{margin:0; padding-left:18px; font-size:14.5px; color:var(--muted); display:grid; gap:3px}
+.wcard .use{font-size:14px; background:var(--soft); border-radius:6px; padding:6px 10px}
+.toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:9px 16px; border-radius:999px; font-weight:600; opacity:0; transition:opacity .2s; pointer-events:none; z-index:50}
+.toast.on{opacity:1}
+footer{border-top:1px solid var(--line); padding:18px 0 36px; color:var(--muted); font-size:13.5px}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap head">
+    <div class="eyebrow">ΣΥΜΒΟΥΛΕΥΤΙΚΗ &amp; ΕΠΑΓΓΕΛΜΑΤΙΚΗ ΑΓΩΓΗ · ΕΡΓΑΛΕΙΟ ΓΙΑ ΤΗ ΣΧΟΛΙΚΗ ΜΟΝΑΔΑ</div>
+    <h1>Δύσκολες συμπεριφορές στην τάξη: σχέδιο δράσης βήμα προς βήμα</h1>
+    <p class="lede">Ποιος κάνει τι, πότε συναντιόμαστε, με ποιον, και τι ακριβώς λέμε. Μαθητής, συμμαθητές, διδάσκοντες, Υπεύθυνος Τμήματος, Βοηθός Διευθυντής, Καθηγητής Σ.Ε.Α., μέντορας και γονείς, σε ένα κοινό σχέδιο.</p>
+    <div class="persona" role="group" aria-label="Εξατομίκευση λεκτικού">
+      <label for="pName"><b>Μαθητής/τρια:</b></label>
+      <input id="pName" type="text" maxlength="30" placeholder="όνομα ή αρχικά">
+      <div class="seg" role="group" aria-label="Γένος για το λεκτικό">
+        <button type="button" data-g="m">Αγόρι</button><button type="button" data-g="f">Κορίτσι</button><button type="button" data-g="">Ουδέτερα</button>
+      </div>
+      <span class="muted small">Το λεκτικό σε όλες τις συναντήσεις προσαρμόζεται αυτόματα. Τίποτα δεν φεύγει από αυτή τη συσκευή.</span>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Ενότητες">
+  <div class="wrap">
+    <a href="#plano" data-v="plano">1. Το σχέδιο</a>
+    <a href="#synantiseis" data-v="synantiseis">2. Συναντήσεις &amp; λεκτικό</a>
+    <a href="#roloi" data-v="roloi">3. Ποιος κάνει τι</a>
+    <a href="#entasi" data-v="entasi">4. Στη στιγμή της έντασης</a>
+    <a href="#fakelos" data-v="fakelos">5. Φάκελος περίπτωσης</a>
+    <a href="#kosmos" data-v="kosmos">6. Από τον κόσμο</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section class="view" id="v-plano">
+  <div class="vhead">
+    <h2>Δέκα βήματα, από την πρόληψη ως την εντατική στήριξη</h2>
+    <p class="muted">Κάθε βήμα ξεκινά μόνο αν το προηγούμενο δεν έφερε αποτέλεσμα. Οι περισσότεροι μαθητές σταματούν στα πρώτα τέσσερα. Το σχέδιο ακολουθεί τη λογική τριών επιπέδων στήριξης (όλοι · στοχευμένα · εντατικά) που εφαρμόζεται σε πολλά εκπαιδευτικά συστήματα.</p>
+  </div>
+  <div class="alert" style="margin-bottom:18px"><b>Πρώτα η ασφάλεια.</b> Το σχέδιο αφορά επίμονες δύσκολες συμπεριφορές. Σε περιστατικό βίας, απειλής, αυτοτραυματισμού ή υποψίας κακοποίησης δεν ακολουθούμε τα βήματα: ενημερώνουμε αμέσως τη Διεύθυνση και εφαρμόζονται τα πρωτόκολλα του Υπουργείου.</div>
+  <div class="legend">
+    <span style="--tc:var(--t1)"><i></i>Επίπεδο 1 · για όλη την τάξη</span>
+    <span style="--tc:var(--t2)"><i></i>Επίπεδο 2 · στοχευμένη στήριξη</span>
+    <span style="--tc:var(--t3)"><i></i>Επίπεδο 3 · εντατική, εξατομικευμένη στήριξη</span>
+  </div>
+  <div class="rail" id="rail"></div>
+</section>
+
+<section class="view" id="v-synantiseis">
+  <div class="vhead">
+    <h2>Οι συναντήσεις και το λεκτικό τους</h2>
+    <p class="muted">Δώδεκα συναντήσεις, μαζί και ξεχωριστά. Για καθεμία: ποιοι συμμετέχουν, πού και πόσο, η ροή, οι ακριβείς φράσεις και όσα αποφεύγουμε. Φιλτράρετε με βάση τον ρόλο σας.</p>
+  </div>
+  <div class="rolefilter" id="mfilter" role="group" aria-label="Φίλτρο ρόλων"></div>
+  <div class="mgrid">
+    <div class="mlist" id="mlist"></div>
+    <article class="mdetail" id="mdetail" aria-live="polite"></article>
+  </div>
+</section>
+
+<section class="view" id="v-roloi">
+  <div class="vhead">
+    <h2>Ποιος κάνει τι</h2>
+    <p class="muted">Διαλέξτε ρόλο για να δείτε τις ευθύνες του σε κάθε βήμα, τις συναντήσεις όπου συμμετέχει και τι δεν είναι δική του δουλειά.</p>
+  </div>
+  <div class="rolepick" id="rolepick" role="group" aria-label="Ρόλος"></div>
+  <div id="rolecard"></div>
+</section>
+
+<section class="view" id="v-entasi">
+  <div class="vhead">
+    <h2>Στη στιγμή της έντασης</h2>
+    <p class="muted">Οι συγκρούσεις περνούν από έξι στάδια. Αν δεν ενισχύσουμε την ένταση, η κατάσταση ηρεμεί γρηγορότερα και με λιγότερες συνέπειες. Πατήστε σε ένα στάδιο.</p>
+  </div>
+  <div class="wave">
+    <svg viewBox="0 0 960 230" role="group" aria-label="Στάδια κλιμάκωσης της έντασης" id="waveSvg"></svg>
+  </div>
+  <div class="phdetail" id="phdetail"></div>
+  <div class="phdetail">
+    <div class="panel" id="dix"></div>
+    <div class="panel" id="trq"></div>
+  </div>
+</section>
+
+<section class="view" id="v-fakelos">
+  <div class="vhead">
+    <h2>Φάκελος περίπτωσης</h2>
+    <p class="muted">Για τον Υπεύθυνο Τμήματος που συντονίζει. Τα στοιχεία αποθηκεύονται μόνο σε αυτόν τον browser. Προτιμήστε αρχικά αντί για ονοματεπώνυμο και μην καταγράφετε ευαίσθητα προσωπικά δεδομένα.</p>
+  </div>
+  <div class="panel" style="margin-bottom:16px">
+    <h3>Στοιχεία</h3>
+    <div class="form">
+      <label>Μαθητής/τρια (αρχικά)<input id="cName" type="text" maxlength="30"></label>
+      <label>Τμήμα<input id="cCls" type="text" maxlength="12" placeholder="π.χ. Β3"></label>
+      <label>Υπεύθυνος Τμήματος<input id="cYt" type="text" maxlength="40"></label>
+      <label>Βοηθός Διευθυντής<input id="cBd" type="text" maxlength="40"></label>
+      <label>Καθηγητής Σ.Ε.Α.<input id="cKs" type="text" maxlength="40"></label>
+      <label>Μέντορας<input id="cMe" type="text" maxlength="40" placeholder="επιλογή του μαθητή"></label>
+      <label class="wide">Η συμπεριφορά που μας απασχολεί (γεγονότα, όχι χαρακτηρισμοί)<textarea id="cBeh" placeholder="π.χ. Διακόπτει την εξήγηση 4–5 φορές ανά μάθημα, κυρίως στα Μαθηματικά και τη Φυσική, στις τελευταίες περιόδους."></textarea></label>
+      <label class="wide">Τι θέλουμε να βλέπουμε (θετικά διατυπωμένο)<textarea id="cWant" placeholder="π.χ. Σηκώνει χέρι και περιμένει τη σειρά του· αν διαφωνεί, το λέει στο τέλος του μαθήματος."></textarea></label>
+    </div>
+  </div>
+  <div class="panel" style="margin-bottom:16px">
+    <div class="rowb" style="justify-content:space-between"><h3>Πορεία των βημάτων</h3><span class="small muted" id="cProg"></span></div>
+    <div class="check" id="check"></div>
+  </div>
+  <div class="panel" style="margin-bottom:16px">
+    <div class="rowb" style="justify-content:space-between"><h3>Κάρτα Ημέρας (Check-in / Check-out)</h3><span class="small muted">Ο διδάσκων κάθε περιόδου βαθμολογεί: 2 = Ναι · 1 = Εν μέρει · 0 = Όχι</span></div>
+    <div class="form">
+      <label>Στόχος 1<input class="cg" data-i="0" type="text" maxlength="60"></label>
+      <label>Στόχος 2<input class="cg" data-i="1" type="text" maxlength="60"></label>
+      <label>Στόχος 3<input class="cg" data-i="2" type="text" maxlength="60"></label>
+    </div>
+    <div class="tblwrap"><table class="cardtbl" id="cardtbl"></table></div>
+    <div class="rowb" style="justify-content:space-between">
+      <div class="rowb"><span class="pct" id="pct">0%</span><span class="small muted" id="pctNote">σήμερα · στόχος 80%</span></div>
+      <div class="rowb"><button class="btn primary" id="saveDay" type="button">Αποθήκευση ημέρας</button><button class="btn ghost" id="clearDay" type="button">Νέα μέρα</button></div>
+    </div>
+    <h4>Οι τελευταίες μέρες</h4>
+    <div class="hist" id="hist" aria-label="Ιστορικό ποσοστών"></div>
+    <p class="small muted" id="histNote"></p>
+  </div>
+  <div class="rowb">
+    <button class="btn primary" id="copyPlan" type="button">Αντιγραφή σχεδίου ως κείμενο</button>
+    <button class="btn ghost" id="wipe" type="button">Διαγραφή φακέλου</button>
+  </div>
+</section>
+
+<section class="view" id="v-kosmos">
+  <div class="vhead">
+    <h2>Από τον κόσμο: τι πήραμε από πού</h2>
+    <p class="muted">Οι πρακτικές που στηρίζουν το σχέδιο, από την Κύπρο ως τη Νέα Ζηλανδία, και πού τις βρίσκετε μέσα στο εργαλείο.</p>
+  </div>
+  <div class="world" id="world"></div>
+</section>
+
+</main>
+<footer>
+  <div class="wrap">Βασίζεται στο υλικό της Ομάδας Άμεσης Παρέμβασης και της Υπηρεσίας Συμβουλευτικής και Επαγγελματικής Αγωγής (εκπαιδευτικός ως πυρήνας πρόληψης, ρόλος Υπεύθυνου Τμήματος, μέντορες-εκπαιδευτικοί, έντυπο συνέντευξης με μαθητή και γονείς, SAP-ΕΝΔΥΝΑΜΩΣΗ) και σε διεθνείς πρακτικές. Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α.</div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const ROLES={
+ st:{n:'Μαθητής/τρια',c:'--r-st'}, pe:{n:'Συμμαθητές',c:'--r-pe'}, te:{n:'Διδάσκων/ουσα',c:'--r-te'}, yt:{n:'Υπεύθυνος Τμήματος',c:'--r-yt'},
+ bd:{n:'Βοηθός Διευθυντής',c:'--r-bd'}, ks:{n:'Καθηγητής Σ.Ε.Α.',c:'--r-ks'}, pa:{n:'Γονείς/κηδεμόνες',c:'--r-pa'}, me:{n:'Μέντορας',c:'--r-me'}
+};
+const TIER={1:{n:'ΕΠΙΠΕΔΟ 1',c:'--t1'},2:{n:'ΕΠΙΠΕΔΟ 2',c:'--t2'},3:{n:'ΕΠΙΠΕΔΟ 3',c:'--t3'}};
+
+/* ---------------- STEPS ---------------- */
+const STEPS=[
+{id:'s1',tier:1,t:'Πρόληψη σε όλη την τάξη',when:'Από την πρώτη μέρα · διαρκώς',who:['te','yt','pe','st'],
+ goal:'Η τάξη ξέρει τι αναμένεται, και ο εκπαιδευτικός κρατά την ηγεσία με ηρεμία και συνέπεια.',
+ act:['3–5 κανόνες, απλοί, σύντομοι, θετικά διατυπωμένοι («Ακούμε όταν μιλά κάποιος»), φτιαγμένοι μαζί με την τάξη και αναρτημένοι.','Επανάληψη των κανόνων κάθε μέρα για περίπου 21 μέρες, ώσπου να γίνουν συνήθεια· μικρή προφορική επιβράβευση όταν τηρούνται.','Χαιρετισμός στην πόρτα με το όνομα. Μάθημα που ξεκινά αμέσως, με εναλλαγές δραστηριοτήτων.','Πολύ περισσότερες θετικές παρατηρήσεις από διορθωτικές· όχι ψεύτικοι έπαινοι.','Ο Υπεύθυνος Τμήματος γνωρίζει τους μαθητές του: ατομικό δελτίο, Καθηγητής Σ.Ε.Α., γονείς, και κυρίως οι ίδιοι.','Διάταξη θρανίων που ευνοεί τη συνεργασία· μαθητές με δυσκολίες κοντά σε ήρεμους συμμαθητές.'],
+ doc:'Οι κανόνες της τάξης, κοινοί για όλους τους διδάσκοντες του τμήματος.',
+ next:'Αν ένας μαθητής συνεχίζει παρά τις γενικές υπενθυμίσεις',m:[],src:'PBIS/PALS · Paul Dix · ΥΠΑΝ'},
+{id:'s2',tier:1,t:'Στη στιγμή: σύντομη, ήρεμη παρέμβαση',when:'Την ώρα του μαθήματος · 30 δευτερόλεπτα',who:['te'],
+ goal:'Να σταματήσει η συμπεριφορά χωρίς ακροατήριο και χωρίς να χαθεί το μάθημα.',
+ act:['Πρώτα γενική υπενθύμιση στην τάξη και επιστροφή αμέσως στο μάθημα.','Μη λεκτικά: βλέμμα, πλησίασμα, παύση.','Αν συνεχιστεί: ιδιωτική παρέμβαση 30 δευτερολέπτων, χαμηλόφωνα, δίπλα στο θρανίο (δείτε «Στη στιγμή της έντασης»).','Όχι διάλογος μπροστά στην τάξη, όχι εμπλοκή άλλων μαθητών.'],
+ doc:'Σύντομη σημείωση: ημερομηνία, περίοδος, τι έγινε (γεγονότα).',
+ next:'Αν η συμπεριφορά επαναληφθεί στο ίδιο μάθημα',m:[],src:'Paul Dix (ΗΒ) · Trainingsraum (Γερμανία)'},
+{id:'s3',tier:2,t:'Μετά το μάθημα: κουβέντα δύο λεπτών',when:'Στο τέλος της ίδιας περιόδου',who:['te','st'],
+ goal:'Να ακούσει ο μαθητής τα γεγονότα ιδιαιτέρως και να του δοθεί χρόνος να σκεφτεί λύσεις.',
+ act:['Μιλάμε μόνο με γεγονότα, ήρεμα, χωρίς άλλους μαθητές.','Αν αναγνωρίσει: ευχαριστούμε και τον αφήνουμε να φύγει.','Αν προκαλέσει: δεν απαντούμε στην πρόκληση· δίνουμε 1–2 μέρες να σκεφτεί λύσεις.'],
+ doc:'Σημείωση ότι έγινε η κουβέντα και πότε θα γίνει η συνάντηση επίλυσης.',
+ next:'Αν δεν αναγνώρισε ή η συμπεριφορά συνεχίζεται',m:['m1'],src:'ΥΠΑΝ – Ομάδα Άμεσης Παρέμβασης · PB4L (Νέα Ζηλανδία)'},
+{id:'s4',tier:2,t:'Συνάντηση επίλυσης προβλήματος',when:'1–2 μέρες μετά · όχι αργότερα',who:['te','st'],
+ goal:'Να βρουν μαζί δάσκαλος και μαθητής μια λύση που μπορούν να τηρήσουν και οι δύο.',
+ act:['Ακολουθούμε τα 8 βήματα επίλυσης (λεκτικό στη συνάντηση Σ2).','Μετά: χαιρετισμός με χαμόγελο και το όνομα σε κάθε μάθημα· θετικό σχόλιο όταν εφαρμόζει τη λύση.','Αν παλινδρομήσει, επαναλαμβάνουμε τη διαδικασία μία φορά.'],
+ doc:'Η λύση που συμφωνήθηκε και η ημερομηνία που θα την ξαναδούμε (2 εβδομάδες).',
+ next:'Αν δεν υπάρχει βελτίωση σε ~2 εβδομάδες ή εμφανίζεται και σε άλλα μαθήματα',m:['m2'],src:'ΥΠΑΝ · Ross Greene, Plan B (ΗΠΑ)'},
+{id:'s5',tier:2,t:'Ο Υπεύθυνος Τμήματος αναλαμβάνει τον συντονισμό',when:'Μέσα σε μία εβδομάδα από την ενημέρωση',who:['yt','te','st','pa','bd'],
+ goal:'Να δούμε τη συμπεριφορά ως σύστημα: πότε, πού, με ποιον και τι τη διατηρεί, και να συμφωνήσουν όλοι οι διδάσκοντες σε κοινή στάση.',
+ act:['Ο ΥΤ συναντά τον μαθητή για ακρόαση και χτίσιμο σχέσης (Σ3).','Συλλέγει γραπτά, σύντομα, από όλους τους διδάσκοντες: πού πάει καλά, πού δυσκολεύεται, τι γίνεται πριν και μετά.','Συγκαλεί σύσκεψη της παιδαγωγικής ομάδας του τμήματος (Σ4).','Τηλεφωνεί στους γονείς για ενημέρωση και πρόσκληση σε συνάντηση (Σ5).','Ενημερώνει τον Βοηθό Διευθυντή του τμήματος.'],
+ doc:'Συγκεντρωτικό σημείωμα διδασκόντων και οι 2–3 κοινές πρακτικές που αποφασίστηκαν.',
+ next:'Αν η κοινή στάση δεν αρκεί μέσα σε 2 εβδομάδες',m:['m3','m4','m5'],src:'LP-μοντέλο (Νορβηγία, Δανία) · ΥΠΑΝ'},
+{id:'s6',tier:2,t:'Ξεχωριστές συναντήσεις: Σ.Ε.Α., Βοηθός Διευθυντής, γονείς',when:'Την ίδια ή την επόμενη εβδομάδα',who:['ks','bd','yt','pa','st'],
+ goal:'Να ακουστεί κάθε πλευρά χωριστά πριν από την κοινή συνάντηση, ώστε εκεί να μη χρειαστεί άμυνα.',
+ act:['Ο Καθηγητής Σ.Ε.Α. συναντά τον μαθητή: ανάγκες, συναισθήματα, τι θέλει ο ίδιος (Σ6).','Ο Βοηθός Διευθυντής συναντά τον μαθητή: καθαρό όριο και ταυτόχρονα δέσμευση στήριξης (Σ7).','ΥΤ και ΒΔ (και ΚΣΕΑ αν χρειάζεται) συναντούν τους γονείς χωρίς τον μαθητή (Σ5).','Ο μαθητής προτείνει 2–3 ονόματα εκπαιδευτικών για μέντορα.'],
+ doc:'Σύντομες σημειώσεις από κάθε συνάντηση· ό,τι είναι εμπιστευτικό μένει στον ΚΣΕΑ.',
+ next:'Όταν έχουν ακουστεί όλοι',m:['m6','m7','m5'],src:'Φινλανδία · Σουηδία · Νέα Αυθεντία (Ισραήλ, Γερμανία)'},
+{id:'s7',tier:3,t:'Κοινή συνάντηση: Ατομικό Σχέδιο Στήριξης',when:'Εντός 3–4 εβδομάδων από το Βήμα 5',who:['bd','yt','ks','st','pa','me'],
+ goal:'Να συμφωνήσουν όλοι, μαζί με τον μαθητή, σε γραπτό σχέδιο με λίγους, σαφείς στόχους και συγκεκριμένη βοήθεια.',
+ act:['Πρόεδρος ο ΒΔ, συντονιστής ο ΥΤ. Ξεκινάμε από τα δυνατά σημεία.','Μιλά πρώτος ο μαθητής, μετά οι γονείς.','2–3 στόχοι συμπεριφοράς, θετικά διατυπωμένοι και μετρήσιμοι.','Τι προσφέρει το σχολείο: μέντορας, Κάρτα Ημέρας, ενισχυτική διδασκαλία, ρόλος ευθύνης, ομάδα στήριξης.','Τι κάνει η οικογένεια· ένα άτομο αναφοράς για τους γονείς· εβδομαδιαία επικοινωνία.','Διαφάνεια για τις συνέπειες, χωρίς απειλές· υπογραφή συμφωνίας.'],
+ doc:'Υπογεγραμμένο Ατομικό Σχέδιο Στήριξης με ημερομηνίες ανασκόπησης.',
+ next:'Ξεκινά αμέσως η καθημερινή παρακολούθηση',m:['m8'],src:'Pastoral Support Programme (ΗΒ) · Compromiso de convivencia (Ισπανία) · Patto di corresponsabilità (Ιταλία)'},
+{id:'s8',tier:3,t:'Καθημερινή παρακολούθηση: μέντορας και Κάρτα Ημέρας',when:'Κάθε μέρα · 2–3 λεπτά πρωί και μεσημέρι',who:['me','te','st','pa'],
+ goal:'Συχνή, προβλέψιμη επαφή με έναν ενήλικα και άμεση ανατροφοδότηση σε κάθε μάθημα.',
+ act:['Πρωί: ο μαθητής παίρνει την κάρτα από τον μέντορα και θυμούνται τους στόχους.','Σε κάθε περίοδο ο διδάσκων βαθμολογεί σύντομα (0–1–2) με ένα θετικό ή διορθωτικό σχόλιο.','Μεσημέρι: απολογισμός με τον μέντορα· η κάρτα πάει σπίτι για υπογραφή.','Ο ΥΤ ή ο μέντορας ενημερώνει τους γονείς κάθε εβδομάδα, ξεκινώντας από τα θετικά.'],
+ doc:'Ποσοστό επιτυχίας ανά μέρα (στον Φάκελο περίπτωσης).',
+ next:'Ανασκόπηση στις 2 εβδομάδες',m:['m12'],src:'Check-In/Check-Out (ΗΠΑ) · Μέντορες-εκπαιδευτικοί ΥΠΑΝ'},
+{id:'s9',tier:3,t:'Ανασκόπηση στις 2 και στις 6 εβδομάδες',when:'Προγραμματισμένα από την κοινή συνάντηση',who:['yt','bd','ks','st','pa','me'],
+ goal:'Απόφαση με βάση δεδομένα: συνεχίζουμε, προσαρμόζουμε, αποσύρουμε σταδιακά ή κλιμακώνουμε.',
+ act:['Ξεκινάμε από ό,τι πέτυχε. Κοιτάμε την Κάρτα Ημέρας (π.χ. πόσες μέρες ≥ 80%).','Αν πετυχαίνει σταθερά: σταδιακή απόσυρση, ο μαθητής αυτοαξιολογείται.','Αν δεν πετυχαίνει: πρώτα ελέγχουμε αν το σχέδιο εφαρμόστηκε πιστά, μετά αλλάζουμε.'],
+ doc:'Πρακτικό ανασκόπησης και αναθεωρημένοι στόχοι.',
+ next:'Αν δεν υπάρχει βελτίωση μετά από 6 εβδομάδες πιστής εφαρμογής',m:['m9'],src:'PBIS · Åtgärdsprogram (Σουηδία) · PSP (ΗΒ)'},
+{id:'s10',tier:3,t:'Κλιμάκωση και επανόρθωση',when:'Όταν το σχέδιο δεν αρκεί ή υπάρχει βλάβη σε άλλους',who:['bd','ks','yt','pa','st','pe'],
+ goal:'Ενεργοποίηση ειδικών και θεσμικών μέτρων, χωρίς να χαθεί η σχέση με τον μαθητή.',
+ act:['Παραπομπή στην Πολυθεματική Ομάδα του σχολείου· μέσω αυτής Εκπαιδευτική Ψυχολογία ή Ομάδα Άμεσης Παρέμβασης.','Όπου κάποιος θίχτηκε: επανορθωτική συνάντηση με τους εμπλεκόμενους, εθελοντικά και με ασφάλεια (Σ10).','Πειθαρχικά μέτρα κατά τους κανονισμούς ως έσχατη λύση· η αποβολή μόνη της σπάνια διορθώνει.','Μετά από αποβολή: πάντα συνάντηση επανένταξης με σχέδιο επιστροφής (Σ11).'],
+ doc:'Παραπομπές, απόφαση Πολυθεματικής, σχέδιο επιστροφής.',
+ next:'Ο κύκλος συνεχίζει από το Βήμα 8 με αναθεωρημένο σχέδιο',m:['m10','m11'],src:'ΥΠΑΝ · IIRP (ΗΠΑ) · PB4L (Νέα Ζηλανδία) · Trainingsraum (Γερμανία)'}
+];
+
+/* ---------------- MEETINGS ----------------
+   Script lines: H: heading · S:role|text spoken · D: action · tokens {Μ} name, [[α|β]] boy|girl */
+const MEET=[
+{id:'m1',k:'Σ1',t:'Κουβέντα δύο λεπτών μετά το μάθημα',who:['te','st'],step:'s3',when:'Αμέσως μετά την περίοδο',dur:'2 λεπτά',where:'Στην τάξη, αφού φύγουν οι άλλοι',
+ goal:'Ο μαθητής ακούει ήρεμα, ιδιαιτέρως, τι έγινε· αν προκαλέσει, κλείνουμε με χρόνο για σκέψη.',
+ sc:[
+ 'H:Άνοιγμα',
+ 'S:te|{Μ}, μπορείς να μείνεις ένα λεπτό; Δεν θα σε κρατήσω πολύ.',
+ 'D:Περιμένουμε να φύγουν οι υπόλοιποι. Στεκόμαστε στο πλάι, όχι απέναντι.',
+ 'H:Μόνο γεγονότα',
+ 'S:te|{Μ}, σήμερα στο μάθημα μίλησες πολλές φορές με [[τον διπλανό|τη διπλανή]] σου, ενώ εξηγούσα. ~',
+ 'H:Αν αναγνωρίσει',
+ 'S:te|Σε ευχαριστώ που το αναγνωρίζεις. Ξέρω ότι μπορείς, την επόμενη φορά.',
+ 'D:Την επόμενη φορά που δεν υπάρχει πρόβλημα, το επιβραβεύουμε.',
+ 'H:Αν προκαλέσει («Μα τι έκανα πάλι; Μόνο σε μένα κάνετε παρατήρηση!»)',
+ 'D:Δεν απαντούμε στην πρόκληση, δεν μπαίνουμε σε αντιπαράθεση.',
+ 'S:te|Αυτό που συμβαίνει στην τάξη με δυσκολεύει να κάνω το μάθημα και με στενοχωρεί, γιατί δεν θέλω να κάνω συνεχώς παρατηρήσεις. ~',
+ 'S:te|Αυτή η κατάσταση πρέπει να σταματήσει. Θέλω να σκεφτείς ποιες λύσεις θα μου προτείνεις για να λύσουμε το πρόβλημα. Θα σου δώσω μία–δυο μέρες να σκεφτείς, να σκεφτώ κι εγώ, και θα σε φωνάξω να το κουβεντιάσουμε.'
+ ],
+ av:['Πάλι εσύ;','Σε θεωρούσα πιο ώριμο.','Θα το πω στους γονείς σου και θα δεις.','Όλοι οι άλλοι μπορούν, εσύ γιατί όχι;'],
+ rec:'Ημερομηνία, τι ειπώθηκε, πότε ορίστηκε η συνάντηση επίλυσης.',
+ src:'Υλικό ΥΠΑΝ «Ο εκπαιδευτικός ως πυρήνας πρόληψης» · restorative chat (PB4L, Νέα Ζηλανδία)'},
+{id:'m2',k:'Σ2',t:'Συνάντηση επίλυσης προβλήματος',who:['te','st'],step:'s4',when:'1–2 μέρες μετά την κουβέντα',dur:'10–15 λεπτά',where:'Ήσυχος χώρος, χωρίς άλλους μαθητές',
+ goal:'Δάσκαλος και μαθητής καταλήγουν σε μια ρεαλιστική λύση που ικανοποιεί και τους δύο.',
+ sc:[
+ 'H:1. Υποδοχή',
+ 'S:te|{Μ}, σε ευχαριστώ που ήρθες. ~',
+ 'H:2. Ο στόχος',
+ 'S:te|Ο στόχος μας σήμερα είναι να λύσουμε το πρόβλημα που δημιουργήθηκε την προηγούμενη φορά. Δεν είναι δίκη και δεν θα δοθεί καμία τιμωρία σε αυτή τη συνάντηση. ~',
+ 'H:3. Κατανόηση: τι δυσκολεύει τον μαθητή',
+ 'S:te|Έχω προσέξει ότι στο μάθημα δυσκολεύεσαι να [συγκεκριμένη προσδοκία, π.χ. να δουλεύεις όταν γράφουμε ασκήσεις]. Τι συμβαίνει;',
+ 'D:Αν απαντήσει «δεν ξέρω» ή σωπαίνει, δεν βιαζόμαστε:',
+ 'S:te|Δεν βιάζομαι. Σκέψου πότε είναι πιο δύσκολο: στην αρχή, όταν εξηγώ, όταν γράφουμε, προς το τέλος;',
+ 'S:te|Αν σε καταλαβαίνω σωστά, … Υπάρχει και κάτι άλλο;',
+ 'H:4. Οι δικές του προτάσεις',
+ 'S:te|Πες μου τι προτείνεις.',
+ 'D:Ακούμε με ψυχραιμία, ακόμη κι αν κάτι ακούγεται παράλογο. Δεν αντικρούουμε, δεν σχολιάζουμε. Κάνουμε μικρή περίληψη.',
+ 'H:5. Η δική μας ανησυχία',
+ 'S:te|Αυτό που με απασχολεί είναι ότι, όταν συμβαίνει αυτό, χάνουν τη συγκέντρωσή τους και οι άλλοι, και εσύ μένεις πίσω στην ύλη.',
+ 'H:6. Οι δικές μας προτάσεις · υπέρ και κατά μαζί',
+ 'S:te|Έχω κι εγώ δύο ιδέες: … Ας δούμε μαζί τι καλό και τι δύσκολο έχει η καθεμία.',
+ 'H:7. Επιλογή λύσης',
+ 'S:te|Ποια λύση διαλέγουμε; Είναι κάτι που μπορούμε να τηρήσουμε και οι δύο;',
+ 'H:8. Τι χρειάζεται από εμάς',
+ 'S:te|Τι χρειάζεσαι από μένα ή από το σχολείο για να πετύχει αυτό;',
+ 'H:Κλείσιμο',
+ 'S:te|Σε ευχαριστώ για την προσπάθεια που έκανες σήμερα. Θα το δοκιμάσουμε δύο εβδομάδες και θα ξαναμιλήσουμε. Αν δεν πετύχει, βρίσκουμε άλλη λύση· αυτό δεν είναι αποτυχία.',
+ 'D:Από την επόμενη μέρα: χαιρετισμός με χαμόγελο και το όνομα. Θετικό σχόλιο κάθε φορά που εφαρμόζει τη λύση. Αν παλινδρομήσει, επαναλαμβάνουμε. Αν χειροτερέψει, ενημερώνουμε τον ΥΤ.'
+ ],
+ av:['Εγώ θα σου πω τι θα κάνεις.','Αυτό που προτείνεις είναι γελοίο.','Το ξέρω ήδη τι σου συμβαίνει.','Υπόγραψε ότι δεν θα το ξανακάνεις.'],
+ rec:'Η λύση που συμφωνήθηκε, τι ζήτησε ο μαθητής, ημερομηνία επανελέγχου.',
+ src:'8 βήματα επίλυσης, ΥΠΑΝ · Collaborative & Proactive Solutions, Ross Greene (ΗΠΑ)'},
+{id:'m3',k:'Σ3',t:'Υπεύθυνος Τμήματος και μαθητής: ακρόαση και σχέση',who:['yt','st'],step:'s5',when:'Μόλις ο ΥΤ ενημερωθεί',dur:'15 λεπτά',where:'Γραφείο ή άδεια αίθουσα',
+ goal:'Ο μαθητής νιώθει ότι ένας ενήλικας ενδιαφέρεται για τον ίδιο, όχι μόνο για τη συμπεριφορά του.',
+ sc:[
+ 'H:Άνοιγμα',
+ 'S:yt|{Μ}, σε κάλεσα γιατί είμαι [[ο υπεύθυνος|η υπεύθυνη]] του τμήματός σου και με ενδιαφέρει πώς περνάς στο σχολείο. Δεν σε φώναξα για να σε τιμωρήσω.',
+ 'S:yt|Θέλω πρώτα να ακούσω εσένα. Πώς σου φαίνεται φέτος το σχολείο;',
+ 'H:Δυνατά σημεία',
+ 'S:yt|Σε τι είσαι καλός/ή; Ποιο μάθημα ή ποιος καθηγητής σού ταιριάζει περισσότερο; Τι κάνει εκεί διαφορετικά;',
+ 'H:Το θέμα, με ειλικρίνεια',
+ 'S:yt|Κάποιοι καθηγητές μού είπαν ότι σε ορισμένα μαθήματα υπάρχουν δυσκολίες. Πώς το βλέπεις εσύ;',
+ 'D:Ακούμε, κάνουμε περίληψη, δεν αμφισβητούμε όσα νιώθει.',
+ 'H:Εχεμύθεια',
+ 'S:yt|Ό,τι μου πεις μένει μεταξύ μας, εκτός αν κινδυνεύεις εσύ ή κάποιος άλλος. Τότε θα πρέπει να ζητήσω βοήθεια, και θα σου το πω πριν το κάνω.',
+ 'H:Κλείσιμο',
+ 'S:yt|Θα ήθελα να ενημερώσω τους γονείς σου ότι μιλήσαμε και ότι ψάχνουμε μαζί λύσεις. Θέλεις να τους το πεις πρώτα εσύ;',
+ 'S:yt|Η πόρτα μου είναι ανοιχτή. Θα σε ξαναδώ την [μέρα].'
+ ],
+ av:['Τι έχεις πάθει φέτος;','Με τέτοια συμπεριφορά δεν θα πας πουθενά.','Ποιος σε έμαθε να μιλάς έτσι;'],
+ rec:'Τι είπε ο μαθητής για τα δυνατά του σημεία και τι τον δυσκολεύει.',
+ src:'Υλικό ΥΠΑΝ για τον ρόλο του Υπεύθυνου Τμήματος και τους μέντορες-εκπαιδευτικούς'},
+{id:'m4',k:'Σ4',t:'Σύσκεψη παιδαγωγικής ομάδας τμήματος',who:['yt','te','ks'],step:'s5',when:'Μέσα σε μία εβδομάδα',dur:'20 λεπτά',where:'Αίθουσα καθηγητών ή διάλειμμα συνεργασίας',
+ goal:'Ανάλυση της συμπεριφοράς ως μέρους του περιβάλλοντος της τάξης και κοινή στάση όλων των διδασκόντων.',
+ sc:[
+ 'H:Άνοιγμα (ΥΤ)',
+ 'S:yt|Είμαστε εδώ για να δούμε μαζί [[τον|την]] {Μ} και να συμφωνήσουμε σε μια κοινή στάση. Δεν είμαστε εδώ για να κατηγορήσουμε ούτε τον μαθητή ούτε κάποιον συνάδελφο.',
+ 'S:yt|Θα μιλάμε με γεγονότα. Για παράδειγμα: «Διέκοψε πέντε φορές την εξήγηση», όχι «Είναι αυθάδης».',
+ 'H:Γύρος 1 · Πού πάει καλά',
+ 'S:yt|Σε ποια μαθήματα και ποιες ώρες πάει καλύτερα; Τι κάνουμε εκεί διαφορετικά;',
+ 'H:Γύρος 2 · Πότε εμφανίζεται',
+ 'S:yt|Πότε εμφανίζεται η συμπεριφορά; Τι γίνεται λίγο πριν; Τι γίνεται αμέσως μετά;',
+ 'H:Γύρος 3 · Τι τη διατηρεί',
+ 'S:yt|Τι μπορεί να κερδίζει [[ο|η]] {Μ} με αυτή τη συμπεριφορά; Προσοχή, αποφυγή ενός δύσκολου έργου, κύρος στην παρέα; Υπάρχει μαθησιακή δυσκολία πίσω της;',
+ 'H:Συμφωνία',
+ 'S:yt|Προτείνω να συμφωνήσουμε σε δύο–τρία πράγματα που θα κάνουμε όλοι με τον ίδιο τρόπο: πού κάθεται, πώς τον χαιρετούμε, ποια ίδια φράση χρησιμοποιούμε για υπενθύμιση, και τουλάχιστον μία θετική παρατήρηση σε κάθε μάθημα.',
+ 'H:Κλείσιμο',
+ 'S:yt|Συμφωνήσαμε σε … Θα το εφαρμόσουμε όλοι για δύο εβδομάδες και θα ξαναβρεθούμε στις [ημερομηνία]. Σας ευχαριστώ.'
+ ],
+ av:['Αυτός ο μαθητής δεν αλλάζει.','Σε μένα κάνει έτσι γιατί εσύ τον αφήνεις.','Είναι θέμα οικογένειας, δεν μπορούμε να κάνουμε τίποτα.'],
+ rec:'Σύνοψη ανάλυσης (πότε, πού, τι πριν, τι μετά) και οι κοινές πρακτικές.',
+ src:'LP-μοντέλο «Μαθησιακό περιβάλλον και παιδαγωγική ανάλυση» (Νορβηγία, Δανία) · ΥΠΑΝ'},
+{id:'m5',k:'Σ5',t:'Γονείς χωρίς τον μαθητή (τηλέφωνο και συνάντηση)',who:['yt','bd','pa','ks'],step:'s5',when:'Τηλέφωνο: την επόμενη μέρα από ένα συμβάν · Συνάντηση: εντός εβδομάδας',dur:'Τηλέφωνο 3΄ · Συνάντηση 30΄',where:'Δια ζώσης, όχι μόνο τηλεφωνικά',
+ goal:'Οι γονείς ακούν ήρεμα τα γεγονότα, δίνουν τη δική τους ματιά και γίνονται συνεργάτες, όχι αντίπαλοι.',
+ sc:[
+ 'H:Τηλεφωνική πρόσκληση',
+ 'S:yt|Καλημέρα σας, είμαι [όνομα], [[ο υπεύθυνος|η υπεύθυνη]] του τμήματος [[του|της]] {Μ}. Πρώτα να σας πω ότι το παιδί είναι καλά· δεν συνέβη κάτι σοβαρό σήμερα.',
+ 'S:yt|Σας τηλεφωνώ γιατί θα ήθελα να συναντηθούμε, για να δούμε μαζί πώς μπορούμε να βοηθήσουμε [[τον|την]] {Μ} στο σχολείο. Πότε θα σας βόλευε;',
+ 'H:Συνάντηση · Άνοιγμα',
+ 'S:bd|Σας ευχαριστούμε που ήρθατε. Στόχος της σημερινής μας συνάντησης είναι να βρούμε μαζί τρόπους για να πετύχει [[ο|η]] {Μ} στο σχολείο. Εσείς γνωρίζετε το παιδί σας καλύτερα από όλους μας και χρειαζόμαστε τη ματιά σας.',
+ 'H:Πρώτα τα θετικά',
+ 'S:yt|Θα ήθελα να ξεκινήσω με όσα πάνε καλά: …',
+ 'H:Τα γεγονότα',
+ 'S:yt|Τις τελευταίες εβδομάδες έχουμε παρατηρήσει … [ημερομηνίες, μαθήματα, τι ακριβώς έγινε]. Έχουμε ήδη κάνει … [βήματα 2–4].',
+ 'H:Η ματιά της οικογένειας',
+ 'S:yt|Πώς τα βλέπετε εσείς; Έχετε παρατηρήσει κάτι ανάλογο στο σπίτι;',
+ 'S:yt|Τι θεωρείτε αναγκαίο να γίνει για να βελτιωθεί το παιδί σας στο σχολείο;',
+ 'S:yt|Με ποιους τρόπους μπορείτε να βοηθήσετε εσείς;',
+ 'S:yt|Υπάρχει κάτι που χρειάζεται να γνωρίζουμε, κάτι που ίσως δυσκολεύει [[τον|την]] {Μ} αυτή την περίοδο;',
+ 'H:Αν οι γονείς αμυνθούν',
+ 'S:bd|Καταλαβαίνω ότι δεν είναι εύκολο να ακούτε αυτά. Δεν είμαστε απέναντί σας. Είμαστε στην ίδια πλευρά, στην πλευρά του παιδιού.',
+ 'H:Κλείσιμο',
+ 'S:bd|Προτείνουμε μια κοινή συνάντηση μαζί με [[τον|την]] {Μ}, όπου θα συμφωνήσουμε όλοι ένα σχέδιο. Άτομο επικοινωνίας σας θα είναι [όνομα]. Σας ευχαριστούμε για όσα μοιραστήκατε.'
+ ],
+ av:['Το παιδί σας είναι πρόβλημα για την τάξη.','Αν δεν αλλάξει, θα αποβληθεί. (ως άνοιγμα)','Μήπως έχει ΔΕΠΥ; (διάγνωση χωρίς αξιολόγηση)','Τι γίνεται στο σπίτι σας;'],
+ rec:'Η ματιά των γονέων, τι προσφέρθηκαν να κάνουν, άτομο αναφοράς.',
+ src:'Έντυπο συνέντευξης με μαθητή και γονείς (ΥΠΑΝ) · συνεργασία με γονείς, Ομάδα Άμεσης Παρέμβασης'},
+{id:'m6',k:'Σ6',t:'Καθηγητής Σ.Ε.Α. και μαθητής: συμβουλευτική συνάντηση',who:['ks','st'],step:'s6',when:'Μετά την ενημέρωση από τον ΥΤ',dur:'30–40 λεπτά',where:'Γραφείο Σ.Ε.Α.',
+ goal:'Να φανούν οι ανάγκες πίσω από τη συμπεριφορά και τι θέλει ο ίδιος ο μαθητής για τον εαυτό του.',
+ sc:[
+ 'H:Άνοιγμα',
+ 'S:ks|{Μ}, είμαι [[ο καθηγητής|η καθηγήτρια]] Συμβουλευτικής. Ο ρόλος μου δεν είναι να δίνω ποινές. Είναι να σε βοηθήσω να βρεις τι σε δυσκολεύει και τι θέλεις εσύ.',
+ 'S:ks|Ό,τι λέμε εδώ μένει εδώ, εκτός αν κινδυνεύεις εσύ ή κάποιος άλλος.',
+ 'H:Κλίμακα',
+ 'S:ks|Σε μια κλίμακα από το 1 ως το 10, πόσο καλά περνάς στο σχολείο αυτό τον καιρό; Τι θα σε ανέβαζε ένα σκαλί πιο πάνω;',
+ 'H:Η στιγμή της έντασης',
+ 'S:ks|Πώς νιώθεις λίγο πριν γίνει η ένταση στην τάξη; Τι σκέφτεσαι εκείνη τη στιγμή; Τι σε βοηθάει να ηρεμήσεις;',
+ 'H:Το μαγικό ραβδί',
+ 'S:ks|Αν με ένα μαγικό ραβδί μπορούσες να αλλάξεις ένα πράγμα στο σχολείο, ποιο θα ήταν;',
+ 'H:Η ευρύτερη εικόνα',
+ 'S:ks|Πώς είναι τα πράγματα με τους φίλους σου; Με τον ύπνο; Στο σπίτι; Νιώθεις ασφαλής στο σχολείο;',
+ 'D:Αν προκύψει κίνδυνος, κακοποίηση ή εκφοβισμός: ενεργοποιείται αμέσως το σχετικό πρωτόκολλο.',
+ 'H:Δεξιότητα για την τάξη',
+ 'S:ks|Ας συμφωνήσουμε ένα σήμα με τους καθηγητές σου, για τις στιγμές που νιώθεις ότι ανεβαίνει η ένταση. Π.χ. να ζητάς να βγεις δύο λεπτά για νερό αντί να απαντήσεις.',
+ 'H:Κλείσιμο',
+ 'S:ks|Μπορούμε να βρισκόμαστε κάθε [μέρα] για λίγο. Θέλεις να το δοκιμάσουμε; Υπάρχει επίσης μια μικρή ομάδα στήριξης μαθητών· αν θέλεις, σου λέω περισσότερα.'
+ ],
+ av:['Γιατί το έκανες;','Πρέπει να καταλάβεις ότι…','Ο καθηγητής σου έχει δίκιο.'],
+ rec:'Μόνο τα στοιχεία που χρειάζεται η ομάδα (ανάγκες, σήμα, συναντήσεις)· τα εμπιστευτικά μένουν στον ΚΣΕΑ.',
+ src:'Υπηρεσία Σ.Ε.Α. · ομάδες στήριξης SAP-ΕΝΔΥΝΑΜΩΣΗ · συμβουλευτική εστιασμένη στη λύση'},
+{id:'m7',k:'Σ7',t:'Βοηθός Διευθυντής και μαθητής: όριο και στήριξη',who:['bd','st','yt'],step:'s6',when:'Μετά τη Σ6, πριν από την κοινή συνάντηση',dur:'15 λεπτά',where:'Γραφείο ΒΔ',
+ goal:'Ο μαθητής ακούει καθαρό όριο και ταυτόχρονα ότι οι ενήλικες δεν θα τον αφήσουν.',
+ sc:[
+ 'H:Άνοιγμα',
+ 'S:bd|{Μ}, σε κάλεσα γιατί, ως [[Βοηθός Διευθυντής|Βοηθός Διευθύντρια]] του τμήματός σου, είναι δουλειά μου να φροντίζω να μαθαίνουν όλοι με ασφάλεια, και εσύ μαζί.',
+ 'H:Τα γεγονότα',
+ 'S:bd|Τις τελευταίες εβδομάδες συνέβησαν τα εξής: … [γεγονότα].',
+ 'H:Το όριο (ανακοίνωση)',
+ 'S:bd|Αυτή η συμπεριφορά δεν μπορεί να συνεχιστεί. Δεν το λέω για να σε απειλήσω. Το λέω γιατί νοιάζομαι για σένα και για την τάξη σου.',
+ 'H:Παρουσία',
+ 'S:bd|Θέλω να ξέρεις ότι δεν θα σε αφήσουμε. Οι καθηγητές σου, [[ο υπεύθυνος|η υπεύθυνη]] του τμήματος και οι γονείς σου θα δουλέψουμε μαζί, και θα είμαστε κοντά σου κάθε μέρα.',
+ 'H:Επιλογή',
+ 'S:bd|Το σχολείο μπορεί να σου προσφέρει βοήθεια: έναν μέντορα, στήριξη στα μαθήματα, έναν ρόλο ευθύνης. Θέλω να ακούσω τι θα σε βοηθούσε εσένα.',
+ 'H:Διαφάνεια για τις συνέπειες',
+ 'S:bd|Αν η συμπεριφορά συνεχιστεί, θα πρέπει να εφαρμοστούν οι κανονισμοί του σχολείου. Προτιμώ πολύ να μη φτάσουμε εκεί, και πιστεύω ότι μπορούμε.'
+ ],
+ av:['Θα σε διώξω από το σχολείο.','Έχω βαρεθεί να σε βλέπω εδώ.','(επίπληξη μπροστά σε άλλους μαθητές)'],
+ rec:'Τι ζήτησε ο μαθητής ως βοήθεια.',
+ src:'Νέα Αυθεντία – μη βίαιη αντίσταση, Haim Omer (Ισραήλ · εφαρμογή σε Γερμανία, Αυστρία, Βέλγιο)'},
+{id:'m8',k:'Σ8',t:'Κοινή συνάντηση: Ατομικό Σχέδιο Στήριξης',who:['bd','yt','ks','st','pa','me'],step:'s7',when:'Μετά τις ξεχωριστές συναντήσεις',dur:'40 λεπτά',where:'Αίθουσα με κυκλική διάταξη, όλοι στο ίδιο ύψος',
+ goal:'Γραπτή συμφωνία με 2–3 στόχους, συγκεκριμένη βοήθεια, άτομο αναφοράς και ημερομηνίες ανασκόπησης.',
+ sc:[
+ 'H:Άνοιγμα (ΒΔ)',
+ 'S:bd|Σας ευχαριστούμε όλους που είστε εδώ. Είμαστε εδώ για να εξετάσουμε μαζί πώς μπορεί [[ο|η]] {Μ} να πετύχει στο σχολείο και να συμφωνήσουμε ένα σχέδιο που θα το στηρίξουμε όλοι. Αυτή η συνάντηση δεν είναι δίκη· είναι συνεργασία.',
+ 'S:bd|Θα μιλήσει ο καθένας με τη σειρά του, χωρίς διακοπές, και θα μιλάμε για συμπεριφορές, όχι για το ποιος φταίει.',
+ 'D:Γύρος συστάσεων: όνομα και ρόλος του καθενός.',
+ 'H:1. Τα δυνατά σημεία (ΥΤ)',
+ 'S:yt|Ξεκινάμε με όσα πάνε καλά: …',
+ 'H:2. Η κατάσταση με γεγονότα (ΥΤ)',
+ 'S:yt|Μας ανησυχεί ότι … [γεγονότα]. Μέχρι τώρα έχουμε κάνει … [συνοπτικά τα βήματα].',
+ 'H:3. Πρώτα ο μαθητής',
+ 'S:bd|{Μ}, θέλουμε να ακούσουμε πρώτα εσένα. Πώς τα βλέπεις; Τι σε δυσκολεύει; Τι θα σε βοηθούσε;',
+ 'H:4. Οι γονείς',
+ 'S:yt|Τι θεωρείτε αναγκαίο να γίνει; Με ποιους τρόπους μπορείτε να βοηθήσετε εσείς;',
+ 'H:5. Ο Καθηγητής Σ.Ε.Α.',
+ 'S:ks|Από τις συναντήσεις μας κρατώ ότι [[ο|η]] {Μ} χρειάζεται … [ανάγκες, χωρίς εμπιστευτικά στοιχεία].',
+ 'H:6. Τι αναμένει το σχολείο',
+ 'S:bd|Προτείνουμε δύο–τρεις στόχους, π.χ.: «Σηκώνω χέρι και περιμένω τη σειρά μου», «Φέρνω βιβλία και τετράδια», «Αν διαφωνώ, το λέω στο τέλος του μαθήματος ή στον μέντορά μου». Συμφωνείς; Θα τους διατύπωνες αλλιώς;',
+ 'H:7. Τι προσφέρει το σχολείο',
+ 'S:yt|Το σχολείο προσφέρει: μέντορα, που θα τον επιλέξεις εσύ από όσους πρότεινες· την Κάρτα Ημέρας· στήριξη στα μαθήματα· έναν ρόλο ευθύνης, για παράδειγμα …',
+ 'H:8. Τι κάνει η οικογένεια',
+ 'S:yt|Από την πλευρά σας, θα ήταν πολύ χρήσιμο να υπογράφετε την κάρτα κάθε βράδυ και να επαινείτε τις καλές μέρες.',
+ 'H:9. Η άποψη όλων',
+ 'S:bd|Ποια είναι η άποψή σας για τις προτάσεις μας; Έχετε κάποια άλλη εισήγηση;',
+ 'H:10. Αναγνώριση και συνέπειες, με διαφάνεια',
+ 'S:bd|Αν το σχέδιο τηρηθεί, το σχολείο δεσμεύεται να αναγνωρίσει την προσπάθεια: θετική ενημέρωση, βελτίωση του χαρακτηρισμού της διαγωγής, θετικές συστάσεις όπου χρειαστεί. Αν δεν τηρηθεί και η συμπεριφορά συνεχιστεί, εφαρμόζονται οι κανονισμοί του σχολείου. Το λέμε από τώρα, για να μην υπάρξουν εκπλήξεις.',
+ 'H:11. Επικοινωνία και ανασκόπηση',
+ 'S:yt|Άτομο αναφοράς για εσάς θα είναι [όνομα μέντορα ή ΥΤ]. Θα σας ενημερώνουμε κάθε εβδομάδα. Θα ξαναβρεθούμε στις [2 εβδομάδες] και στις [6 εβδομάδες].',
+ 'H:Κλείσιμο',
+ 'S:bd|Καταγράψαμε τα κυριότερα σημεία της σημερινής συνάντησης, που είναι … Στόχος είναι να βοηθήσουμε ο ένας τον άλλον να πετύχουμε. Είμαστε στη διάθεσή σας για συνεργασία και ανοιχτοί στις εισηγήσεις σας. Σας ευχαριστούμε που ήρθατε. Τώρα θα διαβάσουμε τη συμφωνία, για να την υπογράψουμε όλοι.'
+ ],
+ av:['Είναι η τελευταία σου ευκαιρία.','Όλοι οι καθηγητές παραπονιούνται για σένα.','(πολλοί ενήλικες να μιλούν διαδοχικά για τα λάθη του μαθητή)'],
+ rec:'Υπογεγραμμένη συμφωνία: στόχοι, βοήθεια σχολείου, ρόλος οικογένειας, μέντορας, άτομο αναφοράς, ημερομηνίες.',
+ src:'Έντυπο συνέντευξης ΥΠΑΝ · Pastoral Support Programme (ΗΒ) · Compromiso de convivencia (Ισπανία) · Patto educativo di corresponsabilità (Ιταλία) · Åtgärdsprogram (Σουηδία)'},
+{id:'m9',k:'Σ9',t:'Ανασκόπηση στις 2 και στις 6 εβδομάδες',who:['yt','bd','ks','st','pa','me'],step:'s9',when:'Στις ημερομηνίες της συμφωνίας',dur:'20–30 λεπτά',where:'Όπως η κοινή συνάντηση',
+ goal:'Απόφαση με βάση δεδομένα: συνεχίζουμε, προσαρμόζουμε, αποσύρουμε σταδιακά ή κλιμακώνουμε.',
+ sc:[
+ 'H:Άνοιγμα',
+ 'S:yt|Είμαστε εδώ για να δούμε πώς πήγε το σχέδιο τις τελευταίες εβδομάδες. Θα ξεκινήσουμε από όσα πέτυχαν.',
+ 'H:Τα δεδομένα',
+ 'S:yt|Η Κάρτα Ημέρας δείχνει ότι σε … από τις … μέρες [[ο|η]] {Μ} πέτυχε τον στόχο. Αυτό είναι …',
+ 'H:Ο μαθητής',
+ 'S:me|{Μ}, τι σε βοήθησε περισσότερο; Τι ήταν το πιο δύσκολο;',
+ 'H:Απόφαση',
+ 'S:yt|Προτείνουμε: [συνεχίζουμε όπως είναι / αλλάζουμε τον στόχο … / αραιώνουμε την κάρτα και αρχίζεις να αξιολογείς μόνος σου / χρειαζόμαστε επιπλέον βοήθεια από …].',
+ 'D:Αν δεν υπάρχει πρόοδος, πρώτα ελέγχουμε αν το σχέδιο εφαρμόστηκε πιστά από όλους, και μετά αλλάζουμε μέθοδο.',
+ 'H:Κλείσιμο',
+ 'S:yt|Σε ευχαριστούμε, {Μ}. Η προσπάθειά σου φάνηκε. Συνεχίζουμε μαζί.'
+ ],
+ av:['Τα ίδια και τα ίδια.','Αφού δεν δούλεψε, δεν κάνουμε τίποτα άλλο.'],
+ rec:'Ποσοστά, απόφαση, νέοι στόχοι, επόμενη ημερομηνία.',
+ src:'PBIS – αποφάσεις με δεδομένα · PSP (ΗΒ) · Åtgärdsprogram (Σουηδία)'},
+{id:'m10',k:'Σ10',t:'Επανορθωτική συνάντηση με όσους θίχτηκαν',who:['ks','st','pe','pa','bd'],step:'s10',when:'Όταν η συμπεριφορά έβλαψε συγκεκριμένα πρόσωπα',dur:'30–45 λεπτά',where:'Ουδέτερος χώρος, κύκλος',
+ goal:'Να ακουστεί όποιος θίχτηκε, να αναλάβει ευθύνη όποιος προκάλεσε τη βλάβη και να συμφωνηθεί επανόρθωση.',
+ sc:[
+ 'D:Μόνο εθελοντικά, μόνο αν ο μαθητής έχει αναγνωρίσει τον ρόλο του και μόνο αν είναι ασφαλές για όποιον θίχτηκε. Δεν εφαρμόζεται σε εκφοβισμό με ανισορροπία δύναμης χωρίς προηγούμενη προστασία του θύματος. Συντονίζει εκπαιδευμένος διαμεσολαβητής ή ο ΚΣΕΑ.',
+ 'H:Άνοιγμα',
+ 'S:ks|Σας ευχαριστώ που ήρθατε. Θα μιλήσουμε για αυτό που συνέβη στις [ημερομηνία] στο [σημείο]. Δεν είμαστε εδώ για να αποφασίσουμε ποιος είναι καλός ή κακός, αλλά για να δούμε ποιοι επηρεάστηκαν και πώς μπορεί να επανορθωθεί η ζημιά.',
+ 'H:Σε όποιον προκάλεσε τη βλάβη',
+ 'S:ks|Τι συνέβη;',
+ 'S:ks|Τι σκεφτόσουν εκείνη τη στιγμή;',
+ 'S:ks|Τι έχεις σκεφτεί από τότε;',
+ 'S:ks|Ποιος επηρεάστηκε από αυτό που έκανες; Με ποιον τρόπο;',
+ 'H:Σε όποιον θίχτηκε',
+ 'S:ks|Τι σκέφτηκες όταν κατάλαβες τι συνέβη;',
+ 'S:ks|Πώς σε επηρέασε αυτό, εσένα και τους άλλους;',
+ 'S:ks|Ποιο ήταν το πιο δύσκολο για σένα;',
+ 'S:ks|Τι χρειάζεσαι για να διορθωθούν τα πράγματα;',
+ 'H:Συμφωνία',
+ 'S:ks|Τι πρέπει να γίνει για να διορθωθούν τα πράγματα; Τι μπορεί να κάνει ο καθένας;',
+ 'D:Η συμφωνία γράφεται και ελέγχεται σε μία εβδομάδα.'
+ ],
+ av:['Ζήτα συγγνώμη τώρα!','Δώστε τα χέρια και τελειώσαμε.'],
+ rec:'Γραπτή συμφωνία επανόρθωσης και ημερομηνία ελέγχου.',
+ src:'Επανορθωτικές ερωτήσεις IIRP (ΗΠΑ) · PB4L Restorative Practice (Νέα Ζηλανδία) · Σχολική Διαμεσολάβηση'},
+{id:'m11',k:'Σ11',t:'Συνάντηση επανένταξης μετά από αποβολή',who:['bd','yt','st','pa','me'],step:'s10',when:'Το πρωί της επιστροφής, πριν μπει στην τάξη',dur:'15 λεπτά',where:'Γραφείο ΒΔ',
+ goal:'Καθαρή επανεκκίνηση με σχέδιο επιστροφής, ώστε η αποβολή να μη γίνει ρήξη με το σχολείο.',
+ sc:[
+ 'H:Άνοιγμα',
+ 'S:bd|Καλώς ήρθες πίσω, {Μ}. Το σημαντικό σήμερα δεν είναι τι έγινε, αλλά πώς ξεκινάμε ξανά.',
+ 'H:Σχέδιο επιστροφής',
+ 'S:yt|Τι θα κάνεις διαφορετικά αν ξανασυμβεί κάτι παρόμοιο;',
+ 'S:yt|Ποιο είναι το σήμα σου όταν νιώθεις ότι ανεβαίνει η ένταση; Σε ποιον θα πας;',
+ 'S:yt|Τι χρειάζεσαι από εμάς τις πρώτες μέρες;',
+ 'H:Νέα αρχή',
+ 'S:bd|Ξεκινάμε από καθαρό χαρτί. Οι καθηγητές σου ξέρουν ότι επιστρέφεις και σε περιμένουν.',
+ 'D:Ο μέντορας συνοδεύει τον μαθητή στην πρώτη περίοδο. Οι διδάσκοντες ενημερώνονται για το σχέδιο επιστροφής.'
+ ],
+ av:['Ελπίζω να έμαθες το μάθημά σου.','Σε έχουμε στο μάτι.'],
+ rec:'Σχέδιο επιστροφής υπογεγραμμένο από τον μαθητή.',
+ src:'Rückkehrplan της μεθόδου Trainingsraum (Γερμανία) · re-entry meetings (ΗΠΑ, ΗΒ)'},
+{id:'m12',k:'Σ12',t:'Καθημερινό check-in / check-out με τον μέντορα',who:['me','st','te','pa'],step:'s8',when:'Κάθε πρωί και κάθε μεσημέρι',dur:'2–3 λεπτά',where:'Σταθερό σημείο, π.χ. γραφείο μέντορα',
+ goal:'Προβλέψιμη, ζεστή επαφή με έναν ενήλικα και καθημερινή ανατροφοδότηση στους στόχους.',
+ sc:[
+ 'D:Ο μέντορας δεν είναι φορέας πειθαρχίας, ούτε ψυχολόγος. Η σχέση είναι εθελοντική και για τους δύο, με σταθερές ώρες. Η ακύρωση είναι από τις μεγαλύτερες απογοητεύσεις για τον μαθητή.',
+ 'H:Πρωί',
+ 'S:me|Καλημέρα {Μ}! Χαίρομαι που σε βλέπω. Πώς ξεκινάς σήμερα, από το 1 ως το 5;',
+ 'S:me|Οι στόχοι σου σήμερα είναι: … Ποιο μάθημα θα είναι το πιο δύσκολο; Τι θα κάνεις εκεί;',
+ 'H:Σε κάθε περίοδο (διδάσκων)',
+ 'S:te|Σήμερα περίμενες τη σειρά σου σχεδόν σε όλη την ώρα. Σου βάζω 2.',
+ 'H:Μεσημέρι',
+ 'S:me|Για να δούμε την κάρτα σου. Ποιο ήταν το καλύτερό σου σημείο σήμερα;',
+ 'D:Σε δύσκολη μέρα:',
+ 'S:me|Σήμερα δυσκολεύτηκες στο [μάθημα]. Αύριο είναι νέα μέρα. Τι θα δοκιμάσεις;',
+ 'D:Η κάρτα πάει σπίτι για υπογραφή. Ο μέντορας ενημερώνει τους γονείς μία φορά την εβδομάδα, ξεκινώντας από τα θετικά.'
+ ],
+ av:['Πάλι χάλια σήμερα.','Αν δεν πάρεις 2 παντού, δεν θα έρθεις στην εκδρομή.'],
+ rec:'Ημερήσιο ποσοστό στην Κάρτα Ημέρας.',
+ src:'Check-In/Check-Out (PBIS, ΗΠΑ) · Μέντορες-εκπαιδευτικοί ΥΠΑΝ'}
+];
+
+/* ---------------- ROLE DETAIL ---------------- */
+const RDETAIL={
+ st:{d:'Δεν είναι αντικείμενο του σχεδίου αλλά συμμέτοχος. Μιλά πρώτος σε κάθε κοινή συνάντηση.',not:'Δεν υπογράφει κάτι που δεν κατάλαβε ή δεν συμφώνησε.',
+   s:{s1:'Συμμετέχει στη διαμόρφωση των κανόνων της τάξης.',s3:'Ακούει τα γεγονότα και, αν θέλει, απαντά.',s4:'Προτείνει λύσεις και λέει τι χρειάζεται.',s5:'Μιλά με τον ΥΤ για όσα πάνε καλά και όσα δυσκολεύουν.',s6:'Μιλά με τον ΚΣΕΑ και τον ΒΔ· προτείνει ονόματα για μέντορα.',s7:'Συνδιαμορφώνει τους στόχους και υπογράφει.',s8:'Παίρνει και επιστρέφει την Κάρτα Ημέρας· αυτοαξιολογείται.',s9:'Λέει τι τον βοήθησε και τι όχι.',s10:'Αναλαμβάνει ευθύνη και επανορθώνει· φτιάχνει σχέδιο επιστροφής.'}},
+ pe:{d:'Η τάξη ως ομάδα: κανόνες, κλίμα, διαμεσολαβητές συνομηλίκων και μαθητές-βοηθοί.',not:'Δεν γίνονται «αστυνομία» ούτε μάρτυρες σε δίκη. Δεν εμπλέκονται στη στιγμή της έντασης.',
+   s:{s1:'Φτιάχνουν μαζί τους κανόνες· κύκλοι τάξης για το κλίμα.',s10:'Όσοι θίχτηκαν συμμετέχουν εθελοντικά σε επανορθωτική συνάντηση· εκπαιδευμένοι μαθητές-διαμεσολαβητές βοηθούν σε συγκρούσεις συνομηλίκων.'}},
+ te:{d:'Ο πυρήνας της πρόληψης: είναι μόνος στην τάξη και έχει τη μεγαλύτερη επιρροή.',not:'Δεν παραπέμπει κάθε συμβάν στη Διεύθυνση· οι καταγγελίες χάνουν την αξία τους αν γίνονται συνέχεια.',
+   s:{s1:'Κανόνες, χαιρετισμός, θετικές παρατηρήσεις, δομή μαθήματος.',s2:'Σύντομη, ήρεμη παρέμβαση 30 δευτερολέπτων.',s3:'Κουβέντα δύο λεπτών μετά το μάθημα.',s4:'Συνάντηση επίλυσης με 8 βήματα.',s5:'Δίνει γεγονότα στον ΥΤ και εφαρμόζει την κοινή στάση.',s8:'Βαθμολογεί την Κάρτα Ημέρας κάθε περίοδο, με ένα σχόλιο.'}},
+ yt:{d:'Ο συντονιστής της περίπτωσης. Το πρότυπο ενήλικα που χτίζει σχέση και κρατά όλα τα νήματα.',not:'Δεν αναλαμβάνει μόνος του όλο το βάρος και δεν λειτουργεί ως ανακριτής.',
+   s:{s1:'Γνωρίζει τους μαθητές του τμήματος και τις ιδιαιτερότητές τους.',s5:'Ακρόαση μαθητή, συλλογή στοιχείων, σύσκεψη διδασκόντων, τηλέφωνο στους γονείς, ενημέρωση ΒΔ.',s6:'Συναντά τους γονείς μαζί με τον ΒΔ.',s7:'Συντονίζει την κοινή συνάντηση και γράφει τη συμφωνία.',s8:'Παρακολουθεί τα δεδομένα της κάρτας· εβδομαδιαία ενημέρωση γονέων αν δεν το κάνει ο μέντορας.',s9:'Προετοιμάζει τα δεδομένα και προτείνει απόφαση.',s10:'Εισηγείται στην Πολυθεματική Ομάδα.'}},
+ bd:{d:'Το θεσμικό πλαίσιο: όριο και ταυτόχρονα εγγύηση στήριξης. Προεδρεύει στις κοινές συναντήσεις.',not:'Δεν εμφανίζεται μόνο για να τιμωρήσει· δεν ταπεινώνει δημόσια.',
+   s:{s5:'Ενημερώνεται από τον ΥΤ· εγκρίνει τη συνάντηση με γονείς.',s6:'Συνάντηση ορίου και στήριξης με τον μαθητή· συνάντηση με γονείς.',s7:'Προεδρεύει της κοινής συνάντησης, εγγυάται όσα προσφέρει το σχολείο.',s9:'Συμμετέχει στην ανασκόπηση.',s10:'Πολυθεματική Ομάδα, παραπομπές, πειθαρχικά κατά τους κανονισμούς, συνάντηση επανένταξης.'}},
+ ks:{d:'Ο Καθηγητής Σ.Ε.Α. φέρνει τη συμβουλευτική ματιά: ανάγκες, συναισθήματα, δεξιότητες, παραπομπές.',not:'Δεν επιβάλλει ποινές και δεν μεταφέρει εμπιστευτικά στοιχεία στην ομάδα.',
+   s:{s1:'Δίνει πληροφορίες στον ΥΤ για μαθητές που χρειάζονται προσοχή.',s5:'Συμμετέχει στη σύσκεψη διδασκόντων όταν χρειάζεται.',s6:'Συμβουλευτική συνάντηση με τον μαθητή· πρόταση για ομάδα στήριξης.',s7:'Μεταφέρει τις ανάγκες του μαθητή, όχι τα εμπιστευτικά.',s9:'Αξιολογεί αν χρειάζεται παραπομπή.',s10:'Συντονίζει επανορθωτική συνάντηση· παραπομπή σε Εκπαιδευτική Ψυχολογία.'}},
+ pa:{d:'Οι γονείς γνωρίζουν το παιδί καλύτερα από όλους. Είναι συνεργάτες, όχι κατηγορούμενοι.',not:'Δεν καλούνται μόνο όταν υπάρχει κακό νέο.',
+   s:{s5:'Τηλέφωνο και συνάντηση χωρίς το παιδί: δίνουν τη δική τους ματιά.',s7:'Συνδιαμορφώνουν και υπογράφουν τη συμφωνία· αναλαμβάνουν τον δικό τους ρόλο.',s8:'Υπογράφουν την κάρτα κάθε βράδυ και επαινούν τις καλές μέρες.',s9:'Λένε τι βλέπουν στο σπίτι.',s10:'Συμμετέχουν στη συνάντηση επανένταξης.'}},
+ me:{d:'Ένας εκπαιδευτικός της επιλογής του μαθητή που προσφέρει σταθερή, ζεστή σχέση.',not:'Δεν είναι φορέας πειθαρχίας, ούτε ψυχολόγος ή σύμβουλος. Αν ανησυχήσει για κίνδυνο, ενημερώνει αμέσως.',
+   s:{s7:'Ορίζεται στην κοινή συνάντηση, εφόσον δέχεται και ο ίδιος.',s8:'Check-in/check-out κάθε μέρα· εβδομαδιαία επαφή με τους γονείς.',s9:'Μεταφέρει τη φωνή του μαθητή στην ανασκόπηση.',s10:'Συνοδεύει τον μαθητή στην επιστροφή.'}}
+};
+
+/* ---------------- ESCALATION PHASES ---------------- */
+const PHASES=[
+ {n:'Ηρεμία',y:170,see:'Ο μαθητής δουλεύει, συμμετέχει, συνεργάζεται.',do:'Επενδύουμε στη σχέση: χαιρετισμός, θετικές παρατηρήσεις, σαφείς ρουτίνες.',say:['Καλημέρα {Μ}, χαίρομαι που σε βλέπω.','Ωραία η ιδέα σου στην άσκηση 3.'],no:[]},
+ {n:'Πυροδότηση',y:130,see:'Κάτι τον αναστατώνει: σχόλιο συμμαθητή, δύσκολη άσκηση, κάτι από το σπίτι. Αλλαγή στάσης, βλέμμα, αναστεναγμοί.',do:'Πλησιάζουμε διακριτικά, αλλάζουμε δραστηριότητα, δίνουμε επιλογή, χρησιμοποιούμε προσεκτικά το χιούμορ.',say:['{Μ}, όλα καλά; Θες να ξεκινήσεις από την άσκηση 2;','Μπορείς να γράψεις εδώ ή στο πίσω θρανίο, όπως σε βολεύει.'],no:['Τι έπαθες πάλι;']},
+ {n:'Κλιμάκωση',y:80,see:'Εκνευρισμός, φωνή που ανεβαίνει, αρνήσεις, μουρμουρητά, προκλήσεις.',do:'Χαμηλή, ήρεμη φωνή, λίγες λέξεις, απόσταση. Αγνοούμε τις δευτερεύουσες συμπεριφορές. Δεν μπαίνουμε σε διάλογο μπροστά στην τάξη.',say:['Βλέπω ότι θύμωσες. Θα τα πούμε μετά το μάθημα. Τώρα χρειάζομαι να ανοίξεις το τετράδιο.','Ίσως έχεις δίκιο. Θα το δούμε μετά.'],no:['Σύνελθε!','Σε θεωρούσα πιο ώριμο!','Μην είσαι βλάκας.','Έλα τώρα! Μην αρχίζεις!']},
+ {n:'Κρίση',y:28,see:'Έκρηξη: φωνές, πέταγμα αντικειμένων, απειλές, φυγή από την τάξη.',do:'Ασφάλεια πρώτα: απομακρύνουμε την τάξη αν χρειάζεται, καλούμε τον ΒΔ με τρόπο που έχει συμφωνηθεί από πριν (π.χ. μαθητής με κάρτα). Δεν αγγίζουμε, δεν κλείνουμε την έξοδο, δεν απειλούμε.',say:['Είμαι εδώ. Είσαι ασφαλής. Θα περιμένουμε μαζί να ηρεμήσεις.'],no:['Αν δεν κάτσεις τώρα, θα δεις τι θα πάθεις!','(φωνές, φυσική σύγκρουση, κοινό)']},
+ {n:'Επαναφορά',y:110,see:'Η ένταση πέφτει· ο μαθητής είναι κουρασμένος, ίσως ντροπιασμένος.',do:'Χρόνος και χώρος, χωρίς ανάλυση και ηθικολογία. Οι μεγάλες συζητήσεις γίνονται αργότερα.',say:['Πάρε τον χρόνο σου. Θες λίγο νερό;'],no:['Είδες τι έκανες;']},
+ {n:'Μετά την κρίση',y:160,see:'Ηρεμία ξανά, συχνά με τύψεις.',do:'Επανορθωτική κουβέντα την ίδια ή την επόμενη μέρα (Σ2 ή Σ10). Καταγραφή. Ενημέρωση ΥΤ και ΒΔ. Επικοινωνία με τους γονείς δια ζώσης, την επόμενη μέρα.',say:['Χθες ήταν μια δύσκολη μέρα. Θέλω να δούμε μαζί τι έγινε και πώς θα το χειριστούμε την επόμενη φορά.'],no:['Δεν θέλω να ξανασυμβεί ποτέ.']}
+];
+
+/* ---------------- WORLD ---------------- */
+const WORLD=[
+ {c:'ΚΥΠΡΟΣ',t:'Υπεύθυνος Τμήματος, Ομάδα Άμεσης Παρέμβασης, Πολυθεματική Ομάδα',p:['Ενισχύεται ο ρόλος του Υπεύθυνου Τμήματος ως πυρήνα πρόληψης της βίας.','Η διαδικασία παρέμβασης ξεκινά από τον Υπεύθυνο Τμήματος και, αν χρειαστεί, συγκαλείται η Πολυθεματική Ομάδα.','Υλικό της Ομάδας Άμεσης Παρέμβασης: σχέδιο διαχείρισης τάξης, 8 βήματα επίλυσης, μέντορες-εκπαιδευτικοί.'],u:'Βήματα 3–5, 10 · Σ1, Σ2, Σ3, Σ5, Σ12',src:[['ΥΠΑΝ, ανακοίνωση μέτρων (1/11/2023)','https://enimerosi.moec.gov.cy/archeia/1/ypp16262a'],['Βοήθημα Καθηγητή Σ.Ε.Α.: Διαδικασία Παρέμβασης','https://lyk-ap-petros-pavlos-lem.schools.ac.cy/data/uploads/2024-2025/anakoinoseis/hmera_ekpaideftikou/p1.pdf']]},
+ {c:'ΕΛΛΑΔΑ',t:'Επιτροπές Διεπιστημονικής Υποστήριξης και ΚΕΔΑΣΥ',p:['Ο ν. 4823/2021 θεσμοθέτησε Επιτροπές Διεπιστημονικής Υποστήριξης στις σχολικές μονάδες και Σχολικά Δίκτυα Εκπαιδευτικής Υποστήριξης.','Παιδαγωγικές συναντήσεις του συλλόγου διδασκόντων για θέματα αγωγής και προόδου.'],u:'Βήματα 5 και 10 · Σ4',src:[['Eurydice: Καθοδήγηση και Συμβουλευτική (Ελλάδα)','https://eurydice.eacea.ec.europa.eu/el/eurypedia/greece/kathodigisi-kai-symboyleytiki-stin-prosholiki-kai-ti-sholiki-ekpaideysi']]},
+ {c:'ΝΟΡΒΗΓΙΑ · ΔΑΝΙΑ',t:'LP-μοντέλο: μαθησιακό περιβάλλον και παιδαγωγική ανάλυση',p:['Ομάδες εκπαιδευτικών αναλύουν συστημικά τι στο περιβάλλον της τάξης προκαλεί και διατηρεί τη συμπεριφορά, και τι μπορούν να αλλάξουν.','Χρησιμοποιήθηκε σε πάνω από 300 σχολεία στη Νορβηγία μέσα σε μια δεκαετία και σε εκατοντάδες δανικά σχολεία.'],u:'Βήμα 5 · Σ4 (Γύροι 1–3)',src:[['Store norske leksikon: Thomas Nordahl','https://snl.no/Thomas_Nordahl'],['UCN: LP-modellen','https://www.ucn.dk/media/2e1hcdbn/lp-artikel-lp-modellen-læringsmiljø-og-pædagogisk-analyse.pdf']]},
+ {c:'ΝΟΡΒΗΓΙΑ',t:'N-PALS: θετική υποστήριξη συμπεριφοράς σε τρία επίπεδα',p:['3–5 θετικά διατυπωμένοι κανόνες, συστηματικός έπαινος, ήπιες και άμεσες συνέπειες, συνεργασία με γονείς.','Στο τρίτο επίπεδο: εξατομικευμένο σχέδιο στήριξης βασισμένο σε λειτουργική ανάλυση της συμπεριφοράς.'],u:'Η δομή τριών επιπέδων · Βήματα 1, 7',src:[['Sørlie κ.ά., Prevention Science (2018)','https://pmc.ncbi.nlm.nih.gov/articles/PMC6208577']]},
+ {c:'ΣΟΥΗΔΙΑ',t:'Elevhälsoteam και åtgärdsprogram',p:['Η ομάδα υγείας μαθητών (ΕΗΤ) εξετάζει την περίπτωση· ο διευθυντής αποφασίζει για ειδική στήριξη και πρόγραμμα μέτρων.','Ο μαθητής και οι κηδεμόνες πρέπει να έχουν τη δυνατότητα να συμμετέχουν όταν συντάσσεται το πρόγραμμα, που αξιολογείται σε προγραμματισμένη ημερομηνία.'],u:'Βήματα 7, 9 · Σ8, Σ9',src:[['Skolverket, γενικές οδηγίες 2022','https://skolfs.skolverket.se/api/document/ALLMANNA_RAD_OVRIGT/2022:334/pdf']]},
+ {c:'ΦΙΝΛΑΝΔΙΑ',t:'Πολυεπαγγελματική ομάδα πρόνοιας μαθητή',p:['Για κάθε μαθητή συγκροτείται ομάδα ειδικών προσαρμοσμένη στην περίπτωση, και ο μαθητής είναι πάντα παρών.','Ο κηδεμόνας συμμετέχει πάντα όταν συζητούνται θέματα του παιδιού του.'],u:'Ο μαθητής μιλά πρώτος · Σ8',src:[['Πόλη του Ελσίνκι: υπηρεσίες πρόνοιας μαθητών','https://www.hel.fi/fi/kasvatus-ja-koulutus/node/500'],['Kemijärvi: Student services','https://kemijarvi.fi/en/education-and-training/primary-education/student-services/']]},
+ {c:'ΓΕΡΜΑΝΙΑ',t:'Trainingsraum (μέθοδος «Αριζόνα»)',p:['Στην τάξη: «Τι κάνεις; Ποιος είναι ο κανόνας; Τι συμβαίνει όταν τον παραβιάζεις;»','Στον χώρο σκέψης ο μαθητής γράφει σχέδιο επιστροφής με νέες στρατηγικές, και ο εκπαιδευτικός το αποδέχεται ή όχι.'],u:'Ερωτήσεις στη στιγμή · Σ11 σχέδιο επιστροφής',src:[['Hamburg: Trainingsraum','https://www.hamburg.de/politik-und-verwaltung/behoerden/bsfb/einrichtungen-beratung/gewaltpraevention/programme/artikel-trainingsraum-49212']]},
+ {c:'ΙΣΡΑΗΛ → ΓΕΡΜΑΝΙΑ, ΑΥΣΤΡΙΑ',t:'Νέα Αυθεντία – μη βίαιη αντίσταση (Haim Omer)',p:['Ενισχύει γονείς και εκπαιδευτικούς με αυστηρά μη βίαια, μη κλιμακωτικά μέσα: παρουσία, δίκτυο υποστήριξης, ανακοίνωση.','Εφαρμόζεται σε σχολεία της Αυστρίας και διδάσκεται σε πολλές χώρες.'],u:'Σ7: όριο και παρουσία',src:[['Haim Omer – NVR','https://haimomer-nvr.com/'],['New Authority στην Αυστρία','https://www.newauthority.net/data/cntfiles/298_.pdf']]},
+ {c:'ΙΤΑΛΙΑ',t:'Patto educativo di corresponsabilità',p:['Σύμφωνο σχολείου, οικογένειας και μαθητή που ορίζει δικαιώματα και υποχρεώσεις όλων, από το Δ.Π. 235/2007.','Δεσμεύσεις σε τρεις στήλες: το σχολείο, η οικογένεια, ο μαθητής.'],u:'Σ8: τι κάνει ο καθένας',src:[['Orizzonte Scuola: Patto educativo','https://www.orizzontescuola.it/patto-educativo-di-corresponsabilita-perche-e-importante-quali-sono-gli-impegni-che-docenti-studenti-e-genitori-devono-prendere-e-condividere/']]},
+ {c:'ΙΣΠΑΝΙΑ',t:'Compromiso de convivencia · Aula de convivencia',p:['Στην Ανδαλουσία οι οικογένειες μπορούν να υπογράψουν «συμφωνία συνύπαρξης» για μαθητές με προβλήματα συμπεριφοράς, με μηχανισμούς συντονισμού γονέων και εκπαιδευτικών.','Μπορεί να προταθεί οποιαδήποτε στιγμή, από την οικογένεια ή από τους εκπαιδευτικούς.'],u:'Βήμα 7 · Σ8',src:[['Junta de Andalucía, Orden 20/07/2011','https://blogsaverroes.juntadeandalucia.es/orientacionalmeria/files/2013/05/Oden-de-20-07-2011_Protocolo-de-maltrato.pdf']]},
+ {c:'ΗΝΩΜΕΝΟ ΒΑΣΙΛΕΙΟ',t:'Pastoral Support Programme · Paul Dix',p:['Πρόγραμμα στήριξης για μαθητές σε κίνδυνο αποβολής, με τον μαθητή, τους γονείς και εξωτερικούς φορείς· συλλογή πληροφοριών, συνάντηση, ανασκόπηση.','Paul Dix: η παρέμβαση των 30 δευτερολέπτων με προσεκτικά δομημένο λεκτικό· επανορθωτικές κουβέντες αντί για τιμωρία.'],u:'Βήματα 2, 7, 9 · Σ8, Σ9',src:[['Somerset Pastoral Support Plan','https://www.somerset.gov.uk/children-families-and-education/the-local-offer/education-and-learning-support/somerset-pastoral-support-plan/'],['Tes: Deliver discipline in half a minute','https://www.tes.com/magazine/archive/deliver-discipline-half-minute']]},
+ {c:'ΗΠΑ',t:'PBIS · Check-In/Check-Out · Plan B · επανορθωτικές ερωτήσεις',p:['Check-In/Check-Out: ένας ενήλικας-μέντορας και καθημερινή αναφορά προόδου, η πιο διαδεδομένη στοχευμένη παρέμβαση.','Ross Greene, Plan B: κατανόηση της οπτικής του παιδιού, η ανησυχία του ενήλικα, πρόσκληση σε κοινή λύση.','IIRP: οι επανορθωτικές ερωτήσεις για όποιον προκάλεσε και για όποιον θίχτηκε.'],u:'Σ2, Σ10, Σ12 · Κάρτα Ημέρας',src:[['Research Press: Check-In, Check-Out','https://www.researchpress.com/?p=3618'],['Ross Greene, Plan B (NAMI)','https://nami.org/wp-content/uploads/2023/07/H-5-How-to-Develop-Collaborative-and-Proactive-Solutions-CPS-the-Ins-and-Outs-of-Plan-B.pdf'],['IIRP: Restorative questions','https://iirp.edu/news/time-to-think-using-restorative-questions']]},
+ {c:'ΝΕΑ ΖΗΛΑΝΔΙΑ',t:'PB4L Restorative Practice',p:['Κλιμακωτά: επανορθωτικές κουβέντες για τα καθημερινά, μίνι συναντήσεις για τα πιο σοβαρά, τυπικές επανορθωτικές συναντήσεις για τα σοβαρά.','Η σύντομη κουβέντα γίνεται μακριά από τους άλλους μαθητές για να αποφευχθεί η αντιπαράθεση μπροστά στην τάξη.'],u:'Βήματα 3 και 10 · Σ1, Σ10',src:[['PB4L Restorative Practice','https://pb4l.tki.org.nz/PB4L-Restorative-Practice/What-is-involved']]}
+];
+
+/* ---------------- STATE ---------------- */
+const KEY='dysk-case-v1';
+const blank=()=>({name:'',g:'',cls:'',yt:'',bd:'',ks:'',me:'',beh:'',want:'',steps:{},goals:['','',''],card:{},hist:[]});
+let C=blank();
+try{const r=localStorage.getItem(KEY); if(r) C=Object.assign(blank(),JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(C));}catch(e){}}
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let tt; function toast(m){const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),1800);}
+function P(s){ // personalise
+ const nm=C.name.trim()||'[όνομα]';
+ return s.replace(/\{Μ\}/g,nm).replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g,(m,a,b)=>C.g==='m'?a:C.g==='f'?b:(a+'/'+b));
+}
+const chip=k=>`<span class="chip" style="--c:var(${ROLES[k].c})">${ROLES[k].n}</span>`;
+const tierTag=n=>`<span class="tier" style="--tc:var(${TIER[n].c})">${TIER[n].n}</span>`;
+function copy(text){try{navigator.clipboard.writeText(text).then(()=>toast('Αντιγράφηκε'),()=>toast('Η αντιγραφή απέτυχε· επιλέξτε το κείμενο χειροκίνητα'));}catch(e){toast('Η αντιγραφή απέτυχε· επιλέξτε το κείμενο χειροκίνητα');}}
+
+/* ---------------- PLAN ---------------- */
+function renderPlan(){
+ $('#rail').innerHTML=STEPS.map((s,i)=>`<div class="step" style="--tc:var(${TIER[s.tier].c})" id="${s.id}">
+  <div class="num"><b>${i+1}</b></div>
+  <div class="scard">
+   <div class="row"><h3>${esc(s.t)}</h3>${tierTag(s.tier)}</div>
+   <div class="row"><span class="when">${esc(s.when)}</span><div class="chips">${s.who.map(chip).join('')}</div></div>
+   <p class="goal"><b>Στόχος:</b> ${esc(s.goal)}</p>
+   <div class="cols">
+    <div class="box"><h4>Τι γίνεται</h4><ul>${s.act.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div>
+    <div class="box"><h4>Καταγραφή</h4><p>${esc(s.doc)}</p>${s.m.length?`<h4>Συναντήσεις</h4><div class="mlinks">${s.m.map(id=>{const m=MEET.find(x=>x.id===id);return `<button class="mlink" type="button" data-open="${id}">${m.k} · ${esc(m.t)}</button>`;}).join('')}</div>`:''}<h4>Από πού</h4><p class="muted">${esc(s.src)}</p></div>
+   </div>
+   <p class="next">${i<STEPS.length-1?`<b>Επόμενο βήμα:</b> ${esc(s.next)} → Βήμα ${i+2}.`:`<b>Και μετά:</b> ${esc(s.next)}.`}</p>
+  </div></div>`).join('');
+}
+
+/* ---------------- MEETINGS ---------------- */
+let mSel='m1'; const mRoles=new Set(Object.keys(ROLES));
+function renderMeetFilter(){
+ $('#mfilter').innerHTML=Object.keys(ROLES).map(k=>`<button type="button" class="chip" style="--c:var(${ROLES[k].c})" data-r="${k}" aria-pressed="${mRoles.has(k)}">${ROLES[k].n}</button>`).join('')+
+  `<button type="button" class="btn ghost" data-r="all" style="padding:2px 10px; font-size:13px">Όλοι</button>`;
+}
+function renderMeetList(){
+ const list=MEET.filter(m=>m.who.some(r=>mRoles.has(r)));
+ if(!list.find(m=>m.id===mSel) && list.length) mSel=list[0].id;
+ $('#mlist').innerHTML=list.map(m=>`<button type="button" class="mitem" data-m="${m.id}" aria-current="${m.id===mSel}">
+   <span class="k">${m.k} · ${esc(m.dur)}</span><span class="t">${esc(m.t)}</span>
+   <span class="dots">${m.who.map(r=>`<i style="--c:var(${ROLES[r].c})" title="${ROLES[r].n}"></i>`).join('')}</span></button>`).join('') || '<p class="muted small">Καμία συνάντηση για αυτούς τους ρόλους.</p>';
+ renderMeet();
+}
+function scriptHTML(m){
+ return m.sc.map(l=>{
+  const t=l.slice(0,2), x=l.slice(2);
+  if(t==='H:') return `<h4>${esc(P(x))}</h4>`;
+  if(t==='D:') return `<p class="do">${esc(P(x))}</p>`;
+  if(t==='S:'){const i=x.indexOf('|'), r=x.slice(0,i); let txt=esc(P(x.slice(i+1))).replace(/~/g,'<em>παύση</em>');
+   return `<p class="say" style="--who:var(${ROLES[r].c})"><span class="spk">${ROLES[r].n}</span>${txt}</p>`;}
+  return '';
+ }).join('');
+}
+function scriptText(m){
+ return `${m.k}. ${m.t}\nΣυμμετέχουν: ${m.who.map(r=>ROLES[r].n).join(', ')}\nΠότε: ${m.when} · Διάρκεια: ${m.dur} · Πού: ${m.where}\nΣτόχος: ${m.goal}\n\n`+
+  m.sc.map(l=>{const t=l.slice(0,2),x=l.slice(2); if(t==='H:') return '\n'+P(x).toUpperCase(); if(t==='D:') return '  ['+P(x)+']'; const i=x.indexOf('|'); return ROLES[x.slice(0,i)].n+': «'+P(x.slice(i+1)).replace(/ ?~/g,' (παύση)')+'»';}).join('\n')+
+  `\n\nΑΠΟΦΕΥΓΟΥΜΕ:\n${m.av.map(a=>'– '+P(a)).join('\n')}\n\nΚΑΤΑΓΡΑΦΗ: ${m.rec}`;
+}
+function renderMeet(){
+ const m=MEET.find(x=>x.id===mSel); if(!m){$('#mdetail').innerHTML=''; return;}
+ const st=STEPS.findIndex(s=>s.id===m.step)+1;
+ $('#mdetail').innerHTML=`<div class="rowb" style="justify-content:space-between"><span class="eyebrow">${m.k} · ΒΗΜΑ ${st}</span><button class="btn ghost" type="button" id="cpM">Αντιγραφή λεκτικού</button></div>
+  <h2 style="font-size:clamp(22px,3vw,28px)">${esc(m.t)}</h2>
+  <div class="chips">${m.who.map(chip).join('')}</div>
+  <div class="facts"><div><b>Πότε</b>${esc(m.when)}</div><div><b>Διάρκεια</b>${esc(m.dur)}</div><div><b>Πού</b>${esc(m.where)}</div></div>
+  <p><b>Στόχος:</b> ${esc(m.goal)}</p>
+  <div class="script">${scriptHTML(m)}</div>
+  <div class="avoid"><h4>Αποφεύγουμε</h4><ul>${m.av.map(a=>`<li>${esc(P(a))}</li>`).join('')}</ul></div>
+  <p class="small"><b>Καταγραφή:</b> ${esc(m.rec)}</p>
+  <p class="origin">Από πού: ${esc(m.src)}</p>`;
+ $('#cpM').onclick=()=>copy(scriptText(m));
+}
+$('#mfilter').onclick=e=>{const b=e.target.closest('[data-r]'); if(!b) return; const r=b.dataset.r;
+ if(r==='all'){Object.keys(ROLES).forEach(k=>mRoles.add(k));}
+ else if(mRoles.size===Object.keys(ROLES).length){mRoles.clear(); mRoles.add(r);}
+ else{ mRoles.has(r)?mRoles.delete(r):mRoles.add(r); if(!mRoles.size) Object.keys(ROLES).forEach(k=>mRoles.add(k)); }
+ renderMeetFilter(); renderMeetList();};
+$('#mlist').onclick=e=>{const b=e.target.closest('[data-m]'); if(!b) return; mSel=b.dataset.m; renderMeetList(); if(window.innerWidth<860) $('#mdetail').scrollIntoView({block:'start'});};
+function openMeeting(id){mSel=id; Object.keys(ROLES).forEach(k=>mRoles.add(k)); renderMeetFilter(); renderMeetList(); location.hash='#synantiseis';}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-open]'); if(b){e.preventDefault(); openMeeting(b.dataset.open);}});
+
+/* ---------------- ROLES ---------------- */
+let rSel='yt';
+function renderRoles(){
+ $('#rolepick').innerHTML=Object.keys(ROLES).map(k=>`<button type="button" class="chip" style="--c:var(${ROLES[k].c})" data-r="${k}" aria-pressed="${k===rSel}">${ROLES[k].n}</button>`).join('');
+ const R=RDETAIL[rSel], ms=MEET.filter(m=>m.who.includes(rSel));
+ $('#rolecard').innerHTML=`<div class="rolecard" style="--c:var(${ROLES[rSel].c})">
+  <h3>${ROLES[rSel].n}</h3><p>${esc(R.d)}</p>
+  <div class="rsteps">${STEPS.map((s,i)=>R.s[s.id]?`<div class="rstep" style="--tc:var(${TIER[s.tier].c})"><b class="n">${i+1}</b><div><b>${esc(s.t)}</b><br><span class="small">${esc(R.s[s.id])}</span></div></div>`:'').join('')}</div>
+  <div><h4 style="margin-bottom:6px">Συναντήσεις όπου συμμετέχει</h4><div class="mlinks">${ms.map(m=>`<button class="mlink" type="button" data-open="${m.id}">${m.k} · ${esc(m.t)}</button>`).join('')||'<span class="muted small">Καμία συγκεκριμένη.</span>'}</div></div>
+  <div class="avoid"><h4>Τι δεν κάνει</h4><p style="font-family:var(--body)">${esc(R.not)}</p></div>
+ </div>`;
+}
+$('#rolepick').onclick=e=>{const b=e.target.closest('[data-r]'); if(!b) return; rSel=b.dataset.r; renderRoles();};
+
+/* ---------------- ESCALATION ---------------- */
+let phSel=2;
+function renderWave(){
+ const W=960, xs=PHASES.map((_,i)=>80+i*160);
+ let d=`M 0 190 L ${xs[0]} ${PHASES[0].y}`; for(let i=1;i<xs.length;i++){const cx=(xs[i-1]+xs[i])/2; d+=` C ${cx} ${PHASES[i-1].y}, ${cx} ${PHASES[i].y}, ${xs[i]} ${PHASES[i].y}`;} d+=` L ${W} 175`;
+ $('#waveSvg').innerHTML=`<path class="area" d="${d} L ${W} 200 L 0 200 Z"/><path class="curve" d="${d}"/>
+  ${PHASES.map((p,i)=>`<g class="ph" role="button" tabindex="0" data-p="${i}" aria-pressed="${i===phSel}" aria-label="Στάδιο ${i+1}: ${p.n}">
+   <rect x="${xs[i]-78}" y="0" width="156" height="230" rx="8"/>
+   <circle cx="${xs[i]}" cy="${p.y}" r="${i===phSel?9:6}" fill="var(--t3)"/>
+   <text x="${xs[i]}" y="222" text-anchor="middle">${i+1}. ${p.n}</text></g>`).join('')}`;
+ const p=PHASES[phSel];
+ $('#phdetail').innerHTML=`<div class="panel"><h3>${phSel+1}. ${p.n}</h3><p><b>Τι βλέπουμε:</b> ${esc(p.see)}</p><p><b>Τι κάνουμε:</b> ${esc(p.do)}</p></div>
+  <div class="panel"><h4>Τι λέμε</h4>${p.say.map(s=>`<p class="say" style="--who:var(--r-te)">${esc(P(s))}</p>`).join('')}</div>
+  ${p.no.length?`<div class="avoid"><h4>Αποφεύγουμε</h4><ul>${p.no.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>`:''}`;
+}
+$('#waveSvg').addEventListener('click',e=>{const g=e.target.closest('[data-p]'); if(g){phSel=+g.dataset.p; renderWave();}});
+$('#waveSvg').addEventListener('keydown',e=>{const g=e.target.closest('[data-p]'); if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault(); phSel=+g.dataset.p; renderWave(); const n=$(`#waveSvg [data-p="${phSel}"]`); if(n) n.focus();}});
+function renderFixed(){
+ $('#dix').innerHTML=`<h3>Η παρέμβαση των 30 δευτερολέπτων</h3><p class="small muted">Ιδιωτικά, δίπλα στο θρανίο, χαμηλόφωνα. Μετά απομακρυνόμαστε και δίνουμε χρόνο.</p>
+  ${['{Μ}, παρατήρησα ότι αυτή τη στιγμή [συμπεριφορά].','Ο κανόνας μας είναι [κανόνας].','Γι’ αυτό σε παρακαλώ να [επόμενη πράξη]. Αν όχι, [συνέπεια που ισχύει για όλους].','Θυμάσαι την προηγούμενη [μέρα] που [θετικό παράδειγμα]; Αυτό θέλω να δω και σήμερα.','Σε ευχαριστώ που με άκουσες.'].map(s=>`<p class="say" style="--who:var(--r-te)">${esc(P(s))}</p>`).join('')}
+  <p class="origin">Από πού: Paul Dix, When the Adults Change, Everything Changes (ΗΒ)</p>`;
+ $('#trq').innerHTML=`<h3>Τρεις ερωτήσεις στην τάξη</h3><p class="small muted">Ήρεμα, χωρίς σχόλιο. Βοηθούν τον μαθητή να ονομάσει μόνος του τη συμπεριφορά και την επιλογή του.</p>
+  ${['Τι κάνεις;','Ποιος είναι ο κανόνας;','Τι συμβαίνει όταν δεν τηρείς τον κανόνα;','Τι θέλεις να κάνεις τώρα;'].map(s=>`<p class="say" style="--who:var(--r-te)">${esc(s)}</p>`).join('')}
+  <p class="origin">Από πού: μέθοδος Trainingsraum (Γερμανία). Αν το σχολείο δεν έχει χώρο σκέψης, η συνέχεια είναι η κουβέντα δύο λεπτών (Σ1).</p>`;
+}
+
+/* ---------------- CASE FILE ---------------- */
+const fields={cName:'name',cCls:'cls',cYt:'yt',cBd:'bd',cKs:'ks',cMe:'me',cBeh:'beh',cWant:'want'};
+function bindCase(){
+ Object.entries(fields).forEach(([id,k])=>{const el=$('#'+id); el.value=C[k]||''; el.oninput=()=>{C[k]=el.value; save(); if(k==='name'){ $('#pName').value=C.name; refreshPersonal(); }};});
+ document.querySelectorAll('.cg').forEach(el=>{el.value=C.goals[+el.dataset.i]||''; el.oninput=()=>{C.goals[+el.dataset.i]=el.value; save(); renderCard();};});
+}
+function renderCheck(){
+ let done=0;
+ $('#check').innerHTML=STEPS.map((s,i)=>{const v=C.steps[s.id]||{}; if(v.d) done++; return `<div class="crow${v.d?' done':''}" style="--tc:var(${TIER[s.tier].c})">
+  <input type="checkbox" data-s="${s.id}" ${v.d?'checked':''} aria-label="Ολοκληρώθηκε: ${esc(s.t)}">
+  <span class="ct"><b>${i+1}.</b> ${esc(s.t)}</span>
+  <input type="date" data-sd="${s.id}" value="${v.date||''}" aria-label="Ημερομηνία βήματος ${i+1}"></div>`;}).join('');
+ $('#cProg').textContent=`${done} από ${STEPS.length} βήματα`;
+}
+$('#check').addEventListener('change',e=>{const c=e.target.dataset.s, d=e.target.dataset.sd;
+ if(c){C.steps[c]=Object.assign(C.steps[c]||{},{d:e.target.checked}); if(e.target.checked && !C.steps[c].date) C.steps[c].date=new Date().toISOString().slice(0,10);}
+ if(d){C.steps[d]=Object.assign(C.steps[d]||{},{date:e.target.value});}
+ save(); renderCheck();});
+const PER=8;
+function goalsList(){return C.goals.map((g,i)=>g.trim()||`Στόχος ${i+1}`);}
+function dayPct(){let s=0,n=0; for(let g=0;g<3;g++) for(let p=0;p<PER;p++){const v=C.card[g+'-'+p]; if(v!==undefined&&v!==''){s+=v;n++;}} return n?Math.round(s/(n*2)*100):null;}
+function renderCard(){
+ const gl=goalsList();
+ $('#cardtbl').innerHTML=`<thead><tr><th>Στόχος</th>${Array.from({length:PER},(_,p)=>`<th>${p+1}η</th>`).join('')}</tr></thead><tbody>`+
+  gl.map((g,gi)=>`<tr><td>${esc(g)}</td>${Array.from({length:PER},(_,p)=>{const v=C.card[gi+'-'+p]; return `<td><button type="button" data-c="${gi}-${p}" class="${v===undefined||v===''?'':'v'+v}" aria-label="${esc(g)}, περίοδος ${p+1}">${v===undefined||v===''?'·':v}</button></td>`;}).join('')}</tr>`).join('')+`</tbody>`;
+ const pc=dayPct(); $('#pct').textContent=pc===null?'—':pc+'%';
+ $('#pctNote').textContent=pc===null?'σήμερα · πατήστε στα κουτιά για 2 → 1 → 0':(pc>=80?'σήμερα · στόχος 80% επιτεύχθηκε':'σήμερα · στόχος 80%');
+ const h=C.hist.slice(-20);
+ $('#hist').innerHTML=`<div class="goalline" style="bottom:${6+0.8*78}px" title="80%"></div>`+h.map(x=>`<div class="bar${x.p>=80?' ok':''}" style="height:${Math.max(4,x.p*0.78)}px" title="${esc(x.d)}: ${x.p}%"></div>`).join('');
+ const ok=h.filter(x=>x.p>=80).length;
+ $('#histNote').textContent=h.length?`${ok} από ${h.length} μέρες στο 80% ή πάνω. Αυτό είναι το βασικό δεδομένο για την ανασκόπηση (Σ9).`:'Δεν έχουν αποθηκευτεί μέρες ακόμα.';
+}
+$('#cardtbl').addEventListener('click',e=>{const b=e.target.closest('[data-c]'); if(!b) return; const k=b.dataset.c, v=C.card[k];
+ C.card[k]= (v===undefined||v==='')?2 : v===2?1 : v===1?0 : ''; save(); renderCard();});
+$('#saveDay').onclick=()=>{const pc=dayPct(); if(pc===null){toast('Συμπληρώστε πρώτα την κάρτα'); return;}
+ C.hist.push({d:new Date().toLocaleDateString('el-GR'),p:pc}); C.card={}; save(); renderCard(); toast('Η μέρα αποθηκεύτηκε: '+pc+'%');};
+$('#clearDay').onclick=()=>{C.card={}; save(); renderCard();};
+$('#copyPlan').onclick=()=>{
+ const gl=C.goals.filter(g=>g.trim());
+ const t=`ΑΤΟΜΙΚΟ ΣΧΕΔΙΟ ΣΤΗΡΙΞΗΣ\nΜαθητής/τρια: ${C.name||'—'} · Τμήμα: ${C.cls||'—'}\nΥπεύθυνος Τμήματος: ${C.yt||'—'} · Βοηθός Διευθυντής: ${C.bd||'—'} · Καθηγητής Σ.Ε.Α.: ${C.ks||'—'} · Μέντορας: ${C.me||'—'}\n\nΗ συμπεριφορά που μας απασχολεί:\n${C.beh||'—'}\n\nΤι θέλουμε να βλέπουμε:\n${C.want||'—'}\n\nΣτόχοι Κάρτας Ημέρας:\n${gl.length?gl.map((g,i)=>(i+1)+'. '+g).join('\n'):'—'}\n\nΠορεία βημάτων:\n`+
+  STEPS.map((s,i)=>{const v=C.steps[s.id]||{}; return `${v.d?'[x]':'[ ]'} ${i+1}. ${s.t}${v.date?' ('+v.date+')':''}`;}).join('\n')+
+  (C.hist.length?`\n\nΚάρτα Ημέρας: ${C.hist.filter(x=>x.p>=80).length} από ${C.hist.length} μέρες ≥ 80%`:'');
+ copy(t);};
+let wipeArm=false;
+$('#wipe').onclick=e=>{ if(!wipeArm){wipeArm=true; e.target.textContent='Πατήστε ξανά για οριστική διαγραφή'; setTimeout(()=>{wipeArm=false; e.target.textContent='Διαγραφή φακέλου';},3000); return;}
+ C=blank(); save(); wipeArm=false; e.target.textContent='Διαγραφή φακέλου'; $('#pName').value=''; bindCase(); renderCheck(); renderCard(); refreshPersonal(); toast('Ο φάκελος διαγράφηκε');};
+
+/* ---------------- WORLD ---------------- */
+function renderWorld(){
+ $('#world').innerHTML=WORLD.map(w=>`<article class="wcard"><span class="cc">${esc(w.c)}</span><h3>${esc(w.t)}</h3><ul>${w.p.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p class="use"><b>Στο εργαλείο:</b> ${esc(w.u)}</p><p class="small">${w.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · ')}</p></article>`).join('');
+}
+
+/* ---------------- PERSONALISATION ---------------- */
+function refreshPersonal(){
+ document.querySelectorAll('[data-g]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.g===C.g));
+ renderMeet(); renderWave(); renderFixed();
+}
+$('#pName').value=C.name;
+$('#pName').oninput=e=>{C.name=e.target.value; $('#cName').value=C.name; save(); refreshPersonal();};
+document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{C.g=b.dataset.g; save(); refreshPersonal();});
+
+/* ---------------- ROUTING ---------------- */
+const VIEWS=['plano','synantiseis','roloi','entasi','fakelos','kosmos'];
+function route(){
+ const h=location.hash.replace('#',''); const v=VIEWS.includes(h)?h:'plano';
+ VIEWS.forEach(x=>$('#v-'+x).classList.toggle('on',x===v));
+ document.querySelectorAll('nav.tabs a').forEach(a=>{ if(a.dataset.v===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+ if(VIEWS.includes(h)) window.scrollTo({top:document.querySelector('nav.tabs').offsetTop});
+}
+window.addEventListener('hashchange',route);
+
+renderPlan(); renderMeetFilter(); renderMeetList(); renderRoles(); renderWave(); renderFixed(); renderWorld();
+bindCase(); renderCheck(); renderCard(); refreshPersonal(); route();
+})();
+</script>
+</body>
+</html>

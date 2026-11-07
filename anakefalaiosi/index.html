@@ -1,0 +1,1302 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Εργαλείο Ανακεφαλαίωσης μαθημάτων «Διεργασία της Επαγγελματικής Αγωγής/Συμβουλευτικής Γ΄ Γυμνασίου και Α΄ Λυκείου»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Commissioner:wght@400;500;700;800&display=swap&subset=greek" rel="stylesheet">
+<style>
+:root{
+  --ink:#1E2557; --ink2:#4A5185; --paper:#F6F7FF; --card:#FFFFFF; --line:#DADDF3;
+  --sun:#FFC93C; --coral:#FF6F7D; --mint:#22C3A6; --sky:#5B8CFF; --grape:#8E6CEF;
+  --ok:#17A589; --bad:#E2475A; --chipbg:#EEF0FF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#EEF0FF; --ink2:#B4B9E0; --paper:#151935; --card:#20264A; --line:#353C6B; --chipbg:#2A3160;
+  }
+}
+:root[data-theme="dark"]{ --ink:#EEF0FF; --ink2:#B4B9E0; --paper:#151935; --card:#20264A; --line:#353C6B; --chipbg:#2A3160; }
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Commissioner",system-ui,"Segoe UI",Arial,sans-serif; font-size:17px; line-height:1.55; -webkit-tap-highlight-color:transparent; }
+h1,h2,h3{ font-family:"Comfortaa","Commissioner",system-ui,sans-serif; line-height:1.2; margin:0 0 .5em; }
+h1{ font-size:clamp(2rem,7vw,3.4rem); letter-spacing:-.02em; }
+h2{ font-size:clamp(1.45rem,4.6vw,2.1rem); }
+h3{ font-size:1.12rem; }
+p{ margin:.2em 0 .9em; }
+a{ color:var(--sky); }
+button{ font:inherit; color:inherit; cursor:pointer; }
+:focus-visible{ outline:3px solid var(--sky); outline-offset:2px; border-radius:8px; }
+
+/* top bar: metro line */
+.top{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--paper); padding:10px 16px 8px; border-bottom:1px solid var(--line); }
+.toprow{ display:flex; align-items:center; gap:10px; max-width:820px; margin:0 auto; }
+.metro{ flex:1; position:relative; height:22px; }
+.metro .rail{ position:absolute; left:0; right:0; top:9px; height:4px; border-radius:4px; background:var(--line); }
+.metro .fill{ position:absolute; left:0; top:9px; height:4px; border-radius:4px; background:linear-gradient(90deg,var(--coral),var(--sun) 45%,var(--mint)); transition:width .4s; }
+.metro .stop{ position:absolute; top:3px; width:16px; height:16px; margin-left:-8px; border-radius:50%; background:var(--card); border:3px solid var(--line); padding:0; }
+.metro .stop.done{ border-color:var(--ink); background:var(--sun); }
+.metro .stop.ch{ width:20px; height:20px; top:1px; margin-left:-10px; }
+@media (max-width:600px){ .metro .stop:not(.ch){ width:10px; height:10px; top:6px; margin-left:-5px; border-width:2px; } }
+.grid > .panel{ margin:0; }
+.xp{ font-weight:800; font-size:.9rem; background:var(--sun); color:#1E2557; padding:4px 10px; border-radius:999px; white-space:nowrap; }
+.xp.pop{ animation:pop .4s; }
+@keyframes pop{ 50%{ transform:scale(1.25);} }
+.chname{ max-width:820px; margin:4px auto 0; font-size:.82rem; color:var(--ink2); font-weight:600; }
+
+main{ max-width:820px; margin:0 auto; padding:22px 18px 120px; }
+.screen{ animation:enter .35s ease; }
+@keyframes enter{ from{ opacity:0; transform:translateY(10px);} }
+@media (prefers-reduced-motion:reduce){ .screen,.xp.pop{ animation:none; } .flip-in{ transition:none!important; } }
+
+.lead{ font-size:1.08rem; color:var(--ink2); }
+.panel{ background:var(--card); border:2px solid var(--line); border-radius:18px; padding:16px 18px; margin:12px 0; }
+.grid{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); }
+.chip{ display:inline-block; background:var(--chipbg); border-radius:999px; padding:5px 12px; margin:3px; font-size:.92rem; font-weight:500; }
+.btn{ border:none; border-radius:14px; padding:12px 18px; font-weight:800; background:var(--ink); color:var(--paper); }
+.btn.alt{ background:var(--chipbg); color:var(--ink); }
+.btn.sun{ background:var(--sun); color:#1E2557; }
+.tap{ text-align:left; width:100%; border:2px solid var(--line); background:var(--card); border-radius:16px; padding:14px 16px; transition:transform .12s, border-color .2s; }
+.tap:active{ transform:scale(.98); }
+.tap.on{ border-color:var(--ink); box-shadow:4px 4px 0 var(--sun); }
+.hint{ font-size:.88rem; color:var(--ink2); }
+.reveal{ display:none; margin-top:10px; }
+.on > .reveal, .reveal.show{ display:block; }
+.tag{ font-size:.75rem; font-weight:800; padding:2px 8px; border-radius:6px; background:var(--sun); color:#1E2557; }
+
+/* nav */
+.nav{ position:fixed; left:0; right:0; bottom:0; z-index:6; background:var(--paper); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); }
+.navin{ max-width:820px; margin:0 auto; display:flex; gap:10px; align-items:center; }
+.navin .sp{ flex:1; text-align:center; font-size:.85rem; color:var(--ink2); }
+
+/* hero */
+.hero{ text-align:left; padding-top:8px; }
+.hero h1 span{ display:block; }
+.hero .q2{ color:var(--coral); }
+.hero .eyebrow{ font-family:"Comfortaa","Commissioner",sans-serif; font-weight:700; font-size:clamp(.95rem,2.6vw,1.12rem); line-height:1.4; color:var(--ink2); background:var(--chipbg); border-radius:14px; padding:10px 14px; margin:0 0 16px; text-wrap:balance; }
+.trail{ margin:22px 0; }
+.trail svg{ width:100%; height:auto; display:block; }
+.chcards{ display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr)); }
+.chcard{ border-radius:18px; padding:14px; color:#1E2557; text-align:left; border:none; }
+.chcard b{ font-family:"Comfortaa",sans-serif; font-size:1.15rem; display:block; }
+
+/* blobs */
+.blobs{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.blob{ min-width:0; overflow-wrap:anywhere; hyphens:auto; }
+.blob{ aspect-ratio:1; border-radius:46% 54% 58% 42% / 52% 44% 56% 48%; border:none; color:#fff; font-weight:800; font-size:clamp(.7rem,2.9vw,1.05rem); padding:6px; }
+.blob:nth-child(2){ border-radius:58% 42% 45% 55% / 45% 58% 42% 55%; }
+.blob:nth-child(3){ border-radius:42% 58% 52% 48% / 58% 46% 54% 42%; }
+
+/* sort game */
+.sortcard{ font-size:1.3rem; font-weight:800; text-align:center; padding:28px 16px; border-radius:20px; background:var(--card); border:3px dashed var(--line); margin:10px 0; min-height:96px; }
+.sortbtns{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sortbtns button{ padding:16px; border-radius:16px; border:none; font-weight:800; color:#1E2557; }
+.fb{ min-height:1.6em; font-weight:700; text-align:center; }
+.fb.ok{ color:var(--ok);} .fb.no{ color:var(--bad);}
+
+/* tree */
+.tree{ position:relative; max-width:520px; margin:0 auto; }
+.tree svg{ width:100%; height:auto; display:block; }
+.leaf{ cursor:pointer; }
+.leaf ellipse{ transition:fill .2s, transform .2s; transform-box:fill-box; transform-origin:center; }
+.leaf.on ellipse{ fill:var(--sun); transform:scale(1.12); }
+.leaf text{ font-family:"Commissioner",sans-serif; font-size:11px; font-weight:700; fill:#123; pointer-events:none; }
+
+/* venn */
+.venn svg{ width:100%; max-width:440px; display:block; margin:0 auto; }
+.venn circle{ cursor:pointer; mix-blend-mode:multiply; transition:opacity .2s; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .venn circle{ mix-blend-mode:screen; } }
+.venn text{ font-family:"Comfortaa",sans-serif; font-weight:700; pointer-events:none; fill:#1E2557; }
+
+/* steps */
+.steps{ list-style:none; padding:0; margin:10px 0; counter-reset:s; }
+.steps li{ position:relative; padding:10px 12px 10px 46px; margin:8px 0; background:var(--chipbg); border-radius:14px; }
+.steps li::before{ counter-increment:s; content:counter(s); position:absolute; left:10px; top:10px; width:26px; height:26px; border-radius:50%; background:var(--ink); color:var(--paper); display:grid; place-items:center; font-weight:800; font-size:.85rem; }
+.vote{ display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+.vote button{ border:2px solid var(--line); background:var(--card); border-radius:999px; padding:8px 14px; font-weight:700; }
+textarea.lined{ display:block; width:100%; margin:6px 0 12px; font:inherit; color:var(--ink); border:2px solid var(--line); border-radius:12px; padding:2px 12px; line-height:32px; resize:vertical; background-color:var(--card); background-image:repeating-linear-gradient(to bottom, transparent 0 31px, var(--line) 31px 32px); background-attachment:local; background-position:0 2px; }
+.vote button.on{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+/* holland */
+.hex svg{ width:100%; max-width:480px; display:block; margin:0 auto; }
+.hex text{ font-family:"Commissioner",sans-serif; font-weight:800; font-size:13px; fill:var(--ink); }
+.qrow{ display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); }
+.qrow:last-child{ border:none; }
+.seg{ display:flex; border:2px solid var(--line); border-radius:12px; overflow:hidden; flex-shrink:0; }
+.seg button{ border:none; background:transparent; padding:6px 10px; font-size:.82rem; font-weight:700; }
+.seg button.on{ background:var(--sun); color:#1E2557; }
+.quote{ font-family:"Comfortaa",sans-serif; font-size:1.25rem; padding:18px 20px; border-left:6px solid var(--sun); background:var(--card); border-radius:0 16px 16px 0; }
+
+/* trends orbit */
+.orbit{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr)); gap:10px; }
+.oct{ clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%); background:var(--sky); color:#fff; border:none; aspect-ratio:1; font-weight:800; padding:14px; font-size:.92rem; }
+.oct.on{ background:var(--ink); }
+.skchip{ border:2px solid transparent; color:var(--ink); cursor:pointer; }
+.skchip.on{ background:var(--sun); color:#1E2557; border-color:var(--ink); }
+
+/* gap bars */
+.bars{ display:grid; gap:10px; }
+.bar{ height:30px; border-radius:10px; position:relative; background:var(--chipbg); overflow:hidden; }
+.bar i{ position:absolute; left:0; top:0; bottom:0; border-radius:10px; transition:width .3s; }
+.bar span{ position:relative; z-index:1; font-size:.82rem; font-weight:700; padding:0 10px; line-height:30px; color:#1E2557; }
+input[type=range]{ width:100%; accent-color:var(--coral); }
+
+/* swipe */
+.swipe{ text-align:center; }
+.jobcard{ margin:12px auto; max-width:360px; padding:34px 18px; border-radius:24px; background:var(--card); border:3px solid var(--ink); box-shadow:8px 8px 0 var(--mint); font-size:1.35rem; font-weight:800; transition:transform .25s, opacity .25s; }
+.jobcard small{ display:block; font-size:.95rem; font-weight:500; color:var(--ink2); line-height:1.45; margin-top:10px; }
+.jobcard .jn{ display:block; font-size:.75rem; font-weight:700; color:var(--ink2); margin-top:12px; letter-spacing:.06em; }
+.jlist{ display:grid; gap:8px; }
+.jitem{ display:grid; gap:2px; background:var(--chipbg); border-radius:12px; padding:9px 12px; font-size:.92rem; }
+.jitem span{ color:var(--ink2); }
+.jitem.liked{ box-shadow:inset 4px 0 0 var(--mint); }
+.jobcard.gol{ transform:translateX(-120%) rotate(-12deg); opacity:0; }
+.jobcard.gor{ transform:translateX(120%) rotate(12deg); opacity:0; }
+.swbtns{ display:flex; justify-content:center; gap:14px; }
+.swbtns button{ width:64px; height:64px; border-radius:50%; border:3px solid var(--ink); background:var(--card); font-size:1.6rem; }
+
+/* quiz */
+.opts{ display:grid; gap:8px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.opts button{ overflow-wrap:anywhere; hyphens:auto; }
+.opts button{ border:2px solid var(--line); background:var(--card); border-radius:14px; padding:12px; font-weight:700; text-align:left; }
+.opts button.ok{ background:var(--ok); color:#fff; border-color:var(--ok); }
+.opts button.no{ background:var(--bad); color:#fff; border-color:var(--bad); }
+.isco{ display:grid; grid-template-columns:auto 1fr; gap:4px 10px; font-size:.92rem; }
+.isco b{ font-family:"Comfortaa",sans-serif; }
+
+/* path map */
+.pathmap{ display:grid; gap:12px; }
+.lvl{ display:flex; gap:8px; flex-wrap:wrap; }
+.node{ border:2px solid var(--ink); border-radius:14px; padding:10px 12px; background:var(--card); font-weight:700; font-size:.92rem; }
+.node.on{ background:var(--ink); color:var(--paper); }
+.arrow{ text-align:center; font-size:1.4rem; color:var(--ink2); line-height:1; }
+
+/* OMP explorer */
+.omps{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.omp{ border:none; border-radius:16px; padding:12px 6px; font-weight:800; color:#1E2557; font-size:.9rem; }
+.omp b{ display:block; font-family:"Comfortaa",sans-serif; font-size:1.4rem; }
+@media (max-width:600px){ .omps{ grid-template-columns:1fr 1fr; } }
+.omp{ overflow-wrap:anywhere; min-width:0; }
+.omp.on{ outline:3px solid var(--ink); outline-offset:2px; }
+.kgrid{ display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr)); }
+.k{ text-align:left; border:2px solid var(--line); border-radius:16px; padding:12px 14px; background:var(--card); }
+.k .kc{ font-family:"Comfortaa",sans-serif; font-weight:700; font-size:1.3rem; }
+.tablewrap{ overflow-x:auto; }
+table{ border-collapse:collapse; width:100%; font-size:.9rem; }
+th,td{ padding:6px 8px; border-bottom:1px solid var(--line); text-align:left; }
+th{ font-weight:800; }
+
+/* match */
+.match{ display:grid; grid-template-columns:minmax(90px,.4fr) 1fr; gap:10px; }
+.match .col{ display:grid; gap:8px; align-content:start; }
+.match button{ border:2px solid var(--line); background:var(--card); border-radius:12px; padding:10px; font-size:.88rem; text-align:left; font-weight:600; }
+.match button.sel{ border-color:var(--ink); background:var(--sun); color:#1E2557; }
+.match button.done{ border-color:var(--ok); background:var(--ok); color:#fff; opacity:.8; }
+.match button.shake{ animation:shake .3s; border-color:var(--bad); }
+.match button.mt{ background:var(--tc); border-color:var(--tc); color:#1E2557; font-size:1rem; }
+.match button.mt.sel{ background:var(--tc); color:#1E2557; outline:3px solid var(--ink); outline-offset:2px; box-shadow:4px 4px 0 var(--ink); }
+.match button.mt.done{ background:var(--tc); border-color:var(--tc); color:#1E2557; opacity:.7; }
+.match button.md.done{ background:var(--tc); border-color:var(--tc); color:#1E2557; opacity:1; }
+.match .mtag{ display:inline-block; background:rgba(255,255,255,.55); border-radius:6px; padding:0 6px; margin-right:4px; font-size:.8rem; }
+@keyframes shake{ 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+details{ background:var(--card); border:2px solid var(--line); border-radius:14px; padding:10px 14px; margin:8px 0; }
+summary{ font-weight:800; cursor:pointer; }
+.links a{ display:block; padding:4px 0; word-break:break-word; }
+
+/* passport */
+.passport{ background:var(--ink); color:var(--paper); border-radius:22px; padding:22px; position:relative; overflow:hidden; }
+.passport::after{ content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px; border-radius:50%; background:var(--sun); opacity:.9; }
+.passport h2{ position:relative; z-index:1; }
+.passport .row{ position:relative; z-index:1; margin:10px 0; }
+.passport .row small{ display:block; opacity:.75; font-size:.8rem; }
+.passport .chip{ background:rgba(255,255,255,.15); color:var(--paper); }
+input[type=text]{ font:inherit; padding:12px 14px; border-radius:14px; border:2px solid var(--line); background:var(--card); color:var(--ink); width:100%; max-width:360px; }
+.toast{ position:fixed; left:50%; top:calc(70px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:8px 16px; border-radius:999px; font-weight:800; z-index:15; animation:toast 1.4s forwards; pointer-events:none; }
+@keyframes toast{ 0%{opacity:0; transform:translate(-50%,10px)} 15%{opacity:1; transform:translate(-50%,0)} 80%{opacity:1} 100%{opacity:0; transform:translate(-50%,-14px)} }
+.snd{ border:none; background:var(--chipbg); border-radius:999px; width:34px; height:30px; font-size:1rem; padding:0; }
+.qz h3{ margin-bottom:10px; }
+.qz .opts button:disabled{ cursor:default; }
+.qz .why{ background:var(--chipbg); border-radius:12px; padding:10px 12px; margin-top:10px; font-size:.95rem; }
+.qz .qtop{ display:flex; justify-content:space-between; align-items:center; font-size:.82rem; color:var(--ink2); font-weight:700; margin-bottom:6px; }
+.qz .dots{ display:flex; gap:4px; } .qz .dots i{ width:8px; height:8px; border-radius:50%; background:var(--line); } .qz .dots i.ok{ background:var(--ok);} .qz .dots i.no{ background:var(--bad);}
+.toggles{ display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
+.toggles button{ border:2px solid var(--line); background:var(--card); border-radius:999px; padding:6px 12px; font-weight:700; font-size:.9rem; }
+.toggles button.on{ color:#1E2557; border-color:var(--ink); }
+.vdot text{ font-family:"Commissioner",sans-serif; font-size:13px; paint-order:stroke; stroke:#fff; stroke-width:3px; font-weight:700; fill:#1E2557; }
+.scale svg{ width:100%; max-width:440px; display:block; margin:0 auto; }
+.scale .beam{ transition:transform .5s cubic-bezier(.3,1.6,.5,1); transform-origin:220px 70px; }
+.reasons{ display:grid; gap:6px; margin-top:8px; }
+.reason{ display:flex; align-items:center; gap:8px; background:var(--chipbg); border-radius:12px; padding:6px 10px; font-size:.92rem; }
+.reason span{ flex:1; }
+.reason button{ border:none; background:transparent; font-size:1rem; padding:2px 6px; }
+.addrow{ display:grid; gap:8px; grid-template-columns:1fr; }
+.addrow input[type=text], .twoin input{ max-width:none; }
+.twoin{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+select{ font:inherit; padding:10px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--ink); }
+canvas#conf{ position:fixed; inset:0; pointer-events:none; z-index:20; }
+.credits{ font-size:.8rem; color:var(--ink2); }
+
+/* ===== v2: cinematic intro, moving train, station arrivals, passport finale ===== */
+.metro .train{ position:absolute; top:-7px; width:30px; height:20px; margin-left:-15px; z-index:2; transition:left .9s cubic-bezier(.45,.05,.3,1); pointer-events:none; filter:drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
+.metro .train.back svg{ transform:scaleX(-1); }
+.metro .train.moving svg{ animation:bob .18s linear infinite; }
+@keyframes bob{ 50%{ transform:translateY(-1.5px);} }
+.metro .train.back.moving svg{ animation:bobb .18s linear infinite; }
+@keyframes bobb{ 0%,100%{ transform:scaleX(-1);} 50%{ transform:scaleX(-1) translateY(-1.5px);} }
+
+.intro{ position:fixed; inset:0; z-index:40; background:#1E2557; color:#F6F7FF; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px)); overflow:hidden; text-align:center; transition:opacity .6s, transform .6s; }
+.intro.out{ opacity:0; transform:scale(1.04); pointer-events:none; }
+.intro .sky{ position:absolute; inset:0; pointer-events:none; }
+.intro .sky i{ position:absolute; width:3px; height:3px; border-radius:50%; background:#fff; opacity:.0; animation:tw 3s ease-in-out infinite; }
+@keyframes tw{ 0%,100%{ opacity:.1;} 50%{ opacity:.8;} }
+.intro .eyebrow{ font-weight:700; letter-spacing:.14em; text-transform:uppercase; font-size:.78rem; color:#FFC93C; opacity:0; animation:fadeUp .7s .2s forwards; position:relative; }
+.intro h1{ position:relative; font-size:clamp(2.4rem,11vw,4.6rem); margin:.15em 0 .2em; }
+.intro h1 .w{ display:inline-block; opacity:0; transform:translateY(30px) rotate(-4deg); animation:wordIn .7s cubic-bezier(.2,1.4,.4,1) forwards; }
+.intro h1 .w:nth-child(1){ animation-delay:2.9s; } .intro h1 .w:nth-child(2){ animation-delay:3.1s; color:#FFC93C; }
+@keyframes wordIn{ to{ opacity:1; transform:none; } }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:none; } }
+.intro .scene{ position:relative; width:min(100%,560px); }
+.intro .scene svg{ width:100%; height:auto; display:block; overflow:visible; }
+.intro .tr{ animation:drive 2.8s cubic-bezier(.5,0,.3,1) .4s both; }
+@keyframes drive{ from{ transform:translateX(-90px);} to{ transform:translateX(470px);} }
+.intro .st{ opacity:.25; transform-box:fill-box; transform-origin:center; animation:light .5s forwards; }
+.intro .st1{ animation-delay:1.25s; } .intro .st2{ animation-delay:1.95s; } .intro .st3{ animation-delay:2.65s; }
+@keyframes light{ 0%{ opacity:.25; transform:scale(1);} 60%{ opacity:1; transform:scale(1.5);} 100%{ opacity:1; transform:scale(1);} }
+.intro .lbl{ opacity:0; animation:fadeUp .5s forwards; font-family:"Commissioner",sans-serif; font-weight:700; font-size:12px; fill:#F6F7FF; }
+.intro .lb1{ animation-delay:1.35s; } .intro .lb2{ animation-delay:2.05s; } .intro .lb3{ animation-delay:2.75s; }
+.intro .smoke{ animation:puff 1.2s ease-out infinite; transform-box:fill-box; transform-origin:center; }
+@keyframes puff{ from{ opacity:.7; transform:translate(0,0) scale(.6);} to{ opacity:0; transform:translate(-14px,-16px) scale(1.6);} }
+.intro .sub{ position:relative; max-width:34ch; color:#B4B9E0; opacity:0; animation:fadeUp .6s 3.4s forwards; }
+.intro .go{ position:relative; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:14px; opacity:0; animation:fadeUp .6s 3.7s forwards; }
+.intro .go .btn{ font-size:1.05rem; padding:14px 22px; }
+.intro .go .btn.alt{ background:rgba(255,255,255,.12); color:#F6F7FF; }
+.intro .skip{ position:absolute; top:calc(14px + env(safe-area-inset-top,0px)); right:16px; background:none; border:1px solid rgba(255,255,255,.3); color:#F6F7FF; border-radius:999px; padding:6px 14px; font-size:.85rem; font-weight:700; }
+.replay{ border:none; background:var(--chipbg); border-radius:999px; height:30px; padding:0 10px; font-size:.82rem; font-weight:700; }
+
+.arrive{ position:fixed; left:0; right:0; top:calc(30% + env(safe-area-inset-top,0px)); z-index:30; pointer-events:none; display:flex; justify-content:center; padding:0 16px; }
+.arrive .card{ background:var(--card); color:var(--ink); border:3px solid var(--ink); border-radius:22px; padding:16px 26px; text-align:center; box-shadow:8px 8px 0 var(--accent,#FFC93C); animation:arr 2.3s cubic-bezier(.2,1.2,.4,1) forwards; max-width:100%; }
+.arrive .card small{ display:block; font-weight:800; letter-spacing:.12em; text-transform:uppercase; font-size:.75rem; color:var(--ink2); }
+.arrive .card b{ font-family:"Comfortaa",sans-serif; font-size:clamp(1.4rem,6vw,2.1rem); display:block; }
+.arrive .lane{ position:absolute; left:0; right:0; top:100%; height:34px; margin-top:10px; }
+.arrive .lane svg{ position:absolute; top:0; width:64px; height:34px; animation:zoom 1.9s cubic-bezier(.5,0,.4,1) forwards; }
+@keyframes arr{ 0%{ opacity:0; transform:translateY(-20px) scale(.8);} 15%{ opacity:1; transform:none;} 80%{ opacity:1; transform:none;} 100%{ opacity:0; transform:translateY(-10px) scale(.96);} }
+@keyframes zoom{ from{ left:-80px;} to{ left:calc(100% + 20px);} }
+
+.stamps{ position:relative; z-index:2; display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; min-height:0; }
+.stamp{ border:3px solid currentColor; border-radius:12px; padding:6px 10px; font-family:"Comfortaa",sans-serif; font-weight:700; font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; transform:rotate(var(--r,-6deg)); background:rgba(255,255,255,.06); line-height:1.2; text-align:center; }
+.stamp small{ display:block; font-size:.62rem; opacity:.85; letter-spacing:.1em; }
+.stamp.hit{ animation:slam .45s cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes slam{ 0%{ opacity:0; transform:scale(2.6) rotate(var(--r,-6deg));} 70%{ opacity:1; transform:scale(.92) rotate(var(--r,-6deg));} 100%{ opacity:1; transform:scale(1) rotate(var(--r,-6deg));} }
+.passport.shake{ animation:pshake .2s; }
+@keyframes pshake{ 30%{ transform:translate(2px,1px);} 60%{ transform:translate(-2px,-1px);} }
+
+.modal{ position:fixed; inset:0; z-index:50; background:rgba(10,12,30,.72); display:flex; align-items:center; justify-content:center; padding:16px; }
+.modal .box{ background:var(--card); color:var(--ink); border-radius:20px; padding:16px; max-width:440px; width:100%; max-height:100%; overflow:auto; text-align:center; }
+.modal img{ width:100%; border-radius:12px; display:block; margin:0 0 10px; }
+.modal .row2{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+
+@media (prefers-reduced-motion:reduce){
+  .intro *, .arrive *, .stamp.hit, .metro .train, .metro .train svg{ animation:none!important; transition:none!important; opacity:1!important; transform:none!important; }
+  .intro .tr{ transform:translateX(470px)!important; }
+}
+
+/* ===== v3: narration + living path map ===== */
+.speak{ border:none; background:var(--chipbg); color:var(--ink); border-radius:999px; padding:7px 14px; font-weight:800; font-size:.86rem; display:inline-flex; gap:8px; align-items:center; margin:0 8px 12px 0; }
+.speak.on{ background:var(--ink); color:var(--paper); }
+.speak .eq{ display:inline-flex; gap:2px; align-items:flex-end; height:13px; }
+.speak .eq i{ width:3px; height:5px; border-radius:2px; background:currentColor; }
+.speak.on .eq i{ animation:eq .7s ease-in-out infinite; }
+.speak.on .eq i:nth-child(2){ animation-delay:.15s; } .speak.on .eq i:nth-child(3){ animation-delay:.3s; }
+@keyframes eq{ 0%,100%{ height:4px;} 50%{ height:13px;} }
+.replay{ margin:0 8px 12px 0; }
+
+.grow{ position:relative; margin-top:10px; padding-bottom:4px; }
+.grow .root{ display:flex; justify-content:center; position:relative; z-index:1; }
+.grow .rootpill{ background:var(--ink); color:var(--paper); border-radius:999px; padding:9px 18px; font-weight:800; font-family:"Comfortaa",sans-serif; text-align:center; animation:popin .5s both; max-width:100%; }
+.grow .rootpill small{ display:block; font-family:"Commissioner",sans-serif; font-weight:600; font-size:.75rem; opacity:.8; }
+.grow .cols{ display:grid; grid-template-columns:repeat(var(--n),minmax(0,1fr)); gap:10px; margin-top:60px; position:relative; z-index:1; }
+.grow .col{ min-width:0; }
+.grow .kcard{ border-radius:14px; padding:8px 6px; text-align:center; font-weight:800; color:#1E2557; font-size:.95rem; font-family:"Comfortaa",sans-serif; animation:popin .5s both; box-shadow:0 3px 0 rgba(30,37,87,.25); }
+.grow .kcard small{ display:block; font-family:"Commissioner",sans-serif; font-weight:600; font-size:.7rem; line-height:1.25; overflow-wrap:anywhere; hyphens:auto; margin-top:2px; }
+.grow ul{ list-style:none; padding:0; margin:10px 0 0; display:grid; gap:6px; }
+.grow li{ font-size:.78rem; line-height:1.3; background:var(--card); border:1.5px solid var(--line); border-left:5px solid var(--kc); border-radius:10px; padding:6px 7px; overflow-wrap:anywhere; hyphens:auto; animation:sprout .45s both; }
+.grow svg.links{ position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
+.grow svg.links path{ fill:none; stroke-width:5; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:1; animation:drawln .7s ease-out forwards; }
+.grow svg.links circle{ animation:popin .4s both; }
+.grow .note{ margin-top:12px; }
+@keyframes drawln{ to{ stroke-dashoffset:0; } }
+@keyframes popin{ from{ opacity:0; transform:scale(.6);} }
+@keyframes sprout{ from{ opacity:0; transform:translateY(-8px) scale(.92);} }
+@media (max-width:480px){ .grow .cols{ gap:6px; } .grow li{ font-size:.72rem; padding:5px; } .grow .kcard small{ font-size:.64rem; } }
+@media (prefers-reduced-motion:reduce){
+  .grow *, .speak .eq i{ animation:none!important; }
+  .grow svg.links path{ stroke-dashoffset:0; }
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="toprow">
+    <div class="metro" id="metro"><div class="rail"></div><div class="fill" id="fill"></div></div>
+    <button class="snd" id="snd" aria-label="Ήχος">🔇</button>
+    <span class="xp" id="xp">⭐ 0</span>
+  </div>
+  <div class="chname" id="chname"></div>
+</div>
+<main id="main"></main>
+<div class="nav"><div class="navin">
+  <button class="btn alt" id="prev" aria-label="Προηγούμενο">←</button>
+  <div class="sp" id="count"></div>
+  <button class="btn" id="next">Επόμενο</button>
+</div></div>
+<canvas id="conf"></canvas>
+
+<script>
+/* ---------- state ---------- */
+const S = { i:0, xp:0, done:{}, name:"", strengths:[], holland:{}, likes:[], omp:null, notes:{} };
+try{ const s = JSON.parse(localStorage.getItem("taxidi-v1")||"null"); if(s) Object.assign(S,s); }catch(e){}
+function save(){ try{ localStorage.setItem("taxidi-v1", JSON.stringify(S)); }catch(e){} }
+function award(key, pts){
+  if(S.done[key]) return; S.done[key]=1; S.xp+=pts; save();
+  const x=document.getElementById("xp"); x.textContent="⭐ "+S.xp; x.classList.remove("pop"); void x.offsetWidth; x.classList.add("pop");
+  toast(`+${pts} ⭐`); beep("star");
+}
+function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(),1500); }
+let AC=null;
+function beep(kind){
+  if(!S.sound) return;
+  try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const notes={ok:[660,880],no:[220,180],star:[784,988,1175]}[kind]||[600];
+    notes.forEach((f,i)=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type=kind==="no"?"sawtooth":"triangle"; o.frequency.value=f;
+      const t=AC.currentTime+i*.09; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.12,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.18);
+      o.connect(g).connect(AC.destination); o.start(t); o.stop(t+.2); });
+  }catch(e){}
+}
+/* generic quiz */
+function quiz(box, qs, key, intro){
+  let k=0, ok=0, res=[];
+  const draw=()=>{
+    if(k>=qs.length){ box.innerHTML=`<div class="panel qz"><h3>🎉 ${ok}/${qs.length} σωστά!</h3><p>${ok===qs.length?"Τέλειο σκορ!":ok>=qs.length/2?"Πολύ καλά! Ξαναπροσπάθησε για το τέλειο.":"Ξαναδές την ενότητα και δοκίμασε πάλι."}</p><button class="btn alt">↻ Ξανά</button></div>`;
+      $("button",box).onclick=()=>{ k=0; ok=0; res=[]; draw(); }; award(key, ok*3); if(ok===qs.length) confetti(); return; }
+    const q=qs[k], opts=q.keep?q.opts:shuffle(q.opts);
+    box.innerHTML=`<div class="panel qz">${intro?`<p class="hint">${intro}</p>`:""}<div class="qtop"><span>Ερώτηση ${k+1}/${qs.length}</span><span class="dots">${qs.map((_,i)=>`<i class="${res[i]||""}"></i>`).join("")}</span></div>
+      <h3>${q.q}</h3><div class="opts">${opts.map(o=>`<button>${o}</button>`).join("")}</div><div class="slot"></div></div>`;
+    $$(".opts button",box).forEach(b=>b.onclick=()=>{
+      const right=b.textContent===q.a; if(right) ok++; res[k]=right?"ok":"no"; beep(right?"ok":"no");
+      $$(".opts button",box).forEach(x=>{ x.disabled=true; if(x.textContent===q.a) x.classList.add("ok"); });
+      if(!right) b.classList.add("no");
+      $(".slot",box).innerHTML=`${q.why?`<div class="why">${right?"✅":"💡"} ${q.why}</div>`:""}<button class="btn" style="margin-top:10px">${k+1<qs.length?"Επόμενη →":"Αποτέλεσμα"}</button>`;
+      $(".slot .btn",box).onclick=()=>{ k++; draw(); };
+    });
+  }; draw();
+}
+const $ = (q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a=>{ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+/* ---------- data ---------- */
+const CH = [
+  {n:"Αυτογνωσία", c:"var(--coral)", hex:"#FF6F7D"},
+  {n:"Πληροφόρηση", c:"var(--sun)", hex:"#FFC93C"},
+  {n:"Λήψη απόφασης", c:"var(--mint)", hex:"#22C3A6"}
+];
+const HOLL = {
+  R:{n:"Πρακτικός", col:"#FF6F7D", d:"Σου αρέσει η δράση, τα εργαλεία, τα μηχανήματα, η φύση. Μαθαίνεις κάνοντας.", areas:["Τεχνολογία & κατασκευές", "Μηχανική", "Γεωπονία & περιβάλλον", "Τεχνικές ειδικότητες"]},
+  I:{n:"Ερευνητικός", col:"#5B8CFF", d:"Σε τραβάει το «γιατί». Παρατηρείς, αναλύεις, λύνεις γρίφους.", areas:["Θετικές επιστήμες", "Υγεία & βιοεπιστήμες", "Πληροφορική & δεδομένα", "Έρευνα"]},
+  A:{n:"Καλλιτεχνικός", col:"#8E6CEF", d:"Εκφράζεσαι, δημιουργείς, σου αρέσει η ελευθερία και η πρωτοτυπία.", areas:["Τέχνες & σχεδιασμός", "ΜΜΕ & επικοινωνία", "Αρχιτεκτονική", "Μουσική & θέατρο"]},
+  S:{n:"Κοινωνικός", col:"#22C3A6", d:"Σε γεμίζει να βοηθάς, να εξηγείς, να φροντίζεις και να συνεργάζεσαι.", areas:["Εκπαίδευση", "Υγεία & φροντίδα", "Ψυχολογία & κοινωνικές επιστήμες", "Αθλητισμός"]},
+  E:{n:"Επιχειρηματικός", col:"#FF9F43", d:"Σου αρέσει να ηγείσαι, να πείθεις, να παίρνεις ρίσκα και πρωτοβουλίες.", areas:["Επιχειρήσεις & διοίκηση", "Μάρκετινγκ & πωλήσεις", "Νομική & πολιτική", "Τουρισμός & φιλοξενία"]},
+  C:{n:"Συμβατικός", col:"#FFC93C", d:"Σου αρέσει η τάξη, η ακρίβεια, οι αριθμοί και οι ξεκάθαροι κανόνες.", areas:["Οικονομικά & λογιστική", "Διοίκηση & οργάνωση", "Τράπεζες & ασφάλειες", "Στατιστική"]}
+};
+const HQ = [
+  ["R","Μου αρέσει να φτιάχνω ή να επισκευάζω πράγματα με τα χέρια μου."],
+  ["I","Μου αρέσει να λύνω γρίφους και να ψάχνω το «γιατί»."],
+  ["A","Εκφράζομαι με ζωγραφική - μουσική - γράψιμο - χορό ή βίντεο."],
+  ["S","Οι φίλοι μου έρχονται σε μένα όταν θέλουν να μιλήσουν."],
+  ["E","Μου αρέσει να αναλαμβάνω αρχηγός σε μια ομάδα."],
+  ["C","Μου αρέσει να οργανώνω, να βάζω τάξη και λίστες."],
+  ["R","Προτιμώ να είμαι έξω ή να δουλεύω με εργαλεία και μηχανήματα."],
+  ["I","Με ενθουσιάζουν τα πειράματα και η επιστήμη."],
+  ["A","Μου έρχονται συνέχεια πρωτότυπες ιδέες."],
+  ["S","Μου αρέσει να εξηγώ πράγματα σε άλλους."],
+  ["E","Μου αρέσει να πείθω και να διαπραγματεύομαι."],
+  ["C","Νιώθω άνετα με αριθμούς, πίνακες και σαφείς κανόνες."]
+];
+const SOFT = ["Ανθεκτικότητα","Διαχείριση χρόνου","Δημιουργικότητα","Ευελιξία","Προσαρμοστικότητα","Ενσυναίσθηση","Επίλυση προβλήματος","Κριτική σκέψη","Ομαδικότητα","Οργανωτικότητα"];
+const SORT = [
+  ["Χρήση Photoshop","H"],["Ενσυναίσθηση","S"],["Δίπλωμα οδήγησης","H"],["Ομαδικότητα","S"],
+  ["Προγραμματισμός σε Python","H"],["Διαχείριση χρόνου","S"],["Πιστοποίηση στα αγγλικά","H"],
+  ["Κριτική σκέψη","S"],["Λογιστική","H"],["Ανθεκτικότητα","S"]
+];
+const TRENDS = [
+  ["Τεχνητή Νοημοσύνη","Εργαλεία ΤΝ αλλάζουν σχεδόν κάθε επάγγελμα. Όσοι ξέρουν να τα χρησιμοποιούν σωστά κερδίζουν."],
+  ["Κυκλική Οικονομία","Λιγότερα απόβλητα: επαναχρησιμοποίηση, επισκευή, ανακύκλωση. Νέες θέσεις στη βιωσιμότητα."],
+  ["4η Βιομηχανική Επανάσταση","Ρομποτική, αυτοματισμοί, «έξυπνα» εργοστάσια και συσκευές συνδεδεμένες στο διαδίκτυο."],
+  ["Ισότητα φύλων","Κάθε επάγγελμα είναι για όλους. Τα στερεότυπα «αντρικής» και «γυναικείας» δουλειάς σπάνε."],
+  ["Κινητικότητα & διά βίου μάθηση","Θα αλλάξεις πιθανότατα πολλές δουλειές. Η μάθηση δεν τελειώνει με το πτυχίο."],
+  ["Πράσινη μετάβαση","Ανανεώσιμες πηγές, ενεργειακή αναβάθμιση κτιρίων, διαχείριση περιβάλλοντος."],
+  ["Ψηφιακή μετάβαση","Από το κράτος ως τα μαγαζιά, όλα ψηφιοποιούνται. Οι ψηφιακές δεξιότητες γίνονται βασικές."]
+];
+const SKILLS = [
+  ["Προσαρμοστικότητα","Αλλάζεις τον τρόπο που δουλεύεις όταν αλλάζουν οι συνθήκες, π.χ. νέο πρόγραμμα στον υπολογιστή, νέα ομάδα ή νέος τρόπος εργασίας."],
+  ["Ανθεκτικότητα","Σηκώνεσαι ξανά μετά από μια αποτυχία ή μια δυσκολία, μαθαίνεις από αυτή και συνεχίζεις."],
+  ["Απασχολησιμότητα","Όλα όσα σε κάνουν να βρίσκεις και να κρατάς μια δουλειά: γνώσεις, δεξιότητες, στάση και διάθεση να μαθαίνεις."],
+  ["Ευελιξία γνώσης","Χρησιμοποιείς όσα ξέρεις από έναν τομέα σε κάποιον άλλο και μαθαίνεις γρήγορα κάτι καινούργιο όταν χρειάζεται."],
+  ["Ομαδική εργασία","Συνεργάζεσαι με άλλους για έναν κοινό στόχο: ακούς, μοιράζεσαι ευθύνες και λύνετε μαζί τις διαφωνίες."],
+  ["Πολυειδίκευση","Έχεις γνώσεις και δεξιότητες σε περισσότερους από έναν τομείς, ώστε να μπορείς να κάνεις διαφορετικές εργασίες."],
+  ["Ψηφιακές δεξιότητες","Χρησιμοποιείς με άνεση και ασφάλεια υπολογιστές, εφαρμογές και το διαδίκτυο, π.χ. έγγραφα, email, online υπηρεσίες, ψηφιακά εργαλεία."],
+  ["Δημιουργικότητα","Σκέφτεσαι νέες ιδέες και βρίσκεις πρωτότυπες λύσεις σε προβλήματα."],
+  ["Αυτοαποτελεσματικότητα","Πιστεύεις ότι μπορείς να τα καταφέρεις σε κάτι αν προσπαθήσεις. Αυτή η πεποίθηση σε βοηθά να επιμένεις όταν δυσκολεύεσαι."],
+  ["Σχεδιασμός ζωής","Βάζεις στόχους για το μέλλον σου, κάνεις βήματα για να τους πετύχεις και τους προσαρμόζεις όταν αλλάζουν τα πράγματα."],
+  ["Διά βίου ανάπτυξη","Συνεχίζεις να μαθαίνεις και να εξελίσσεσαι σε όλη σου τη ζωή, όχι μόνο όσο είσαι στο σχολείο."],
+  ["Αυτεπάρκεια","Τα καταφέρνεις μόνος/μόνη σου: οργανώνεσαι, παίρνεις πρωτοβουλίες και δεν περιμένεις πάντα οδηγίες."]
+];
+const FUTURE = ["Αναλυτής δεδομένων","Ειδικός Τεχνητής Νοημοσύνης","Αναλυτής ψηφιακών συστημάτων","Ειδικός πράσινης ανάπτυξης","Επαγγελματίας υγείας","Κατασκευαστής μελών ανθρώπινου σώματος","Σύμβουλος ηλικιωμένων","Μηχανικός ρομποτικής","Ειδικός ηλεκτρονικού μάρκετινγκ","Ειδικός κυβερνοασφάλειας"];
+const FUTURE_D = {
+  "Αναλυτής δεδομένων":"Συλλέγει και μελετά μεγάλους όγκους δεδομένων για να βρει τάσεις που βοηθούν μια εταιρεία να πάρει σωστές αποφάσεις.",
+  "Ειδικός Τεχνητής Νοημοσύνης":"Σχεδιάζει και «εκπαιδεύει» προγράμματα που μαθαίνουν από δεδομένα, π.χ. για αναγνώριση φωνής, εικόνας ή μετάφραση.",
+  "Αναλυτής ψηφιακών συστημάτων":"Μελετά τις ανάγκες ενός οργανισμού και σχεδιάζει τα ψηφιακά συστήματα και τις εφαρμογές που τις καλύπτουν.",
+  "Ειδικός πράσινης ανάπτυξης":"Βοηθά επιχειρήσεις και δήμους να μειώσουν την κατανάλωση ενέργειας και τα απόβλητα, π.χ. με ανανεώσιμες πηγές.",
+  "Επαγγελματίας υγείας":"Γιατροί, νοσηλευτές, φυσικοθεραπευτές κ.ά. Χρειάζονται όλο και περισσότεροι, καθώς ο πληθυσμός μεγαλώνει σε ηλικία.",
+  "Κατασκευαστής μελών ανθρώπινου σώματος":"Σχεδιάζει και φτιάχνει τεχνητά μέλη και όργανα, π.χ. προσθετικά χέρια ή πόδια, συχνά με 3D εκτύπωση.",
+  "Σύμβουλος ηλικιωμένων":"Στηρίζει ηλικιωμένους να ζουν με αυτονομία: οργανώνει φροντίδα, υγεία, δραστηριότητες και χρήση τεχνολογίας.",
+  "Μηχανικός ρομποτικής":"Σχεδιάζει, κατασκευάζει και προγραμματίζει ρομπότ για εργοστάσια, νοσοκομεία ή το σπίτι.",
+  "Ειδικός ηλεκτρονικού μάρκετινγκ":"Προωθεί προϊόντα και υπηρεσίες στο διαδίκτυο: social media, ιστοσελίδες, διαφημίσεις, email.",
+  "Ειδικός κυβερνοασφάλειας":"Προστατεύει υπολογιστές, δίκτυα και προσωπικά δεδομένα από χάκερ και κυβερνοεπιθέσεις."
+};
+const ISCO = [
+  ["0","Ένοπλες Δυνάμεις"],["1","Ανώτερα διευθυντικά και διοικητικά στελέχη"],["2","Προσοντούχοι επιστημών και άλλοι ειδικοί"],
+  ["3","Τεχνικοί και βοηθοί σε συναφή επαγγέλματα"],["4","Γραφείς"],["5","Απασχολούμενοι στις υπηρεσίες και τις πωλήσεις"],
+  ["6","Ειδικευμένοι γεωργοί, κτηνοτρόφοι, δασοκόμοι, αλιείς"],["7","Ειδικευμένοι τεχνίτες"],
+  ["8","Χειριστές μηχανημάτων και συναρμολογητές"],["9","Ανειδίκευτοι εργάτες και βοηθοί"]
+];
+const ISCOQ = [["Εκπαιδευτικός","2"],["Ταμίας σε σούπερ μάρκετ","5"],["Οδηγός λεωφορείου","8"],["Ηλεκτρολόγος","7"],["Διευθυντής ξενοδοχείου","1"],["Υπάλληλος εξυπηρέτησης πελατών","4"],["Αξιωματικός","0"],["Κτηνοτρόφος","6"]];
+const FIELDS = [
+  {n:"1ο Ανθρωπιστικών, Νομικών & Κοινωνικών Επιστημών", c:"#FF6F7D", t:"Θεολογία, Φιλολογία, Παιδαγωγικά, Νομική, Πολιτική Επιστήμη, Κοινωνιολογία, Ψυχολογία, Δημοσιογραφία & ΜΜΕ, Θεατρολογία, Μουσικές Σπουδές, Ξένες Γλώσσες, Μετάφραση-Διερμηνεία, Βαλκανικές & Τουρκικές Σπουδές, ΣΣΑΣ. Επίσης Ανώτατες Εκκλησιαστικές Ακαδημίες."},
+  {n:"2ο Θετικών & Τεχνολογικών Επιστημών", c:"#5B8CFF", t:"Μαθηματικά, Φυσική, Χημεία, Γεωλογία, Βιολογία, Πληροφορική, Αρχιτεκτονική, Πολιτική Μηχανική, Τοπογραφία, Μηχανολογία, Ηλεκτρολογία, Αεροναυπηγική, Ναυπηγική, Μηχανική Περιβάλλοντος, Στρατιωτικές Σχολές. Επίσης ΑΣΠΑΙΤΕ."},
+  {n:"3ο Επιστημών Υγείας & Ζωής", c:"#22C3A6", t:"Ιατρική, Κτηνιατρική, Φαρμακευτική, Νοσηλευτική, Βιοχημεία & Βιοτεχνολογία, Βιολογία, Γεωπονία, Διαιτολογία, Λογοθεραπεία, Φυσικοθεραπεία, Εργοθεραπεία, Τεχνολογία Τροφίμων, Φυσική Αγωγή κ.ά."},
+  {n:"4ο Επιστημών Οικονομίας & Πληροφορικής", c:"#FFC93C", t:"Οικονομικά, Διοίκηση Επιχειρήσεων, Λογιστική & Χρηματοοικονομική, Μάρκετινγκ, Επιστήμη Υπολογιστών, Εφαρμοσμένη Πληροφορική, Ναυτιλιακές Σπουδές, Στατιστική, Διεθνείς Οικονομικές Σπουδές. Επίσης ΑΣΤΕ."}
+];
+const OMP = [
+  {n:1, c:"#8FD3FF", sub:["Αρχαία Ελληνικά / Αρχαιογνωσία","Ιστορία"], ex:["Νέα Ελληνικά (κοινού κορμού)","Αρχαία Ελληνικά / Αρχαιογνωσία (προσανατολισμού)","Ιστορία (προσανατολισμού)","Μαθηματικά (κοινού κορμού)"], k:["K1","K2","K6"]},
+  {n:2, c:"#C9B5FF", sub:["Μαθηματικά","Φυσική"], ex:["Νέα Ελληνικά (κοινού κορμού)","Μαθηματικά (προσανατολισμού)","Φυσική (προσανατολισμού)","Χημεία - Βιολογία (κοινού κορμού)"], k:["K3","K6"]},
+  {n:3, c:"#8FE8D2", sub:["Μαθηματικά","Οικονομικά"], ex:["Νέα Ελληνικά (κοινού κορμού)","Μαθηματικά (προσανατολισμού)","Οικονομικά (προσανατολισμού)","Ιστορία (κοινού κορμού)"], k:["K4","K6"]},
+  {n:4, c:"#FFD98A", sub:["Οικονομικά","Αγγλικά"], ex:["Νέα Ελληνικά (κοινού κορμού)","Αγγλικά (προσανατολισμού)","Οικονομικά (προσανατολισμού)","Μαθηματικά (κοινού κορμού)"], k:["K5","K6"]}
+];
+const K = {
+  K1:{n:"Κλασικών & Ανθρωπιστικών Σπουδών", req:["Αρχαία Ελληνικά","Ιστορία","Λατινικά"], opt:["Λογοτεχνία","Λογική-Φιλοσοφία","Αγγλικά ή Γαλλικά ή άλλη ξένη γλώσσα"], pick:1, st:"Νομική, Ελληνική Φιλολογία, Νεοελληνικές & Κλασικές Σπουδές, Φιλοσοφία, Ιστορία-Αρχαιολογία, Ξένες Φιλολογίες, Θεολογία, Πολιτικές Επιστήμες, Δημοσιογραφία, Κοινωνιολογία, Τουρκικές Σπουδές, Σχολές Υπαξιωματικών, Διοίκηση Τουρισμού κ.ά."},
+  K2:{n:"Ξένων Γλωσσών & Ευρωπαϊκών Σπουδών", req:["Αγγλικά","Ιστορία"], opt:["Λατινικά","Γαλλικά","Άλλη ξένη γλώσσα","Αρχαία Ελληνικά","Οικονομικά"], pick:2, st:"Ξένες Φιλολογίες, Μετάφραση-Διερμηνεία, Πολιτικές Επιστήμες, Δημοσιογραφία, Κοινωνιολογία, Γαλλικές & Ευρωπαϊκές Σπουδές, Ψυχολογία, Παιδαγωγικά, Λογοθεραπεία, Σχολές Υπαξιωματικών, Διοίκηση Τουρισμού κ.ά."},
+  K3:{n:"Θετικών Επιστημών / Βιοεπιστημών / Πληροφορικής / Τεχνολογίας", req:["Μαθηματικά","Φυσική"], opt:["Χημεία","Βιολογία","Αγγλικά ή Γαλλικά ή άλλη ξένη γλώσσα","Δίκτυα","Πληροφορική","Σχεδιασμός και Τεχνολογία","Ελεύθερο-Προοπτικό Σχέδιο","Αρχιτεκτονικό-Τεχνικό Σχέδιο","Γραφικές Τέχνες"], pick:2, st:"Ιατρική, Οδοντιατρική, Κτηνιατρική, Φαρμακευτική, Βιολογικές Επιστήμες, Μαθηματικά, Φυσική, Χημεία, Πληροφορική, Αρχιτεκτονική, όλες οι Μηχανικές, Γεωπονία, Γεωλογία, Διαιτολογία, Φυσικοθεραπεία, Εργοθεραπεία, Νοσηλευτική, Φυσική Αγωγή, Στρατιωτικές Σχολές, Ψυχολογία, Παιδαγωγικά κ.ά."},
+  K4:{n:"Οικονομικών Επιστημών", req:["Οικονομικά","Μαθηματικά","Λογιστική"], opt:["Οργάνωση & Διοίκηση Επιχειρήσεων","Πληροφορική","Αγγλικά ή Γαλλικά ή άλλη ξένη γλώσσα","Εμπορικά - Μάρκετινγκ"], pick:1, st:"Οικονομικά, Λογιστική, Χρηματοοικονομικά, Διοίκηση Επιχειρήσεων, Μάρκετινγκ, Διεθνείς-Ευρωπαϊκές Οικονομικές Σπουδές, Στατιστική, Ασφαλιστική Επιστήμη, Ναυτιλιακές Σπουδές, Πληροφορική, Διοίκηση Τουρισμού, Ψυχολογία, Παιδαγωγικά κ.ά."},
+  K5:{n:"Εμπορίου & Υπηρεσιών", req:["Οικονομικά","Αγγλικά"], opt:["Λογιστική","Εμπορικά - Μάρκετινγκ","Εφαρμογές Πληροφορικής","Βιολογία","Οργάνωση & Διοίκηση Επιχειρήσεων","Σχεδιασμός & Τεχνολογία","Γαλλικά ή άλλη ξένη γλώσσα","Αγωγή Υγείας (Οικιακή Οικονομία)"], pick:2, st:"Φυσική Αγωγή, Μαγειρική, Επικοινωνία & Σπουδές Διαδικτύου, Πολυμέσα & Γραφικές Τέχνες, Νοσηλευτική, Μαιευτική, Φυσικοθεραπεία, Εργοθεραπεία, Επικοινωνία & ΜΜΕ, Διοίκηση Τουρισμού, Εσωτερική Αρχιτεκτονική, Κινηματογράφος, Σχεδιασμός Ένδυσης κ.ά."},
+  K6:{n:"Καλών Τεχνών", req:["Θέματα Τέχνης","Θεατρολογία","Ιστορία"], opt:["Εικαστικές Εφαρμογές","Ελεύθερο-Προοπτικό Σχέδιο","Μουσικές Εφαρμογές","Αγγλικά ή Γαλλικά ή άλλη ξένη γλώσσα","Φωτογραφία (μόνο Β΄)","Γραφιστικές Εφαρμογές (μόνο Γ΄)"], pick:1, st:"Θέατρο, Θεωρία & Ιστορία της Τέχνης, Μουσική Τεχνολογία & Ακουστική, Σχεδιασμός Ένδυσης, Κινηματογράφος, Δημοσιογραφία, Επικοινωνία & ΜΜΕ, Πολυμέσα & Γραφικές Τέχνες, Μουσική, Τέχνες Ήχου & Εικόνας, Ψηφιακές Τέχνες κ.ά."}
+};
+const TESTS = [
+  ["SAT","Μαθηματικά, Ανάγνωση, Γραφή. Συνήθως για πανεπιστήμια της Αμερικής."],
+  ["MCAT","Για ιατρικές σχολές στην Αμερική."],
+  ["BMAT","Ιατρική και συναφείς κλάδοι σε Ευρώπη (π.χ. Ισπανία, Ολλανδία, Ουγγαρία, αγγλόφωνο πρόγραμμα του ΑΠΘ)."],
+  ["IMAT","60 ερωτήσεις πολλαπλής επιλογής για αγγλόφωνη Ιατρική/Οδοντιατρική στην Ιταλία."],
+  ["UCAT","Ικανότητες για σχολές Ιατρικής και Οδοντιατρικής."],
+  ["LNAT","Για σχολές Νομικής."]
+];
+
+/* ---------- screens ---------- */
+const SCREENS = [];
+const CREDIT = `<div class="credits" style="margin-top:22px;padding-top:12px;border-top:1px solid var(--line)"><b>Ιδέα, σχεδιασμός και επιμέλεια: Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α.</b><br>Βασισμένο σε υλικό της Υπηρεσίας Συμβουλευτικής και Επαγγελματικής Αγωγής (ΥΣΕΑ), ΥΠΑΝ. Υλοποίηση με τη βοήθεια Τεχνητής Νοημοσύνης.<br>© 2026 Στέλιος Κτώρας. Η διαδραστική διασκευή διατίθεται με άδεια <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.el" target="_blank" rel="noopener">CC BY-NC 4.0</a>: επιτρέπεται η ελεύθερη χρήση και διανομή για μη εμπορικούς σκοπούς, με αναφορά στον δημιουργό. Το πρωτότυπο υλικό της ΥΣΕΑ ανήκει στους δημιουργούς του.</div>`;
+const add = (ch, title, render, init) => SCREENS.push({ch, title, render, init});
+
+/* 0 Hero */
+add(-1,"Αφετηρία",()=>`
+<section class="hero">
+  <p class="eyebrow">Εργαλείο Ανακεφαλαίωσης μαθημάτων «Διεργασία της Επαγγελματικής Αγωγής/Συμβουλευτικής Γ΄ Γυμνασίου και Α΄ Λυκείου»</p>
+  <h1><span>Ποιος είμαι;</span><span class="q2">Πού πάω;</span></h1>
+  <p class="lead">Ένα ταξίδι σε τρεις σταθμούς για την Α΄ Λυκείου: γνώρισε τον εαυτό σου, μάθε τι υπάρχει εκεί έξω και πάρε τη δική σου απόφαση. Κάθε δραστηριότητα σου δίνει αστέρια ⭐.</p>
+  <div class="trail" aria-hidden="true">
+    <svg viewBox="0 0 600 110">
+      <path d="M20 80 C 120 10, 200 10, 300 60 S 480 110, 580 30" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M20 80 C 120 10, 200 10, 300 60 S 480 110, 580 30" fill="none" stroke="var(--ink)" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>
+      <circle cx="120" cy="36" r="16" fill="#FF6F7D"/><circle cx="300" cy="60" r="16" fill="#FFC93C"/><circle cx="500" cy="62" r="16" fill="#22C3A6"/>
+      <text x="580" y="22" font-size="26" text-anchor="middle">🏁</text><text x="20" y="104" font-size="22" text-anchor="middle">🎒</text>
+    </svg>
+  </div>
+  <label for="nm"><b>Πώς σε λένε;</b></label><br>
+  <input type="text" id="nm" placeholder="Το όνομά σου" value="${esc(S.name)}" autocomplete="off">
+  <div class="chcards" style="margin-top:18px">
+    ${CH.map((c,i)=>`<button class="chcard" style="background:${c.hex}" data-jump="${i}"><span>Σταθμός ${i+1}</span><b>${c.n}</b></button>`).join("")}
+  </div>
+  ${CREDIT}
+</section>`, el=>{
+  $("#nm",el).addEventListener("input",e=>{ S.name=e.target.value.slice(0,30); save(); if(S.name.trim()) award("name",5); });
+  $$("[data-jump]",el).forEach(b=>b.onclick=()=>go(SCREENS.findIndex(s=>s.ch==+b.dataset.jump)));
+});
+
+/* A1 */
+add(0,"Ιδιότητες εαυτού",()=>`
+<h2>Από τι «είμαι φτιαγμένος»;</h2>
+<p class="lead">Ο εαυτός μας έχει πολλά κομμάτια που επηρεάζουν το ένα το άλλο. Πάτησε κάθε κομμάτι.</p>
+<div class="blobs">
+  <button class="blob" style="background:#8BC34A" data-b="0">Διανοητικά χαρακτηριστικά</button>
+  <button class="blob" style="background:#E0406E" data-b="1">Κοινωνικά χαρακτηριστικά</button>
+  <button class="blob" style="background:#6A3FA0" data-b="2">Σωματικά χαρακτηριστικά</button>
+</div>
+<div class="panel" id="bout"><span class="hint">👆 Διάλεξε ένα από τα τρία.</span></div>
+<div class="panel"><h3>Ικανότητες και δεξιότητες: ποια η διαφορά;</h3>
+<div class="grid" style="margin:10px 0 14px">
+  <div class="panel" style="background:var(--chipbg);border:none"><span class="tag">ΟΙ ΡΙΖΕΣ</span><h3 style="margin-top:8px">Ικανότητες</h3><p style="margin:0">Όσα μπορείς να κάνεις, εν μέρει από τη φύση σου: οι κλίσεις σου. Π.χ. καλή μνήμη, αίσθηση του ρυθμού, λογική σκέψη, ευκολία στις λέξεις.</p></div>
+  <div class="panel" style="background:var(--chipbg);border:none"><span class="tag" style="background:#8FD18B">ΤΑ ΦΥΛΛΑ</span><h3 style="margin-top:8px">Δεξιότητες</h3><p style="margin:0">Όσα <b>μαθαίνεις</b> και καλλιεργείς με εξάσκηση και εμπειρία, πάνω στις ικανότητές σου. Π.χ. παίζω κιθάρα, γράφω κώδικα, μιλώ μπροστά σε κόσμο, οργανώνω τον χρόνο μου.</p></div>
+</div>
+<p><b>Παράδειγμα:</b> έχω αίσθηση του ρυθμού (ικανότητα) → κάνω μαθήματα και εξασκούμαι → παίζω ντραμς (δεξιότητα).</p>
+<p>Οι δεξιότητες χωρίζονται σε <b>σκληρές</b> (τεχνικές, μετρήσιμες, όπως η χρήση ενός προγράμματος) και <b>μαλακές</b> (προσωπικές και κοινωνικές, όπως η ομαδικότητα). Θα τις δεις στην επόμενη οθόνη.</p>
+<p style="margin-bottom:0">Ικανότητες και δεξιότητες είναι το <b>ΜΠΟΡΩ</b>. Μαζί με τα <b>Ενδιαφέροντα</b> (τι ΘΕΛΩ) και τις <b>Αξίες</b> (σε τι ΠΡΟΣΔΙΔΩ ΑΞΙΑ) φτιάχνουν το παζλ σου.</p></div>`, el=>{
+  const T=[["Διανοητικά","Πώς σκέφτομαι, μαθαίνω και λύνω προβλήματα: μνήμη, συγκέντρωση, λογική, φαντασία, γλωσσική ικανότητα."],
+           ["Κοινωνικά","Πώς σχετίζομαι με τους άλλους: επικοινωνία, συνεργασία, ενσυναίσθηση, ηγεσία, ντροπαλότητα ή εξωστρέφεια."],
+           ["Σωματικά","Το σώμα και η υγεία μου: αντοχή, δεξιοτεχνία χεριών, συντονισμός, ενέργεια, πώς νιώθω σωματικά."]];
+  const seen=new Set();
+  $$(".blob",el).forEach(b=>b.onclick=()=>{ const t=T[b.dataset.b]; $("#bout",el).innerHTML=`<h3>${t[0]}</h3><p style="margin:0">${t[1]}</p>`; seen.add(b.dataset.b); if(seen.size===3) award("blobs",10); });
+});
+
+/* A2 */
+add(0,"Σκληρές ή μαλακές;",()=>`
+<h2>Σκληρή ή μαλακή δεξιότητα;</h2>
+<p class="lead"><b>Σκληρές</b>: τεχνικές, μετρήσιμες, τις μαθαίνουμε σε σχολείο, σεμινάρια ή δουλειά (π.χ. πτυχίο). <b>Μαλακές</b>: χτίζονται σε όλη τη ζωή και συχνά κρίνουν ποιος θα προσληφθεί όταν δύο υποψήφιοι έχουν παρόμοια προσόντα.</p>
+<div class="sortcard" id="sc"></div>
+<div class="sortbtns">
+  <button style="background:#9EC5FF" data-a="H">🔧 Σκληρή</button>
+  <button style="background:#FFB3BA" data-a="S">💛 Μαλακή</button>
+</div>
+<p class="fb" id="fb"></p>
+<p class="hint" id="score"></p>`, el=>{
+  let deck=shuffle(SORT), k=0, ok=0;
+  const show=()=>{ if(k>=deck.length){ $("#sc",el).innerHTML=`🎉 ${ok}/${deck.length} σωστά!`; $(".sortbtns",el).style.display="none"; award("sort",ok*2); return;} $("#sc",el).textContent=deck[k][0]; $("#score",el).textContent=`${k+1} από ${deck.length}`; };
+  $$(".sortbtns button",el).forEach(b=>b.onclick=()=>{ if(k>=deck.length) return; const r=deck[k][1]===b.dataset.a; if(r) ok++; const f=$("#fb",el); f.className="fb "+(r?"ok":"no"); f.textContent=r?"Σωστά!":`Όχι ακριβώς: είναι ${deck[k][1]==="H"?"σκληρή":"μαλακή"}.`; k++; show(); });
+  show();
+});
+
+/* A3 tree */
+add(0,"Το δέντρο σου",()=>{
+  const pos=[[120,70],[205,40],[300,35],[395,45],[470,85],[90,140],[180,120],[340,110],[440,150],[260,95]];
+  return `
+<h2>Το δέντρο των δεξιοτήτων σου</h2>
+<p class="lead">Αυτές οι 10 μαλακές δεξιότητες θεωρούνται σήμερα οι κυριότερες. Πάτησε τα <b>3 φύλλα</b> που σου ταιριάζουν περισσότερο.</p>
+<div class="tree"><svg viewBox="0 0 560 330" role="group" aria-label="Δέντρο δεξιοτήτων">
+  <path d="M280 330 C 270 260, 250 230, 270 170 M270 230 C 220 200, 170 190, 130 150 M272 200 C 330 180, 380 170, 430 160 M268 170 C 260 120, 250 100, 260 95 M270 175 C 300 140, 330 120, 340 110 M268 180 C 220 140, 200 125, 180 120" stroke="#8B5A2B" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <path d="M230 330 Q 280 300 330 330" fill="#8B5A2B"/>
+  ${SOFT.map((s,i)=>{const [x,y]=pos[i]; return `<g class="leaf ${S.strengths.includes(s)?"on":""}" data-s="${esc(s)}" tabindex="0" role="button" aria-label="${esc(s)}">
+    <ellipse cx="${x}" cy="${y}" rx="${Math.max(44,s.length*4.2)}" ry="24" fill="#8FD18B" stroke="#3F8A3B" stroke-width="2"/>
+    <text x="${x}" y="${y+4}" text-anchor="middle">${esc(s)}</text></g>`}).join("")}
+  <text x="280" y="322" text-anchor="middle" style="font-family:Comfortaa;font-weight:700;fill:#fff;font-size:12px">ΙΚΑΝΟΤΗΤΕΣ</text>
+</svg></div>
+<p class="hint" id="pick"></p>`}, el=>{
+  const upd=()=>{ $("#pick",el).textContent = S.strengths.length ? `Τα δυνατά σου σημεία: ${S.strengths.join(", ")} (${S.strengths.length}/3)` : "Δεν έχεις διαλέξει ακόμα."; };
+  $$(".leaf",el).forEach(g=>{ const f=()=>{ const s=g.dataset.s; if(S.strengths.includes(s)){ S.strengths=S.strengths.filter(x=>x!==s); g.classList.remove("on"); } else if(S.strengths.length<3){ S.strengths.push(s); g.classList.add("on"); } save(); upd(); if(S.strengths.length===3) award("tree",15); };
+    g.onclick=f; g.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); f(); } }; });
+  upd();
+});
+
+/* A4 venn */
+add(0,"ΜΠΟΡΩ · ΘΕΛΩ · ΑΞΙΖΕΙ",()=>`
+<h2>ΜΠΟΡΩ, ΘΕΛΩ, ΜΕΤΡΑΕΙ για μένα</h2>
+<p class="lead">Πάτησε κάθε κύκλο. Γενικά, η <b>κοινή περιοχή</b> των τριών κύκλων είναι εκεί όπου βρίσκονται οι επιλογές που μας ταιριάζουν: ό,τι ΜΠΟΡΟΥΜΕ, ΘΕΛΟΥΜΕ και ΜΕΤΡΑΕΙ για εμάς.</p>
+<div class="venn"><svg viewBox="0 0 400 330">
+  <circle cx="145" cy="125" r="100" fill="#FF8C98" opacity=".85" data-v="0"/>
+  <circle cx="255" cy="125" r="100" fill="#8FB2FF" opacity=".85" data-v="1"/>
+  <circle cx="200" cy="215" r="100" fill="#7EE0C9" opacity=".85" data-v="2"/>
+  <text x="105" y="105" text-anchor="middle" font-size="17">ΜΠΟΡΩ</text>
+  <text x="295" y="105" text-anchor="middle" font-size="17">ΘΕΛΩ</text>
+  <text x="200" y="302" text-anchor="middle" font-size="17">ΑΞΙΖΕΙ</text>
+  <text x="200" y="160" text-anchor="middle" font-size="22">⭐</text>
+</svg></div>
+<div class="panel" id="vout"><span class="hint">👆 Ξεκίνα από όποιον κύκλο θέλεις.</span></div>
+<div class="panel" style="background:var(--chipbg);border:none"><b>ℹ️ Σημείωση:</b> Οι κύκλοι <b>δεν</b> θα σου δώσουν μια συγκεκριμένη απάντηση για το τι σου ταιριάζει. Είναι ένας τρόπος σκέψης: σε βοηθούν να εξετάζεις κάθε επιλογή σου και από τις τρεις πλευρές. Την απάντηση τη χτίζεις εσύ, σιγά σιγά, μέσα από την αυτογνωσία.</div>`, el=>{
+  const V=[
+    `<h3>Ικανότητες & Δεξιότητες = τι ΜΠΟΡΩ</h3><p>Τα «εργαλεία» σου. Κάποιες ικανότητες τις έχουμε από τη φύση, οι δεξιότητες χτίζονται με εξάσκηση.</p>`,
+    `<h3>Ενδιαφέροντα = τι ΘΕΛΩ / ΜΟΥ ΑΡΕΣΕΙ</h3><p>Οι δραστηριότητες που μας κάνουν να νιώθουμε καλά. Έχουν ήδη επηρεάσει επιλογές σου και είναι φυσιολογικό να αλλάζουν όσο μεγαλώνεις, με νέες εμπειρίες και την επίδραση του περιβάλλοντος.</p>`,
+    `<h3>Αξίες = σε τι ΠΡΟΣΔΙΔΩ ΑΞΙΑ</h3><p>Ένας εσωτερικός κώδικας που σε βοηθά να ξεχωρίζεις τι είναι σωστό για σένα. Αν η οικογένεια μετράει πολύ, θα θέλεις δουλειά που σου αφήνει χρόνο γι' αυτήν. Αν μετράει η ειλικρίνεια, θα λες την αλήθεια ακόμα κι όταν είναι δύσκολο.</p><p><b>Επαγγελματικές αξίες</b>: όσα ψάχνουμε σε ένα επάγγελμα για να μας ικανοποιεί (π.χ. ασφάλεια, δημιουργικότητα, βοήθεια στους άλλους, καλές απολαβές).</p>`
+  ]; const seen=new Set();
+  $$("circle[data-v]",el).forEach(c=>c.onclick=()=>{ $("#vout",el).innerHTML=V[c.dataset.v]; seen.add(c.dataset.v); if(seen.size===3) award("venn",10); });
+});
+
+/* A5 dilemmas */
+add(0,"Προβληματισμοί",()=>`
+<h2>Τι λες εσύ;</h2>
+<p class="lead">Απάντησε πρώτα εσύ. Μετά άνοιξε το πιθανό σενάριο και σύγκρινε.</p>
+<div id="dil"></div>`, el=>{
+  const D=[
+    {q:"Αν ΘΕΛΩ κάτι και του δίνω αξία, μπορώ να το καταφέρω, ακόμα κι αν δεν έχω (ακόμα) τις ικανότητες;",
+     a:`<p>Η θέληση μπορεί να γίνει <b>ισχυρός μοχλός</b>, αρκεί οι ικανότητες να υπάρχουν σε κάποιο βαθμό, ίσως «θαμμένες».</p><ol class="steps"><li><b>Θέληση:</b> αγαπά τη μουσική και θαυμάζει τους πιανίστες.</li><li><b>Χωρίς υπόβαθρο:</b> καμία εμπειρία, ούτε καλή αίσθηση ρυθμού.</li><li><b>Επιμονή:</b> εξασκείται με δάσκαλο ή μόνος, μαθαίνει νότες και παρτιτούρες.</li><li><b>Κύκλος:</b> περισσότερη εξάσκηση → περισσότερη επιτυχία → περισσότερη επιθυμία.</li></ol>`},
+    {q:"Αν ΜΠΟΡΩ να κάνω κάτι, μπορεί με τον καιρό να αρχίσει να μου αρέσει, ακόμα κι αν αρχικά δεν με ενδιέφερε;",
+     a:`<ol class="steps"><li><b>Ικανότητα:</b> δουλεύει στον προγραμματισμό χωρίς ιδιαίτερο ενδιαφέρον, αλλά τα καταφέρνει.</li><li><b>Ανάπτυξη:</b> γίνεται καλός και πετυχαίνει σε νέες προκλήσεις.</li><li><b>Αναδυόμενο ενδιαφέρον:</b> αρχίζει να εκτιμά τον τομέα.</li><li><b>Αναγνώριση:</b> όταν το βλέπουν κι οι άλλοι, το ενδιαφέρον δυναμώνει κι άλλο.</li></ol>`},
+    {q:"Αν ΜΠΟΡΩ, ΘΕΛΩ και ΑΞΙΖΕΙ δεν είναι σε ισορροπία, ποιο πρέπει να «τραβήξει» περισσότερο την απόφαση;", opts:["Το ΜΠΟΡΩ","Το ΘΕΛΩ","Το ΑΞΙΖΕΙ","Και τα τρία μαζί"],
+     a:`<p>Και τα τρία δουλεύουν μαζί, με όλο τον εαυτό. Σε κάποιες περιπτώσεις όμως το <b>ενδιαφέρον</b> μπορεί να σταθεί πιο δυνατό στην κατεύθυνση της απόφασης.</p>`},
+    {q:"Τι πρέπει να κάνω για να βρω ισορροπία ανάμεσα στο ΜΠΟΡΩ, το ΘΕΛΩ και το ΑΞΙΖΕΙ;", write:true,
+     a:`<p><b>Αυτογνωσία μέσα από αυτοπαρατήρηση.</b> Σταδιακά συνειδητοποιείς τι κουβαλάς από τη φύση σου και τι αποκτάς από το περιβάλλον, και πώς ταιριάζουν όλα μαζί.</p>`}
+  ];
+  $("#dil",el).innerHTML=D.map((d,i)=>`<div class="panel" data-i="${i}"><h3>${i+1}. ${d.q}</h3>
+   ${d.write?`<label class="hint" for="w${i}">Γράψε τη δική σου απάντηση:</label><textarea class="lined" id="w${i}" rows="4" placeholder="…">${esc(S.notes&&S.notes[i]||"")}</textarea>`:`<div class="vote">${(d.opts||["Ναι","Όχι","Εξαρτάται"]).map(v=>`<button>${v}</button>`).join("")}</div>`}
+   <button class="btn alt sm" data-open>Δες ένα πιθανό σενάριο</button><div class="reveal">${d.a}</div></div>`).join("");
+  $$(".panel[data-i]",el).forEach(p=>{
+    $$(".vote button",p).forEach(b=>b.onclick=()=>{ $$(".vote button",p).forEach(x=>x.classList.remove("on")); b.classList.add("on"); award("vote"+p.dataset.i,3); });
+    const ta=$("textarea",p); if(ta) ta.oninput=()=>{ S.notes=S.notes||{}; S.notes[p.dataset.i]=ta.value.slice(0,600); save(); if(ta.value.trim().length>15) award("write"+p.dataset.i,5); };
+    $("[data-open]",p).onclick=e=>{ $(".reveal",p).classList.toggle("show"); award("open"+p.dataset.i,2); };
+  });
+});
+
+/* A6 Holland */
+add(0,"Το εξάγωνο του Holland",()=>`
+<h2>Το εξάγωνο του J. Holland</h2>
+<p class="lead">Σύμφωνα με τη θεωρία του Holland, οι άνθρωποι και τα επαγγέλματα μοιάζουν με 6 τύπους. Απάντησε στις 12 προτάσεις και δες ποια γωνία του εξαγώνου «φωτίζεται».</p>
+<div class="hex" id="hexwrap"></div>
+<div class="panel" id="hq"></div>
+<div id="hres"></div>`, el=>{
+  const order=["R","I","A","S","E","C"], ang=[-120,-60,0,60,120,180];
+  const P=order.map((k,i)=>{ const a=ang[i]*Math.PI/180; return [210+150*Math.cos(a),175+150*Math.sin(a)]; });
+  const draw=()=>{
+    const sc=score(); const mx=Math.max(4,...Object.values(sc));
+    const inner=order.map((k,i)=>{ const f=.12+.88*(sc[k]/mx); return [210+(P[i][0]-210)*f,175+(P[i][1]-175)*f]; });
+    let lines=""; for(let a=0;a<6;a++) for(let b=a+1;b<6;b++) lines+=`<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="var(--line)" stroke-width="1.5"/>`;
+    $("#hexwrap",el).innerHTML=`<svg viewBox="-85 0 590 350">${lines}
+      <polygon points="${P.map(p=>p.join(",")).join(" ")}" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <polygon points="${inner.map(p=>p.join(",")).join(" ")}" fill="#FFC93C" fill-opacity=".65" stroke="#E0A800" stroke-width="2" style="transition:all .3s"/>
+      ${order.map((k,i)=>`<circle cx="${P[i][0]}" cy="${P[i][1]}" r="${8+sc[k]*2.2}" fill="${HOLL[k].col}" stroke="var(--ink)" stroke-width="2"/>
+      <text x="${P[i][0]+(ang[i]===0?14:ang[i]===180?-14:0)}" y="${P[i][1]+(ang[i]<0?-18:ang[i]>0&&ang[i]<180?28:5)}" text-anchor="${ang[i]===0?"start":ang[i]===180?"end":"middle"}">${HOLL[k].n}</text>`).join("")}
+    </svg>`;
+    const answered=Object.keys(S.holland).length;
+    if(answered>=12){
+      const top=order.slice().sort((a,b)=>sc[b]-sc[a]).slice(0,2);
+      $("#hres",el).innerHTML=`<div class="panel" style="border-color:var(--ink)"><span class="tag">Οι τύποι που ξεχωρίζουν τώρα</span>
+        <h3 style="margin-top:8px">${top.map(t=>HOLL[t].n).join(" + ")}</h3>
+        ${top.map(t=>`<p><b>${HOLL[t].n}:</b> ${HOLL[t].d}</p><p class="hint" style="margin:0 0 4px">Κλάδοι που ίσως αξίζει να εξερευνήσεις:</p><div>${HOLL[t].areas.map(j=>`<span class="chip">${j}</span>`).join("")}</div>`).join("<br>")}
+        <div class="panel" style="background:var(--chipbg);border:none;margin-top:14px"><b>⚠️ Προσοχή:</b> Αυτό <b>δεν</b> σου λέει τι επάγγελμα να κάνεις. Δείχνει μόνο ποια ενδιαφέροντα ξεχωρίζουν σήμερα, με βάση 12 γρήγορες ερωτήσεις, και μπορεί να αλλάξουν όσο μεγαλώνεις. Χρησιμοποίησέ το ως αφορμή για κουβέντα με την Καθηγήτρια/τον Καθηγητή ΣΕΑ.</div></div>
+        <p class="quote">«Έχεις τα πινέλα, έχεις τα χρώματα, ζωγράφισε τον παράδεισο και μπες μέσα.»<br><small>Νίκος Καζαντζάκης</small></p>`;
+      award("holland",25);
+    } else $("#hres",el).innerHTML=`<p class="hint">Απαντήσεις: ${answered}/12</p>`;
+  };
+  $("#hq",el).innerHTML=HQ.map((q,i)=>`<div class="qrow"><span>${q[1]}</span><div class="seg" data-q="${i}">${["Όχι","Λίγο","Πολύ"].map((l,v)=>`<button data-v="${v}" class="${S.holland[i]===v?"on":""}">${l}</button>`).join("")}</div></div>`).join("");
+  $$(".seg",el).forEach(sg=>$$("button",sg).forEach(b=>b.onclick=()=>{ $$("button",sg).forEach(x=>x.classList.remove("on")); b.classList.add("on"); S.holland[sg.dataset.q]=+b.dataset.v; save(); draw(); }));
+  draw();
+});
+function score(){ const sc={R:0,I:0,A:0,S:0,E:0,C:0}; Object.entries(S.holland).forEach(([i,v])=>{ sc[HQ[i][0]]+=v; }); return sc; }
+
+/* B1 trends */
+add(1,"Η σύγχρονη αγορά εργασίας",()=>`
+<h2>Τι αλλάζει στον κόσμο της εργασίας;</h2>
+<p class="lead">Επτά δυνάμεις διαμορφώνουν τη σύγχρονη αγορά εργασίας. Πάτησε το καθένα.</p>
+<div class="orbit">${TRENDS.map((t,i)=>`<button class="oct" data-t="${i}">${t[0]}</button>`).join("")}</div>
+<div class="panel" id="tout"><span class="hint">👆 Ποια σε αφορά περισσότερο;</span></div>
+<h3>Δεξιότητες που θα χρειαστείς</h3>
+<p class="hint" style="margin-top:-4px">Πάτησε κάθε δεξιότητα για να δεις τι σημαίνει.</p>
+<div>${SKILLS.map((s,i)=>`<button class="chip skchip" data-s="${i}">${s[0]}</button>`).join("")}</div>
+<div class="panel" id="skout"><span class="hint">👆 Διάλεξε μια δεξιότητα.</span></div>`, el=>{
+  const sks=new Set();
+  $$(".skchip",el).forEach(b=>b.onclick=()=>{ $$(".skchip",el).forEach(x=>x.classList.remove("on")); b.classList.add("on"); const s=SKILLS[b.dataset.s]; $("#skout",el).innerHTML=`<h3>${s[0]}</h3><p style="margin:0">${s[1]}</p>`; sks.add(b.dataset.s); if(sks.size>=6) award("skills",10); });
+  const seen=new Set();
+  $$(".oct",el).forEach(b=>b.onclick=()=>{ $$(".oct",el).forEach(x=>x.classList.remove("on")); b.classList.add("on"); const t=TRENDS[b.dataset.t]; $("#tout",el).innerHTML=`<h3>${t[0]}</h3><p style="margin:0">${t[1]}</p>`; seen.add(b.dataset.t); if(seen.size>=4) award("trends",10); });
+});
+
+/* B2 gap */
+add(1,"Χάσμα δεξιοτήτων",()=>`
+<h2>Χάσμα δεξιοτήτων (skills mismatch)</h2>
+<p class="lead">Είναι η διαφορά ανάμεσα σε όσα ζητά ο εργοδότης και σε όσα ξέρει ο εργαζόμενος. Συμβαίνει συνήθως όταν η αγορά αλλάζει πιο γρήγορα απ' ό,τι προλαβαίνουμε να μάθουμε.</p>
+<div class="panel">
+  <label for="yr"><b>Σύρε τον χρόνο:</b> <span id="yrl">2026</span></label>
+  <input type="range" id="yr" min="0" max="10" value="0">
+  <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="ll"> Συνεχίζω να μαθαίνω (διά βίου μάθηση)</label>
+  <div class="bars">
+    <div class="bar"><i id="b1" style="background:#FF8C98"></i><span>Τι ζητά η αγορά</span></div>
+    <div class="bar"><i id="b2" style="background:#7EE0C9"></i><span>Οι δεξιότητές μου</span></div>
+  </div>
+  <p class="hint" style="margin-top:8px">🔴 Η κόκκινη μπάρα δείχνει πόσα ζητούν οι εργοδότες. 🟢 Η πράσινη δείχνει πόσα ξέρεις εσύ. Η απόσταση ανάμεσά τους είναι το <b>χάσμα δεξιοτήτων</b>. Σύρε τον χρόνο και δες τι γίνεται με και χωρίς διά βίου μάθηση.</p>
+  <p class="fb" id="gap"></p>
+</div>`, el=>{
+  const u=()=>{ const y=+$("#yr",el).value, l=$("#ll",el).checked; const need=40+y*5.5, have=40+y*(l?5.5:1.2);
+    $("#b1",el).style.width=need+"%"; $("#b2",el).style.width=have+"%"; $("#yrl",el).textContent=2026+y;
+    const g=Math.round(need-have); const f=$("#gap",el); f.className="fb "+(g>8?"no":"ok"); f.textContent=g>8?`Χάσμα: ${g} μονάδες. Χρειάζεται αναβάθμιση δεξιοτήτων!`:"Συμβαδίζεις με την αγορά 👌";
+    if(y>=6&&l) award("gap",10); };
+  $("#yr",el).oninput=u; $("#ll",el).onchange=u; u();
+});
+
+/* B3 future swipe */
+add(1,"Επαγγέλματα του μέλλοντος",()=>`
+<h2>Επαγγέλματα του μέλλοντος</h2>
+<p class="lead">Η γήρανση του πληθυσμού, η ψηφιακή και η πράσινη μετάβαση και η Τεχνητή Νοημοσύνη φέρνουν νέες ειδικότητες (πηγή: McKinsey). Θα σε ενδιέφερε;</p>
+<div class="swipe">
+  <div class="jobcard" id="jc"></div>
+  <div class="swbtns"><button data-d="0" aria-label="Όχι για μένα">👎</button><button data-d="1" aria-label="Μου αρέσει">💚</button></div>
+  <p class="hint" id="likes"></p>
+</div>
+<div id="jrecap"></div>`, el=>{
+  let k=0; const card=$("#jc",el);
+  const show=()=>{ card.className="jobcard";
+    if(k>=FUTURE.length){ card.textContent="Τέλος! 🎉"; $(".swbtns",el).style.display="none"; award("swipe",10);
+      $("#jrecap",el).innerHTML=`<div class="panel" style="text-align:left"><h3>Όλα τα επαγγέλματα με μια ματιά</h3><div class="jlist">${FUTURE.map(f=>`<div class="jitem${S.likes.includes(f)?" liked":""}"><b>${S.likes.includes(f)?"💚 ":""}${f}</b><span>${FUTURE_D[f]}</span></div>`).join("")}</div></div>`; }
+    else card.innerHTML=`${FUTURE[k]}<small>${FUTURE_D[FUTURE[k]]}</small><span class="jn">${k+1} / ${FUTURE.length}</span>`;
+    $("#likes",el).textContent=S.likes.length?`💚 ${S.likes.join(", ")}`:""; };
+  $$(".swbtns button",el).forEach(b=>b.onclick=()=>{ if(k>=FUTURE.length) return; const like=b.dataset.d==="1";
+    if(like && !S.likes.includes(FUTURE[k])) S.likes.push(FUTURE[k]); save();
+    card.classList.add(like?"gor":"gol"); k++; setTimeout(show,250); });
+  S.likes=[]; save(); show();
+});
+
+/* B4 ISCO */
+add(1,"Ταξινόμηση επαγγελμάτων",()=>`
+<h2>Σε ποια ομάδα ανήκει;</h2>
+<p class="lead">Τα επαγγέλματα ταξινομούνται διεθνώς (ISCO-08 του Διεθνούς Γραφείου Εργασίας) σε 10 μεγάλες κατηγορίες, από το 0 ως το 9.</p>
+<details><summary>Δες τις 10 κατηγορίες</summary><div class="isco">${ISCO.map(c=>`<b>${c[0]}</b><span>${c[1]}</span>`).join("")}</div></details>
+<div class="panel"><h3 id="iq"></h3><div class="opts" id="io"></div><p class="fb" id="ifb"></p></div>`, el=>{
+  const qs=shuffle(ISCOQ).slice(0,6); let k=0, ok=0;
+  const show=()=>{ $("#ifb",el).textContent="";
+    if(k>=qs.length){ $("#iq",el).textContent=`🎉 ${ok}/${qs.length} σωστά!`; $("#io",el).innerHTML=""; award("isco",ok*3); return; }
+    const ans=qs[k][1]; const opts=shuffle([ans,...shuffle(ISCO.map(c=>c[0]).filter(c=>c!==ans)).slice(0,3)]);
+    $("#iq",el).textContent=`${k+1}. ${qs[k][0]}`;
+    $("#io",el).innerHTML=opts.map(o=>`<button data-o="${o}"><b>${o}</b> · ${ISCO[o][1]}</button>`).join("");
+    $$("#io button",el).forEach(b=>b.onclick=()=>{ if($("#io",el).dataset.lock) return; $("#io",el).dataset.lock=1;
+      const r=b.dataset.o===ans; if(r) ok++; b.classList.add(r?"ok":"no"); if(!r) $(`#io button[data-o="${ans}"]`,el).classList.add("ok");
+      setTimeout(()=>{ delete $("#io",el).dataset.lock; k++; show(); },1000); });
+  }; show();
+});
+
+/* B5 pathways */
+add(1,"Δρόμοι μετά το Γυμνάσιο",()=>`
+<h2>Ποιοι δρόμοι υπάρχουν;</h2>
+<p class="lead">Ξεκινάς με απολυτήριο Γυμνασίου. Πάτησε έναν δρόμο για να δεις πού μπορεί να σε πάει.</p>
+<div class="pathmap">
+  <div class="lvl"><span class="node on">🎓 Γυμνάσιο (απολυτήριο)</span></div>
+  <div class="arrow">↓</div>
+  <div class="lvl" id="lv">${["Λύκειο (3 χρόνια)","ΤΕΣΕΚ (3 χρόνια)","Εσπερινά σχολεία","Σύστημα Μαθητείας"].map((n,i)=>`<button class="node" data-p="${i}">${n}</button>`).join("")}</div>
+  <div class="arrow">↓</div>
+  <div class="panel" id="pout"><span class="hint">👆 Διάλεξε έναν δρόμο.</span></div>
+</div>`, el=>{
+  const UNI=`<li><b>Δημόσια τριτοβάθμια Κύπρου & Ελλάδας</b> (πανεπιστήμια, πολυτεχνεία, στρατιωτικές σχολές, ΑΕΑ, ΑΣΤΕ, ΑΣΠΑΙΤΕ): με τις <b>Παγκύπριες Εξετάσεις Πρόσβασης</b>. Τμήματα Καλών Τεχνών & Δραματικές Σχολές: ειδικές εξετάσεις.</li>
+   <li><b>Αστυνομική Ακαδημία, Δασικό Κολλέγιο, ΜΙΕΕΚ</b>: ειδικές εξετάσεις και προϋποθέσεις.</li>
+   <li><b>Ιδιωτική τριτοβάθμια</b>: βαθμολογία απολυτηρίου, πιθανή εξέταση.</li>
+   <li><b>Σπουδές σε άλλες χώρες</b>: βαθμολογία, συγκεκριμένα μαθήματα, εξετάσεις, ξένη γλώσσα, portfolio.</li>
+   <li><b>Αδιαβάθμητη εκπαίδευση</b>: ΣΑΕΚ & ΕΕΣ Ελλάδας, ιδιωτικά ινστιτούτα (ΚΙΕ), σεμινάρια ΑνΑΔ, ΚΕΠΑ, ΚΕΒΕ, ΟΕΒ.</li>`;
+  const T=[
+    `<h3>Λύκειο</h3><ul>${UNI}</ul>`,
+    `<h3>ΤΕΣΕΚ (Τεχνική & Επαγγελματική Εκπαίδευση)</h3><p>Οδηγεί στις ίδιες επιλογές με το Λύκειο, με περισσότερη πρακτική κατάρτιση.</p><ul>${UNI}</ul>`,
+    `<h3>Εσπερινά σχολεία</h3><p>Σχολεία δεύτερης ευκαιρίας για ενήλικες (18+): Γυμνάσιο, Λύκειο και Εσπερινή Τεχνική Σχολή. Στόχος: να μην εγκαταλείπει κανείς πρόωρα το σχολείο και να αποκτήσει προσόντα για καλύτερη ζωή. Δίνουν απολυτήριο, άρα ανοίγουν τους ίδιους δρόμους.</p>`,
+    `<h3>Σύστημα Μαθητείας</h3><p>Για μαθητές που αφήνουν το επίσημο σχολικό σύστημα.</p><ul><li><b>Προπαρασκευαστική Μαθητεία</b>: 1 χρόνος, 14-16 ετών.</li><li><b>Κεντρικός Κορμός</b>: 3 χρόνια, 15-18 ετών. 3 μέρες την εβδομάδα πληρωμένη εργασία στη βιομηχανία, 2 μέρες μαθήματα σε Τεχνική Σχολή.</li></ul><p class="hint">Τηλέφωνα: Λευκωσία 22374953 · Λεμεσός 25820028 · Λάρνακα 24815120 · Πάφος 26306173</p><p>Μετά: Εσπερινές Σχολές, αδιαβάθμητη εκπαίδευση ή αγορά εργασίας.</p>`
+  ]; const seen=new Set();
+  $$("#lv .node",el).forEach(b=>b.onclick=()=>{ $$("#lv .node",el).forEach(x=>x.classList.remove("on")); b.classList.add("on"); $("#pout",el).innerHTML=T[b.dataset.p]; seen.add(b.dataset.p); if(seen.size===4) award("paths",10); });
+});
+
+/* B6 fields */
+add(1,"Επιστημονικά πεδία",()=>`
+<h2>Τα 4 επιστημονικά πεδία</h2>
+<p class="lead">Τα τμήματα των δημόσιων πανεπιστημίων Κύπρου και Ελλάδας ομαδοποιούνται σε 4 πεδία, με συγγενικό περιεχόμενο σπουδών και σχεδόν τα ίδια εξεταζόμενα μαθήματα. Στη δήλωση προτίμησης για την Ελλάδα επιλέγεις από <b>ένα μόνο πεδίο</b>.</p>
+${FIELDS.map(f=>`<details style="border-left:8px solid ${f.c}"><summary>${f.n}</summary><p style="margin-top:8px">${f.t}</p></details>`).join("")}
+<p class="hint">Κάποια τμήματα ανήκουν σε περισσότερα από ένα πεδία, π.χ. Παιδαγωγικά, Βιολογία, Χημεία, Μουσικές Σπουδές, Γεωπονία, Πληροφορική, Φυσική Αγωγή.</p>
+<div class="panel"><h3>Πλαίσια Πρόσβασης: ένα παράδειγμα</h3>
+<p>Κάθε τμήμα ανήκει σε ένα <b>Πλαίσιο Πρόσβασης</b> με <b>υποχρεωτικά</b> και <b>επιλεγόμενα</b> μαθήματα. Στο <b>Πλαίσιο 10</b>:</p>
+<p><b>Υποχρεωτικά (2):</b> <span class="chip">Νέα Ελληνικά</span><span class="chip">Μαθηματικά ή Μαθηματικά Κ.Κ.</span></p>
+<p><b>Επιλεγόμενα (2 από):</b> ${["Αρχαία Ελληνικά","Ιστορία","Λατινικά","Αγγλικά","Οικονομικά","Φυσική","Βιολογία","Χημεία","Λογιστική"].map(s=>`<span class="chip">${s}</span>`).join("")}</p>
+<p><b>Οδηγεί π.χ. σε:</b> Ψυχολογία & Επιστήμες Αγωγής (Πανεπιστήμιο Κύπρου), Λογοθεραπεία (ΤΕΠΑΚ), Παιδαγωγικά Δημοτικής και Προσχολικής στην Ελλάδα, Γεωγραφία κ.ά.</p></div>`, el=>{
+  $$("details",el).forEach(d=>d.addEventListener("toggle",()=>{ if($$("details[open]",el).length>=2) award("fields",8); }));
+});
+
+/* B7 Pagkyprie */
+add(1,"Παγκύπριες 2027",()=>`
+<h2>Παγκύπριες Εξετάσεις 2027</h2>
+<div class="grid">
+  <div class="panel"><span class="tag">Απόλυσης</span><h3 style="margin-top:8px">Για το απολυτήριο</h3><p style="margin:0">Από το 2022 οι Παγκύπριες είναι δύο ξεχωριστές εξετάσεις. Οι Εξετάσεις Απόλυσης σού δίνουν το Απολυτήριο Δευτεροβάθμιας Εκπαίδευσης.</p></div>
+  <div class="panel"><span class="tag">Πρόσβασης (ΠΕΠ)</span><h3 style="margin-top:8px">Για τις θέσεις</h3><p style="margin:0">Δίνουν βαθμό κατάταξης ανά Πλαίσιο Πρόσβασης και κατανέμουν τις θέσεις στα δημόσια πανεπιστήμια Κύπρου & Ελλάδας.</p></div>
+</div>
+<div class="panel"><h3>Με τις ΠΕΠ μπαίνεις σε…</h3>
+<p><b>Κύπρο:</b> <span class="chip">Πανεπιστήμιο Κύπρου</span><span class="chip">ΤΕΠΑΚ</span></p>
+<p><b>Ελλάδα:</b> <span class="chip">Πανεπιστήμια</span><span class="chip">Πολυτεχνεία</span><span class="chip">Στρατιωτικές Σχολές</span><span class="chip">ΑΕΑ</span><span class="chip">ΑΣΤΕ</span></p></div>
+<details><summary>Έλληνες του εξωτερικού: σε αφορά;</summary>
+<p><b>Και οι δύο γονείς με ελληνική καταγωγή:</b> διεκδικείς θέση στην Ελλάδα ως «Έλληνας του εξωτερικού», όχι μαζί με τους υπόλοιπους Κύπριους μαθητές («αλλοδαποί-αλλογενείς»).</p>
+<p><b>Ένας γονιός με ελληνική καταγωγή:</b> επιλέγεις ποια από τις δύο κατηγορίες σε συμφέρει.</p>
+<p class="hint">Και στις δύο περιπτώσεις χρειάζεται πλήρης φοίτηση τουλάχιστον στις δύο τελευταίες τάξεις Λυκείου ή αντίστοιχου σχολείου στο εξωτερικό.</p></details>
+<p class="hint">Όλες οι λεπτομέρειες στην έκδοση της ΥΣΕΑ «Επιστημονικά Πεδία και Πλαίσια Πρόσβασης στη Δημόσια Ανώτερη Εκπαίδευση Κύπρου και Ελλάδας 2027».</p>`, el=>{ award("pep",5); });
+
+/* B8 Lykeio structure */
+add(1,"Πώς στήνεται το πρόγραμμα",()=>`
+<h2>Πώς στήνεται το πρόγραμμά σου</h2>
+<p class="lead">Κάθε χρόνο έχεις 37 περιόδους. Αυτό που αλλάζει είναι πόσες είναι κοινές για όλους και πόσες τις διαλέγεις εσύ.</p>
+<div class="panel">
+${[["Α΄",33,4,"16 μαθήματα κοινού κορμού + 2×2ωρα ΟΜΠ"],["Β΄",21,16,"9 μαθήματα κοινού κορμού + 4×4ωρα κατεύθυνσης"],["Γ΄",21,16,"8 μαθήματα κοινού κορμού + 4×4ωρα κατεύθυνσης"]].map(r=>`
+  <p style="margin:12px 0 4px"><b>${r[0]} Λυκείου</b> <span class="hint">${r[3]}</span></p>
+  <div style="display:flex;height:34px;border-radius:10px;overflow:hidden;font-weight:800;font-size:.85rem;color:#1E2557">
+    <div style="width:${r[1]/37*100}%;background:#C9CEF5;display:grid;place-items:center">${r[1]}</div>
+    <div style="width:${r[2]/37*100}%;background:#FFC93C;display:grid;place-items:center">${r[2]}</div>
+  </div>`).join("")}
+<p class="hint" style="margin-top:10px">🟦 κοινός κορμός · 🟨 επιλογή σου</p></div>
+<details><summary>Περίοδοι κοινού κορμού ανά τάξη</summary><div class="tablewrap"><table>
+<tr><th>Μάθημα</th><th>Α΄</th><th>Β΄</th><th>Γ΄</th></tr>
+${[["Νέα Ελληνικά / Αγωγή του Πολίτη",6,5,6],["Αρχαία Ελληνικά / Αρχαιογνωσία",2,1.5,""],["Μαθηματικά",4,3,3],["Φυσική",2,1,1],["Χημεία",2,"",""],["Βιολογία",1,"",""],["Ιστορία / Ιστορία της Κύπρου",2,2,3],["Αγγλικά",2,2,2],["Γαλλικά",2,2,2],["Πληροφορική",2,"",""],["Τέχνη",1,"",""],["Μουσική",1,"",""],["Φυσική Αγωγή",1.5,2.5,2],["Θρησκευτικά",1.5,2,2],["Σχεδιασμός και Τεχνολογία",2,"",""],["Οικονομικά",1,"",""],["Σύνολο",33,21,21]].map(r=>`<tr>${r.map((c,i)=>i?`<td>${c}</td>`:`<td>${r[0]==="Σύνολο"?"<b>Σύνολο</b>":c}</td>`).join("")}</tr>`).join("")}
+</table></div></details>`, el=>{ award("struct",5); });
+
+/* B9 OMP explorer */
+add(1,"Ο.Μ.Π. & κατευθύνσεις",()=>`
+<h2>Διάλεξε Ομάδα Μαθημάτων Προσανατολισμού</h2>
+<p class="lead">Στην Α΄ Λυκείου διαλέγεις <b>μία</b> ΟΜΠ: δύο μαθήματα με 2 επιπλέον περιόδους το καθένα. Η ΟΜΠ ανοίγει δρόμο προς συγκεκριμένες κατευθύνσεις στη Β΄ και Γ΄. Δοκίμασε όλες!</p>
+<div class="omps">${OMP.map(o=>`<button class="omp ${S.omp===o.n?"on":""}" style="background:${o.c}" data-o="${o.n}"><b>${o.n}η</b>${o.sub.join(" + ")}</button>`).join("")}</div>
+<div id="oout"></div>`, el=>{
+  const seen=new Set();
+  const show=n=>{ const o=OMP[n-1];
+    $("#oout",el).innerHTML=`<div class="panel"><h3>Εξετάζεσαι στην Α΄ σε 4 μαθήματα</h3><ol class="steps">${o.ex.map(e=>`<li>${e}</li>`).join("")}</ol></div>
+     <h3>Οδηγεί στις κατευθύνσεις</h3><div class="kgrid">${o.k.map(k=>`<button class="k" data-k="${k}"><span class="kc">${k.replace("K","Κ")}</span><br><b>${K[k].n}</b><div class="reveal">
+       <p style="margin-top:8px"><b>Υποχρεωτικά:</b> ${K[k].req.join(", ")}</p><p><b>Επιλέγεις ${K[k].pick} από:</b> ${K[k].opt.join(", ")}</p><p><b>Ενδεικτικές σπουδές:</b> ${K[k].st}</p></div></button>`).join("")}</div>
+     <p class="hint">Η Κ6 Καλών Τεχνών είναι ανοιχτή από όλες τις ΟΜΠ. Ψυχολογία, Παιδαγωγικά, Λογοθεραπεία, Γεωγραφία, Σχολές Υπαξιωματικών, Μαγειρικές Τέχνες, Διοίκηση Τουρισμού κ.ά. είναι προσβάσιμα από όλες τις κατευθύνσεις, ανάλογα με τα μαθήματα επιλογής.</p>`;
+    $$(".k",el).forEach(b=>b.onclick=()=>{ b.classList.toggle("on"); award("k"+b.dataset.k,2); });
+  };
+  $$(".omp",el).forEach(b=>b.onclick=()=>{ $$(".omp",el).forEach(x=>x.classList.remove("on")); b.classList.add("on"); S.omp=+b.dataset.o; save(); show(S.omp); seen.add(b.dataset.o); if(seen.size===4) award("omp",15); });
+  if(S.omp) show(S.omp);
+});
+
+/* B10 B/G exams + metataxi */
+add(1,"Β΄ & Γ΄ και αλλαγές",()=>`
+<h2>Κι αν αλλάξω γνώμη;</h2>
+<div class="panel"><h3>Εξεταζόμενα στη Β΄ και τη Γ΄</h3><p style="margin:0"><span class="chip">Νέα Ελληνικά</span> + <span class="chip">τα 4 μαθήματα κατεύθυνσης που επιλέγεις</span></p></div>
+<div class="panel"><h3>Εξετάσεις Μετάταξης 🔁</h3>
+<p>Δίνεις εξετάσεις μετάταξης αν θέλεις να πας:</p>
+<ol class="steps"><li>στη Β΄ σε κατεύθυνση διαφορετική από αυτή που ανοίγει η ΟΜΠ σου, ή</li><li>στη Γ΄ σε άλλη κατεύθυνση από αυτή της Β΄.</li></ol>
+<p>Μπορείς επίσης να αλλάξεις επιλεγόμενα μαθήματα κατεύθυνσης από τη Β΄ στη Γ΄ με εξετάσεις. Γίνονται <b>Μάιο-Ιούνιο</b>.</p></div>
+<div class="panel"><h3>Γρήγορο τεστ</h3><p>Η Μαρία έχει τη 2η ΟΜΠ και θέλει Κ4 Οικονομικών στη Β΄. Χρειάζεται εξετάσεις μετάταξης;</p>
+<div class="vote" id="mq"><button data-a="1">Ναι</button><button data-a="0">Όχι</button></div><p class="fb" id="mfb"></p></div>
+<p class="hint">Μαθητές με απόφαση ΕΕΕΑΕ μπορούν, μόνο στην Α΄ Λυκείου και με γραπτό αίτημα γονέων, να δηλώσουν ως εξεταζόμενο την Ιστορία κοινού κορμού αντί για τα Αγγλικά.</p>`, el=>{
+  $$("#mq button",el).forEach(b=>b.onclick=()=>{ $$("#mq button",el).forEach(x=>x.classList.remove("on")); b.classList.add("on"); const r=b.dataset.a==="1"; const f=$("#mfb",el); f.className="fb "+(r?"ok":"no"); f.textContent=r?"Σωστά! Η 2η ΟΜΠ οδηγεί σε Κ3 και Κ6, όχι στην Κ4.":"Ξαναδές: η 2η ΟΜΠ οδηγεί μόνο σε Κ3 και Κ6."; if(r) award("meta",8); });
+});
+
+/* B11 tests matching */
+add(1,"Σπουδές στο εξωτερικό",()=>`
+<h2>Σπουδές στο εξωτερικό</h2>
+<p class="lead">Κάθε χώρα και κάθε ίδρυμα ορίζει δικά του κριτήρια και μπορεί να τα αλλάξει. Παρακολούθησε τακτικά την ιστοσελίδα του ιδρύματος που σε ενδιαφέρει. Σε Γερμανία, Ισπανία, Ιταλία, Ολλανδία κ.ά. συχνά ζητούν βαθμό από τις Παγκύπριες Εξετάσεις Πρόσβασης.</p>
+<details><summary>Ειδικές εξετάσεις εισδοχής (π.χ. Ιατρική, Νομική): για όσους ενδιαφέρονται</summary>
+<p class="hint" style="margin-top:8px">Κάποιες χώρες ζητούν δικές τους εξετάσεις για συγκεκριμένα τμήματα. Κάθε εξέταση έχει το δικό της χρώμα. Πάτησε μια εξέταση και μετά την περιγραφή της: αν είναι σωστό, η περιγραφή παίρνει το ίδιο χρώμα.</p>
+<div class="match"><div class="col" id="ml"></div><div class="col" id="mr"></div></div><p class="fb" id="tfb"></p></details>
+<details><summary>Υποτροφίες & χρήσιμοι οδηγοί</summary><div class="links">
+<a href="https://sch.cy/mc/49/ypotrofies_metalykeiakes_spoudes.pdf" target="_blank" rel="noopener">ΥΣΕΑ: Υποτροφίες για μεταλυκειακές σπουδές 2027</a>
+<a href="http://www.moec.gov.cy/ysea/spoudes_exoteriko.html" target="_blank" rel="noopener">ΥΣΕΑ: Σπουδές στο εξωτερικό (ΕΕ, Βρετανία, ΗΠΑ, Καναδάς, Αυστραλία κ.ά.)</a></div></details>`, el=>{
+  let sel=null, done=0;
+  const TC={LNAT:"#FF6F7D",BMAT:"#FFC93C",SAT:"#6FA0FF",MCAT:"#22C3A6",IMAT:"#B99CFF",UCAT:"#FF9F43"};
+  $("#ml",el).innerHTML=shuffle(TESTS).map(t=>`<button data-t="${t[0]}" class="mt" style="--tc:${TC[t[0]]}"><b>${t[0]}</b></button>`).join("");
+  $("#mr",el).innerHTML=shuffle(TESTS).map(t=>`<button data-t="${t[0]}" class="md">${t[1]}</button>`).join("");
+  $$("#ml button",el).forEach(b=>b.onclick=()=>{ if(b.classList.contains("done")) return; $$("#ml button",el).forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); sel=b; });
+  $$("#mr button",el).forEach(b=>b.onclick=()=>{ if(!sel||b.classList.contains("done")) return;
+    if(sel.dataset.t===b.dataset.t){ const c=TC[b.dataset.t]; sel.classList.remove("sel"); sel.classList.add("done"); b.classList.add("done"); b.style.setProperty("--tc",c); b.insertAdjacentHTML("afterbegin",`<b class="mtag">${b.dataset.t}</b> `); sel=null; done++; beep("ok"); if(done===TESTS.length){ $("#tfb",el).className="fb ok"; $("#tfb",el).textContent="Τέλεια αντιστοίχιση! 🎉"; award("tests",15);} }
+    else { b.classList.add("shake"); setTimeout(()=>b.classList.remove("shake"),350); } });
+});
+
+/* B12 tools */
+add(1,"Εργαλεία & δράσεις",()=>`
+<h2>Πού βρίσκω πληροφορίες;</h2>
+<div class="panel"><h3>Δράσεις για να γνωρίσεις τον κόσμο της εργασίας</h3>
+<div class="grid">${[["🧭","Σταδιοδρομία"],["🎪","Έκθεση «Σπουδάζω»"],["🏢","Διήμερο / Τριήμερο εργασίας"],["💼","Εβδομάδα εργασίας (Β΄ Λυκείου)"]].map(a=>`<div class="tap" style="font-weight:700">${a[0]} ${a[1]}</div>`).join("")}</div></div>
+${[
+ ["Κύπρος: εργασία & δεξιότητες",[["Υπουργείο Εργασίας","http://www.mlsi.gov.cy/"],["Κέντρο Παραγωγικότητας (ΚΕΠΑ)","https://www.mlsi.gov.cy/mlsi/kepa/kepa.nsf/home/home?openform"],["Στατιστική Υπηρεσία","https://www.cystat.gov.cy/el/default"],["ΑνΑΔ","https://www.anad.org.cy/"],["ΟΕΒ","https://www.oeb.org.cy/"],["ΚΕΒΕ","https://ccci.org.cy/"],["Επαγγελματικοί σύνδεσμοι Κύπρου","http://www.moec.gov.cy/ysea/cy_links_syndesmoi.html"]]],
+ ["Ευρώπη",[["Europass","https://europa.eu/europass/el"],["EURES: δουλειές στην ΕΕ","https://eures.europa.eu/index_el"],["ESCO: δεξιότητες & επαγγέλματα","https://esco.ec.europa.eu/el"],["Eurodesk","https://eurodesk.onek.org.cy/"],["Euroguidance","https://www.euroguidance.eu/"],["Eurydice: εκπαιδευτικά συστήματα","https://eurydice.eacea.ec.europa.eu/national-education-systems?etrans=el"],["EPSO","https://epso.europa.eu/el/about-epso"]]],
+ ["Άλλα",[["ΕΟΠΠΕΠ (Ελλάδα)","https://www.eoppep.gr/index.php/el/"],["eSchoolCounselor","https://www.eschoolcounselor.com/"],["ΜΙΕΕΚ","https://mieek.ac.cy/"]]]
+].map(g=>`<details><summary>${g[0]}</summary><div class="links">${g[1].map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join("")}</div></details>`).join("")}`, el=>{ award("tools",5); });
+
+/* C0 decision scale */
+add(2,"Ζυγαριά απόφασης",()=>`
+<h2>Η ζυγαριά της απόφασης ⚖️</h2>
+<p class="lead">Δύο επιλογές σε απασχολούν (π.χ. 2η ή 3η ΟΜΠ); Γράψε τες, πρόσθεσε λόγους υπέρ και κατά και δες προς τα πού γέρνει η ζυγαριά.</p>
+<div class="twoin"><input type="text" id="oa" placeholder="Επιλογή Α"><input type="text" id="ob" placeholder="Επιλογή Β"></div>
+<div class="scale panel" style="margin-top:12px"><svg viewBox="0 0 440 220" aria-hidden="true">
+  <polygon points="220,70 195,200 245,200" fill="var(--line)"/><rect x="170" y="198" width="100" height="10" rx="5" fill="var(--ink2)"/>
+  <g class="beam" id="beam">
+    <rect x="40" y="64" width="360" height="12" rx="6" fill="var(--ink)"/>
+    <line x1="60" y1="70" x2="60" y2="120" stroke="var(--ink2)" stroke-width="2"/><line x1="380" y1="70" x2="380" y2="120" stroke="var(--ink2)" stroke-width="2"/>
+    <path d="M10 120 Q60 160 110 120 Z" fill="#FF8C98"/><path d="M330 120 Q380 160 430 120 Z" fill="#8FB2FF"/>
+    <text id="la" x="60" y="108" text-anchor="middle" style="font-family:Comfortaa;font-weight:700;font-size:18px;fill:var(--ink)">Α</text>
+    <text id="lb" x="380" y="108" text-anchor="middle" style="font-family:Comfortaa;font-weight:700;font-size:18px;fill:var(--ink)">Β</text>
+    <text id="sa" x="60" y="140" text-anchor="middle" style="font-weight:800;font-size:20px;fill:#1E2557">0</text>
+    <text id="sb" x="380" y="140" text-anchor="middle" style="font-weight:800;font-size:20px;fill:#1E2557">0</text>
+  </g>
+  <circle cx="220" cy="70" r="7" fill="var(--sun)" stroke="var(--ink)" stroke-width="2"/>
+</svg><p class="fb" id="verdict"></p></div>
+<div class="panel"><h3>Πρόσθεσε έναν λόγο</h3>
+<div class="addrow"><input type="text" id="rt" placeholder="π.χ. Μου αρέσουν τα Μαθηματικά" maxlength="80">
+<div class="toggles" id="rside"><button data-v="a" class="on" style="background:#FF8C98">Για την Α</button><button data-v="b" style="background:#8FB2FF">Για τη Β</button></div>
+<div class="toggles" id="rsign"><button data-v="1" class="on" style="background:#9BE7C4">👍 Υπέρ</button><button data-v="-1" style="background:#FFB3BA">👎 Κατά</button></div>
+<label class="hint">Πόσο σημαντικό είναι; <select id="rw"><option value="1">Λίγο</option><option value="2" selected>Αρκετά</option><option value="3">Πολύ</option></select></label>
+<button class="btn" id="radd">+ Πρόσθεσε</button></div>
+<div class="reasons" id="rl"></div></div>
+<p class="hint">Η ζυγαριά δεν αποφασίζει για σένα. Σε βοηθά να δεις τι μετράει περισσότερο. Δείξε τη στην Καθηγήτρια/στον Καθηγητή ΣΕΑ ή στην οικογένειά σου.</p>`, el=>{
+  S.dec=S.dec||{a:"",b:"",r:[]};
+  const oa=$("#oa",el), ob=$("#ob",el); oa.value=S.dec.a; ob.value=S.dec.b;
+  let side="a", sign=1;
+  const tog=(id,cb)=>$$(`#${id} button`,el).forEach(b=>b.onclick=()=>{ $$(`#${id} button`,el).forEach(x=>x.classList.remove("on")); b.classList.add("on"); cb(b.dataset.v); });
+  tog("rside",v=>side=v); tog("rsign",v=>sign=+v);
+  const upd=()=>{
+    const A=S.dec.a||"Α", B=S.dec.b||"Β";
+    $("#la",el).textContent=A.slice(0,14); $("#lb",el).textContent=B.slice(0,14);
+    $$("#rside button",el)[0].textContent="Για: "+A; $$("#rside button",el)[1].textContent="Για: "+B;
+    let sa=0,sb=0; S.dec.r.forEach(x=>{ const v=x.s*x.w; if(x.side==="a") sa+=v; else sb+=v; });
+    $("#sa",el).textContent=sa; $("#sb",el).textContent=sb;
+    const tilt=Math.max(-18,Math.min(18,(sb-sa)*3));
+    $("#beam",el).style.transform=`rotate(${tilt}deg)`;
+    const v=$("#verdict",el);
+    v.className="fb"; v.textContent=!S.dec.r.length?"Πρόσθεσε τουλάχιστον έναν λόγο για κάθε επιλογή.":sa===sb?"Ισορροπία! Ίσως χρειάζεσαι περισσότερες πληροφορίες.":`Η ζυγαριά γέρνει προς: ${sa>sb?A:B}`;
+    $("#rl",el).innerHTML=S.dec.r.map((x,i)=>`<div class="reason"><b>${x.s>0?"👍":"👎"}</b><span>${esc(x.t)} <small class="hint">(${x.side==="a"?esc(A):esc(B)} · ${"●".repeat(x.w)})</small></span><button data-del="${i}" aria-label="Διαγραφή">✕</button></div>`).join("");
+    $$("[data-del]",el).forEach(b=>b.onclick=()=>{ S.dec.r.splice(+b.dataset.del,1); save(); upd(); });
+    if(S.dec.r.some(x=>x.side==="a")&&S.dec.r.some(x=>x.side==="b")&&S.dec.r.length>=4) award("scale",15);
+  };
+  oa.oninput=()=>{ S.dec.a=oa.value.slice(0,30); save(); upd(); };
+  ob.oninput=()=>{ S.dec.b=ob.value.slice(0,30); save(); upd(); };
+  $("#radd",el).onclick=()=>{ const t=$("#rt",el).value.trim(); if(!t){ $("#rt",el).focus(); return; }
+    S.dec.r.push({t:t.slice(0,80), side, s:sign, w:+$("#rw",el).value}); $("#rt",el).value=""; save(); beep("ok"); upd(); };
+  $("#rt",el).onkeydown=e=>{ if(e.key==="Enter") $("#radd",el).click(); };
+  upd();
+});
+
+/* C1 decision + passport */
+add(2,"Λήψη απόφασης",()=>{
+  const sc=score(); const hasH=Object.keys(S.holland).length>=12;
+  const top=hasH?Object.keys(sc).sort((a,b)=>sc[b]-sc[a]).slice(0,2).map(t=>HOLL[t].n).join(" + "):"Δεν ολοκληρώθηκε";
+  return `
+<h2>Λήψη απόφασης</h2>
+<p class="lead">Η ζωή είναι μια σειρά από <b>μεταβάσεις</b>: από το Γυμνάσιο στο Λύκειο, από το σχολείο στις σπουδές, από τις σπουδές στη δουλειά. Κάθε μετάβαση χρειάζεται αποφάσεις, μικρές και μεγάλες. Η Α΄ Λυκείου είναι η πρώτη σου μεγάλη.</p>
+<div class="passport" id="pp">
+  <h2>Διαβατήριο${S.name?" του/της "+esc(S.name):""} ✈️</h2>
+  <div class="row"><small>Τύπος Holland</small>${top}</div>
+  <div class="row"><small>Δυνατά σημεία</small>${S.strengths.length?S.strengths.map(s=>`<span class="chip">${esc(s)}</span>`).join(""):"–"}</div>
+  <div class="row"><small>Επαγγέλματα του μέλλοντος που μου άρεσαν</small>${S.likes.length?S.likes.map(s=>`<span class="chip">${esc(s)}</span>`).join(""):"–"}</div>
+  <div class="row"><small>ΟΜΠ που εξερεύνησα τελευταία</small>${S.omp?`${S.omp}η ΟΜΠ: ${OMP[S.omp-1].sub.join(" + ")} → ${OMP[S.omp-1].k.map(k=>k.replace("K","Κ")).join(", ")}`:"–"}</div>
+  ${S.dec&&S.dec.r&&S.dec.r.length?`<div class="row"><small>Η ζυγαριά μου</small>${esc(S.dec.a||"Α")} ⚖️ ${esc(S.dec.b||"Β")}</div>`:""}
+  <div class="row"><small>Αστέρια</small>⭐ ${S.xp}</div>
+</div>
+<div class="panel"><h3>Πριν αποφασίσεις, ρώτα τον εαυτό σου</h3>
+<ol class="steps"><li>Ταιριάζει με αυτό που ΜΠΟΡΩ, ΘΕΛΩ και ΜΕΤΡΑΕΙ για μένα;</li><li>Πού οδηγεί; Ποιες κατευθύνσεις και σπουδές μού ανοίγει;</li><li>Μίλησα με την Καθηγήτρια/τον Καθηγητή ΣΕΑ και την οικογένειά μου;</li></ol>
+<p class="hint">📚 Κράτα όλα τα βιβλία της ΥΣΕΑ από τη Γ΄ Γυμνασίου ως τη Γ΄ Λυκείου/ΤΕΣΕΚ μέχρι το τέλος του σχολείου.</p></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn sun" id="cel">🎉 Ολοκλήρωσα το ταξίδι</button><button class="btn alt" id="rst">Ξεκίνα από την αρχή</button></div>
+${CREDIT}
+<details style="margin-top:18px"><summary>Πηγή & συντελεστές</summary><p class="credits">Βασισμένο στην παρουσίαση «Διεργασία της Επαγγελματικής Αγωγής / Συμβουλευτικής, Α΄ Λυκείου» της Υπηρεσίας Συμβουλευτικής και Επαγγελματικής Αγωγής (ΥΣΕΑ), ΥΠΑΝ, Οκτώβριος 2025, και στα βιβλία της ΥΣΕΑ 2025-2026. Σταχυολόγηση: Διαμάντω Ζίζιρου, Κική Μαυρομάτη, Αντιγόνη Καραγιάννη, Βασιλική Λοΐζου. Συμβολή: Στάλω Γιουτανή. Επιμέλεια: Ελένη Παπαστεφάνου. Γενική επιμέλεια: Δρ. Ειρήνη Ροδοσθένους. Οι δραστηριότητες, τα κουίζ και τα παραδείγματα επαγγελμάτων ανά τύπο Holland είναι προσθήκες της διαδραστικής εκδοχής.</p></details>`},
+ el=>{
+  $("#cel",el).onclick=()=>{ award("finish",20); confetti(); };
+  $("#rst",el).onclick=()=>{ if(!confirm("Να σβηστούν οι απαντήσεις και τα αστέρια σου;")) return; Object.assign(S,{i:0,xp:0,done:{},name:"",strengths:[],holland:{},likes:[],omp:null,notes:{},dec:{a:"",b:"",r:[]},venn:[]}); save(); document.getElementById("xp").textContent="⭐ 0"; go(0); };
+});
+
+/* ---------- extra interactivity per screen ---------- */
+const TN=TRENDS.map(t=>t[0]);
+const pick4=(a,all)=>[a,...shuffle(all.filter(x=>x!==a)).slice(0,3)];
+const FN=["1ο Ανθρωπιστικών","2ο Θετικών & Τεχνολογικών","3ο Υγείας & Ζωής","4ο Οικονομίας & Πληροφορικής"];
+const EXTRA={
+  "ΜΠΟΡΩ · ΘΕΛΩ · ΑΞΙΖΕΙ":{
+    html:`<div class="panel"><h3>Βάλε στον χάρτη κάτι δικό σου 📍</h3>
+      <p class="hint">Γράψε μια δραστηριότητα (π.χ. ποδόσφαιρο, ζωγραφική, μαθηματικά) και πάτησε σε ποιους κύκλους ανήκει για σένα.</p>
+      <input type="text" id="vt" placeholder="π.χ. Μαγειρική" maxlength="22">
+      <div class="toggles" id="vtg"><button data-c="m">ΜΠΟΡΩ</button><button data-c="t">ΘΕΛΩ</button><button data-c="a">ΑΞΙΖΕΙ</button></div>
+      <button class="btn" id="vadd">+ Βάλ' το στον χάρτη</button> <button class="btn alt" id="vclr">Καθάρισμα</button>
+      <p class="fb" id="vfb"></p></div>`,
+    init:el=>{
+      S.venn=S.venn||[];
+      const svg=$(".venn svg",el); const g=document.createElementNS("http://www.w3.org/2000/svg","g"); svg.appendChild(g);
+      const POS={m:[95,145],t:[305,145],a:[200,250],mt:[200,80],ma:[135,200],ta:[265,200],mta:[200,160]};
+      const cols={m:"#FF8C98",t:"#8FB2FF",a:"#7EE0C9"};
+      const sel=new Set();
+      $$("#vtg button",el).forEach(b=>b.onclick=()=>{ const c=b.dataset.c; sel.has(c)?sel.delete(c):sel.add(c); b.classList.toggle("on"); b.style.background=sel.has(c)?cols[c]:""; });
+      const OFF={a:[[0,0],[0,22],[0,-22],[-62,10],[62,10]]}, DEF=[[0,0],[0,22],[0,-22],[0,44],[0,-44]];
+      const drawDots=()=>{ const cnt={}; g.innerHTML=S.venn.map((v,i)=>{ const [x,y]=POS[v.k]; const j=cnt[v.k]=(cnt[v.k]||0)+1; const L=OFF[v.k]||DEF; const o=L[(j-1)%L.length]; const dx=o[0]+(j>L.length?12:0), dy=o[1]+(v.k==="mta"?22:0);
+        return `<g class="vdot"><circle cx="${x+dx}" cy="${y+dy}" r="5" fill="#fff" stroke="#1E2557" stroke-width="2"/><text x="${x+dx}" y="${y+dy-8}" text-anchor="middle">${esc(v.t)}</text></g>`; }).join(""); };
+      $("#vadd",el).onclick=()=>{ const t=$("#vt",el).value.trim(); const f=$("#vfb",el);
+        if(!t||!sel.size){ f.className="fb no"; f.textContent="Γράψε κάτι και διάλεξε τουλάχιστον έναν κύκλο."; return; }
+        const k=["m","t","a"].filter(c=>sel.has(c)).join(""); S.venn.push({t:t.slice(0,22),k}); save(); drawDots();
+        f.className="fb ok"; f.textContent=k==="mta"?"⭐ Και στους τρεις κύκλους! Μια ένδειξη ότι αξίζει να το εξερευνήσεις περισσότερο.":k.length===2?"Κοντά στο κέντρο! Τι λείπει για να φτάσει στο ⭐;":"Μπήκε στον χάρτη.";
+        if(k==="mta") award("vennstar",10); else beep("ok");
+        $("#vt",el).value=""; sel.clear(); $$("#vtg button",el).forEach(b=>{ b.classList.remove("on"); b.style.background=""; }); };
+      $("#vclr",el).onclick=()=>{ S.venn=[]; save(); drawDots(); };
+      drawDots();
+    }},
+  "Η σύγχρονη αγορά εργασίας":{
+    html:`<h3 style="margin-top:20px">Κουίζ: ποια τάση είναι; 🔍</h3><div id="xq"></div>`,
+    init:el=>quiz($("#xq",el),[
+      {q:"Σε ένα εργοστάσιο αυτοκινήτων, ρομποτικοί βραχίονες συναρμολογούν μόνοι τους τα αυτοκίνητα, χωρίς εργάτες στη γραμμή παραγωγής.", a:"4η Βιομηχανική Επανάσταση", opts:["4η Βιομηχανική Επανάσταση","Κυκλική Οικονομία","Ισότητα φύλων","Κινητικότητα & διά βίου μάθηση"], why:"Ρομπότ και αυτοματισμοί στην παραγωγή είναι η καρδιά της 4ης Βιομηχανικής Επανάστασης."},
+      {q:"Ένα μαγαζί αγοράζει παλιά ρούχα, τα επιδιορθώνει και τα ξαναπουλά, για να μην καταλήξουν στα σκουπίδια.", a:"Κυκλική Οικονομία", opts:["Κυκλική Οικονομία","Τεχνητή Νοημοσύνη","Ισότητα φύλων","Ψηφιακή μετάβαση"], why:"Επισκευή και επαναχρησιμοποίηση = λιγότερα απόβλητα. Αυτή είναι η Κυκλική Οικονομία."},
+      {q:"Η Άννα γίνεται μηχανικός αεροσκαφών και ο Νίκος νηπιαγωγός.", a:"Ισότητα φύλων", opts:["Ισότητα φύλων","4η Βιομηχανική Επανάσταση","Πράσινη μετάβαση","Ψηφιακή μετάβαση"], why:"Κανένα επάγγελμα δεν είναι «αντρικό» ή «γυναικείο»."},
+      {q:"Ο κ. Πέτρος δούλευε 20 χρόνια λογιστής. Στα 45 του σπουδάζει ξανά για να γίνει νοσηλευτής.", a:"Κινητικότητα & διά βίου μάθηση", opts:["Κινητικότητα & διά βίου μάθηση","Κυκλική Οικονομία","Πράσινη μετάβαση","4η Βιομηχανική Επανάσταση"], why:"Αλλάζουμε δουλειές στη ζωή μας και η μάθηση συνεχίζεται σε κάθε ηλικία."},
+      {q:"Ο δήμος βάζει φωτοβολταϊκά στις στέγες των σχολείων και μόνωση στους τοίχους, για να καταναλώνουν λιγότερη ενέργεια.", a:"Πράσινη μετάβαση", opts:["Πράσινη μετάβαση","Ισότητα φύλων","Τεχνητή Νοημοσύνη","Κινητικότητα & διά βίου μάθηση"], why:"Ανανεώσιμες πηγές και ενεργειακή αναβάθμιση κτιρίων είναι η Πράσινη μετάβαση."},
+      {q:"Πιστοποιητικά, φόροι και αιτήσεις γίνονται πλέον online από το κινητό, χωρίς ουρές σε γραφεία.", a:"Ψηφιακή μετάβαση", opts:["Ψηφιακή μετάβαση","Κυκλική Οικονομία","Ισότητα φύλων","Πράσινη μετάβαση"], why:"Όταν υπηρεσίες που γίνονταν με χαρτιά περνούν στο διαδίκτυο, μιλάμε για Ψηφιακή μετάβαση."},
+      {q:"Ένα πρόγραμμα «διαβάζει» χιλιάδες ακτινογραφίες, μαθαίνει από αυτές και επισημαίνει στον γιατρό πιθανά προβλήματα.", a:"Τεχνητή Νοημοσύνη", opts:["Τεχνητή Νοημοσύνη","Κυκλική Οικονομία","Ισότητα φύλων","Κινητικότητα & διά βίου μάθηση"], why:"Ένα πρόγραμμα που μαθαίνει από δεδομένα και βοηθά στις αποφάσεις είναι εργαλείο Τεχνητής Νοημοσύνης."}
+    ],"trendquiz")},
+  "Επιστημονικά πεδία":{
+    html:`<h3 style="margin-top:20px">Κουίζ: σε ποιο πεδίο ανήκει; 🎯</h3><div id="xq"></div>`,
+    init:el=>quiz($("#xq",el),[["Νομική",0],["Πολιτική Μηχανική",1],["Φαρμακευτική",2],["Μάρκετινγκ",3],["Δημοσιογραφία & ΜΜΕ",0],["Κτηνιατρική",2],["Αρχιτεκτονική",1],["Ναυτιλιακές Σπουδές",3]]
+      .map(([d,i])=>({q:`Τμήμα: ${d}`, a:FN[i], opts:FN, keep:true})),"fieldquiz")},
+  "Ο.Μ.Π. & κατευθύνσεις":{
+    html:`<h3 style="margin-top:20px">Κουίζ: «Θέλω να σπουδάσω…» 🎓</h3><div id="xq"></div>`,
+    init:el=>quiz($("#xq",el),[
+      {q:"Θέλω να σπουδάσω Ιατρική. Ποια ΟΜΠ μού ανοίγει την πιο άμεση κατεύθυνση;", a:"2η ΟΜΠ", why:"Η 2η ΟΜΠ (Μαθηματικά + Φυσική) οδηγεί στην Κ3 Θετικών Επιστημών / Βιοεπιστημών."},
+      {q:"Θέλω να σπουδάσω Νομική.", a:"1η ΟΜΠ", why:"Η 1η ΟΜΠ οδηγεί στην Κ1 Κλασικών & Ανθρωπιστικών Σπουδών."},
+      {q:"Θέλω να σπουδάσω Λογιστική και Χρηματοοικονομικά.", a:"3η ΟΜΠ", why:"Η 3η ΟΜΠ (Μαθηματικά + Οικονομικά) οδηγεί στην Κ4 Οικονομικών Επιστημών."},
+      {q:"Θέλω να σπουδάσω Αρχιτεκτονική.", a:"2η ΟΜΠ", why:"Η Αρχιτεκτονική είναι στις σπουδές της Κ3, που ανοίγει από τη 2η ΟΜΠ."},
+      {q:"Θέλω να σπουδάσω Ψυχολογία.", a:"Από όλες", why:"Η Ψυχολογία (όπως και Παιδαγωγικά, Λογοθεραπεία, Διοίκηση Τουρισμού) είναι προσβάσιμη από όλες τις κατευθύνσεις, ανάλογα με τα μαθήματα επιλογής."},
+      {q:"Θέλω να σπουδάσω Θέατρο.", a:"Από όλες", why:"Η Κ6 Καλών Τεχνών ανοίγει από όλες τις ΟΜΠ."}
+    ].map(q=>({...q,opts:["1η ΟΜΠ","2η ΟΜΠ","3η ΟΜΠ","4η ΟΜΠ","Από όλες"],keep:true})),"ompquiz","Αν δεν είσαι σίγουρος/η, ανέβα και δοκίμασε τις ΟΜΠ πιο πάνω.")},
+  "Β΄ & Γ΄ και αλλαγές":{
+    html:`<h3 style="margin-top:20px">Περισσότερα σενάρια: χρειάζεται μετάταξη; 🔁</h3><div id="xq"></div>`,
+    init:el=>quiz($("#xq",el),[
+      {q:"Ο Αντρέας έχει 1η ΟΜΠ και θέλει Κ2 Ξένων Γλωσσών στη Β΄.", a:"Όχι", why:"Η 1η ΟΜΠ οδηγεί σε Κ1, Κ2 και Κ6."},
+      {q:"Η Σοφία έχει 3η ΟΜΠ και θέλει Κ3 στη Β΄.", a:"Ναι", why:"Η 3η ΟΜΠ οδηγεί σε Κ4 και Κ6, όχι στην Κ3."},
+      {q:"Η Έλενα έχει 4η ΟΜΠ και θέλει Κ6 Καλών Τεχνών.", a:"Όχι", why:"Η Κ6 είναι ανοιχτή από όλες τις ΟΜΠ."},
+      {q:"Ο Γιώργος είναι στην Κ3 στη Β΄ και θέλει Κ4 στη Γ΄.", a:"Ναι", why:"Για αλλαγή κατεύθυνσης από τη Β΄ στη Γ΄ χρειάζονται εξετάσεις μετάταξης."}
+    ].map(q=>({...q,opts:["Ναι","Όχι"],keep:true})),"metaquiz")}
+};
+
+/* ---------- engine ---------- */
+function buildMetro(){
+  const m=$("#metro"); const n=SCREENS.length-1;
+  SCREENS.forEach((s,i)=>{ const b=document.createElement("button"); const first=i===0||SCREENS[i-1].ch!==s.ch;
+    b.className="stop"+(first?" ch":""); b.style.left=(i/n*100)+"%"; b.title=s.title; b.setAttribute("aria-label",s.title);
+    if(first&&s.ch>=0) b.style.borderColor=CH[s.ch].hex; b.onclick=()=>go(i); m.appendChild(b); });
+}
+function go(i){
+  S.i=Math.max(0,Math.min(SCREENS.length-1,i)); save();
+  const s=SCREENS[S.i], main=$("#main");
+  const X=EXTRA[s.title];
+  main.innerHTML=`<div class="screen">${s.render()}${X&&X.html?X.html:""}</div>`; s.init && s.init(main); X&&X.init&&X.init(main);
+  $("#fill").style.width=(S.i/(SCREENS.length-1)*100)+"%";
+  $$("#metro .stop").forEach((b,k)=>b.classList.toggle("done",k<=S.i));
+  $("#chname").textContent = s.ch<0 ? "Αφετηρία" : `Σταθμός ${s.ch+1}: ${CH[s.ch].n} · ${s.title}`;
+  $("#count").textContent=`${S.i+1} / ${SCREENS.length}`;
+  $("#prev").disabled=S.i===0; $("#prev").style.opacity=S.i===0?.4:1;
+  $("#next").textContent=S.i===SCREENS.length-1?"Αρχή":S.i===0?"Ξεκίνα":"Επόμενο";
+  window.scrollTo({top:0});
+}
+$("#prev").onclick=()=>go(S.i-1);
+$("#next").onclick=()=>go(S.i===SCREENS.length-1?0:S.i+1);
+document.addEventListener("keydown",e=>{ if(e.target.tagName==="INPUT") return; if(e.key==="ArrowRight") go(S.i+1); if(e.key==="ArrowLeft") go(S.i-1); });
+
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c=$("#conf"), x=c.getContext("2d"); c.width=innerWidth; c.height=innerHeight;
+  const cols=["#FF6F7D","#FFC93C","#22C3A6","#5B8CFF","#8E6CEF"];
+  const P=Array.from({length:160},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,v:2+Math.random()*4,r:4+Math.random()*6,a:Math.random()*6,c:cols[Math.floor(Math.random()*5)]}));
+  let t=0; (function f(){ x.clearRect(0,0,c.width,c.height); P.forEach(p=>{ p.y+=p.v; p.a+=.1; x.fillStyle=p.c; x.save(); x.translate(p.x+Math.sin(p.a)*10,p.y); x.rotate(p.a); x.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); x.restore(); }); if(++t<200) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })();
+}
+
+
+/* ===== v2: cinematic intro, moving train, station arrivals, passport finale ===== */
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const trainSVG = (body="#FF6F7D") => `<svg viewBox="0 0 60 34" aria-hidden="true"><rect x="8" y="1" width="7" height="8" rx="2" fill="#1E2557"/><rect x="2" y="7" width="46" height="19" rx="6" fill="${body}" stroke="#1E2557" stroke-width="2"/><path d="M48 9h4a6 6 0 0 1 6 6v6a5 5 0 0 1-5 5h-5z" fill="#FFC93C" stroke="#1E2557" stroke-width="2"/><rect x="9" y="11" width="9" height="7" rx="2" fill="#F6F7FF"/><rect x="22" y="11" width="9" height="7" rx="2" fill="#F6F7FF"/><rect x="35" y="11" width="9" height="7" rx="2" fill="#F6F7FF"/><circle cx="13" cy="28" r="4.5" fill="#1E2557"/><circle cx="31" cy="28" r="4.5" fill="#1E2557"/><circle cx="48" cy="28" r="4.5" fill="#1E2557"/></svg>`;
+
+/* --- extra sounds (respect the sound toggle) --- */
+function tone(f, t0, dur, type="triangle", vol=.12){
+  const o=AC.createOscillator(), g=AC.createGain(); o.type=type; o.frequency.value=f;
+  g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.02); g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+  o.connect(g).connect(AC.destination); o.start(t0); o.stop(t0+dur+.05);
+}
+function sfx(kind){
+  if(!S.sound) return;
+  try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume();
+    const t=AC.currentTime;
+    if(kind==="horn"){ [[392,0],[494,0],[392,.38],[494,.38]].forEach(([f,d])=>tone(f,t+d,.32,"sawtooth",.05)); }
+    if(kind==="ding"){ tone(1047,t,.5,"sine",.1); tone(1319,t+.12,.6,"sine",.08); }
+    if(kind==="thud"){ const o=AC.createOscillator(), g=AC.createGain(); o.type="sine"; o.frequency.setValueAtTime(160,t); o.frequency.exponentialRampToValueAtTime(50,t+.18);
+      g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.0001,t+.22); o.connect(g).connect(AC.destination); o.start(t); o.stop(t+.25); }
+    if(kind==="fanfare"){ [[523,0],[659,.12],[784,.24],[1047,.4],[784,.58],[1047,.7]].forEach(([f,d],i)=>tone(f,t+d,i>4?.6:.2,"triangle",.11)); }
+    if(kind==="chug"){ for(let i=0;i<6;i++) tone(90+((i%2)*20),t+i*.11,.08,"square",.03); }
+  }catch(e){}
+}
+
+/* --- train on the metro bar --- */
+const trainEl=document.createElement("div"); trainEl.className="train"; trainEl.innerHTML=trainSVG();
+let lastIdx=null;
+function placeTrain(i, animate){
+  const n=SCREENS.length-1; const pct=i/n*100;
+  trainEl.classList.toggle("back", lastIdx!==null && i<lastIdx);
+  if(animate && !RM){ trainEl.classList.add("moving"); clearTimeout(placeTrain.t); placeTrain.t=setTimeout(()=>trainEl.classList.remove("moving"),900); }
+  trainEl.style.left=pct+"%"; lastIdx=i;
+}
+
+/* --- station arrival banner when entering a new chapter --- */
+function arrive(ch){
+  if(RM){ toast(`Σταθμός ${ch+1}: ${CH[ch].n}`); return; }
+  const d=document.createElement("div"); d.className="arrive";
+  d.innerHTML=`<div style="position:relative"><div class="card" style="--accent:${CH[ch].hex}"><small>Επόμενη στάση · Σταθμός ${ch+1}</small><b>${CH[ch].n}</b></div><div class="lane">${trainSVG(CH[ch].hex)}</div></div>`;
+  document.body.appendChild(d); sfx("horn"); setTimeout(()=>d.remove(),2400);
+}
+
+/* --- passport stamps --- */
+const STAMPS=[{t:"Αυτογνωσία",r:"-8deg"},{t:"Πληροφόρηση",r:"5deg"},{t:"Λήψη απόφασης",r:"-3deg"}];
+function stampHTML(k, hit){
+  const date=new Date().toLocaleDateString("el-GR",{day:"2-digit",month:"2-digit",year:"numeric"});
+  return `<div class="stamp${hit?" hit":""}" style="--r:${STAMPS[k].r};color:${CH[k].hex}"><small>Σταθμός ${k+1} ✓</small>${STAMPS[k].t}<small>${S.finishDate||date}</small></div>`;
+}
+function stampPassport(main, animate){
+  const pp=$("#pp",main); if(!pp) return;
+  let box=$(".stamps",pp); if(!box){ box=document.createElement("div"); box.className="stamps"; pp.appendChild(box); }
+  box.innerHTML="";
+  if(!animate || RM){ box.innerHTML=STAMPS.map((_,k)=>stampHTML(k,false)).join(""); return Promise.resolve(); }
+  return new Promise(res=>{
+    STAMPS.forEach((_,k)=>setTimeout(()=>{
+      box.insertAdjacentHTML("beforeend",stampHTML(k,true)); sfx("thud");
+      pp.classList.remove("shake"); void pp.offsetWidth; pp.classList.add("shake");
+      if(k===STAMPS.length-1) setTimeout(res,450);
+    }, 250+k*650));
+  });
+}
+
+/* --- passport as image (canvas) --- */
+function wrap(x, text, maxW){ const words=String(text).split(" "); const lines=[]; let cur="";
+  words.forEach(w=>{ const t=cur?cur+" "+w:w; if(x.measureText(t).width>maxW && cur){ lines.push(cur); cur=w; } else cur=t; }); if(cur) lines.push(cur); return lines; }
+function passportImage(){
+  const W=1080, H=1440, c=document.createElement("canvas"); c.width=W; c.height=H; const x=c.getContext("2d");
+  x.fillStyle="#1E2557"; x.fillRect(0,0,W,H);
+  x.fillStyle="#FFC93C"; x.beginPath(); x.arc(W-60,60,260,0,Math.PI*2); x.fill();
+  x.fillStyle="#22C3A6"; x.beginPath(); x.arc(40,H-40,180,0,Math.PI*2); x.globalAlpha=.5; x.fill(); x.globalAlpha=1;
+  const F='"Commissioner",system-ui,sans-serif', D='"Comfortaa","Commissioner",sans-serif';
+  x.fillStyle="#B4B9E0"; x.font=`700 30px ${F}`; x.fillText("ΤΟ ΤΑΞΙΔΙ ΣΟΥ · Α΄ ΛΥΚΕΙΟΥ",80,120);
+  x.fillStyle="#F6F7FF"; x.font=`700 76px ${D}`;
+  let y=230; wrap(x, "Διαβατήριο"+(S.name?" του/της "+S.name:""), W-200).forEach(l=>{ x.fillText(l,80,y); y+=88; });
+  const sc=score(); const hasH=Object.keys(S.holland).length>=12;
+  const top=hasH?Object.keys(sc).sort((a,b)=>sc[b]-sc[a]).slice(0,2).map(t=>HOLL[t].n).join(" + "):"Δεν ολοκληρώθηκε";
+  const rows=[["Τύπος Holland",top],["Δυνατά σημεία",S.strengths.join(" · ")||"–"],["Επαγγέλματα του μέλλοντος που μου άρεσαν",S.likes.join(" · ")||"–"],
+    ["ΟΜΠ που εξερεύνησα",S.omp?`${S.omp}η ΟΜΠ: ${OMP[S.omp-1].sub.join(" + ")}`:"–"],["Αστέρια","⭐ "+S.xp]];
+  y+=30;
+  rows.forEach(([k,v])=>{ x.fillStyle="#B4B9E0"; x.font=`600 28px ${F}`; x.fillText(k,80,y); y+=48;
+    x.fillStyle="#F6F7FF"; x.font=`700 38px ${F}`; wrap(x,v,W-160).slice(0,3).forEach(l=>{ x.fillText(l,80,y); y+=50; }); y+=30; });
+  const sy=Math.max(y+40,H-300);
+  STAMPS.forEach((s,k)=>{ x.save(); x.translate(80+k*320+140, sy+80); x.rotate(parseFloat(s.r)*Math.PI/180);
+    x.strokeStyle=CH[k].hex; x.fillStyle=CH[k].hex; x.lineWidth=6; x.beginPath(); x.roundRect?x.roundRect(-140,-70,280,140,18):x.rect(-140,-70,280,140); x.stroke();
+    x.textAlign="center"; x.font=`700 22px ${F}`; x.fillText(`ΣΤΑΘΜΟΣ ${k+1} ✓`,0,-28); x.font=`700 30px ${D}`; x.fillText(s.t.toUpperCase(),0,12);
+    x.font=`600 22px ${F}`; x.fillText(S.finishDate||"",0,48); x.restore(); });
+  return c.toDataURL("image/png");
+}
+function showPassportImage(){
+  let src; try{ src=passportImage(); }catch(e){ toast("Δεν έγινε η δημιουργία εικόνας"); return; }
+  const m=document.createElement("div"); m.className="modal"; m.setAttribute("role","dialog"); m.setAttribute("aria-label","Το διαβατήριό μου");
+  m.innerHTML=`<div class="box"><img src="${src}" alt="Το διαβατήριό μου"><p class="hint">Πάτα παρατεταμένα την εικόνα (ή δεξί κλικ) για να την αποθηκεύσεις, ή κάνε στιγμιότυπο οθόνης.</p><div class="row2"><button class="btn" id="mclose">Κλείσιμο</button></div></div>`;
+  document.body.appendChild(m); const close=()=>m.remove(); $("#mclose",m).onclick=close; m.onclick=e=>{ if(e.target===m) close(); }; $("#mclose",m).focus();
+}
+
+/* --- in-page confirm (browser confirm() is blocked in the viewer) --- */
+function askConfirm(msg, yes){
+  const m=document.createElement("div"); m.className="modal";
+  m.innerHTML=`<div class="box"><p style="font-weight:700">${esc(msg)}</p><div class="row2"><button class="btn alt" id="cno">Άκυρο</button><button class="btn" id="cyes">Ναι, σβήσ' τα</button></div></div>`;
+  document.body.appendChild(m); $("#cno",m).onclick=()=>m.remove(); $("#cyes",m).onclick=()=>{ m.remove(); yes(); }; $("#cno",m).focus();
+}
+
+/* --- cinematic intro --- */
+function intro(){
+  if($(".intro")) return;
+  const stars=Array.from({length:40},()=>`<i style="left:${Math.random()*100}%;top:${Math.random()*70}%;animation-delay:${(Math.random()*3).toFixed(2)}s"></i>`).join("");
+  const d=document.createElement("div"); d.className="intro"; d.setAttribute("role","dialog"); d.setAttribute("aria-label","Εισαγωγή");
+  d.innerHTML=`<div class="sky">${stars}</div><button class="skip" id="iskip">Παράλειψη</button>
+  <div class="eyebrow">Επαγγελματική Αγωγή · Α΄ Λυκείου</div>
+  <h1><span class="w">Το ταξίδι</span> <span class="w">σου</span></h1>
+  <div class="scene"><svg viewBox="0 0 460 130">
+    <line x1="0" y1="96" x2="460" y2="96" stroke="#4A5185" stroke-width="5" stroke-linecap="round"/>
+    ${[0,1,2].map(k=>`<circle class="st st${k+1}" cx="${110+k*120}" cy="96" r="10" fill="${CH[k].hex}" stroke="#F6F7FF" stroke-width="3"/><text class="lbl lb${k+1}" x="${110+k*120}" y="126" text-anchor="middle">${CH[k].n}</text>`).join("")}
+    <g class="tr"><circle class="smoke" cx="12" cy="56" r="7" fill="#B4B9E0"/><g transform="translate(0,60)">${trainSVG().replace('<svg viewBox="0 0 60 34" aria-hidden="true">','').replace('</svg>','')}</g></g>
+  </svg></div>
+  <p class="sub">Τρεις σταθμοί. Μία απόφαση που είναι δική σου. Πάμε;</p>
+  <div class="go"><button class="btn sun" id="igo1">🔊 Ξεκίνα με ήχο</button><button class="btn alt" id="igo0">Χωρίς ήχο</button></div>`;
+  document.body.appendChild(d);
+  const close=snd=>{ if(snd!==undefined){ S.sound=snd; save(); sset(); } d.classList.add("out"); setTimeout(()=>d.remove(),600);
+    if(S.sound){ sfx("horn"); setTimeout(()=>sfx("chug"),700); } };
+  $("#igo1",d).onclick=()=>close(true); $("#igo0",d).onclick=()=>close(false); $("#iskip",d).onclick=()=>close();
+  setTimeout(()=>{ const b=$("#igo1",d); b&&b.focus({preventScroll:true}); }, RM?0:3800);
+}
+
+/* --- wrap the screen engine --- */
+const _go=go;
+go=function(i){
+  const prev=SCREENS[S.i]?SCREENS[S.i].ch:null, first=lastIdx===null;
+  _go(i);
+  const s=SCREENS[S.i], main=$("#main");
+  placeTrain(S.i, !first);
+  if(!first && s.ch>=0 && s.ch!==prev && (prev===null || s.ch>prev)) arrive(s.ch);
+  else if(!first) sfx("chug");
+  if(s.title==="Λήψη απόφασης"){
+    if(S.done.finish) stampPassport(main,false);
+    const pp=$("#pp",main);
+    if(pp){ const b=document.createElement("button"); b.className="btn alt"; b.id="ppimg"; b.textContent="🖼️ Το διαβατήριό μου σε εικόνα"; b.style.marginTop="10px"; b.onclick=showPassportImage; pp.after(b); }
+    const cel=$("#cel",main);
+    if(cel) cel.onclick=async()=>{ cel.disabled=true; if(!S.finishDate){ S.finishDate=new Date().toLocaleDateString("el-GR",{day:"2-digit",month:"2-digit",year:"numeric"}); save(); }
+      $("#pp",main).scrollIntoView({behavior:RM?"auto":"smooth",block:"center"});
+      await stampPassport(main,true); award("finish",20); sfx("fanfare"); confetti(); setTimeout(confetti,900); cel.disabled=false; };
+    const rst=$("#rst",main);
+    if(rst) rst.onclick=()=>askConfirm("Να σβηστούν οι απαντήσεις και τα αστέρια σου;",()=>{ Object.assign(S,{i:0,xp:0,done:{},name:"",strengths:[],holland:{},likes:[],omp:null,notes:{},dec:{a:"",b:"",r:[]},venn:[],finishDate:null}); save(); document.getElementById("xp").textContent="⭐ 0"; go(0); intro(); });
+  }
+  if(S.i===0 && !$("#replay",main)){ const r=document.createElement("button"); r.className="replay"; r.id="replay"; r.textContent="▶ Δες ξανά την εισαγωγή"; r.onclick=intro; main.firstElementChild.prepend(r); }
+};
+
+
+/* ===== v3: narration (Greek text-to-speech) ===== */
+const TTS = "speechSynthesis" in window;
+const stripEmoji = t => t.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/gu,"").replace(/\s+/g," ").trim();
+function stopSpeak(){ if(TTS){ try{ speechSynthesis.cancel(); }catch(e){} } $$(".speak.on").forEach(b=>{ b.classList.remove("on"); b.querySelector("span").textContent="Άκουσε"; }); }
+function greekVoice(){ try{ const v=speechSynthesis.getVoices(); return v.find(x=>/^el(-|_|$)/i.test(x.lang)) || null; }catch(e){ return null; } }
+if(TTS){ try{ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=()=>{}; }catch(e){} }
+function screenText(main){
+  const sc=main.firstElementChild; if(!sc) return "";
+  const parts=[];
+  const h=$("h1",sc)||$("h2",sc); if(h) parts.push([...h.querySelectorAll("span")].map(s=>s.textContent).join(" ")||h.textContent);
+  const lead=$(".lead",sc); if(lead) parts.push(lead.textContent);
+  return stripEmoji(parts.join(". "));
+}
+function speakScreen(btn, main){
+  if(btn.classList.contains("on")){ stopSpeak(); return; }
+  if(!TTS){ toast("Η συσκευή δεν υποστηρίζει ανάγνωση κειμένου"); return; }
+  stopSpeak();
+  const u=new SpeechSynthesisUtterance(screenText(main)); u.lang="el-GR"; u.rate=.95; u.pitch=1;
+  const v=greekVoice(); if(v) u.voice=v; else toast("Δεν βρέθηκε ελληνική φωνή· θα χρησιμοποιηθεί η προεπιλεγμένη");
+  const done=()=>{ btn.classList.remove("on"); btn.querySelector("span").textContent="Άκουσε"; };
+  u.onend=done; u.onerror=done;
+  btn.classList.add("on"); btn.querySelector("span").textContent="Σταμάτα";
+  try{ speechSynthesis.speak(u); }catch(e){ done(); }
+}
+
+/* ===== v3: living path map (ΟΜΠ → κατευθύνσεις → σπουδές) ===== */
+const KCOL={K1:"#FF8C98",K2:"#8FB2FF",K3:"#C9B5FF",K4:"#8FE8D2",K5:"#FFD98A",K6:"#FFB37A"};
+function linkGrow(box, animate){
+  const svg=$("svg.links",box); if(!svg) return;
+  const B=box.getBoundingClientRect(), R=$(".rootpill",box).getBoundingClientRect();
+  const x0=R.left+R.width/2-B.left, y0=R.bottom-B.top;
+  svg.setAttribute("viewBox",`0 0 ${B.width} ${B.height}`);
+  svg.innerHTML=$$(".kcard",box).map((c,i)=>{ const r=c.getBoundingClientRect(); const x1=r.left+r.width/2-B.left, y1=r.top-B.top; const my=(y0+y1)/2;
+    const d=animate?"":"animation:none;stroke-dashoffset:0;";
+    return `<path pathLength="1" d="M${x0} ${y0} C ${x0} ${my}, ${x1} ${my}, ${x1} ${y1}" stroke="${c.dataset.c}" style="${d}animation-delay:${.25+i*.18}s"/><circle cx="${x1}" cy="${y1}" r="5" fill="${c.dataset.c}" style="${animate?"":"animation:none;"}animation-delay:${.7+i*.18}s"/>`; }).join("")
+    + `<circle cx="${x0}" cy="${y0}" r="6" fill="var(--ink)"/>`;
+}
+function drawGrow(main, n){
+  const box=$("#grow",main); if(!box) return; const o=OMP[n-1];
+  box.style.setProperty("--n",o.k.length);
+  box.innerHTML=`<svg class="links" aria-hidden="true"></svg>
+    <div class="root"><div class="rootpill">${o.n}η ΟΜΠ<small>${o.sub.join(" + ")}</small></div></div>
+    <div class="cols">${o.k.map((k,i)=>{ const st=K[k].st.replace(/\s*κ\.ά\.?\s*$/,"").split(/,\s*/).slice(0,5);
+      return `<div class="col"><div class="kcard" data-c="${KCOL[k]}" style="background:${KCOL[k]};animation-delay:${.55+i*.18}s">${k.replace("K","Κ")}<small>${K[k].n}</small></div>
+      <ul style="--kc:${KCOL[k]}">${st.map((s,j)=>`<li style="animation-delay:${1+i*.15+j*.12}s">${s}</li>`).join("")}</ul></div>`; }).join("")}</div>
+    <p class="hint note">Ενδεικτικές σπουδές. Πάτησε τις κάρτες Κ πιο κάτω για όλα τα μαθήματα και τις σπουδές κάθε κατεύθυνσης.</p>`;
+  requestAnimationFrame(()=>linkGrow(box,!RM));
+  if(!RM){ [0,1,2].forEach(i=>setTimeout(()=>sfx("ding"),550+i*350)); }
+}
+addEventListener("resize",()=>{ const b=$("#grow"); if(b&&$(".rootpill",b)) linkGrow(b,false); });
+
+/* ===== wrap the engine once more ===== */
+const _go2=go;
+go=function(i){
+  stopSpeak();
+  _go2(i);
+  const s=SCREENS[S.i], main=$("#main"), sc=main.firstElementChild;
+  if(s.title==="Ο.Μ.Π. & κατευθύνσεις"){
+    const omps=$(".omps",main);
+    if(omps){
+      const p=document.createElement("div"); p.className="panel"; p.id="growp";
+      p.innerHTML=`<h3>🌳 Ο ζωντανός χάρτης της διαδρομής σου</h3><p class="hint" style="margin:0">Διάλεξε μια ΟΜΠ πιο πάνω και δες πού «φυτρώνει» ο δρόμος σου: κατευθύνσεις στη Β΄ και Γ΄ και σπουδές μετά.</p><div class="grow" id="grow"></div>`;
+      omps.after(p);
+      $$(".omp",main).forEach(b=>b.addEventListener("click",()=>drawGrow(main,+b.dataset.o)));
+      if(S.omp) drawGrow(main,S.omp);
+    }
+  }
+};
+
+$("#xp").textContent="⭐ "+S.xp;
+const sb=$("#snd"); const sset=()=>{ sb.textContent=S.sound?"🔊":"🔇"; sb.setAttribute("aria-pressed",!!S.sound); }; sset();
+sb.onclick=()=>{ S.sound=!S.sound; save(); sset(); beep("ok"); };
+buildMetro(); $("#metro").appendChild(trainEl); go(S.i||0); if((S.i||0)===0) intro();
+</script>
+</body>
+</html>
+
+</body></html>

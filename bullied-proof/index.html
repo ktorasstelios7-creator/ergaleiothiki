@@ -1,0 +1,1063 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Bullied Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Advent+Pro:wght@500;700;800&family=Commissioner:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one app, seven views behind a sticky tab bar; the group-chat simulation is the centerpiece, framed as a phone. */
+:root{
+  --bg:#eceff5; --surface:#ffffff; --sunk:#dfe3ee; --ink:#14183a; --muted:#565c7d; --line:#c9cfe0;
+  --signal:#ff4f2e; --signal-ink:#ffffff; --calm:#11807b; --calm-soft:#d3efec; --violet:#4b3fd6; --violet-soft:#e3e1fb;
+  --bubble-them:#ffffff; --bubble-me:#4b3fd6; --bubble-me-ink:#ffffff; --chatbg:#e4e7f2;
+  --display:"Advent Pro","Commissioner",system-ui,sans-serif;
+  --body:"Commissioner",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1023; --surface:#171b36; --sunk:#0a0c1b; --ink:#e9ecf8; --muted:#a2a8c8; --line:#2b3157;
+  --signal:#ff6b4d; --signal-ink:#1a0a06; --calm:#4fd1c5; --calm-soft:#123a3b; --violet:#9d94ff; --violet-soft:#25234d;
+  --bubble-them:#20254a; --bubble-me:#6c61f0; --bubble-me-ink:#ffffff; --chatbg:#111530; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1023; --surface:#171b36; --sunk:#0a0c1b; --ink:#e9ecf8; --muted:#a2a8c8; --line:#2b3157;
+  --signal:#ff6b4d; --signal-ink:#1a0a06; --calm:#4fd1c5; --calm-soft:#123a3b; --violet:#9d94ff; --violet-soft:#25234d;
+  --bubble-them:#20254a; --bubble-me:#6c61f0; --bubble-me-ink:#ffffff; --chatbg:#111530; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.02;text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+a{color:var(--violet)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:6px}
+.label{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* top bar */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:14px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);flex:none}
+.brand b{font-family:var(--display);font-weight:800;font-size:1.35rem;letter-spacing:.02em;text-transform:uppercase}
+.brand b span{color:var(--signal)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex:none;text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;padding:7px 12px;border-radius:999px;white-space:nowrap}
+.tabs a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+.tabs a:hover{color:var(--ink)}
+
+main{padding-block:28px 64px}
+section.view{display:grid;gap:28px}
+.lede{font-size:1.08rem;color:var(--muted);max-width:62ch}
+.head{display:grid;gap:10px}
+.head h2{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800}
+
+/* hero */
+.hero{display:grid;gap:26px;padding-block:18px 8px}
+.hero h1{font-size:clamp(3.2rem,12vw,7.4rem);font-weight:800;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--signal)}
+.crowd{display:flex;flex-wrap:wrap;gap:9px;max-width:560px}
+.dot{width:22px;height:22px;border-radius:50%;background:var(--line);position:relative}
+.dot.seen{background:var(--muted);opacity:.55}
+.dot.you{background:var(--signal);box-shadow:0 0 0 5px color-mix(in srgb,var(--signal) 22%,transparent)}
+.dot.target{background:transparent;border:2px dashed var(--ink)}
+.crowd-cap{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;padding:13px 18px;font-weight:700;text-decoration:none;font-size:1rem}
+.btn.primary{background:var(--signal);color:var(--signal-ink)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.quiet{background:var(--sunk);color:var(--ink)}
+.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mod{display:grid;gap:6px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.mod:hover{border-color:var(--ink)}
+.mod h3{font-size:1.5rem;font-weight:700}
+.mod p{color:var(--muted);font-size:.93rem}
+.mod .from{font-family:var(--mono);font-size:.7rem;color:var(--calm);letter-spacing:.08em;text-transform:uppercase}
+
+/* chat sim */
+.sim{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:820px){.sim{grid-template-columns:minmax(0,1fr)}}
+.phone{background:var(--ink);border-radius:34px;padding:10px;max-width:400px;width:100%;margin-inline:auto}
+.screen{background:var(--chatbg);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;height:min(640px,72vh);min-height:460px}
+.chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;color:#fff;flex:none}
+.chat-head .t{display:grid;line-height:1.2;min-width:0}
+.chat-head .t b{font-size:.98rem}
+.chat-head .t small{color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.log{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth}
+.msg{max-width:82%;display:grid;gap:2px;animation:pop .25s ease-out}
+.msg .who{font-size:.72rem;font-weight:700;padding-left:10px}
+.msg .b{background:var(--bubble-them);padding:8px 12px;border-radius:16px 16px 16px 4px;font-size:.95rem;box-shadow:0 1px 0 var(--line)}
+.msg.me{align-self:flex-end}
+.msg.me .b{background:var(--bubble-me);color:var(--bubble-me-ink);border-radius:16px 16px 4px 16px}
+.msg.me .who{text-align:right;padding-right:10px;color:var(--muted)}
+.msg.private .b{background:var(--calm);color:#fff}
+.sys{align-self:center;font-family:var(--mono);font-size:.72rem;color:var(--muted);background:var(--surface);padding:4px 10px;border-radius:999px;text-align:center;max-width:92%;animation:pop .25s ease-out}
+.sys.alert{color:var(--signal);font-weight:700}
+.photo{width:210px;height:140px;border-radius:12px;background:repeating-linear-gradient(135deg,var(--line) 0 8px,var(--sunk) 8px 16px);display:grid;place-items:center;font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:center;padding:10px}
+.poll{background:var(--bubble-them);border-radius:16px;padding:12px;display:grid;gap:8px;min-width:230px}
+.poll b{font-size:.95rem}
+.pollrow{display:grid;gap:3px}
+.pollrow .top{display:flex;justify-content:space-between;font-size:.85rem;font-variant-numeric:tabular-nums}
+.pollrow .track{height:6px;background:var(--sunk);border-radius:6px;overflow:hidden}
+.pollrow .fill{height:100%;background:var(--violet);transition:width .5s}
+.typing{align-self:flex-start;background:var(--bubble-them);border-radius:16px;padding:10px 14px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.draft{align-self:flex-end;max-width:82%;font-size:.95rem;padding:8px 12px;border-radius:16px;border:1.5px dashed var(--muted);color:var(--muted);animation:pop .25s ease-out}
+.draft s{text-decoration-thickness:2px}
+@keyframes pop{from{transform:translateY(6px);opacity:.2}to{transform:none;opacity:1}}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+
+.side{display:grid;gap:16px}
+.prompt{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:12px}
+.prompt h3{font-size:1.7rem;font-weight:700}
+.choices{display:grid;gap:8px}
+.choice{text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:600;font-size:.97rem}
+.choice:hover{border-color:var(--violet)}
+.choice small{display:block;font-weight:400;color:var(--muted);font-size:.85rem;margin-top:2px}
+.waiting{color:var(--muted);font-size:.95rem}
+.ending{display:grid;gap:14px}
+.ending h3{font-size:clamp(2.2rem,7vw,3.2rem);font-weight:800}
+.ending h3 em{font-style:normal;color:var(--signal)}
+.stat{display:flex;gap:18px;flex-wrap:wrap}
+.stat div{display:grid}
+.stat b{font-family:var(--display);font-size:2.6rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--muted)}
+.path{display:grid;gap:6px;padding:0;margin:0;list-style:none}
+.path li{display:flex;gap:10px;align-items:baseline;font-size:.95rem}
+.chip{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;flex:none}
+.chip.def{background:var(--calm-soft);color:var(--calm)}
+.chip.rei{background:color-mix(in srgb,var(--signal) 16%,transparent);color:var(--signal)}
+.chip.out{background:var(--sunk);color:var(--muted)}
+.ask{border-left:3px solid var(--violet);padding-left:12px;color:var(--ink);font-weight:500}
+
+
+.post{background:var(--bubble-them);border-radius:14px;overflow:hidden;display:grid;gap:6px;width:240px;max-width:100%;padding-bottom:8px}
+.post .ph{display:flex;align-items:center;gap:8px;padding:8px 10px 0;font-size:.85rem}
+.post .pav{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--signal),var(--violet))}
+.post .photo.wide{width:100%;height:110px;border-radius:0}
+.post p{padding:0 10px;font-size:.88rem}
+.post .likes{padding:0 10px;font-size:.78rem;color:var(--muted);font-family:var(--mono)}
+.msg.me .post{color:var(--ink)}
+.voice{display:flex;align-items:center;gap:8px}
+.voice .play{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:color-mix(in srgb,currentColor 18%,transparent)}
+.voice .wave{display:flex;align-items:center;gap:2px;height:22px}
+.voice .wave i{width:3px;border-radius:2px;background:currentColor;opacity:.75}
+.voice .dur{font-family:var(--mono);font-size:.72rem;opacity:.8}
+.vlabel{font-size:.78rem;opacity:.8;margin-top:4px;font-style:italic}
+.scen{display:grid;gap:2px}
+.scen .st{font-family:var(--display);font-size:1.45rem;font-weight:700;line-height:1.1}
+.scen .label{font-size:.66rem}
+
+/* scale */
+.scale{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.scale{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;display:grid;gap:16px}
+.case-num{display:flex;justify-content:space-between;align-items:center}
+.progress{display:flex;gap:5px}
+.progress i{width:18px;height:5px;border-radius:3px;background:var(--line)}
+.progress i.done{background:var(--calm)}
+.progress i.miss{background:var(--signal)}
+.progress i.now{background:var(--ink)}
+.case-text{font-family:var(--display);font-size:clamp(1.5rem,4vw,2rem);font-weight:700;line-height:1.15}
+.bins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.bin{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:14px 6px;font-weight:700;font-size:.95rem}
+.bin:hover{border-color:var(--ink)}
+.bin.right{border-color:var(--calm);background:var(--calm-soft)}
+.bin.wrong{border-color:var(--signal)}
+.feedback{background:var(--sunk);border-radius:14px;padding:14px;display:grid;gap:8px}
+.feedback b{font-family:var(--display);font-size:1.35rem}
+.criteria{display:grid;gap:10px}
+.crit{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.crit .k{font-family:var(--display);font-weight:800;font-size:1.6rem;line-height:1;color:var(--violet);width:1.4ch}
+.crit b{display:block}
+.crit p{color:var(--muted);font-size:.9rem}
+
+/* roles */
+.roles{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+@media (max-width:820px){.roles{grid-template-columns:minmax(0,1fr)}}
+.ring{position:relative;width:min(100%,420px);aspect-ratio:1;max-width:100%;margin-inline:auto}
+.ring::before{content:"";position:absolute;inset:16%;border-radius:50%;border:2px dashed var(--line)}
+.ring::after{content:"";position:absolute;inset:34%;border-radius:50%;border:1px solid var(--line)}
+.role{position:absolute;transform:translate(-50%,-50%);border:0;border-radius:999px;padding:9px 13px;font-weight:700;font-size:.88rem;background:var(--surface);box-shadow:0 0 0 1.5px var(--line);white-space:nowrap;z-index:1}
+.role[aria-pressed="true"]{background:var(--ink);color:var(--bg);box-shadow:none}
+.role.center{background:transparent;box-shadow:0 0 0 2px var(--ink) inset;border-radius:50%;width:92px;height:92px;padding:0}
+.role.center[aria-pressed="true"]{background:var(--ink)}
+.role-panel{display:grid;gap:12px}
+.role-panel h3{font-size:2.4rem;font-weight:800}
+.role-panel .voice{font-family:var(--display);font-size:1.45rem;font-weight:500;line-height:1.2;color:var(--muted)}
+.role-panel .next{background:var(--calm-soft);color:var(--ink);border-radius:14px;padding:14px}
+.role-panel .next .label{color:var(--calm)}
+
+/* pact */
+.pact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.pact{grid-template-columns:minmax(0,1fr)}}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:.92rem}
+input[type="text"]{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+input[type="text"]:focus{border-color:var(--violet);outline:none}
+.rules{display:grid;gap:6px}
+.rule{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:.95rem}
+.rule input{margin-top:4px;accent-color:var(--violet);width:18px;height:18px;flex:none}
+.add-row{display:flex;gap:8px}
+.add-row input{flex:1;min-width:0}
+.pact-card{background:var(--ink);color:var(--bg);border-radius:22px;padding:24px;display:grid;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px)}
+.pact-card h3{font-size:2.1rem;font-weight:800}
+.pact-card ol{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.pact-card .seal{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;border-top:1px solid color-mix(in srgb,var(--bg) 30%,transparent);padding-top:12px}
+.pact-card .seal .label{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.pact-card .stamp{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;border:2px solid var(--signal);color:var(--signal);padding:4px 10px;border-radius:8px;transform:rotate(-4deg)}
+.pact-card .empty{opacity:.7}
+.toast{font-size:.88rem;color:var(--calm);font-weight:600;min-height:1.3em}
+
+/* help */
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:12px;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--display);font-weight:800;font-size:1.5rem;line-height:1;color:var(--signal);width:1.2ch}
+.steps b{display:block}
+.steps p{color:var(--muted);font-size:.92rem}
+.lines{display:grid;gap:10px}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.line .num{font-family:var(--display);font-size:2.2rem;font-weight:800;line-height:1;user-select:all;font-variant-numeric:tabular-nums}
+.line .num.small{font-size:1.25rem;word-break:break-all}
+.line p{grid-column:1/-1;color:var(--muted);font-size:.88rem}
+.copy{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:7px 11px;font-size:.82rem;font-weight:700}
+.country{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--calm);margin-top:6px}
+.note{font-size:.85rem;color:var(--muted)}
+.urgent{background:var(--signal);color:var(--signal-ink);border-radius:16px;padding:16px;display:grid;gap:4px}
+.urgent b{font-family:var(--display);font-size:1.5rem}
+
+/* sources */
+.atlas{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.src{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:10px;align-content:start}
+.src .flag{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.src .flag .label{color:var(--calm)}
+.src h3{font-size:1.65rem;font-weight:700}
+.src p{font-size:.93rem;color:var(--muted)}
+.src .took{background:var(--violet-soft);border-radius:12px;padding:10px 12px;font-size:.9rem;color:var(--ink)}
+.src .took .label{color:var(--violet)}
+.src .fig{font-family:var(--display);font-weight:800;font-size:1.25rem;color:var(--ink)}
+.teacher{background:var(--ink);color:var(--bg);border-radius:20px;padding:22px;display:grid;gap:14px}
+.teacher h3{font-size:2rem;font-weight:800}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.plan div{border:1px solid color-mix(in srgb,var(--bg) 25%,transparent);border-radius:12px;padding:12px;display:grid;gap:4px}
+.plan b{font-family:var(--display);font-size:1.6rem;color:var(--signal);line-height:1}
+.plan span{font-size:.9rem}
+
+footer{border-top:1px solid var(--line);padding-block:20px;color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#start" aria-label="Bullied Proof, αρχή">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 6.5v8.2C4 22.3 9.1 28.4 16 30c6.9-1.6 12-7.7 12-15.3V6.5L16 2Z" fill="var(--ink)"/><path d="M10 12.5h12a1.6 1.6 0 0 1 1.6 1.6v5.2a1.6 1.6 0 0 1-1.6 1.6h-6.3l-3.5 2.8v-2.8H10a1.6 1.6 0 0 1-1.6-1.6v-5.2A1.6 1.6 0 0 1 10 12.5Z" fill="var(--signal)"/></svg>
+      <b>Bullied<span>·</span>Proof</b>
+    </a>
+    <nav class="tabs" aria-label="Ενότητες">
+      <a href="#start">Αρχή</a>
+      <a href="#chat">Το group</a>
+      <a href="#scale">Η ζυγαριά</a>
+      <a href="#roles">Οι ρόλοι</a>
+      <a href="#pact">Το συμβόλαιο</a>
+      <a href="#help">Βοήθεια</a>
+      <a href="#sources">Από πού ξεκινήσαμε</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- START -->
+<section class="view" id="v-start">
+  <div class="hero">
+    <span class="label">Ένα διαδραστικό εργαλείο κατά του εκφοβισμού · για εφήβους</span>
+    <h1>Κι εσύ<br><em>εκεί</em> ήσουν.</h1>
+    <div class="crowd" id="crowd" aria-hidden="true"></div>
+    <p class="crowd-cap">Ένα μήνυμα. 23 άτομα το είδαν. Ένα από αυτά είσαι εσύ.</p>
+    <p class="lede">Το bullying σπάνια συμβαίνει μεταξύ δύο ανθρώπων. Συμβαίνει μπροστά σε κοινό: στο διάλειμμα, στο group, στα σχόλια. Το Bullied Proof δεν σου λέει τι να κάνεις. Σε βάζει μέσα στη σκηνή και σε αφήνει να δεις τι αλλάζει όταν αλλάζεις εσύ.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="#chat">Μπες στο group →</a>
+      <a class="btn ghost" href="#sources">Τι ερευνήσαμε</a>
+    </div>
+  </div>
+  <div class="modules">
+    <a class="mod" href="#chat"><span class="from">Έμπνευση: KiVa · ConRed</span><h3>Το group</h3><p>Τέσσερα σενάρια: μια φωτογραφία, ένα πάρτι, ένα ανώνυμο προφίλ, κι ένα όπου ο στόχος είσαι εσύ.</p></a>
+    <a class="mod" href="#scale"><span class="from">Έμπνευση: Fri for Mobberi · DropMob</span><h3>Η ζυγαριά</h3><p>Πείραγμα, σύγκρουση ή bullying; Οκτώ πραγματικές καταστάσεις, τέσσερα κριτήρια.</p></a>
+    <a class="mod" href="#roles"><span class="from">Έμπνευση: KiVa</span><h3>Οι ρόλοι</h3><p>Ποιος στέκεται πού όταν συμβαίνει. Και πώς περνάς από τη μία θέση στην άλλη.</p></a>
+    <a class="mod" href="#pact"><span class="from">Έμπνευση: Medienhelden · Diana Award</span><h3>Το συμβόλαιο</h3><p>Η τάξη γράφει τους δικούς της κανόνες για το group. Τους υπογράφει. Τους κρατάει.</p></a>
+    <a class="mod" href="#help"><span class="from">Ελλάδα · Κύπρος</span><h3>Βοήθεια</h3><p>Τι κάνεις αν συμβαίνει σε σένα ή μπροστά σου, και πού τηλεφωνείς.</p></a>
+  </div>
+</section>
+
+<!-- CHAT -->
+<section class="view" id="v-chat" hidden>
+  <div class="head">
+    <span class="label">4 σενάρια · 2 αποφάσεις το καθένα · περίπου 4 λεπτά</span>
+    <h2>Το group</h2>
+    <p class="lede">Το κινητό δονείται. Είναι ένα group, ένα story, ένα ανώνυμο προφίλ. Δεν υπάρχει σωστή απάντηση που θα σε «περάσει». Υπάρχει μόνο αυτό που θα έκανες, και στο τέλος η οθόνη που δεν βλέπεις.</p>
+  </div>
+  <div class="sim">
+    <div class="phone">
+      <div class="screen">
+        <div class="chat-head" id="chatHead">
+          <div class="avatar" style="background:#4b3fd6">Β2</div>
+          <div class="t"><b id="chatTitle">Β΄2 τα παιδιά</b><small id="chatSub">Άλεξ, Δανάη, Γιώργος, Μαρίνα, Νίκος, Πέτρος, εσύ +17</small></div>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="side" id="side"></div>
+  </div>
+</section>
+
+<!-- SCALE -->
+<section class="view" id="v-scale" hidden>
+  <div class="head">
+    <span class="label">8 καταστάσεις · κατάταξη</span>
+    <h2>Η ζυγαριά</h2>
+    <p class="lede">Δεν είναι κάθε πείραγμα bullying, ούτε κάθε τσακωμός. Διάβασε την κατάσταση και βάλ' τη στο κουτί που της ταιριάζει. Μετά δες γιατί.</p>
+  </div>
+  <div class="scale">
+    <div class="card" id="scaleCard"></div>
+    <div class="criteria">
+      <span class="label">Τέσσερα κριτήρια για να ξεχωρίσεις</span>
+      <div class="crit"><span class="k">1</span><div><b>Επανάληψη</b><p>Δεν είναι μία κακή στιγμή. Γίνεται ξανά και ξανά, ή ο στόχος περιμένει πότε θα ξαναγίνει.</p></div></div>
+      <div class="crit"><span class="k">2</span><div><b>Ανισορροπία δύναμης</b><p>Ο ένας έχει περισσότερη δύναμη: σωματική, κοινωνική, αριθμητική ή στο διαδίκτυο. Ο άλλος δεν μπορεί εύκολα να αμυνθεί.</p></div></div>
+      <div class="crit"><span class="k">3</span><div><b>Πρόθεση να πληγώσει</b><p>Ή τουλάχιστον αδιαφορία για το ότι πληγώνει. Το «πλάκα κάναμε» δεν αλλάζει το αποτέλεσμα.</p></div></div>
+      <div class="crit"><span class="k">4</span><div><b>Πώς το ζει ο άλλος</b><p>Η εμπειρία του στόχου μετράει. Αν το νιώθει σαν αποκλεισμό ή ταπείνωση, το παίρνουμε στα σοβαρά.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section class="view" id="v-roles" hidden>
+  <div class="head">
+    <span class="label">Οι ρόλοι γύρω από ένα περιστατικό</span>
+    <h2>Οι ρόλοι</h2>
+    <p class="lede">Όταν συμβαίνει bullying, σχεδόν όλοι γύρω παίζουν κάποιον ρόλο, ακόμα κι αν δεν κάνουν τίποτα. Πάτα έναν ρόλο για να δεις τι σκέφτεται και ποιο είναι το επόμενο βήμα του.</p>
+  </div>
+  <div class="roles">
+    <div class="ring" id="ring"></div>
+    <div class="role-panel" id="rolePanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- PACT -->
+<section class="view" id="v-pact" hidden>
+  <div class="head">
+    <span class="label">Για όλη την τάξη · 15 λεπτά</span>
+    <h2>Το συμβόλαιο του group</h2>
+    <p class="lede">Οι κανόνες που φτιάχνει η ίδια η τάξη κρατάνε καλύτερα από αυτούς που έρχονται απ' έξω. Διαλέξτε, αλλάξτε, προσθέστε δικούς σας. Μετά αντιγράψτε το και καρφιτσώστε το στο group.</p>
+  </div>
+  <div class="pact">
+    <div style="display:grid;gap:16px;min-width:0">
+      <div class="field"><label for="groupName">Όνομα του group</label><input type="text" id="groupName" placeholder="π.χ. Β΄2 τα παιδιά" maxlength="40"></div>
+      <div class="rules" id="rules"></div>
+      <div class="field"><label for="newRule">Δικός σας κανόνας</label>
+        <div class="add-row"><input type="text" id="newRule" placeholder="Γράψτε τον με δικά σας λόγια" maxlength="120"><button class="btn quiet" id="addRule">Πρόσθεσε</button></div>
+      </div>
+      <div class="field"><label for="signers">Υπογράφουν</label><input type="text" id="signers" placeholder="π.χ. 24 από τους 24" maxlength="60"></div>
+      <label class="rule"><input type="checkbox" id="ambassador"><span><b>Έχουμε πρεσβευτές Bullied Proof</b><br><span class="note">Δύο-τρία άτομα που η τάξη εμπιστεύεται, για να μιλάει κανείς πρώτα σε συνομήλικο.</span></span></label>
+    </div>
+    <div style="display:grid;gap:10px;min-width:0">
+      <div class="pact-card" id="pactCard"></div>
+      <div class="cta-row"><button class="btn primary" id="copyPact">Αντιγραφή κειμένου</button><button class="btn quiet" id="resetPact">Από την αρχή</button></div>
+      <div class="toast" id="pactToast" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- HELP -->
+<section class="view" id="v-help" hidden>
+  <div class="head">
+    <span class="label">Αν συμβαίνει τώρα</span>
+    <h2>Βοήθεια</h2>
+    <p class="lede">Δεν φταις εσύ. Και δεν χρειάζεται να το λύσεις μόνος/η σου.</p>
+  </div>
+  <div class="urgent"><b>Κίνδυνος τώρα; Κάλεσε 112.</b><span>Αν κάποιος κινδυνεύει σωματικά αυτή τη στιγμή, Ελλάδα και Κύπρος.</span></div>
+  <div class="help">
+    <div class="card">
+      <span class="label">Αν συμβαίνει σε σένα</span>
+      <ol class="steps">
+        <li><div><b>Μην απαντάς στην ίδια γλώσσα</b><p>Η απάντηση συνήθως δίνει στον άλλον αυτό που ψάχνει: αντίδραση.</p></div></li>
+        <li><div><b>Κράτα αποδείξεις</b><p>Screenshot με ημερομηνία και όνομα, πριν σβηστεί κάτι.</p></div></li>
+        <li><div><b>Μπλόκαρε και κάνε αναφορά</b><p>Όλες οι πλατφόρμες έχουν αναφορά. Δεν ειδοποιούν τον άλλον.</p></div></li>
+        <li><div><b>Πες το σε έναν ενήλικα</b><p>Γονιό, καθηγητή, σύμβουλο σχολείου. Αν ο πρώτος δεν ακούσει, πες το σε δεύτερο.</p></div></li>
+      </ol>
+    </div>
+    <div class="card">
+      <span class="label">Αν το βλέπεις</span>
+      <ol class="steps">
+        <li><div><b>Μην το ενισχύσεις</b><p>Ούτε like, ούτε γέλιο, ούτε forward. Το κοινό είναι το καύσιμο.</p></div></li>
+        <li><div><b>Γράψε στον στόχο</b><p>Ένα «είσαι οκ;» ιδιωτικά μετράει περισσότερο απ' όσο νομίζεις.</p></div></li>
+        <li><div><b>Μίλα, αν νιώθεις ασφαλής</b><p>Ένα «όχι ρε, σβήσ' το» συχνά αρκεί για να αλλάξει κατεύθυνση η συζήτηση.</p></div></li>
+        <li><div><b>Ειδοποίησε</b><p>Δεν είναι «κάρφωμα». Είναι προστασία. Κράτα το screenshot και δείξ' το.</p></div></li>
+      </ol>
+    </div>
+    <div class="lines">
+      <span class="country">Ελλάδα</span>
+      <div class="line"><span class="num">1056</span><button class="copy" data-copy="1056">Αντιγραφή</button><p>Εθνική Γραμμή για τα Παιδιά SOS, «Το Χαμόγελο του Παιδιού». Δωρεάν, ανώνυμα, όλο το 24ωρο. Υπάρχει και η εφαρμογή Chat 1056 για όσους προτιμούν να γράψουν.</p></div>
+      <div class="line"><span class="num">116111</span><button class="copy" data-copy="116111">Αντιγραφή</button><p>Ευρωπαϊκή Γραμμή Υποστήριξης Παιδιών και Εφήβων. Δωρεάν συμβουλευτική.</p></div>
+      <div class="line"><span class="num small">stop-bullying.gov.gr</span><button class="copy" data-copy="https://stop-bullying.gov.gr">Αντιγραφή</button><p>Η πλατφόρμα του Υπουργείου Παιδείας για αναφορά περιστατικών σχολικής βίας και εκφοβισμού.</p></div>
+      <span class="country">Κύπρος</span>
+      <div class="line"><span class="num">1480</span><button class="copy" data-copy="1480">Αντιγραφή</button><p>Γραμμή Βοήθειας του Κέντρου Ασφαλούς Διαδικτύου (CYberSafety), για διαδικτυακό εκφοβισμό. Δωρεάν και ανώνυμα, τις καθημερινές.</p></div>
+      <p class="note">Ο σύμβουλος ή η σύμβουλος του σχολείου σου είναι επίσης εκεί γι' αυτό.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section class="view" id="v-sources" hidden>
+  <div class="head">
+    <span class="label">Η έρευνα πίσω από την εφαρμογή</span>
+    <h2>Από πού ξεκινήσαμε</h2>
+    <p class="lede">Κοιτάξαμε προγράμματα από χώρες με μακρά ιστορία στην πρόληψη του εκφοβισμού. Κανένα δεν τα κάνει όλα. Το Bullied Proof δανείζεται από το καθένα αυτό που κάνει καλύτερα.</p>
+  </div>
+  <div class="atlas">
+    <article class="src">
+      <div class="flag"><span class="label">Δανία</span><span class="label">Mary Fonden · Red Barnet</span></div>
+      <h3>Fri for Mobberi</h3>
+      <p>Το πιο διαδεδομένο πρόγραμμα της Δανίας, για μικρές ηλικίες. Στηρίζεται σε τέσσερις αξίες: ανεκτικότητα, σεβασμό, φροντίδα και θάρρος, και θεωρεί το bullying ευθύνη των ενηλίκων και των θεατών.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Την ιδέα ότι η πρόληψη ξεκινά από την κοινότητα της τάξης, όχι από τον «κακό».</div>
+      <a href="https://friformobberi.dk" target="_blank" rel="noopener">friformobberi.dk</a>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Δανία</span><span class="label">Red Barnet</span></div>
+      <h3>DropMob</h3>
+      <p>Σενάρια για συζήτηση στην τάξη, με τίτλους όπως «Δημοφιλής ή ταπεινωμένος;» και «Τα αόρατα παιδιά». Κάθε σενάριο κλείνει με την ερώτηση: τι μπορούν να κάνουν οι μεγάλοι;</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Τη μορφή της ζυγαριάς: μικρές, ρεαλιστικές καταστάσεις που ανοίγουν κουβέντα.</div>
+      <a href="https://redbarnet.dk" target="_blank" rel="noopener">redbarnet.dk</a>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Σουηδία</span><span class="label">Από το 1997</span></div>
+      <h3>Friends</h3>
+      <p>Επισκέπτεται καθημερινά σχολεία και αθλητικούς συλλόγους, δημοσιεύει ετήσιες μετρήσεις και ξεκίνησε το World Anti-Bullying Forum. Υπολογίζει περίπου 60.000 παιδιά που δέχονται bullying κάθε χρόνο στη Σουηδία.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Την επιμονή στο κλίμα της τάξης: οι σχέσεις μετράνε πριν από τις τιμωρίες.</div>
+      <a href="https://friends.se/en" target="_blank" rel="noopener">friends.se</a>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Γερμανία</span><span class="label">FU Berlin</span></div>
+      <h3>Medienhelden</h3>
+      <p>Πρόγραμμα κατά του cyberbullying για τάξεις 7 έως 10, με αξιολόγηση που έδειξε μείωση. Ένα από τα κλειδιά: οι μαθητές γράφουν μόνοι τους κανόνες για το group της τάξης, γιατί έτσι τους στηρίζουν.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Το συμβόλαιο του group, γραμμένο από τους ίδιους τους μαθητές.</div>
+      <a href="https://www.medienhelden.info" target="_blank" rel="noopener">medienhelden.info</a>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Ισπανία</span><span class="label">Ανδαλουσία · Μαδρίτη</span></div>
+      <h3>ConRed & SociEscuela</h3>
+      <p>Το ConRed δουλεύει την ενσυναίσθηση στα κοινωνικά δίκτυα με δώδεκα διδακτικές ενότητες. Το SociEscuela είναι ένα online τεστ που χαρτογραφεί τις σχέσεις της τάξης· το 2024/25 το έκαναν πάνω από 342.000 μαθητές.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Την «άλλη οθόνη» στο τέλος του group: να δεις τι βλέπει ο στόχος.</div>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Ηνωμένο Βασίλειο</span><span class="label">The Diana Award</span></div>
+      <h3>Anti-Bullying Ambassadors</h3>
+      <p>Δωρεάν πρόγραμμα όπου οι ίδιοι οι μαθητές εκπαιδεύονται και γίνονται πρεσβευτές στο σχολείο τους. Από το 2011 έχουν εκπαιδευτεί πάνω από 54.000 νέοι.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Τους πρεσβευτές της τάξης στο συμβόλαιο: πρώτα μιλάς σε συνομήλικο.</div>
+      <a href="https://diana-award.org.uk" target="_blank" rel="noopener">diana-award.org.uk</a>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Ελλάδα</span><span class="label">Χαμόγελο του Παιδιού · ΥΠΑΙΘΑ</span></div>
+      <h3>Μίλα Τώρα & stop-bullying.gov.gr</h3>
+      <p>Στην πανελλαδική έρευνα 2023-24 του Χαμόγελου, ένα στα τρία παιδιά δηλώνει ότι έχει δεχθεί bullying. Το κράτος λειτουργεί πλατφόρμα αναφοράς περιστατικών.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Τις γραμμές βοήθειας, με προτεραιότητα στη γραπτή επικοινωνία που προτιμούν οι έφηβοι.</div>
+      <a href="https://hamogelo.gr/gr/el/sos-1056" target="_blank" rel="noopener">hamogelo.gr</a>
+    </article>
+    <article class="src">
+      <div class="flag"><span class="label">Φινλανδία · μπόνους</span><span class="label">Πανεπιστήμιο Turku</span></div>
+      <h3>KiVa</h3>
+      <p>Το πιο μελετημένο πρόγραμμα στην Ευρώπη. Η βασική του ιδέα: οι θεατές κρατούν ζωντανό το bullying με την αδιαφορία ή το γέλιο τους, και όταν παρεμβαίνουν, συχνά σταματά. Στη Φινλανδία κατέγραψε μείωση γύρω στο 30%.</p>
+      <div class="took"><span class="label">Πήραμε</span><br>Όλη την καρδιά της εφαρμογής: το «Κι εσύ εκεί ήσουν» και τους ρόλους.</div>
+      <a href="https://www.kivaprogram.net" target="_blank" rel="noopener">kivaprogram.net</a>
+    </article>
+  </div>
+  <div class="teacher">
+    <span class="label" style="color:color-mix(in srgb,var(--bg) 70%,transparent)">Για τον εκπαιδευτικό</span>
+    <h3>Ένα διδακτικό 45λεπτο</h3>
+    <div class="plan">
+      <div><b>10′</b><span>Ο καθένας περνά μόνος του από το group, με ακουστικά ή σιωπηλά. Χωρίς σχόλια.</span></div>
+      <div><b>10′</b><span>Συζήτηση: τι διάλεξες και γιατί; Τι σε σταμάτησε; Τι βλέπει ο Νίκος;</span></div>
+      <div><b>10′</b><span>Η ζυγαριά στον πίνακα, ψηφοφορία με τα χέρια για κάθε κατάσταση.</span></div>
+      <div><b>15′</b><span>Η τάξη γράφει το συμβόλαιο του group της και διαλέγει πρεσβευτές.</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">Bullied Proof · Οι χαρακτήρες και οι καταστάσεις είναι φανταστικοί. Οι γραμμές βοήθειας είναι πραγματικές.</div></footer>
+
+<script>
+(function(){
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+const store = {
+  get(k,d){try{const v=localStorage.getItem('bp_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('bp_'+k,JSON.stringify(v))}catch(e){}}
+};
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+/* ---------- routing ---------- */
+const views=['start','chat','scale','roles','pact','help','sources'];
+function route(){
+  const h=(location.hash||'#start').slice(1);
+  const v=views.includes(h)?h:'start';
+  views.forEach(n=>{$('#v-'+n).hidden = n!==v});
+  document.querySelectorAll('.tabs a').forEach(a=>{
+    if(a.getAttribute('href')==='#'+v){a.setAttribute('aria-current','page');a.scrollIntoView({block:'nearest',inline:'nearest'})}
+    else a.removeAttribute('aria-current');
+  });
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- hero crowd ---------- */
+(function(){
+  const c=$('#crowd'); let html='';
+  for(let i=0;i<24;i++){
+    let cls='dot seen';
+    if(i===0) cls='dot target';
+    if(i===15) cls='dot you';
+    html+=`<span class="${cls}"></span>`;
+  }
+  c.innerHTML=html;
+})();
+
+/* ---------- chat simulation ---------- */
+const people={
+  'Άλεξ':'#d9482b','Πέτρος':'#1f7a8c','Μαρίνα':'#b23a8c','Δανάη':'#2f8f4e','Γιώργος':'#8a6a12','Νίκος':'#5b5f85',
+  'Ζωή':'#c2410c','Κατερίνα':'#7c3aed','Ελένη':'#0e7490','Λευτέρης':'#b45309','Αμίρ':'#15803d','μαμά':'#64748b','Ηλίας':'#9333ea'
+};
+const log=$('#log'), side=$('#side');
+let state;
+const sleep=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
+function scroll(){log.scrollTop=log.scrollHeight}
+function add(node){log.appendChild(node);scroll();return node}
+function el(html){const d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild}
+async function say(who,text,opts={}){
+  const right=who==='me'||opts.owner;
+  if(!right){ const t=add(el('<div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>')); await sleep(opts.wait||650); t.remove(); }
+  else if(opts.owner){ await sleep(opts.wait||500); }
+  const cls='msg'+(right?' me':'')+(opts.private?' private':'');
+  const name=opts.name||(who==='me'?(opts.private?`εσύ → ${opts.to||'Νίκος'} (ιδιωτικά)`:'εσύ'):who);
+  const color=right?'':`style="color:${people[who]||'inherit'}"`;
+  add(el(`<div class="${cls}"><span class="who" ${color}>${esc(name)}</span><div class="b">${opts.html||esc(text)}</div></div>`));
+  await sleep(opts.after||450);
+}
+async function sys(text,alert){add(el(`<div class="sys${alert?' alert':''}">${esc(text)}</div>`));await sleep(700)}
+async function drafts(list){ for(const d of list){ add(el(`<div class="draft"><s>${esc(d)}</s></div>`)); await sleep(1000); } }
+function setHead(t,sub,av,color){
+  $('#chatTitle').textContent=t; $('#chatSub').textContent=sub;
+  const a=document.querySelector('#chatHead .avatar'); a.textContent=av; a.style.background=color;
+}
+async function otherScreen(t,sub,av,color,intro){
+  await sleep(1400); log.innerHTML=''; setHead(t,sub,av,color); waitingPanel(); await sys(intro);
+}
+function photoHTML(text){return `<div class="photo">${text}</div>`}
+function postHTML(handle,caption,likes){
+  return `<div class="post"><div class="ph"><span class="pav"></span><b>${esc(handle)}</b></div><div class="photo wide">ΑΝΑΡΤΗΣΗ</div><p>${esc(caption)}</p><span class="likes">♥ ${likes}</span></div>`;
+}
+function voiceHTML(dur,label){
+  let bars=''; for(let i=0;i<22;i++){ bars+=`<i style="height:${6+Math.round(Math.abs(Math.sin(i*1.7))*14)}px"></i>`; }
+  return `<div class="voice"><span class="play">▶</span><span class="wave">${bars}</span><span class="dur">${esc(dur)}</span></div>${label?`<div class="vlabel">${esc(label)}</div>`:''}`;
+}
+function pollHTML(){
+  const p=state.poll, tot=Math.max(1,p.yes+p.no);
+  return `<div class="poll" id="poll"><b>Να φύγει ο Νίκος από το group;</b>
+    <div class="pollrow"><div class="top"><span>ΝΑΙ</span><span>${p.yes}</span></div><div class="track"><div class="fill" style="width:${p.yes/tot*100}%"></div></div></div>
+    <div class="pollrow"><div class="top"><span>ΟΧΙ</span><span>${p.no}</span></div><div class="track"><div class="fill" style="width:${p.no/tot*100}%"></div></div></div></div>`;
+}
+function refreshPoll(){const old=document.getElementById('poll');if(old){old.outerHTML=pollHTML()}}
+
+function ask(title,hint,options){
+  return new Promise(res=>{
+    side.innerHTML=`<div class="prompt"><span class="label">Η σειρά σου</span><h3>${esc(title)}</h3>${hint?`<p class="waiting">${esc(hint)}</p>`:''}<div class="choices">${
+      options.map((o,i)=>`<button class="choice" data-i="${i}">${esc(o.label)}${o.sub?`<small>${esc(o.sub)}</small>`:''}</button>`).join('')}</div></div>`;
+    side.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      side.innerHTML=`<div class="prompt"><span class="label">Η συνομιλία συνεχίζεται</span><p class="waiting">Κοίτα την οθόνη.</p></div>`;
+      const o=options[+b.dataset.i]; state.path.push(o); res(o);
+    }));
+    side.querySelector('.choice').focus({preventScroll:true});
+  });
+}
+function waitingPanel(){side.innerHTML=`<div class="prompt"><span class="label">Το κινητό δονείται</span><p class="waiting">Διάβασε τι γράφουν.</p></div>`}
+function fresh(){ state={path:[],poll:{yes:0,no:0},wrote:0,spoke:0,flags:{}}; log.innerHTML=''; waitingPanel(); }
+
+/* ---- Σενάριο 1: Η φωτογραφία ---- */
+async function scPhoto(){
+  fresh();
+  setHead('Β΄2 τα παιδιά','Άλεξ, Δανάη, Γιώργος, Μαρίνα, Νίκος, Πέτρος, εσύ +17','Β2','#4b3fd6');
+  await sys('Τρίτη 21:47');
+  await say('Άλεξ','',{html:photoHTML('ΦΩΤΟΓΡΑΦΙΑ<br>ο Νίκος στα αποδυτήρια,<br>τραβηγμένη κρυφά'),wait:900});
+  await say('Άλεξ','ο Νίκος σήμερα στη γυμναστική 💀💀');
+  await say('Πέτρος','χαχαχαχα');
+  await say('Μαρίνα','😂😂😂');
+  await say('Γιώργος','ρε το σορτσάκι 😭');
+  await sys('Ο Νίκος είδε το μήνυμα');
+  await say('Δανάη','ρε σεις…',{wait:1100,after:900});
+  await sys('Η Δανάη δεν έγραψε κάτι άλλο');
+
+  const c1=await ask('Τι κάνεις;','Το είδαν ήδη 23 άτομα. Ο Νίκος είναι μέσα στο group.',[
+    {k:'laugh',label:'Στέλνω ένα 😂',sub:'Όλοι γελάνε. Είναι μόνο ένα emoji.',role:'rei',tag:'Ενίσχυσες το «αστείο»'},
+    {k:'quiet',label:'Δεν γράφω τίποτα',sub:'Κλείνω την εφαρμογή. Δεν είναι δική μου υπόθεση.',role:'out',tag:'Έμεινες σιωπηλός/ή'},
+    {k:'public',label:'Γράφω στο group: «σβήσ\' το, δεν είναι αστείο»',sub:'Μπροστά σε όλους.',role:'def',tag:'Μίλησες μπροστά σε όλους'},
+    {k:'private',label:'Γράφω ιδιωτικά στον Νίκο',sub:'Χωρίς να το δει κανείς άλλος.',role:'def',tag:'Στάθηκες δίπλα στον Νίκο ιδιωτικά'}
+  ]);
+  waitingPanel();
+  if(c1.k==='laugh'){
+    state.wrote++;
+    await say('me','😂');
+    await say('Άλεξ','επιτέλους κάποιος με χιούμορ εδώ μέσα');
+    await say('Πέτρος','κάποιος να του το κάνει sticker');
+  } else if(c1.k==='quiet'){
+    await sys('Το είδες. Δεν απάντησες.');
+    await say('Πέτρος','ο Νίκος σιωπή χαχα');
+    await say('Άλεξ','γιατί σιωπή; τόσο κακό ήταν; 😂');
+  } else if(c1.k==='public'){
+    state.wrote++;state.spoke++;
+    await say('me','σβήσ\' το, δεν είναι αστείο');
+    await say('Άλεξ','χαλάρωσε ρε, πλάκα κάνουμε',{wait:1200});
+    await say('Δανάη','όχι, έχει δίκιο. σβήσ\' τη',{wait:900});
+    await say('Γιώργος','ναι οκ, λίγο πολύ ήταν');
+    await sys('Η Μαρίνα αφαίρεσε την αντίδρασή της');
+  } else {
+    state.flags.privateMsg=true;state.wrote++;
+    await say('me','είσαι οκ; αυτό ήταν πολύ χαζό από μέρους τους',{private:true,to:'Νίκος'});
+    await sys('Ο Νίκος γράφει…');
+    await sleep(1600);
+    await sys('Ο Νίκος σταμάτησε να γράφει');
+    await say('Πέτρος','κάποιος να του το κάνει sticker');
+  }
+
+  await say('Άλεξ','ok ψηφοφορία 👇',{wait:900});
+  state.poll={yes:c1.k==='public'?1:3,no:0};
+  await say('Άλεξ','',{html:pollHTML()});
+  await say('Γιώργος','ψηφίστε ρε');
+  if(c1.k!=='public'){ state.poll.yes++; refreshPoll(); await sys('Η Μαρίνα ψήφισε'); }
+
+  const c2=await ask('Η ψηφοφορία είναι ανοιχτή.','Κάθε ψήφος φαίνεται με όνομα.',[
+    {k:'yes',label:'Ψηφίζω ΝΑΙ',sub:'Όλοι ψηφίζουν. Δεν θα φύγει στ\' αλήθεια.',role:'rei',tag:'Ψήφισες να φύγει'},
+    {k:'skip',label:'Δεν ψηφίζω',sub:'Ούτε ναι, ούτε όχι.',role:'out',tag:'Δεν πήρες θέση'},
+    {k:'no',label:'Ψηφίζω ΟΧΙ και γράφω «αυτό παραπάει»',sub:'Με το όνομά σου.',role:'def',tag:'Ψήφισες ΟΧΙ φανερά'},
+    {k:'report',label:'Κάνω screenshot και το δείχνω αύριο σε καθηγητή',sub:'Χωρίς να γράψω κάτι στο group.',role:'def',tag:'Κράτησες αποδείξεις και ζήτησες βοήθεια'}
+  ]);
+  waitingPanel();
+  if(c2.k==='yes'){
+    state.wrote++; state.poll.yes++; refreshPoll(); await sys('Ψήφισες ΝΑΙ');
+    await say('Άλεξ','μπράβο ομάδα');
+    state.poll.yes+=2; refreshPoll(); await sys('Ακόμα 2 ψήφοι');
+  } else if(c2.k==='skip'){
+    await sys('Δεν ψήφισες');
+    state.poll.yes+=3; refreshPoll(); await sys('Ακόμα 3 ψήφοι');
+    await say('Δανάη','εγώ δεν ψηφίζω σε τέτοια',{wait:1000});
+  } else if(c2.k==='no'){
+    state.wrote++;state.spoke++; state.poll.no++; refreshPoll();
+    await say('me','ΟΧΙ. αυτό παραπάει');
+    state.poll.no++; refreshPoll(); await sys('Η Δανάη ψήφισε ΟΧΙ');
+    if(state.spoke>1){ state.poll.no++; refreshPoll(); await sys('Ο Γιώργος ψήφισε ΟΧΙ'); }
+    await say('Άλεξ','καλά καλά, πόσο σοβαροί',{wait:1100});
+    if(c1.k!=='public'){ state.poll.yes--; state.poll.no++; refreshPoll(); await sys('Η Μαρίνα άλλαξε την ψήφο της'); }
+  } else {
+    state.flags.reported=true;
+    await sys('Αποθηκεύτηκε στιγμιότυπο οθόνης');
+    state.poll.yes+=2; refreshPoll(); await sys('Ακόμα 2 ψήφοι');
+  }
+
+  const saved = c2.k==='no' || (c1.k==='public' && c2.k!=='yes');
+  await sleep(700);
+  if(saved){
+    await say('Άλεξ','ok κλείνω την ψηφοφορία, πλάκα ήταν',{wait:1200});
+    await sys('Ο Άλεξ διέγραψε μια φωτογραφία');
+    await sys('Ο Νίκος είναι ακόμα στην ομάδα');
+  } else {
+    await sys('Ο Νίκος αποχώρησε από την ομάδα', true);
+    await say('Πέτρος','χαχα έφυγε μόνος του');
+    await say('Άλεξ','ποιος νοιάζεται 🤷');
+  }
+
+  await otherScreen('Νίκος · 22:31','Η ίδια συνομιλία, από την άλλη οθόνη','Ν','#5b5f85','Αυτά έγραψε ο Νίκος. Και τα έσβησε.');
+  await drafts(['ποιος την τράβηξε αυτή','σας παρακαλώ σβήστε την','χαχα καλή 😅','δεν πειράζει','…']);
+  await sys('Δεν στάλθηκε τίποτα');
+  if(state.flags.privateMsg){
+    await sys('1 ιδιωτικό μήνυμα · διαβάστηκε 14 φορές');
+    add(el(`<div class="msg"><span class="who">εσύ</span><div class="b">είσαι οκ; αυτό ήταν πολύ χαζό από μέρους τους</div></div>`)); await sleep(800);
+    await say('Νίκος','ευχαριστώ. δεν το περίμενα από κανέναν',{owner:true,wait:1600});
+  }
+  if(state.flags.reported){ await sys('Την επόμενη μέρα, η σύμβουλος του σχολείου ζήτησε να του μιλήσει'); }
+
+  const roles=state.path.map(p=>p.role), def=roles.filter(r=>r==='def').length, rei=roles.filter(r=>r==='rei').length;
+  let q;
+  if(def===2) q='Τι θα σε έκανε να το ξανακάνεις και την επόμενη φορά, όταν το «αστείο» το λέει ο κολλητός σου;';
+  else if(rei>0) q='Σε ποιο σημείο θα ήταν ευκολότερο να κάνεις κάτι άλλο; Τι θα χρειαζόσουν εκείνη τη στιγμή;';
+  else if(def===1) q='Στη μία απόφαση πήρες θέση, στην άλλη όχι. Τι άλλαξε ανάμεσα στις δύο;';
+  else q='Η σιωπή μοιάζει ουδέτερη. Από την οθόνη του Νίκου, πώς φαινόταν;';
+  showEnding('photo',{title:'Κι εσύ <em>εκεί</em> ήσουν.',stats:[['23','το είδαν'],[5+state.wrote,'έγραψαν κάτι'],[saved?'έμεινε':'έφυγε','ο Νίκος']],ask:q});
+}
+
+/* ---- Σενάριο 2: Το πάρτι ---- */
+async function scParty(){
+  fresh();
+  setHead('Δανάη 16 🎂 μυστικό','Δανάη, Ζωή, Κατερίνα, Μαρίνα, εσύ','Δ','#2f8f4e');
+  await sys('Παρασκευή 18:20');
+  await say('Δανάη','οκ λοιπόν Σάββατο στις 9 σπίτι μου, οι γονείς λείπουν 🎉',{wait:900});
+  await say('Κατερίνα','τέλειοοο');
+  await say('Μαρίνα','να πούμε και στην Ελένη; κάθεται δίπλα μου, θα το μάθει');
+  await say('Ζωή','εεε όχι ρε 😐',{wait:900});
+  await say('Ζωή','θα κάτσει στη γωνία όλο το βράδυ και θα μας κοιτάει');
+  await say('Δανάη','χαχα αλήθεια όμως');
+  await say('Κατερίνα','εγώ ό,τι πείτε');
+  await say('Μαρίνα','οκ οκ απλά ρώτησα',{wait:1200});
+
+  const c1=await ask('Η Ελένη δεν είναι σε αυτό το group.','Δεν θα δει ποτέ τι γράφτηκε εδώ.',[
+    {k:'agree',label:'Γράφω: «χαχα ναι, θα ήταν άβολο»',sub:'Ας είμαστε ειλικρινείς.',role:'rei',tag:'Συμφώνησες να μείνει απ\' έξω'},
+    {k:'heart',label:'Βάζω καρδιά στο μήνυμα για το πάρτι και τίποτα άλλο',sub:'Ουδέτερα.',role:'out',tag:'Πέρασες το θέμα στα γρήγορα'},
+    {k:'invite',label:'Γράφω: «εγώ λέω να έρθει. τι μας κάνει;»',sub:'Μπροστά στη Ζωή.',role:'def',tag:'Πρότεινες να την καλέσετε'},
+    {k:'marina',label:'Γράφω ιδιωτικά στη Μαρίνα: «καλά έκανες που ρώτησες»',sub:'Αυτή που τόλμησε πρώτη.',role:'def',tag:'Στήριξες αυτή που ρώτησε'}
+  ]);
+  waitingPanel();
+  if(c1.k==='agree'){
+    state.wrote++;
+    await say('me','χαχα ναι, θα ήταν άβολο');
+    await say('Ζωή','ευτυχώς κάποια με καταλαβαίνει 🙏');
+    await say('Μαρίνα','οκ',{wait:1300});
+    await sys('Η Μαρίνα έκανε σίγαση στην ομάδα');
+  } else if(c1.k==='heart'){
+    await sys('Αντέδρασες με ❤ στο μήνυμα της Δανάης');
+    await say('Ζωή','λοιπόν ποιος φέρνει ηχείο;');
+  } else if(c1.k==='invite'){
+    state.wrote++;state.spoke++;
+    await say('me','εγώ λέω να έρθει. τι μας κάνει;');
+    await say('Ζωή','σοβαρά τώρα;',{wait:1100});
+    await say('Μαρίνα','ναι κι εγώ αυτό λέω');
+    await say('Δανάη','δεν ξέρω… πάρτι μου είναι, θα δω',{wait:1400});
+  } else {
+    state.wrote++;
+    await say('me','καλά έκανες που ρώτησες',{private:true,to:'Μαρίνα'});
+    await say('Μαρίνα','σοβαρά; νόμιζα ότι ήμουν η μόνη',{private:true,name:'Μαρίνα (ιδιωτικά)',wait:1200});
+    await say('Μαρίνα','εγώ πάντως θα της το πω, δεν θέλω να το μάθει από αλλού',{wait:1000});
+    await say('Ζωή','κάνε ό,τι θες 🙄');
+  }
+
+  await sys('Σάββατο 23:48');
+  await say('Ζωή','δείτε τι ανέβασε η Ελένη 💀',{wait:900});
+  await say('Ζωή','',{html:photoHTML('STORY της Ελένης<br>μαύρη οθόνη, ένα τραγούδι<br>και η λέξη «οκ»')});
+  await say('Ζωή','κάποια ζηλεύει 😌');
+  await say('Ζωή','να το ανεβάσω στο story μου με αυτή την ατάκα;');
+  await say('Κατερίνα','χαχαχ ναι');
+
+  const c2=await ask('Η Ζωή περιμένει απάντηση.','Το story της Ζωής το βλέπουν πάνω από 300 άτομα. Και η Ελένη.',[
+    {k:'yes',label:'Γράφω: «ναι ανέβασέ το χαχα»',sub:'Είναι αργά, είναι πάρτι.',role:'rei',tag:'Ενθάρρυνες το story'},
+    {k:'off',label:'Δεν απαντάω, αφήνω το κινητό',sub:'Χορεύουμε.',role:'out',tag:'Δεν πήρες θέση'},
+    {k:'no',label:'Γράφω: «μην το ανεβάσεις. εμείς δεν την καλέσαμε»',sub:'Στη Ζωή, μπροστά στις άλλες.',role:'def',tag:'Είπες όχι στο story'},
+    {k:'eleni',label:'Γράφω στην Ελένη: «συγγνώμη. την επόμενη φορά είσαι μαζί μου»',sub:'Ιδιωτικά.',role:'def',tag:'Μίλησες στην Ελένη'}
+  ]);
+  waitingPanel();
+  const stopped = c2.k==='no' || ((c1.k==='invite'||c1.k==='marina') && c2.k!=='yes');
+  if(c2.k==='yes'){ state.wrote++; await say('me','ναι ανέβασέ το χαχα'); }
+  else if(c2.k==='off'){ await sys('Το κινητό σου έμεινε στον καναπέ'); }
+  else if(c2.k==='no'){ state.wrote++;state.spoke++; await say('me','μην το ανεβάσεις. εμείς δεν την καλέσαμε'); await say('Ζωή','εντάξει ρε, χαλαρά',{wait:1300}); await say('Μαρίνα','συμφωνώ'); }
+  else { state.wrote++; state.flags.eleni=true; await say('me','συγγνώμη. την επόμενη φορά είσαι μαζί μου',{private:true,to:'Ελένη'}); await sys('Η Ελένη είδε το μήνυμα'); }
+  if(stopped){
+    if(c2.k!=='no') await say('Μαρίνα','Ζωή άσ\' το, σε παρακαλώ',{wait:1000});
+    await sys('Η Ζωή δεν ανέβασε τίποτα');
+  } else {
+    await sys('Η Ζωή ανέβασε ένα story · 312 προβολές',true);
+    await sys('Η Ελένη είδε το story');
+  }
+
+  await otherScreen('Ζωή · πέρσι','Ένα παλιό chat της Ζωής, από το προηγούμενο σχολείο','Ζ','#c2410c','Οκτώβριος, πριν από έναν χρόνο. Άλλο σχολείο.');
+  await say('Ζωή','μαμά μπορείς να με πάρεις νωρίτερα;',{owner:true,name:'Ζωή'});
+  await say('Ζωή','όλοι πάνε στο πάρτι της Ρένας απόψε',{owner:true,name:'Ζωή'});
+  await say('Ζωή','εμένα δεν με κάλεσε κανείς',{owner:true,name:'Ζωή',wait:1200});
+  await say('μαμά','έρχομαι αγάπη μου. 10 λεπτά',{wait:1500});
+  await sys('Η Ζωή δεν το είπε ποτέ σε κανέναν στο καινούργιο σχολείο');
+  if(state.flags.eleni){ await sys('Η Ελένη έβαλε αστεράκι στο μήνυμά σου'); }
+
+  const def=state.path.filter(p=>p.role==='def').length;
+  const q = def===2 ? 'Η Ζωή ήξερε από πρώτο χέρι πώς είναι να σε αφήνουν απ\' έξω. Γιατί το έκανε κι εκείνη;'
+    : def===1 ? 'Η μία σου κίνηση άλλαξε κάτι. Τι θα χρειαζόταν για να κάνεις και τη δεύτερη;'
+    : 'Το πάρτι ήταν κλειστό. Το group ήταν κλειστό. Τι από όλα αυτά έφτασε τελικά στην Ελένη;';
+  showEnding('party',{title:'Κανείς δεν <em>είπε</em> κάτι κακό.',stats:[['5','στο group'],[3+state.wrote,'έγραψαν κάτι'],[stopped?'δεν ανέβηκε':'ανέβηκε','το story']],ask:q});
+}
+
+/* ---- Σενάριο 3: Ο λογαριασμός ---- */
+async function scAccount(){
+  fresh();
+  setHead('Λευτέρης','ο κολλητός σου · ενεργός τώρα','Λ','#b45309');
+  await sys('Τρίτη 22:10');
+  await say('Λευτέρης','είδες το b2.confessions;;',{wait:900});
+  await say('Λευτέρης','',{html:postHTML('b2.confessions','ο καινούργιος λέει «καλημέρα» σαν GPS 💀 ποιος θα του μάθει ελληνικά; #ομολογία','247')});
+  await say('Λευτέρης','300 followers σε δύο μέρες 😳');
+  await say('Λευτέρης','λοιπόν… να σου πω κάτι αλλά μην το πεις πουθενά',{wait:1200});
+  await say('Λευτέρης','εγώ το έχω φτιάξει 😎',{wait:1300});
+  await say('Λευτέρης','θες να γίνεις admin; θα γράφουμε μαζί');
+
+  const c1=await ask('Ο κολλητός σου περιμένει.','Ο «καινούργιος» είναι ο Αμίρ. Ήρθε τον Σεπτέμβριο.',[
+    {k:'admin',label:'Γράφω: «χαχα τέλειο, μέσα»',sub:'Είναι ανώνυμο. Ποιος θα μάθει;',role:'rei',chip:'βοηθός',tag:'Έγινες admin'},
+    {k:'meh',label:'Γράφω «χαχα» και αλλάζω θέμα',sub:'Δεν θέλω να τσακωθούμε.',role:'out',tag:'Το προσπέρασες'},
+    {k:'ask',label:'Γράφω: «ρε συ, ο Αμίρ είναι καινούργιος. σβήσ\' το αυτό»',sub:'Στον κολλητό σου.',role:'def',tag:'Του ζήτησες να το σβήσει'},
+    {k:'report',label:'Κάνω αναφορά στον λογαριασμό χωρίς να του το πω',sub:'Η αναφορά είναι ανώνυμη.',role:'def',tag:'Έκανες αναφορά'}
+  ]);
+  waitingPanel();
+  if(c1.k==='admin'){ state.wrote++; await say('me','χαχα τέλειο, μέσα'); await say('Λευτέρης','ΤΕΛΕΙΟΟ στείλε ιδέες για αύριο'); await sys('Έγινες συνδιαχειριστής του b2.confessions'); }
+  else if(c1.k==='meh'){ await say('me','χαχα. έγραψες για αύριο φυσική;'); await say('Λευτέρης','ε; τι λες για admin;'); await say('Λευτέρης','οκ σκέψου το'); }
+  else if(c1.k==='ask'){ state.wrote++;state.spoke++; await say('me','ρε συ, ο Αμίρ είναι καινούργιος. σβήσ\' το αυτό'); await say('Λευτέρης','ρε πλάκα είναι, ανώνυμο είναι, δεν ξέρει ποιος',{wait:1300}); await say('Λευτέρης','μη γίνεσαι καθηγητής 🙄'); }
+  else { state.flags.reported=true; await sys('Η αναφορά στάλθηκε. Ο λογαριασμός δεν θα μάθει ποιος την έκανε.'); await say('Λευτέρης','?? γιατί δεν απαντάς',{wait:1400}); }
+
+  await sys('Τετάρτη 16:02');
+  await say('Λευτέρης','',{html:postHTML('b2.confessions','Αμίρ, ποιος σου είπε ότι παίζεις μπάλα; 😂 να μπει στην ομάδα ή όχι; ψηφίστε στα σχόλια','412'),wait:900});
+  await say('Λευτέρης','ο Αμίρ έγραψε σχόλιο χαχα');
+  await say('Λευτέρης','«ποιος είσαι;» 😂😂');
+  await say('Λευτέρης','να του απαντήσω;');
+
+  const c2=await ask('Ο Λευτέρης ρωτάει εσένα.','Το post έχει ήδη 38 σχόλια.',[
+    {k:'answer',label:'Γράφω: «απάντησέ του κάτι καλό 😂»',sub:'Αφού ρώτησε.',role:'rei',tag:'Τον έσπρωξες να συνεχίσει'},
+    {k:'leave',label:'Δεν απαντάω. Κλείνω την εφαρμογή',sub:'Θα ξεχαστεί σε μια βδομάδα.',role:'out',tag:'Το άφησες να κυλήσει'},
+    {k:'limit',label:'Γράφω: «αν δεν το κατεβάσεις μέχρι το βράδυ, θα το πω»',sub:'Στον κολλητό σου.',role:'def',chip:'όριο',tag:'Του έβαλες όριο'},
+    {k:'amir',label:'Γράφω στον Αμίρ: «έλα αύριο στο διάλειμμα μαζί μας»',sub:'Πρώτη φορά που του μιλάς.',role:'def',tag:'Πλησίασες τον Αμίρ'}
+  ]);
+  waitingPanel();
+  const closed = c2.k==='limit' || (c1.k==='report' && c2.k!=='answer') || (c1.k==='ask' && c2.k==='amir');
+  if(c2.k==='answer'){ state.wrote++; await say('me','απάντησέ του κάτι καλό 😂'); await say('Λευτέρης','«ο μυστικός σου θαυμαστής» 😎'); }
+  else if(c2.k==='leave'){ await sys('Το είδες στις 16:03'); }
+  else if(c2.k==='limit'){ state.wrote++;state.spoke++; await say('me','αν δεν το κατεβάσεις μέχρι το βράδυ, θα το πω'); await say('Λευτέρης','…',{wait:1800}); await say('Λευτέρης','οκ');
+    await say('Λευτέρης','μην πεις σε κανέναν ότι ήμουν εγώ. σε παρακαλώ',{wait:1600}); }
+  else { state.wrote++; state.flags.amir=true; await say('me','έλα αύριο στο διάλειμμα μαζί μας. στο γήπεδο',{private:true,to:'Αμίρ'}); await say('Αμίρ','οκ. ευχαριστώ',{private:true,name:'Αμίρ (ιδιωτικά)',wait:2000}); }
+  if(closed){ await sys('Ο λογαριασμός b2.confessions δεν υπάρχει πλέον'); }
+  else { await sys('Το post έχει 61 σχόλια',true); }
+
+  await otherScreen('Αμίρ → μαμά · 23:40','Η άλλη οθόνη','Α','#15803d','Αυτά έγραψε ο Αμίρ στη μαμά του. Και τα έσβησε.');
+  await drafts(['μαμά μπορώ να μην πάω αύριο;','δεν ξέρω ποιοι είναι','όλοι το έχουν δει','στο προηγούμενο σχολείο ήταν καλύτερα']);
+  await say('Αμίρ','καληνύχτα',{owner:true,name:'Αμίρ'});
+  await say('μαμά','καληνύχτα αγόρι μου ❤️ όλα καλά στο σχολείο;',{wait:1400});
+  await say('Αμίρ','ναι',{owner:true,name:'Αμίρ',wait:1600});
+  if(state.flags.amir){ await sys('Το πρωί, ο Αμίρ ξαναδιάβασε ένα μήνυμα πριν φύγει από το σπίτι'); }
+
+  const q = c1.k==='admin' ? 'Ο λογαριασμός ήταν ανώνυμος. Θα έγραφες τα ίδια με το όνομά σου;'
+    : 'Ο Λευτέρης είναι κολλητός σου. Γιατί είναι πιο δύσκολο να πεις όχι σε φίλο απ\' ό,τι σε άγνωστο;';
+  showEnding('account',{title:'Ήταν <em>ανώνυμο</em>. Για όλους εκτός από σένα.',stats:[['412','likes'],[closed?'έκλεισε':'ενεργός','ο λογαριασμός'],['«ναι»','απάντησε ο Αμίρ']],ask:q});
+}
+
+/* ---- Σενάριο 4: Η φωνή (εσύ είσαι ο στόχος) ---- */
+async function scVoice(){
+  fresh();
+  setHead('Β΄2 τα παιδιά','Άλεξ, Δανάη, Γιώργος, Μαρίνα, Πέτρος, εσύ +18','Β2','#4b3fd6');
+  await sys('Κυριακή 20:15');
+  await say('me','',{html:voiceHTML('0:07','«ξέρει κανείς τι έχουμε αύριο στα μαθηματικά;»')});
+  await say('Πέτρος','χαχαχα η φωνή σου 😭',{wait:1300});
+  await say('Άλεξ','',{html:voiceHTML('0:21','remix_fonh.mp3'),wait:1500});
+  await say('Άλεξ','έβαλα και beat 🔥');
+  await say('Γιώργος','ΧΑΧΑΧΑΧΑ');
+  await say('Μαρίνα','στείλτε το και στο Β1');
+  await sys('Το remix προωθήθηκε 6 φορές',true);
+
+  const c1=await ask('Αυτή τη φορά ο στόχος είσαι εσύ.','Η καρδιά χτυπάει. Όλοι περιμένουν να δουν τι θα κάνεις.',[
+    {k:'laugh',label:'Γράφω: «χαχα ωραίο beat»',sub:'Αν γελάσω πρώτος/η, δεν θα φανεί ότι με πείραξε.',role:'out',chip:'κάλυψη',tag:'Γέλασες για να μη φανεί'},
+    {k:'attack',label:'Απαντάω με προσβολή στον Άλεξ',sub:'Να πάρει μια γεύση.',role:'rei',chip:'αντεπίθεση',tag:'Απάντησες με επίθεση'},
+    {k:'limit',label:'Γράφω: «δεν είναι αστείο. σβήστε το»',sub:'Καθαρά, χωρίς προσβολές.',role:'def',chip:'όριο',tag:'Έβαλες όριο'},
+    {k:'leave',label:'Δεν γράφω τίποτα. Βγαίνω από το group',sub:'Δεν αντέχω να το βλέπω.',role:'out',chip:'αποχώρηση',tag:'Έφυγες από το group'}
+  ]);
+  waitingPanel();
+  if(c1.k==='laugh'){ await say('me','χαχα ωραίο beat'); await say('Άλεξ','να ο άνθρωπος που αντέχει 😎'); await say('Πέτρος','κάνε κι άλλο voice!!'); }
+  else if(c1.k==='attack'){ await say('me','ρε Άλεξ, πρώτα μάθε να γράφεις και μετά κάνε beat'); await say('Άλεξ','ΟΟΟ θυμώσαμε 😂',{wait:900}); await say('Γιώργος','screenshot 📸'); await sys('Ο Γιώργος τράβηξε στιγμιότυπο οθόνης',true); }
+  else if(c1.k==='limit'){ await say('me','δεν είναι αστείο. σβήστε το'); await say('Άλεξ','χαλάρωσε, ένα remix είναι',{wait:1300}); await sys('Κανείς άλλος δεν απάντησε');
+    await say('Πέτρος','ρε συγγνώμη. δεν το σκέφτηκα',{private:true,name:'Πέτρος (ιδιωτικά)',wait:2200}); }
+  else { await sys('Αποχώρησες από την ομάδα'); await say('Δανάη','είδα ότι έφυγες. είσαι καλά;',{private:true,name:'Δανάη (ιδιωτικά)',wait:2200}); }
+
+  await sys('Δευτέρα 08:05 · διάδρομος σχολείου');
+  await sys('Δύο παιδιά από το Β1 σφυρίζουν το beat όταν περνάς');
+  const c2=await ask('Η σύμβουλος του σχολείου περνάει από τον διάδρομο.','Τα screenshots είναι ακόμα στο κινητό σου.',[
+    {k:'keep',label:'Δεν λέω τίποτα. Θα περάσει',sub:'Αν το πω, θα γίνει μεγαλύτερο.',role:'out',chip:'σιωπή',tag:'Το κράτησες για σένα'},
+    {k:'adult',label:'Τη σταματάω και της δείχνω τα screenshots',sub:'Τώρα, πριν το μετανιώσω.',role:'def',chip:'βοήθεια',tag:'Ζήτησες βοήθεια με αποδείξεις'},
+    {k:'friend',label:'Το λέω σε έναν φίλο από άλλο τμήμα',sub:'Κάποιον που δεν ήταν στο group.',role:'def',chip:'στήριξη',tag:'Μίλησες σε κάποιον που εμπιστεύεσαι'}
+  ]);
+  waitingPanel();
+  if(c2.k==='keep'){ await sys('Το διάλειμμα πέρασε. Το remix έφτασε στο Γ1'); }
+  else if(c2.k==='adult'){ await sys('Η σύμβουλος σε άκουσε για 20 λεπτά'); await sys('Την Τρίτη μίλησε με τον Άλεξ. Το remix σβήστηκε από το group'); }
+  else { await say('Ηλίας','σοβαρά; έλα, πάμε μαζί στη σύμβουλο. δεν θα πας μόνος/η',{private:true,name:'Ηλίας (ιδιωτικά)',wait:1600}); await sys('Στο επόμενο διάλειμμα πήγατε μαζί στη σύμβουλο. Την Τρίτη το remix σβήστηκε'); }
+
+  await otherScreen('Μαρίνα → Δανάη · ιδιωτικά','Κυριακή 20:31 · την ώρα που όλοι γελούσαν','Μ','#b23a8c','Αυτό γραφόταν την ίδια ώρα. Δεν το είδες ποτέ.');
+  await say('Μαρίνα','ρε το remix… λίγο με χάλασε');
+  await say('Δανάη','κι εμένα. αλλά τι να πεις, θα σε πάρουν στο ψιλό',{wait:1200});
+  await say('Μαρίνα','ναι. ας μην πούμε τίποτα',{wait:1100});
+  await sys('Στο ίδιο group, τουλάχιστον 7 άτομα έγραψαν κάτι παρόμοιο σε ιδιωτικά μηνύματα. Κανένα μπροστά σε όλους.');
+
+  const q = c2.k==='adult' ? 'Τι θα έκανε πιο εύκολο να το πεις ακόμα νωρίτερα, από την Κυριακή το βράδυ;'
+    : 'Αν ήξερες ότι η Μαρίνα και η Δανάη ένιωθαν άβολα, τι θα είχες κάνει αλλιώς;';
+  showEnding('voice',{title:'Δεν ήσουν <em>μόνος/η</em>. Απλώς σιωπούσαν.',stats:[['24','στο group'],['7','διαφώνησαν κρυφά'],[c2.k==='keep'?'κυκλοφορεί':'σβήστηκε','το remix']],ask:q});
+}
+
+const scenarios=[
+  {id:'photo',run:scPhoto,title:'Η φωτογραφία',tag:'Θεατής · σωματική ταπείνωση',desc:'Μια κρυφή φωτογραφία από τα αποδυτήρια και μια ψηφοφορία για το ποιος μένει στο group.'},
+  {id:'party',run:scParty,title:'Το πάρτι',tag:'Θεατής · αποκλεισμός',desc:'Ένα μυστικό group για ένα πάρτι. Μία συμμαθήτρια δεν είναι μέσα, και δεν πρέπει να μάθει.'},
+  {id:'account',run:scAccount,title:'Ο λογαριασμός',tag:'Θεατής · ανώνυμο προφίλ',desc:'Ένα ανώνυμο προφίλ κοροϊδεύει τον καινούργιο. Ο διαχειριστής είναι ο κολλητός σου.'},
+  {id:'voice',run:scVoice,title:'Η φωνή',tag:'Εσύ είσαι ο στόχος',desc:'Ένα φωνητικό μήνυμά σου γίνεται remix και ταξιδεύει από τάξη σε τάξη.'}
+];
+function drawPicker(){
+  const done=store.get('done',[]);
+  log.innerHTML='';
+  setHead('Bullied Proof','Διάλεξε σενάριο','BP','#ff4f2e');
+  add(el('<div class="sys">Τέσσερα σενάρια. Κάθε ένα τελειώνει σε μια άλλη οθόνη.</div>'));
+  side.innerHTML=`<div class="prompt"><span class="label">Διάλεξε σενάριο</span><div class="choices">${scenarios.map(s=>`<button class="choice scen" data-id="${s.id}"><span class="label">${esc(s.tag)}${done.includes(s.id)?' · έγινε':''}</span><span class="st">${esc(s.title)}</span><small>${esc(s.desc)}</small></button>`).join('')}</div></div>`;
+  side.querySelectorAll('.scen').forEach(b=>b.addEventListener('click',()=>scenarios.find(s=>s.id===b.dataset.id).run()));
+}
+function chipLabel(p){return p.chip||(p.role==='def'?'υπερασπιστής':p.role==='rei'?'ενισχυτής':'θεατής')}
+function showEnding(id,o){
+  const done=store.get('done',[]); if(!done.includes(id)){done.push(id);store.set('done',done)}
+  side.innerHTML=`<div class="prompt ending">
+    <span class="label">Τέλος</span>
+    <h3>${o.title}</h3>
+    <div class="stat">${o.stats.map(s=>`<div><b>${esc(s[0])}</b><span>${esc(s[1])}</span></div>`).join('')}</div>
+    <ul class="path">${state.path.map(p=>`<li><span class="chip ${p.role}">${esc(chipLabel(p))}</span><span>${esc(p.tag)}</span></li>`).join('')}</ul>
+    <p class="ask">${esc(o.ask)}</p>
+    <div class="cta-row"><button class="btn primary" id="again">Ξανά, αλλιώς</button><button class="btn quiet" id="other">Άλλο σενάριο</button><a class="btn quiet" href="#roles">Οι ρόλοι</a></div>
+  </div>`;
+  $('#again').addEventListener('click',()=>scenarios.find(s=>s.id===id).run());
+  $('#other').addEventListener('click',drawPicker);
+}
+drawPicker();
+
+/* ---------- scale ---------- */
+const cases=[
+  {t:'Δύο φίλοι πειράζονται για την ομάδα που υποστηρίζει ο καθένας. Γελάνε και οι δύο, και αύριο θα το ξανακάνουν ανάποδα.',a:'tease',why:'Ισότιμοι, αμοιβαίο, κανείς δεν πληγώνεται. Αν ο ένας σταματήσει να γελάει, αλλάζει η κατάσταση.'},
+  {t:'Εδώ και έναν μήνα, η ίδια παρέα μιμείται κάθε μέρα τον τρόπο που μιλάει ένας συμμαθητής, μόλις μπαίνει στην τάξη.',a:'bully',why:'Επανάληψη, παρέα απέναντι σε έναν, και στόχευση σε κάτι που δεν αλλάζει εύκολα. Όλα τα κριτήρια.'},
+  {t:'Δύο μαθήτριες τσακώνονται άσχημα για μια ομαδική εργασία. Την επόμενη μέρα ξαναμιλάνε κανονικά.',a:'conflict',why:'Διαφωνία μεταξύ ίσων, μία φορά, για συγκεκριμένο θέμα. Δυσάρεστο, αλλά όχι bullying.'},
+  {t:'Φτιάχνεται ένα group για όλη την τάξη, εκτός από μία συμμαθήτρια. Το ξέρουν όλοι. Κι εκείνη.',a:'bully',why:'Ο αποκλεισμός είναι από τις πιο σιωπηλές μορφές bullying. Δεν χρειάζεται να ειπωθεί κάτι κακό.'},
+  {t:'Ένας μαθητής σπρώχνει έναν άλλον στην ουρά της καντίνας. Μετά από λίγο του ζητάει συγγνώμη.',a:'conflict',why:'Μία πράξη, χωρίς μοτίβο, με επανόρθωση. Αν γινόταν κάθε μέρα, θα ήταν άλλη ιστορία.'},
+  {t:'Η παρέα σου σε φωνάζει με ένα παρατσούκλι. Παλιά γελούσες κι εσύ. Τώρα σε πειράζει, αλλά δεν το λες.',a:'any',why:'Εδώ δεν υπάρχει σωστό κουτί. Τη στιγμή που σε πειράζει, δεν είναι πια πείραγμα για σένα. Το πρώτο βήμα είναι να το πεις.'},
+  {t:'Κάποιος γράφει ειρωνικά σχόλια στα stories μιας συμμαθήτριας. Εκείνη του γράφει «σταμάτα». Συνεχίζει κάθε βράδυ.',a:'bully',why:'Ζήτησε να σταματήσει και δεν σταμάτησε. Το «σταμάτα» είναι η γραμμή. Μετά από αυτό, είναι εκφοβισμός.'},
+  {t:'Ένας μαθητής της Γ΄ ζητάει κάθε εβδομάδα το χαρτζιλίκι ενός μαθητή της Α΄. «Δανεικά», λέει.',a:'bully',why:'Καθαρή ανισορροπία δύναμης και επανάληψη. Η λέξη «δανεικά» δεν αλλάζει τίποτα.'}
+];
+const binNames={tease:'Πείραγμα',conflict:'Σύγκρουση',bully:'Bullying'};
+let sc={i:0,res:[]};
+function drawScale(){
+  const card=$('#scaleCard');
+  if(sc.i>=cases.length){
+    const ok=sc.res.filter(Boolean).length;
+    card.innerHTML=`<span class="label">Αποτέλεσμα</span><div class="case-text">${ok} από ${cases.length}</div>
+      <p>Το πιο δύσκολο δεν είναι να βρεις το σωστό κουτί. Είναι να το πεις, όταν το κουτί είναι το δικό σου.</p>
+      <div class="cta-row"><button class="btn primary" id="scaleAgain">Ξανά</button><a class="btn quiet" href="#roles">Οι ρόλοι →</a></div>`;
+    $('#scaleAgain').addEventListener('click',()=>{sc={i:0,res:[]};drawScale()});
+    return;
+  }
+  const c=cases[sc.i];
+  const prog=cases.map((_,k)=>`<i class="${k<sc.i?(sc.res[k]?'done':'miss'):k===sc.i?'now':''}"></i>`).join('');
+  card.innerHTML=`<div class="case-num"><span class="label">Κατάσταση ${sc.i+1} / ${cases.length}</span><div class="progress" aria-hidden="true">${prog}</div></div>
+    <p class="case-text">${esc(c.t)}</p>
+    <div class="bins">${Object.keys(binNames).map(k=>`<button class="bin" data-k="${k}">${binNames[k]}</button>`).join('')}</div>
+    <div id="fb"></div>`;
+  card.querySelectorAll('.bin').forEach(b=>b.addEventListener('click',()=>{
+    if(card.dataset.done==='1')return; card.dataset.done='1';
+    const k=b.dataset.k, right=c.a==='any'||k===c.a;
+    sc.res[sc.i]=right;
+    card.querySelectorAll('.bin').forEach(x=>{ if(c.a!=='any'&&x.dataset.k===c.a) x.classList.add('right'); x.disabled=true; });
+    if(c.a==='any') b.classList.add('right'); else if(!right) b.classList.add('wrong');
+    $('#fb').innerHTML=`<div class="feedback"><b>${c.a==='any'?'Γκρίζα ζώνη':right?'Ναι':'Όχι ακριβώς · '+binNames[c.a]}</b><p>${esc(c.why)}</p><div><button class="btn primary" id="nextCase">${sc.i+1<cases.length?'Επόμενη':'Αποτέλεσμα'}</button></div></div>`;
+    $('#nextCase').addEventListener('click',()=>{sc.i++;card.dataset.done='';drawScale()});
+    $('#nextCase').focus({preventScroll:true});
+  }));
+}
+
+/* ---------- roles ---------- */
+const roles=[
+  {id:'target',n:'Στόχος',center:true,voice:'«Αν δεν αντιδράσω, ίσως σταματήσουν. Αν το πω, θα γίνει χειρότερα.»',d:'Αυτός ή αυτή που δέχεται τον εκφοβισμό. Συχνά κρύβει πόσο πονάει, γιατί φοβάται ότι θα τον δουν ακόμα πιο αδύναμο.',next:'Να μιλήσει σε έναν άνθρωπο που εμπιστεύεται. Δεν φταίει, και δεν πρέπει να το κουβαλά μόνος/η.'},
+  {id:'bully',n:'Θύτης',voice:'«Πλάκα κάνουμε. Όλοι γελάνε.»',d:'Ξεκινά το bullying. Πολλές φορές το κάνει για κύρος μέσα στην ομάδα. Χωρίς κοινό, χάνει το νόημα.',next:'Να δει τι κερδίζει και τι κοστίζει. Συχνά βοηθά όταν η τάξη παύει να του δίνει κοινό.'},
+  {id:'assist',n:'Βοηθός',voice:'«Δεν το ξεκίνησα εγώ.»',d:'Μπαίνει μαζί με τον θύτη: κρατάει την κάμερα, φτιάχνει το sticker, στέλνει το forward.',next:'Να σταματήσει να είναι το δεύτερο χέρι. Χωρίς βοηθούς, ο θύτης είναι μόνος.'},
+  {id:'reinf',n:'Ενισχυτής',voice:'«Ένα emoji έστειλα μόνο.»',d:'Γελάει, κάνει like, μαζεύεται να δει. Δεν πειράζει κανέναν ο ίδιος, αλλά δίνει στον θύτη αυτό που θέλει: αποδοχή.',next:'Να μη γελάσει. Η απουσία γέλιου είναι το πρώτο μήνυμα ότι κάτι δεν πάει καλά.'},
+  {id:'outside',n:'Θεατής',voice:'«Δεν είναι δική μου υπόθεση.»',d:'Βλέπει και κοιτάζει αλλού. Ο πιο συνηθισμένος ρόλος. Ο στόχος όμως διαβάζει τη σιωπή ως συμφωνία.',next:'Ένα μικρό βήμα αρκεί: ένα ιδιωτικό μήνυμα στον στόχο, ή ένα screenshot σε έναν ενήλικα.'},
+  {id:'def',n:'Υπερασπιστής',voice:'«Κάποιος πρέπει να πει κάτι. Ας είμαι εγώ.»',d:'Στέκεται δίπλα στον στόχο, μιλάει, ζητάει βοήθεια. Η έρευνα δείχνει ότι όταν παρεμβαίνουν συνομήλικοι, το bullying συχνά σταματά.',next:'Να μην είναι μόνος. Ένας υπερασπιστής φέρνει συνήθως και δεύτερο. Δες τι έκανε η Δανάη στο group.'}
+];
+let activeRole='outside';
+function drawRoles(){
+  const ring=$('#ring'); const around=roles.filter(r=>!r.center);
+  let html='';
+  roles.forEach(r=>{
+    let x=50,y=50;
+    if(!r.center){const k=around.indexOf(r);const a=(-90+k*360/around.length)*Math.PI/180;x=50+40*Math.cos(a);y=50+40*Math.sin(a)}
+    html+=`<button class="role${r.center?' center':''}" style="left:${x}%;top:${y}%" data-id="${r.id}" aria-pressed="${r.id===activeRole}">${r.n}</button>`;
+  });
+  ring.innerHTML=html;
+  ring.querySelectorAll('.role').forEach(b=>b.addEventListener('click',()=>{activeRole=b.dataset.id;drawRoles()}));
+  const r=roles.find(x=>x.id===activeRole);
+  $('#rolePanel').innerHTML=`<span class="label">Ρόλος</span><h3>${r.n}</h3><p class="voice">${esc(r.voice)}</p><p>${esc(r.d)}</p><div class="next"><span class="label">Το επόμενο βήμα</span><p>${esc(r.next)}</p></div>`;
+}
+
+/* ---------- pact ---------- */
+const baseRules=[
+  'Δεν ανεβάζουμε φωτογραφία ή βίντεο κάποιου χωρίς να ρωτήσουμε.',
+  'Αν κάποιος γράψει «σταμάτα», σταματάμε. Χωρίς «πλάκα κάνουμε».',
+  'Δεν φτιάχνουμε group «όλοι εκτός από…».',
+  'Κανείς δεν βγαίνει από το group με ψηφοφορία.',
+  'Δεν κάνουμε forward ή screenshot ιδιωτικές συζητήσεις.',
+  'Αν κάτι είναι αστείο μόνο για τους μισούς, δεν είναι αστείο.',
+  'Όποιος δει κάτι που πληγώνει, γράφει έστω ένα «όχι ρε».',
+  'Τα σοβαρά τα λέμε από κοντά, όχι στο group.',
+  'Ο/η admin σβήνει ό,τι προσβάλλει κάποιον.'
+];
+let pact=store.get('pact',null)||{name:'',signers:'',amb:false,rules:baseRules.map((t,i)=>({t,on:i<5,custom:false}))};
+function savePact(){store.set('pact',pact)}
+function drawRules(){
+  $('#rules').innerHTML=pact.rules.map((r,i)=>`<label class="rule"><input type="checkbox" id="rule${i}" data-i="${i}" ${r.on?'checked':''}><span>${esc(r.t)}</span></label>`).join('');
+  $('#rules').querySelectorAll('input').forEach(c=>c.addEventListener('change',()=>{pact.rules[+c.dataset.i].on=c.checked;savePact();drawPact()}));
+}
+function pactText(){
+  const on=pact.rules.filter(r=>r.on);
+  let s=`ΤΟ ΣΥΜΒΟΛΑΙΟ ΤΟΥ GROUP · ${pact.name||'Η τάξη μας'}\n\n`;
+  on.forEach((r,i)=>s+=`${i+1}. ${r.t}\n`);
+  if(pact.amb) s+=`\nΈχουμε πρεσβευτές Bullied Proof. Αν δεν θες να μιλήσεις σε μεγάλο, μίλα πρώτα σε αυτούς.\n`;
+  s+=`\nΥπογράφουν: ${pact.signers||'όλοι μας'}\nBullied Proof`;
+  return s;
+}
+function drawPact(){
+  const on=pact.rules.filter(r=>r.on);
+  $('#pactCard').innerHTML=`<span class="label" style="color:color-mix(in srgb,var(--bg) 70%,transparent)">Το συμβόλαιο του group</span>
+    <h3>${esc(pact.name||'Η τάξη μας')}</h3>
+    ${on.length?`<ol>${on.map(r=>`<li>${esc(r.t)}</li>`).join('')}</ol>`:'<p class="empty">Διαλέξτε τουλάχιστον έναν κανόνα από τη λίστα.</p>'}
+    ${pact.amb?'<p>Έχουμε πρεσβευτές. Αν δεν θες να μιλήσεις σε μεγάλο, μίλα πρώτα σε αυτούς.</p>':''}
+    <div class="seal"><div><span class="label">Υπογράφουν</span><div>${esc(pact.signers||'όλοι μας')}</div></div><span class="stamp">Bullied Proof</span></div>`;
+}
+function initPact(){
+  $('#groupName').value=pact.name; $('#signers').value=pact.signers; $('#ambassador').checked=pact.amb;
+  $('#groupName').addEventListener('input',e=>{pact.name=e.target.value;savePact();drawPact()});
+  $('#signers').addEventListener('input',e=>{pact.signers=e.target.value;savePact();drawPact()});
+  $('#ambassador').addEventListener('change',e=>{pact.amb=e.target.checked;savePact();drawPact()});
+  const add=()=>{const v=$('#newRule').value.trim();if(!v)return;pact.rules.push({t:v,on:true,custom:true});$('#newRule').value='';savePact();drawRules();drawPact()};
+  $('#addRule').addEventListener('click',add);
+  $('#newRule').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();add()}});
+  $('#resetPact').addEventListener('click',()=>{pact={name:'',signers:'',amb:false,rules:baseRules.map((t,i)=>({t,on:i<5,custom:false}))};savePact();$('#groupName').value='';$('#signers').value='';$('#ambassador').checked=false;drawRules();drawPact();$('#pactToast').textContent='Το συμβόλαιο ξεκίνησε από την αρχή.'});
+  $('#copyPact').addEventListener('click',()=>copyText(pactText(),$('#pactToast'),'Αντιγράφηκε. Επικόλλησέ το στο group και καρφίτσωσέ το.'));
+  drawRules(); drawPact();
+}
+
+/* ---------- copy ---------- */
+function copyText(text,toastEl,okMsg,btn){
+  const done=()=>{ if(toastEl) toastEl.textContent=okMsg; if(btn){const o=btn.textContent;btn.textContent='Αντιγράφηκε';setTimeout(()=>btn.textContent=o,1600)} };
+  const fail=()=>{ if(toastEl) toastEl.textContent='Δεν έγινε αυτόματα η αντιγραφή. Επίλεξε το κείμενο και αντίγραψέ το.'; if(btn){const o=btn.textContent;btn.textContent='Επίλεξέ το';setTimeout(()=>btn.textContent=o,1600)} };
+  try{ navigator.clipboard.writeText(text).then(done,fail) }catch(e){ fail() }
+}
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>{
+  copyText(b.dataset.copy,null,'',b);
+  const num=b.parentElement.querySelector('.num');
+  const r=document.createRange(); r.selectNodeContents(num); const s=getSelection(); s.removeAllRanges(); s.addRange(r);
+}));
+
+/* Greek capitals carry no accents: strip the tonos from uppercase labels */
+document.documentElement.lang='el';
+const CAPS='.label,.chip,.country,.brand b';
+function untone(root){
+  const nodes=root.matches&&root.matches(CAPS)?[root]:[];
+  if(root.querySelectorAll) nodes.push(...root.querySelectorAll(CAPS));
+  nodes.forEach(n=>{
+    const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);
+    let t; while((t=w.nextNode())){
+      const v=t.nodeValue.normalize('NFD').replace(/́/g,'').normalize('NFC');
+      if(v!==t.nodeValue) t.nodeValue=v;
+    }
+  });
+}
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)untone(n)}))).observe(document.body,{childList:true,subtree:true});
+
+drawScale(); drawRoles(); initPact(); route(); untone(document.body);
+})();
+</script>
+
+</body></html>
