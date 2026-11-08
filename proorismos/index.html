@@ -602,8 +602,9 @@ add(5,"Ειδικές περιπτώσεις",()=>`
 <div class="cases" id="cs">${CASES.map((c,i)=>`<button class="case" data-i="${i}">${c.t}<small>${c.s}</small></button>`).join("")}</div>
 <div class="panel" id="co"><span class="hint">Διάλεξε μια περίπτωση.</span></div>
 <p class="hint">Για τους μαθητές του Γυμνασίου Ριζοκαρπάσου υπάρχουν ειδικά κριτήρια εισαγωγής στο ΠΚ και το ΤΕΠΑΚ. Ρώτησε τον/την Καθηγητή/τρια Σ.Ε.Α.</p>`, el=>{
-  const seen=new Set();
-  $$("#cs .case",el).forEach(b=>b.onclick=()=>{ const c=CASES[+b.dataset.i]; $$("#cs .case",el).forEach(x=>x.classList.toggle("on",x===b)); $("#co",el).innerHTML=`<h3>${c.t}</h3>${c.h}`; seen.add(b.dataset.i); if(seen.size>=3) award("cases",10); });
+  const seen=new Set(), picked=[];
+  const render=()=>{ $("#co",el).innerHTML = picked.length ? picked.map(i=>`<h3>${CASES[i].t}</h3>${CASES[i].h}`).join('<hr style="border:none;border-top:1px solid rgba(0,0,0,.12);margin:16px 0">') : `<span class="hint">Διάλεξε μια περίπτωση.</span>`; };
+  $$("#cs .case",el).forEach(b=>b.onclick=()=>{ const i=+b.dataset.i, p=picked.indexOf(i); if(p>=0) picked.splice(p,1); else { picked.push(i); picked.sort((a,b)=>a-b); } b.classList.toggle("on",p<0); render(); seen.add(b.dataset.i); if(seen.size>=3) award("cases",10); });
 });
 
 /* Quiz */
