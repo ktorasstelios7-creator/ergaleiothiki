@@ -69,6 +69,8 @@ section.zone{--sc:var(--c3);display:flex;flex-direction:column;gap:18px;scroll-m
 .door:hover .go::after{transform:translateX(4px)}
 footer{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;color:var(--muted);font-size:14px}
 footer strong{color:var(--ink);font-weight:600}
+[hidden]{display:none!important}
+.count{font-size:14px;color:var(--muted);margin:-28px 0 0}
 @media (prefers-reduced-motion:reduce){.door,.go::after{transition:none}.door:hover{transform:none}}
 </style>
 <style>
@@ -110,6 +112,8 @@ header{max-width:900px}
     </nav>
   </div>
 
+  <p class="count" id="count" aria-live="polite"></p>
+
   <main style="display:flex;flex-direction:column;gap:44px">
 
   <!-- Ενότητα 1 -->
@@ -122,21 +126,21 @@ header{max-width:900px}
           <div class="sub">Παρουσίαση για τους μαθητές της Α΄ Λυκείου</div>
           <p>Οι επιλογές μαθημάτων και κατευθύνσεων για τη Β΄ και Γ΄ Λυκείου και πώς συνδέονται με τις σπουδές που ονειρεύεσαι.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Α΄ Λυκείου</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Δες την παρουσίαση (PDF)</span></div></a>
       <a class="door" data-a="st" href="proorismos/">
         <div class="plate"><span>Γ΄ ΛΥΚΕΙΟΥ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div>
         <div class="inner"><h3>Ο προορισμός σου</h3>
           <div class="sub">Διαδραστικό εργαλείο</div>
           <p>Οδηγός για τις Παγκύπριες Εξετάσεις Πρόσβασης: πώς λειτουργούν, πώς επιλέγεις σχολές και πώς οργανώνεις τη χρονιά.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Γ΄ Λυκείου</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε τον οδηγό</span></div></a>
       <a class="door" data-a="st te" href="anakefalaiosi/">
         <div class="plate"><span>ΕΠΑΝΑΛΗΨΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg></div>
         <div class="inner"><h3>Ανακεφαλαίωση: η διεργασία της Επαγγελματικής Αγωγής</h3>
           <div class="sub">Διαδραστικό εργαλείο</div>
           <p>Εργαλείο επανάληψης των μαθημάτων Επαγγελματικής Αγωγής και Συμβουλευτικής για τη Γ΄ Γυμνασίου και την Α΄ Λυκείου.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Ξεκίνα την επανάληψη</span></div></a>
     </div>
   </section>
 
@@ -145,51 +149,52 @@ header{max-width:900px}
     <div class="zhead"><h2>Σχολικό κλίμα</h2><p>Πρόληψη του εκφοβισμού, επίλυση συγκρούσεων και ένταξη στην παρέα.</p></div>
     <div class="grid three">
       <a class="door" data-a="st te" href="bullied-proof/">
-        <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+        <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ · ΠΡΟΛΗΨΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
         <div class="inner"><h3>Bullied Proof</h3>
+          <div class="sub">Πρόληψη και δραστηριότητες για την τάξη</div>
           <p>Διαδραστική εφαρμογή κατά του εκφοβισμού, με ιδέες από προγράμματα της Δανίας, της Σουηδίας, της Γερμανίας, της Ελλάδας, της Ισπανίας και του Ηνωμένου Βασιλείου.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Ξεκίνα τη δραστηριότητα</span></div></a>
       <a class="door" data-a="te" href="protokollo-ekfovismou/">
-        <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/><path d="M9 17h6"/></svg></div>
+        <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ · ΧΕΙΡΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/><path d="M9 17h6"/></svg></div>
         <div class="inner"><h3>Πρωτόκολλο Σχολικού Εκφοβισμού</h3>
-          <div class="sub">Διαχείριση περιστατικού βήμα προς βήμα</div>
+          <div class="sub">Οδηγός χειρισμού ενός περιστατικού, βήμα προς βήμα</div>
           <p>Τα βήματα της πολιτικής του ΥΠΑΝ, εκφοβισμός ή σύγκρουση, λεκτικό για κάθε συνάντηση, ειδικές περιπτώσεις, φάκελος περιστατικού και γραμμές στήριξης.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Πρωτόκολλο</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε το πρωτόκολλο</span></div></a>
       <a class="door" data-a="te" href="asfales-scholeio/">
-        <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h3M8 17h6"/><path d="M15 13.5l1.5 1.5 2.5-2.5"/></svg></div>
+        <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ · ΚΑΤΑΓΡΑΦΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14h3M8 17h6"/><path d="M15 13.5l1.5 1.5 2.5-2.5"/></svg></div>
         <div class="inner"><h3>Ασφαλές σχολείο</h3>
-          <div class="sub">Χώρος εργασίας για τα περιστατικά μου</div>
+          <div class="sub">Καταγραφή και παρακολούθηση όλων των περιστατικών</div>
           <p>Όλα τα περιστατικά εκφοβισμού σε ένα σημείο: 7 σταθερά βήματα για το καθένα, υπενθυμίσεις επανελέγχων, κωδικοί αντί για ονόματα και ανώνυμη σύνοψη για εκτύπωση.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Καθηγητής ΣΕΑ</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε τον χώρο εργασίας</span></div></a>
       <a class="door" data-a="st te" href="diamesolavisi/">
         <div class="plate"><span>ΣΥΓΚΡΟΥΣΕΙΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-3 3 3 3-3 5 5"/><path d="M3 16h5M16 16h5"/></svg></div>
         <div class="inner"><h3>Σχολική Διαμεσολάβηση</h3>
           <p>Πώς δύο μαθητές σε σύγκρουση βρίσκουν μαζί λύση με τη βοήθεια ενός ουδέτερου διαμεσολαβητή: αρχές, στάδια και πρακτική.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Μάθε τα στάδια</span></div></a>
       <a class="door" data-a="st" href="https://claude.ai/artifact/KQyGSTq3NAp5pp4AyguXar" target="_blank" rel="noopener">
         <div class="plate"><span>ΕΝΤΑΞΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 14.3c.6-.2 1.3-.3 2-.3 3.3 0 6 2.7 6 6"/></svg></div>
         <div class="inner"><h3>Ανοιχτή Παρέα</h3>
           <p>Οι μαθητές ανοίγουν «παρέες» για το διάλειμμα και όποιος είναι μόνος βρίσκει πού να κάτσει, με εβδομαδιαίες προκλήσεις και έγκριση από τον υπεύθυνο.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εφαρμογή</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε την εφαρμογή (εξωτερικός σύνδεσμος)</span></div></a>
       <a class="door" data-a="st te" href="parea/">
         <div class="plate"><span>ΚΟΙΝΩΝΙΚΟΠΟΙΗΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="17" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="20" cy="15" r="2"/><path d="M5.5 15.5 10.5 8.5M13.8 8l4.6 5.6"/></svg></div>
         <div class="inner"><h3>Παρέα</h3>
           <div class="sub">Έξι σταθμοί ως την παρέα</div>
           <p>Παιχνίδι για μαθητές 13–18 που δυσκολεύονται να κοινωνικοποιηθούν, με σταθμούς από προγράμματα της Δανίας, της Ελλάδας, της Γερμανίας, της Σουηδίας, της Ιταλίας και της Ισπανίας, και κλειδωμένο χώρο για τον εκπαιδευτικό.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Παιχνίδι</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
       <a class="door" data-a="st te" href="anasa/">
         <div class="plate"><span>ΑΓΧΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c3-4 6-4 9 0s6 4 9 0"/><path d="M3 9c3-3 6-3 9 0s6 3 9 0"/></svg></div>
         <div class="inner"><h3>Ανάσα</h3>
           <div class="sub">Δέκα σταθμοί για τη διαχείριση του άγχους</div>
           <p>Εφαρμογή για μαθητές 13–18: σύστημα επιβίωσης, χάρτης σώματος, σκέψεις-παγίδες, ασκήσεις αναπνοής, σχέδιο πριν το διαγώνισμα και γραμμές στήριξης στην Κύπρο, με ιδέες από 10 χώρες.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Παιχνίδι</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
     </div>
   </section>
 
@@ -203,33 +208,33 @@ header{max-width:900px}
           <div class="sub">Ένας πρακτικός οδηγός για τον εκπαιδευτικό της τάξης</div>
           <p>Τι κρύβει η δύσκολη συμπεριφορά, πώς χτίζεται η σχέση, η παρέμβαση στον χρόνο, η συνάντηση επίλυσης και μια λίστα ελέγχου για την τάξη.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Οδηγός</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε τον οδηγό (PDF)</span></div></a>
       <a class="door" data-a="te" href="dyskoles-symperifores/">
         <div class="plate"><span>ΣΥΜΠΕΡΙΦΟΡΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/><path d="M17 15l2 2 3-4"/></svg></div>
         <div class="inner"><h3>Δύσκολες Συμπεριφορές: Σχέδιο Δράσης</h3>
           <div class="sub">Βήμα προς βήμα, για όλη τη σχολική μονάδα</div>
           <p>Δέκα βήματα, δώδεκα συναντήσεις με έτοιμο λεκτικό, ποιος κάνει τι, η στιγμή της έντασης και φάκελος περίπτωσης με Κάρτα Ημέρας.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Σχέδιο δράσης</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε το σχέδιο δράσης</span></div></a>
       <a class="door" data-a="te" href="files/neurodiaforetikotita.pdf" target="_blank" rel="noopener">
         <div class="plate"><span>ΕΝΤΑΞΗ &amp; ΔΙΑΦΟΡΕΤΙΚΟΤΗΤΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div>
         <div class="inner"><h3>Νευροδιαφορετικότητα</h3>
           <div class="sub">Από την τυποποίηση στην πολυπλοκότητα</div>
           <p>Παρουσίαση για εκπαιδευτικούς, βασισμένη σε υλικό σεμιναρίου του Κέ.Π.Α.Ψ.Υ.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Παρουσίαση</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Δες την παρουσίαση (PDF)</span></div></a>
       <a class="door" data-a="te" href="files/systimiki-paidagogiki.pdf" target="_blank" rel="noopener">
         <div class="plate"><span>ΠΑΙΔΑΓΩΓΙΚΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M10.8 7.2 6.2 15.8M13.2 7.2l4.6 8.6M7.5 18h9"/></svg></div>
         <div class="inner"><h3>Συστημική Παιδαγωγική</h3>
           <p>Παρουσίαση για τη συστημική ματιά στην τάξη: ο μαθητής μέσα στις σχέσεις του με την ομάδα, την οικογένεια και το σχολείο.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Παρουσίαση</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Δες την παρουσίαση (PDF)</span></div></a>
       <a class="door" data-a="te" href="files/diatrofikes-diataraxes.pdf" target="_blank" rel="noopener">
         <div class="plate"><span>ΨΥΧΙΚΗ ΥΓΕΙΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div>
         <div class="inner"><h3>Διατροφικές Διαταραχές στην Εφηβεία</h3>
           <p>Ενημέρωση για τα προειδοποιητικά σημάδια, τον ρόλο του σχολείου και τον τρόπο που προσεγγίζουμε έναν μαθητή που ανησυχούμε γι' αυτόν.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Γονείς</span></div>
-          <span class="go">Άνοιγμα</span></div></a>
+          <span class="go">Άνοιξε το υλικό (PDF)</span></div></a>
     </div>
   </section>
   </main>
@@ -247,11 +252,14 @@ const zones=[...document.querySelectorAll('section.zone')];
 function apply(f){
   btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
   doors.forEach(d=>{d.hidden = f!=='all' && !d.dataset.a.split(' ').includes(f);});
-  zones.forEach(z=>{z.hidden = ![...z.querySelectorAll('.door')].some(d=>!d.hidden);});
+  zones.forEach(z=>{z.hidden = ![...z.querySelectorAll('.door')].some(d=>!d.hidden);
+    const j=document.querySelector('.jump a[href="#'+z.id+'"]'); if(j) j.hidden=z.hidden;});
+  const n=doors.filter(d=>!d.hidden).length, lab={all:'',st:' για μαθητές',te:' για εκπαιδευτικούς'}[f]||'';
+  document.getElementById('count').textContent = f==='all' ? '' : n+' εργαλεία'+lab;
   try{localStorage.setItem('sea-filter',f)}catch(e){}
 }
 btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.f)));
-try{const s=localStorage.getItem('sea-filter'); if(s) apply(s);}catch(e){}
+let saved='all'; try{saved=localStorage.getItem('sea-filter')||'all';}catch(e){} apply(saved);
 </script>
 
 <script>
