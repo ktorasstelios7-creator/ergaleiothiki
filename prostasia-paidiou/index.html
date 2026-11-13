@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Προστασία του παιδιού · Βία στην οικογένεια & σεξουαλική κακοποίηση</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700;7..72,800&family=Commissioner:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Σχέδιο: «φάκελος πρωτοκόλλου». Καρτέλες στην κορυφή, οδηγός-ερωτήσεις που χτίζει λίστα ενεργειών
+   για τη συγκεκριμένη περίπτωση, και κόκκινη ζώνη έκτακτης ανάγκης πάντα ορατή. */
+:root{
+  --bg:#f1f2f6; --paper:#ffffff; --ink:#1d2433; --muted:#5a6273; --line:#d9dde6; --soft:#f6f7fa;
+  --accent:#5b4fa8; --ok:#2f8f5b; --warn:#b7791f; --risk:#b4374f;
+  --display:"Literata", Georgia, "Times New Roman", serif;
+  --body:"Commissioner", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12151d; --paper:#1a1f2a; --ink:#e7eaf1; --muted:#9ca5b8; --line:#2d3444; --soft:#212735;
+  --accent:#a99ef0; --ok:#5cc58c; --warn:#e2ab4f; --risk:#f07b93; color-scheme:dark; }}
+:root[data-theme="dark"]{
+  --bg:#12151d; --paper:#1a1f2a; --ink:#e7eaf1; --muted:#9ca5b8; --line:#2d3444; --soft:#212735;
+  --accent:#a99ef0; --ok:#5cc58c; --warn:#e2ab4f; --risk:#f07b93; color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.55}
+h1,h2,h3,h4{font-family:var(--display);margin:0;line-height:1.18;text-wrap:balance}
+h2{font-size:clamp(24px,3.4vw,32px);font-weight:800}
+h3{font-size:20px;font-weight:700}
+h4{font-size:16.5px;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+.muted{color:var(--muted)} .small{font-size:14.5px}
+[hidden]{display:none!important}
+
+header.top{background:var(--paper);border-bottom:1px solid var(--line)}
+.head{display:grid;gap:10px;padding:22px 0 16px}
+.back{font-size:14.5px;font-weight:600;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--ink)}
+.eyebrow{font-size:12.5px;letter-spacing:.09em;font-weight:700;color:var(--muted)}
+.head h1{font-size:clamp(28px,4.6vw,44px);font-weight:800}
+.head .lede{color:var(--muted);max-width:74ch;font-size:17px}
+.sos{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;background:color-mix(in srgb,var(--risk) 9%,var(--paper));border:1px solid color-mix(in srgb,var(--risk) 40%,var(--line));border-left:6px solid var(--risk);border-radius:10px;padding:10px 14px;font-size:15px}
+.sos b{color:var(--risk)}
+.sos a{font-weight:700;text-decoration:none;border:1px solid color-mix(in srgb,var(--risk) 50%,transparent);border-radius:8px;padding:2px 9px;color:var(--ink);background:var(--paper)}
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+nav.tabs button{white-space:nowrap;border:0;background:transparent;color:var(--muted);font-weight:600;font-size:15px;padding:12px 12px 10px;border-bottom:3px solid transparent;cursor:pointer}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+main{padding:26px 0 60px}
+.view{display:none}.view.on{display:block}
+.vhead{display:grid;gap:8px;margin-bottom:20px;max-width:80ch}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px}
+.stack{display:grid;gap:16px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.note{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:15px}
+.alert{border:1px solid var(--risk);border-left:6px solid var(--risk);background:color-mix(in srgb,var(--risk) 8%,var(--paper));border-radius:8px;padding:12px 16px;font-size:15.5px}
+.warnbox{border:1px solid var(--warn);border-left:6px solid var(--warn);background:color-mix(in srgb,var(--warn) 9%,var(--paper));border-radius:8px;padding:12px 16px;font-size:15.5px}
+.okbox{border:1px solid var(--ok);border-left:6px solid var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--paper));border-radius:8px;padding:12px 16px;font-size:15.5px}
+.btn{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:9px 15px;cursor:pointer;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+ul.list{margin:0;padding-left:20px;display:grid;gap:5px}
+
+/* Οδηγός */
+.wiz{display:grid;grid-template-columns:330px 1fr;gap:20px;align-items:start}
+@media (max-width:900px){.wiz{grid-template-columns:1fr}}
+.qbox{position:sticky;top:62px;display:grid;gap:16px}
+@media (max-width:900px){.qbox{position:static}}
+fieldset{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:14px 16px 16px;margin:0;display:grid;gap:8px}
+legend{font-family:var(--display);font-weight:700;font-size:16.5px;padding:0 6px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:7px 9px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1.4}
+.opt:hover{background:var(--soft)}
+.opt input{margin-top:3px;accent-color:var(--accent);width:17px;height:17px;flex:none}
+.opt:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--paper))}
+input[type=date]{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);max-width:100%}
+.plan{display:grid;gap:14px}
+.phase{font-size:12.5px;letter-spacing:.08em;font-weight:700;color:var(--muted);margin-top:6px}
+.task{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--tc,var(--accent));border-radius:10px;padding:14px 16px}
+.task input{width:22px;height:22px;accent-color:var(--ok);margin-top:2px;grid-row:span 3}
+.task h4{font-family:var(--body);font-weight:700;font-size:16px}
+.task .meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13.5px;color:var(--muted);font-weight:600}
+.task .meta .due{color:var(--risk)}
+.task p{font-size:15px;color:var(--muted)}
+.task:has(input:checked){opacity:.62}
+.task:has(input:checked) h4{text-decoration:line-through}
+.tel{font-weight:700;text-decoration:none;white-space:nowrap}
+.prog{display:grid;gap:6px}
+.bar{height:10px;border-radius:99px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+.empty{border:2px dashed var(--line);border-radius:12px;padding:30px;text-align:center;color:var(--muted)}
+
+/* Πρακτική */
+.say{position:relative;padding:10px 14px 10px 38px;border-radius:10px;font-family:var(--display);font-size:16.5px;background:color-mix(in srgb,var(--c) 8%,var(--paper));border:1px solid color-mix(in srgb,var(--c) 30%,var(--line))}
+.say::before{content:"«";position:absolute;left:13px;top:4px;font-size:26px;color:var(--c)}
+.quiz{display:grid;gap:12px}
+.qitem{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:10px}
+.qitem .fb{font-size:15px;border-radius:8px;padding:8px 12px}
+.qitem .fb.good{background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.qitem .fb.bad{background:color-mix(in srgb,var(--risk) 10%,var(--paper))}
+.score{font-weight:700}
+
+details{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+details+details{margin-top:10px}
+summary{cursor:pointer;font-weight:700;font-family:var(--display);font-size:17px}
+details[open] summary{margin-bottom:10px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+.check:last-child{border-bottom:0}
+.check input{width:19px;height:19px;accent-color:var(--accent);margin-top:3px;flex:none}
+
+.contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.contact{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;align-content:start}
+.contact .num{font-family:var(--display);font-size:22px;font-weight:800}
+.contact .num a{text-decoration:none}
+
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--soft);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+
+footer{border-top:1px solid var(--line);padding:20px 0 36px;color:var(--muted);font-size:14px;display:grid;gap:8px}
+
+@media print{
+  header.top .sos, nav.tabs, .noprint, footer .noprint{display:none!important}
+  body{background:#fff;color:#000;font-size:12.5pt}
+  .view{display:none!important}
+  .view.printme{display:block!important}
+  .task,.card,fieldset,details,.contact{break-inside:avoid;border-color:#999}
+  .qbox{display:none!important}
+  .wiz{display:block}
+  details{display:block} details>*{display:block}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap head">
+    <a class="back noprint" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+    <div class="eyebrow">ΠΡΟΣΤΑΣΙΑ ΤΟΥ ΠΑΙΔΙΟΥ · ΓΙΑ ΤΟ ΣΧΟΛΕΙΟ</div>
+    <h1>Βία στην οικογένεια &amp; σεξουαλική κακοποίηση</h1>
+    <p class="lede">Οδηγός ενεργειών για τον εκπαιδευτικό, τη Διεύθυνση και τον Καθηγητή ΣΕΑ: απαντάς σε λίγες ερωτήσεις και παίρνεις τα βήματα που ισχύουν για τη συγκεκριμένη περίπτωση, με προθεσμίες, τηλέφωνα και το ποιος ενημερώνει τους γονείς.</p>
+    <div class="sos" role="note"><b>Άμεσος κίνδυνος;</b> Η προστασία προηγείται κάθε διαδικασίας.
+      <a href="tel:112">112</a><a href="tel:199">199</a>
+      <span class="small muted">Ειδική Ανακριτική Ομάδα:</span><a href="tel:22808442">22 808 442</a>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Ενότητες">
+  <div class="wrap" role="tablist">
+    <button role="tab" data-v="odigos" aria-selected="true">1 · Οδηγός ενεργειών</button>
+    <button role="tab" data-v="apokalypsi" aria-selected="false">2 · Όταν ένα παιδί μιλά</button>
+    <button role="tab" data-v="endeixeis" aria-selected="false">3 · Ενδείξεις &amp; αξιολόγηση</button>
+    <button role="tab" data-v="roloi" aria-selected="false">4 · Ρόλοι &amp; τηλέφωνα</button>
+    <button role="tab" data-v="meta" aria-selected="false">5 · Μετά την αναφορά</button>
+    <button role="tab" data-v="karta" aria-selected="false">6 · Κάρτα εκπαιδευτικού</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ 1. ΟΔΗΓΟΣ ============ -->
+<section class="view on" id="v-odigos" aria-labelledby="h-odigos">
+  <div class="vhead">
+    <h2 id="h-odigos">Οδηγός ενεργειών</h2>
+    <p class="muted">Η εφαρμογή οργανώνει ενέργειες· δεν αξιολογεί ούτε επιβεβαιώνει κακοποίηση. Δεν γράφεις ονόματα ή περιγραφές. Οι επιλογές μένουν μόνο σε αυτή τη σελίδα και χάνονται με ανανέωση ή κλείσιμο. Κανένα κουμπί δεν στέλνει αναφορά σε υπηρεσία.</p>
+  </div>
+
+  <div class="wiz">
+    <div class="qbox noprint">
+      <fieldset>
+        <legend>1. Τι αφορά η πληροφορία;</legend>
+        <label class="opt"><input type="radio" name="type" value="fam"> <span><b>Βία στην οικογένεια</b><br><span class="muted small">σωματική, ψυχολογική βία ή παραμέληση από μέλος της οικογένειας</span></span></label>
+        <label class="opt"><input type="radio" name="type" value="sex"> <span><b>Σεξουαλική κακοποίηση ή εκμετάλλευση</b><br><span class="muted small">αποκάλυψη, πληροφορία ή εύλογη υποψία, από οποιονδήποτε</span></span></label>
+      </fieldset>
+
+      <fieldset id="fs-perp" hidden>
+        <legend>2. Ποιος αναφέρεται ως πιθανός θύτης;</legend>
+        <label class="opt"><input type="radio" name="perp" value="family"> Ενήλικο μέλος της οικογένειας</label>
+        <label class="opt"><input type="radio" name="perp" value="adult"> Ενήλικος εκτός οικογένειας</label>
+        <label class="opt"><input type="radio" name="perp" value="minor14"> Ανήλικος 14 ετών και άνω</label>
+        <label class="opt"><input type="radio" name="perp" value="minorU14"> Ανήλικος κάτω των 14 ετών</label>
+        <label class="opt"><input type="radio" name="perp" value="staff"> Εκπαιδευτικός ή άλλος εργαζόμενος στο σχολείο</label>
+        <label class="opt"><input type="radio" name="perp" value="online"> Μαθητές διακινούν γυμνό ή σεξουαλικό υλικό παιδιού (κινητό, διαδίκτυο)</label>
+        <label class="opt" id="opt-fammember" hidden><input type="checkbox" id="fammember"> <span>Ο ανήλικος θύτης είναι <b>μέλος της οικογένειας</b> του παιδιού (π.χ. αδελφός)</span></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Υπάρχει άμεσος κίνδυνος;</legend>
+        <label class="opt"><input type="radio" name="risk" value="yes"> Ναι</label>
+        <label class="opt"><input type="radio" name="risk" value="unsure"> Δεν είμαι βέβαιος/η</label>
+        <label class="opt"><input type="radio" name="risk" value="no"> Δεν εντοπίζεται αυτή τη στιγμή</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>4. Ειδικές συνθήκες</legend>
+        <label class="opt"><input type="checkbox" id="f-past"> Αφορά γεγονός του παρελθόντος (πριν μήνες ή χρόνια)</label>
+        <label class="opt"><input type="checkbox" id="f-abroad"> Συνέβη εκτός Κύπρου</label>
+        <label class="opt"><input type="checkbox" id="f-dis"> Εμπλέκεται παιδί με αναπηρία</label>
+        <label class="opt"><input type="checkbox" id="f-off"> Σαββατοκύριακο, αργία ή μη εργάσιμη ώρα</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>5. Πότε έλαβες την πληροφορία;</legend>
+        <input type="date" id="date" aria-label="Ημερομηνία που έλαβα την πληροφορία">
+        <label for="follow" class="small muted" style="margin-top:6px">Επόμενος έλεγχος ενεργειών (δική σου υπενθύμιση)</label>
+        <input type="date" id="follow">
+      </fieldset>
+    </div>
+
+    <div class="plan" id="plan" aria-live="polite">
+      <div class="empty" id="planEmpty">Διάλεξε στο 1 τι αφορά η πληροφορία<span id="emptyPerp" hidden> και στο 2 ποιος αναφέρεται ως πιθανός θύτης</span>, για να εμφανιστούν τα βήματα.</div>
+      <div id="planBody" hidden>
+        <div class="row noprint" style="justify-content:space-between">
+          <div class="prog" style="flex:1;min-width:220px">
+            <span class="small" id="progText">0 / 0 ενέργειες</span>
+            <div class="bar"><i id="progBar"></i></div>
+          </div>
+          <div class="row">
+            <button class="btn" id="btnPrint">Εκτύπωση / PDF</button>
+            <button class="btn" id="btnDl">Λήψη λίστας (.txt)</button>
+            <button class="btn" id="btnReset">Νέο περιστατικό</button>
+          </div>
+        </div>
+        <div id="banners" class="stack"></div>
+        <div id="tasks" class="plan"></div>
+        <p class="small muted">Προσωπική λίστα οργάνωσης: δεν αποτελεί επίσημη αναφορά ή τεκμήριο παραλαβής. Τα τσεκαρίσματα δείχνουν όσα δηλώνεις εσύ.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. ΑΠΟΚΑΛΥΨΗ ============ -->
+<section class="view" id="v-apokalypsi" aria-labelledby="h-apok">
+  <div class="vhead">
+    <h2 id="h-apok">Όταν ένα παιδί μιλά</h2>
+    <p class="muted">Η πρώτη σου αντίδραση μετρά πολύ. Αν διστάσεις, το παιδί μπορεί να κρατήσει το μυστικό και η κακοποίηση να συνεχιστεί. Δεν χρειάζεται να ξέρεις τι ακριβώς έγινε: χρειάζεται να ακούσεις, να πιστέψεις και να αναφέρεις.</p>
+  </div>
+  <div class="stack">
+    <div class="cols">
+      <div class="card stack">
+        <h3 style="color:var(--ok)">Κάνω</h3>
+        <ul class="list">
+          <li>Βρίσκω ήσυχο, ιδιωτικό χώρο.</li>
+          <li>Ακούω ήρεμα, με ενσυναίσθηση, χωρίς έκδηλο σοκ.</li>
+          <li>Αφήνω το παιδί να μιλήσει με τις δικές του λέξεις και στον δικό του χρόνο.</li>
+          <li>Δείχνω ότι το πιστεύω, ακόμη κι αν κάτι ακούγεται περίεργο ή αντιφατικό.</li>
+          <li>Του λέω ότι έκανε σωστά που μίλησε και ότι δεν φταίει.</li>
+          <li>Του εξηγώ με ειλικρίνεια ότι θα το πω <b>μόνο</b> σε όσους πρέπει να βοηθήσουν.</li>
+          <li>Δείχνω ότι είμαι διαθέσιμος/η και ότι μπορώ να το χειριστώ.</li>
+        </ul>
+      </div>
+      <div class="card stack">
+        <h3 style="color:var(--risk)">Αποφεύγω</h3>
+        <ul class="list">
+          <li>Να υποσχεθώ ότι δεν θα το πω σε κανέναν.</li>
+          <li>Ερωτήσεις που επικρίνουν («Γιατί δεν…;»).</li>
+          <li>Πολλές ή καθοδηγητικές ερωτήσεις, λεπτομέρειες, διευκρινίσεις.</li>
+          <li>Να διερευνήσω, να διαγνώσω ή να βγάλω συμπέρασμα.</li>
+          <li>Σχόλια για το θύμα ή τον θύτη· κρατώ ουδετερότητα.</li>
+          <li>Να ζητήσω από το παιδί να το ξαναπεί σε άλλους (περιορίζω τις επαναλαμβανόμενες συνεντεύξεις).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card stack">
+      <h3>Τι καταγράφω αμέσως μετά</h3>
+      <p class="muted small">Η καταγραφή <b>δεν</b> γίνεται μπροστά στο παιδί. Γράφω με ακρίβεια, όσο γίνεται με τα λόγια του παιδιού, στον υπηρεσιακό φάκελο.</p>
+      <label class="check"><input type="checkbox"> Τα κύρια γεγονότα: πρόσωπα, ώρα, ημερομηνία, συμπεριφορές, ό,τι βοηθά την αναφορά.</label>
+      <label class="check"><input type="checkbox"> Ονόματα προσώπων που ανέφερε το παιδί ότι ήταν παρόντα, είδαν ή άκουσαν κάτι.</label>
+      <label class="check"><input type="checkbox"> Παρατηρήσεις για τη φυσική κατάσταση του παιδιού (π.χ. χλωμό, τρέμει, αποφεύγει το βλέμμα).</label>
+      <label class="check"><input type="checkbox"> Πότε και σε ποιον μίλησε (σε μένα, σε συμμαθητή, σε άλλον ενήλικα).</label>
+    </div>
+
+    <div class="card stack">
+      <h3>Εξάσκηση: βοηθά ή να αποφευχθεί;</h3>
+      <p class="muted small">Διάλεξε για κάθε φράση. Οι επικριτικές ερωτήσεις και οι δύο διευκολυντικές ερωτήσεις είναι παραδείγματα του εγχειριδίου· οι υπόλοιπες φράσεις είναι ενδεικτικές.</p>
+      <div class="quiz" id="quiz"></div>
+      <div class="row"><span class="score" id="qscore"></span><button class="btn" id="qreset">Ξανά από την αρχή</button></div>
+    </div>
+
+    <div class="okbox">
+      <b>Να θυμάσαι:</b> μπορεί να είσαι το πρώτο άτομο στο οποίο μίλησε το παιδί. Η κακή κρίση δεν είναι έγκλημα· το να μην κάνεις τίποτα είναι παράνομο. Μετά, φρόντισε και τα δικά σου συναισθήματα: μίλησε με τον Καθηγητή ΣΕΑ ή τον Εκπαιδευτικό Ψυχολόγο του σχολείου.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. ΕΝΔΕΙΞΕΙΣ ============ -->
+<section class="view" id="v-endeixeis" aria-labelledby="h-end">
+  <div class="vhead">
+    <h2 id="h-end">Ενδείξεις &amp; αξιολόγηση</h2>
+    <p class="muted">Κανένα σημάδι μόνο του δεν αποδεικνύει κακοποίηση και αρκετά παιδιά που κακοποιούνται φαίνονται λειτουργικά. Ο συνδυασμός ανησυχητικών ενδείξεων είναι λόγος να ζητήσεις συμβουλή ή να προχωρήσεις σε αναφορά. Για την αναφορά αρκεί <b>εύλογη υποψία</b>.</p>
+  </div>
+  <div class="stack">
+    <div>
+      <details open>
+        <summary>Πιθανές ενδείξεις σεξουαλικής κακοποίησης</summary>
+        <div class="cols">
+          <div><h4>Ψυχοσωματικά</h4><ul class="list small"><li>Εφιάλτες, προβλήματα ύπνου</li><li>Ξαφνικές αλλαγές στη διατροφή</li></ul></div>
+          <div><h4>Σωματικά</h4><ul class="list small"><li>Δυσκολία στο περπάτημα ή στο κάθισμα</li><li>Πόνος ή μώλωπες στο στόμα ή στα γεννητικά όργανα</li><li>Λοιμώξεις, σεξουαλικώς μεταδιδόμενα νοσήματα, εγκυμοσύνη</li></ul></div>
+          <div><h4>Συμπεριφορά και διάθεση</h4><ul class="list small"><li>Απότομες αλλαγές, απομόνωση, πτώση επίδοσης</li><li>Ξαφνική αποχή από τη Φυσική Αγωγή, ντροπή για το σώμα</li><li>Αυτοκαταστροφική συμπεριφορά, ουσίες, φυγή από το σπίτι</li><li>Παλινδρόμηση σε προηγούμενες συμπεριφορές</li></ul></div>
+          <div><h4>Σχέσεις</h4><ul class="list small"><li>Απροθυμία να μένει μόνο με συγκεκριμένο άτομο</li><li>Εμμονή με νέο, μεγαλύτερο «φίλο»</li><li>Αδικαιολόγητα δώρα ή χρήματα</li><li>Σεξουαλική γνώση ή συμπεριφορά ακατάλληλη για την ηλικία</li></ul></div>
+        </div>
+      </details>
+      <details>
+        <summary>Διαδικτυακή άγρα (grooming)</summary>
+        <p class="small">Ο δράστης χτίζει σχέση εμπιστοσύνης μέσα από ενδιαφέρον, δώρα και «προνόμια», μερικές φορές με ψεύτικο προφίλ συνομήλικου. Μπορεί να δείχνει πορνογραφικό υλικό, να στρέφει τη συζήτηση σε σεξουαλικό περιεχόμενο ή να ζητά προσωπικές φωτογραφίες. Αυτό μπορεί να κρατήσει μέρες ή μήνες. Πολλά παιδιά νιώθουν ενοχές, δεν βλέπουν ότι πρόκειται για κακοποίηση και πιστεύουν ότι έχουν «σχέση» με τον δράστη.</p>
+      </details>
+      <details>
+        <summary>Οι δράστες δεν μοιάζουν με «τέρατα»</summary>
+        <p class="small">Συνήθως κερδίζουν εύκολα την εμπιστοσύνη, φαίνονται καλοί και εξυπηρετικοί, ευνοούν ένα παιδί και βρίσκουν λόγους να μένουν μόνοι μαζί του. Μπορεί να είναι ενήλικας ή ανήλικος: πάνω από το ένα τρίτο της σεξουαλικής κακοποίησης παιδιών διαπράττεται από άτομα κάτω των 18. Μπορεί να είναι και εκπαιδευτικός ή εργαζόμενος στο σχολείο.</p>
+      </details>
+    </div>
+
+    <div class="card stack">
+      <h3>Αξιολόγηση σεξουαλικής συμπεριφοράς ανάμεσα σε μαθητές</h3>
+      <p class="muted small">Τσέκαρε ό,τι ισχύει για τη συμπεριφορά που παρατήρησες. Είναι βοήθημα σκέψης για να αποφασίσετε την παρέμβαση, όχι διάγνωση.</p>
+      <div id="assess"></div>
+      <div id="assessOut" class="note" aria-live="polite"></div>
+    </div>
+
+    <details>
+      <summary>Ανησυχητικές συμπεριφορές εφήβων 13–18</summary>
+      <ul class="list small">
+        <li>Αναζητά τη συντροφιά πολύ μικρότερων παιδιών και περνά ασυνήθιστα πολύ χρόνο μαζί τους.</li>
+        <li>Παίρνει μικρότερα παιδιά σε μυστικά μέρη ή παίζει μαζί τους «ειδικά» παιχνίδια.</li>
+        <li>Επιμένει να φιλά ή να αγκαλιάζει ένα παιδί που δεν θέλει.</li>
+        <li>Χρησιμοποιεί συχνά επιθετικό ή σεξουαλικό λεξιλόγιο.</li>
+        <li>Δείχνει σεξουαλικό υλικό σε μικρότερα παιδιά ή εκθέτει τα γεννητικά του όργανα.</li>
+        <li>Κάνει σεξουαλικού περιεχομένου τηλεφωνήματα, χρησιμοποιεί αλκοόλ ή ουσίες με μικρότερους.</li>
+        <li>Βλέπει υλικό σεξουαλικής κακοποίησης παιδιών ή εξαναγκάζει άλλο παιδί σε σεξουαλική πράξη.</li>
+      </ul>
+      <p class="small muted" style="margin-top:8px">Επιβλαβής είναι η συμπεριφορά που επαναλαμβάνεται με μυστικότητα και μετά την παρέμβαση ενηλίκων, επιβάλλεται, είναι καταναγκαστική, δεν μειώνεται με συνέπειες και προκαλεί κακό.</p>
+    </details>
+
+    <details>
+      <summary>Το νομικό πλαίσιο σε μια ματιά (Ν. 91(Ι)/2014)</summary>
+      <ul class="list small">
+        <li>Παιδί είναι κάθε άτομο κάτω των 18. Η ηλικία συναίνεσης είναι τα 17.</li>
+        <li>Η σεξουαλική κακοποίηση δεν προϋποθέτει άγγιγμα, βία ή πόνο: περιλαμβάνει και την έκθεση παιδιού σε σεξουαλικές πράξεις ή υλικό, τη φωτογράφηση σε σεξουαλικές στάσεις και τη διαδικτυακή άγρα.</li>
+        <li>Συναινετικές πράξεις ανάμεσα σε ανηλίκους άνω των 13, με παρόμοια ηλικία και ωριμότητα, χωρίς βία, εκμετάλλευση ή εξαναγκασμό, δεν είναι ποινικό αδίκημα.</li>
+        <li>Η ανταλλαγή γυμνών φωτογραφιών ανάμεσα σε δύο τέτοιους ανηλίκους δεν είναι αδίκημα· η προώθησή τους σε τρίτους <b>είναι</b> διανομή υλικού κακοποίησης παιδιών.</li>
+        <li>Δώρο ή αντάλλαγμα για σεξουαλική πράξη δεν εξαιρείται ποτέ.</li>
+        <li>Επιβαρυντικά: κατάχρηση θέσης εμπιστοσύνης ή εξουσίας, εκμετάλλευση αναπηρίας ή εξάρτησης, βία ή απειλή.</li>
+        <li>Η αναπηρία του παιδιού-θύτη δεν είναι ελαφρυντικό: η αναφορά γίνεται κανονικά.</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 4. ΡΟΛΟΙ ============ -->
+<section class="view" id="v-roloi" aria-labelledby="h-rol">
+  <div class="vhead">
+    <h2 id="h-rol">Ρόλοι &amp; τηλέφωνα</h2>
+    <p class="muted">Η ευθύνη αναφοράς είναι <b>ατομική</b>: την κάνει κατά κανόνα όποιος δέχτηκε την αποκάλυψη ή έχει την υποψία. Η στήριξη από Διεύθυνση, ΣΕΑ ή Ψυχολόγο δεν την αίρει. Δεν χρειάζεται συγκατάθεση γονέων και το σχολείο δεν διερευνά.</p>
+  </div>
+  <div class="stack">
+    <div class="contacts">
+      <div class="contact"><h4>Ειδική Ανακριτική Ομάδα · Αστυνομία</h4><div class="num"><a href="tel:22808442">22 808 442</a></div><p class="small muted">Παγκύπρια. Δέχεται τις αναφορές σεξουαλικής κακοποίησης παιδιών και διερευνά.</p></div>
+      <div class="contact"><h4>ΤΑΕ / Αστυνομία</h4><div class="num"><a href="tel:199">199</a> · <a href="tel:112">112</a></div><p class="small muted">Σαββατοκύριακα, αργίες, μη εργάσιμες ώρες ή όταν είναι εξαιρετικά επείγον.</p></div>
+      <div class="contact"><h4>Γραφείο Καταπολέμησης Ηλεκτρονικού Εγκλήματος</h4><div class="num"><a href="tel:22808200">22 808 200</a></div><p class="small muted">Όταν διακινείται υλικό με γυμνό ή σεξουαλικό περιεχόμενο παιδιού. Αν δεν απαντά: Ειδική Ανακριτική Ομάδα.</p></div>
+      <div class="contact"><h4>Υπηρεσίες Κοινωνικής Ευημερίας</h4><div class="num small">Τοπικό γραφείο</div><p class="small muted">Της περιοχής όπου ζει το παιδί, τηλεφωνικά και γραπτώς με το Έντυπο της εγκυκλίου ypp10880 (02/06/2020).</p><a class="small" href="https://enimerosi.moec.gov.cy/ypp10880" target="_blank" rel="noopener">Εγκύκλιος ypp10880 ↗</a></div>
+      <div class="contact"><h4>Γενική Εισαγγελία · Νομική Υπηρεσία</h4><div class="num"><a href="tel:22889100">22 889 100</a></div><p class="small muted">Φαξ 22 665 080 · Απελλή 1, 1403 Λευκωσία. Εποπτικός ρόλος σε περιστατικά βίας στην οικογένεια.</p></div>
+      <div class="contact"><h4>Υπηρεσία Εκπαιδευτικής Ψυχολογίας</h4><div class="num"><a href="tel:22800806">22 800 806</a></div><p class="small muted">Ο οικείος Ψυχολόγος στηρίζει τις μαθησιακές και συναισθηματικές ανάγκες του παιδιού στο σχολείο και ενημερώνει για την πορεία. Δεν διερευνά.</p></div>
+    </div>
+
+    <div class="cols">
+      <div class="card stack"><h3>Διεύθυνση</h3><p class="small">Ενημερώνεται αμέσως. Είναι ο κύριος συνδετικός κρίκος όλων των ενεργειών και υλοποιεί τη διαδικασία. Ενημερώνει ΥΚΕ και Γενική Εισαγγελία όπου προβλέπεται και, ανάλογα με την περίπτωση, τους γονείς.</p></div>
+      <div class="card stack"><h3>Καθηγητής ΣΕΑ</h3><p class="small">Ενημερώνεται αμέσως (Μέση Εκπαίδευση). Δεν έχει περισσότερη ή λιγότερη ευθύνη από κάθε άλλον. Μετά την αναφορά στηρίζει όποιον δέχτηκε την αποκάλυψη, προσφέρει συμβουλευτική στο παιδί, συνεργάζεται με τον Ψυχολόγο και διευκολύνει τη Διεύθυνση. <b>Ποτέ άτυπη διερεύνηση.</b></p></div>
+      <div class="card stack"><h3>Επαρχιακό Γραφείο Παιδείας</h3><p class="small">Λόγω προστασίας δεδομένων <b>δεν</b> ενημερώνεται, εκτός αν εμπλέκεται (έστω και με υπόνοιες) εκπαιδευτικός ή εργαζόμενος του σχολείου· τότε άμεσα και προφορικά. Για καθοδήγηση, η Διεύθυνση μπορεί να συμβουλευτεί προφορικά τον Επιθεωρητή.</p></div>
+      <div class="card stack"><h3>Σπίτι του Παιδιού</h3><p class="small">Δέχεται παραπομπές μόνο από ΥΚΕ και Ειδική Ανακριτική Ομάδα: αξιολογήσεις, οπτικογραφημένες καταθέσεις, ψυχοθεραπεία, στήριξη οικογένειας. Με το σχολείο επικοινωνεί μέσω της ΥΕΨ, εκτός αν ζητήσει απευθείας πληροφορίες.</p></div>
+    </div>
+
+    <div class="card stack">
+      <h3>Γραμμές στήριξης</h3>
+      <div class="row small">
+        <span><b><a class="tel" href="tel:116111">116 111</a></b> Γραμμή στήριξης παιδιών και εφήβων</span>
+        <span><b><a class="tel" href="tel:1440">1440</a></b> Βία στην οικογένεια (ΣΠΑΒΟ)</span>
+        <span><b><a class="tel" href="tel:116000">116 000</a></b> Εξαφανισμένα παιδιά</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. ΜΕΤΑ ============ -->
+<section class="view" id="v-meta" aria-labelledby="h-meta">
+  <div class="vhead">
+    <h2 id="h-meta">Μετά την αναφορά</h2>
+    <p class="muted">Οι αρμόδιες υπηρεσίες αναλαμβάνουν τη διερεύνηση και τη θεραπεία. Το σχολείο έχει το δικό του μερίδιο: να μείνει για το παιδί ένας ασφαλής, σταθερός χώρος.</p>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h3 style="margin-bottom:8px">Στήριξη του παιδιού στο σχολείο</h3>
+      <label class="check"><input type="checkbox"> Σέβομαι την προσωπικότητά του και το αποδέχομαι, ό,τι κι αν νιώθω.</label>
+      <label class="check"><input type="checkbox"> Τηρώ εχεμύθεια για την τραυματική εμπειρία.</label>
+      <label class="check"><input type="checkbox"> Δεν κρίνω το ίδιο, την οικογένειά του ή τον θύτη.</label>
+      <label class="check"><input type="checkbox"> Παρακολουθώ διακριτικά τη συμπεριφορά και την κατάστασή του.</label>
+      <label class="check"><input type="checkbox"> Οργανώνω ενίσχυση ή διευκολύνσεις στα μαθήματα, αν χρειαστεί.</label>
+      <label class="check"><input type="checkbox"> Ο Καθηγητής ΣΕΑ είναι σε επαφή με τον Εκπαιδευτικό Ψυχολόγο για την πορεία.</label>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:8px">Συνάντηση με γονείς</h3>
+      <p class="small warnbox" style="margin-bottom:8px">Μόνο όταν η ενημέρωση των γονέων γίνεται από το σχολείο. Αν ο πιθανός θύτης ανήκει στην οικογένεια, την ενημέρωση κάνουν οι αρμόδιες αρχές.</p>
+      <label class="check"><input type="checkbox"> Πρόσκληση από τη Διεύθυνση· όχι λεπτομέρειες στο τηλέφωνο ή σε μηνύματα.</label>
+      <label class="check"><input type="checkbox"> Παρών/ούσα όποιος δέχτηκε την αποκάλυψη· αν γίνεται, και ΣΕΑ ή Ψυχολόγος.</label>
+      <label class="check"><input type="checkbox"> Ιδιωτικός χώρος, εχεμύθεια.</label>
+      <label class="check"><input type="checkbox"> Σύντομη, ακριβής, απλή ενημέρωση, χωρίς περιττές πληροφορίες ή υποκειμενισμό.</label>
+      <label class="check"><input type="checkbox"> Ακούω ενεργητικά· αφήνω χρόνο για σοκ, θυμό, άρνηση ή θλίψη.</label>
+      <label class="check"><input type="checkbox"> Ουδετερότητα: χωρίς κρίσεις για θύμα ή θύτη.</label>
+      <label class="check"><input type="checkbox"> Εξηγώ τι έκανε το σχολείο και ότι <b>δεν</b> διερευνά.</label>
+      <label class="check"><input type="checkbox"> Διαβεβαιώνω ότι μέλημά μας είναι η στήριξη του παιδιού και η επιστροφή στην κανονικότητα.</label>
+      <label class="check"><input type="checkbox"> Τους κατευθύνω σε εξειδικευμένη βοήθεια και στον Καθηγητή ΣΕΑ.</label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. ΚΑΡΤΑ ============ -->
+<section class="view" id="v-karta" aria-labelledby="h-karta">
+  <div class="vhead">
+    <h2 id="h-karta">Κάρτα εκπαιδευτικού</h2>
+    <p class="muted">Η σύνοψη σεξουαλικής κακοποίησης σε μία σελίδα, για εκτύπωση και ανάρτηση στο γραφείο. Όπου υπάρχουν πληροφορίες, αποκάλυψη ή εύλογη υποψία, <b>πρέπει</b> να γίνει αναφορά.</p>
+    <div class="row noprint"><button class="btn" id="btnCard">Εκτύπωση κάρτας</button></div>
+  </div>
+  <div class="stack">
+    <div class="cols">
+      <div class="card"><h4>Βήμα 1</h4><p class="small">Τηλέφωνο αμέσως στην Ειδική Ανακριτική Ομάδα <b>22 808 442</b>, ή στο ΤΑΕ εκτός ωραρίου και σε εξαιρετικά επείγουσες περιπτώσεις.</p></div>
+      <div class="card"><h4>Βήμα 2</h4><p class="small">Αμέσως, τηλεφωνικά και γραπτώς, στις ΥΚΕ με το Έντυπο της ypp10880.</p></div>
+      <div class="card"><h4>Βήμα 3</h4><p class="small">Γραπτή αναφορά στη Γενική Εισαγγελία μέσα σε 7 ημέρες (Απελλή 1, 1403 Λευκωσία · φαξ 22 665 080).</p></div>
+      <div class="card"><h4>Βήμα 4</h4><p class="small">Ενημέρωση του οικείου Εκπαιδευτικού Ψυχολόγου, ΥΕΨ <b>22 800 806</b>.</p></div>
+    </div>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Ο πιθανός θύτης είναι</th><th>Βήματα</th><th>Γονείς ενημερώνονται από</th></tr></thead>
+      <tbody>
+        <tr><td>Μέλος της οικογένειας (ενήλικος ή ανήλικος)</td><td>1 · 2 · 3 · 4</td><td>Τις αρμόδιες αρχές, όχι το σχολείο (και οι αναίτιοι γονείς). Ο θύτης δεν ενημερώνεται από το σχολείο.</td></tr>
+        <tr><td>Ενήλικος εκτός οικογένειας</td><td>1 · 4</td><td>Τη Διεύθυνση, την ίδια μέρα, εκτός αν η Αστυνομία συστήσει κάτι άλλο.</td></tr>
+        <tr><td>Ανήλικος 14+ εκτός οικογένειας</td><td>1 · 2 · 4</td><td>Τη Διεύθυνση, την ίδια μέρα, εκτός αν η Αστυνομία συστήσει κάτι άλλο.</td></tr>
+        <tr><td>Ανήλικος κάτω των 14 εκτός οικογένειας</td><td>2 · 4</td><td>Τη Διεύθυνση, την ίδια μέρα με την αναφορά στις ΥΚΕ.</td></tr>
+        <tr><td>Εκπαιδευτικός ή εργαζόμενος του σχολείου</td><td>1 · 4 + άμεση προφορική ενημέρωση Επαρχιακού Γραφείου</td><td>Τη Διεύθυνση, την ίδια μέρα. Ο εργαζόμενος ενημερώνεται μόνο μετά από συνεννόηση με τις αρχές.</td></tr>
+        <tr><td>Μαθητές που διακινούν υλικό</td><td>ΓΚΗΕ 22 808 200 · 2 · 4 (+3 αν ανήκει στην οικογένεια)</td><td>Τη Διεύθυνση (γονείς του θύματος), την ίδια μέρα.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="small muted">Για τους γονείς του παιδιού-θύτη αποφασίζεται κατά περίπτωση· σε ιδιάζουσες συνθήκες ζητάτε τη γνώμη του αστυνομικού κατά την τηλεφωνική αναφορά. Δεν λαμβάνεται περαιτέρω μαρτυρία από το παιδί. Αναφορά γίνεται και για παλιά περιστατικά και για περιστατικά εκτός Κύπρου.</p>
+    <p class="small"><b>Η προστασία των παιδιών είναι το πρώτο μας μέλημα.</b></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <span>Πηγές: <a href="https://www.familyviolence.gov.cy/upload/downloads/egxeiridio_diatmimatikon_diadikasion_paidia_2017.pdf" target="_blank" rel="noopener">Εγχειρίδιο Διατμηματικών Διαδικασιών για Παιδιά (2017)</a>, κεφ. 6 και §1.14 · Εγχειρίδιο εκπαιδευτικού για αναγνώριση και διαχείριση περιστατικών σεξουαλικής κακοποίησης παιδιών, ΥΠΑΝ / Παιδαγωγικό Ινστιτούτο, Β΄ έκδοση 2023, κεφ. 2–5 · <a href="https://enimerosi.moec.gov.cy/ypp13203" target="_blank" rel="noopener">ypp13203</a>.</span>
+  <span>Απλοποιημένο βοήθημα· ελέγχεται μαζί με τις εκάστοτε ισχύουσες οδηγίες του ΥΠΑΝ. Οι προθεσμίες δεν είναι χρόνος αναμονής: ενεργείς άμεσα.</span>
+  <span><strong>Στέλιος Κτώρας</strong>, Καθηγητής Σ.Ε.Α. · CC BY-NC 4.0 · <a class="noprint" href="../">← Εργαλειοθήκη</a></span>
+</footer>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- Καρτέλες ---------- */
+const tabs=[...document.querySelectorAll('nav.tabs button')];
+function showView(v){
+  tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.v===v)));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  window.scrollTo({top:0});
+}
+tabs.forEach(t=>t.addEventListener('click',()=>showView(t.dataset.v)));
+
+/* ---------- Ημερομηνίες ---------- */
+function shiftDate(v,n){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return null;const [y,m,d]=v.split('-').map(Number);const dt=new Date(y,m-1,d,12);dt.setDate(dt.getDate()+n);return dt;}
+const fmt=d=>d?d.toLocaleDateString('el-GR',{weekday:'short',day:'numeric',month:'numeric',year:'numeric'}):'';
+function dueText(n){const v=$('date').value; if(!v) return n===0?'σήμερα, αμέσως':'έως '+n+' ημέρες'; return n===0?'αμέσως · '+fmt(shiftDate(v,0)):'έως '+fmt(shiftDate(v,n));}
+
+/* ---------- Οδηγός ---------- */
+const val=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:'';};
+const T={
+  tel:(n,l)=>'<a class="tel" href="tel:'+n.replace(/\s/g,'')+'">'+(l||n)+'</a>'
+};
+const C={who:{you:'Εσύ',dir:'Διεύθυνση',sea:'Καθηγητής ΣΕΑ',school:'Σχολείο'}};
+
+function buildTasks(){
+  const type=val('type'), perp=val('perp'), fm=$('fammember').checked, off=$('f-off').checked;
+  const L=[]; // {phase,id,title,detail,who,due,color}
+  const add=(phase,id,title,detail,who,due,color)=>L.push({phase,id,title,detail,who,due,color});
+  const P1='ΤΩΡΑ · ΑΣΦΑΛΕΙΑ ΚΑΙ ΑΚΡΟΑΣΗ', P2='ΑΝΑΦΟΡΑ', P3='ΣΥΝΕΧΕΙΑ';
+
+  add(P1,'a1','Άκουσα ήρεμα, χωρίς διερεύνηση, και εξήγησα στο παιδί ποιοι θα ενημερωθούν.','Όχι υπόσχεση μυστικότητας, όχι επικριτικές ή καθοδηγητικές ερωτήσεις. Δες «Όταν ένα παιδί μιλά».','Εσύ',0,'var(--ok)');
+  add(P1,'a2','Έλεγξα την ανάγκη άμεσης προστασίας.','Αν υπάρχει άμεσος κίνδυνος: '+T.tel('112')+' / '+T.tel('199')+'.','Εσύ',0,'var(--risk)');
+  add(P1,'a3','Κατέγραψα με ακρίβεια λόγια, χρόνο, τόπο, πρόσωπα και παρατηρήσεις.','Όχι μπροστά στο παιδί. Στον υπηρεσιακό φάκελο, όχι σε προσωπικές σημειώσεις ή κινητό.','Εσύ',0,'var(--ok)');
+
+  if(type==='fam'){
+    add(P2,'f1','Ενημέρωσα αμέσως τη Διεύθυνση και την Ομάδα Διαχείρισης Βίας στην Οικογένεια.','Η ενημέρωση του Διευθυντή δεν αίρει την προσωπική ευθύνη αναφοράς.','Εσύ',0);
+    add(P2,'f2','Επικοινώνησα τηλεφωνικά με το αρμόδιο Γραφείο Ευημερίας.','Της περιοχής όπου ζει το παιδί.','Εσύ / Διεύθυνση',0);
+    add(P2,'f3','Έστειλα επώνυμη γραπτή αναφορά στις ΥΚΕ.','Με το Έντυπο της εγκυκλίου ypp10880.','Εσύ / Διεύθυνση',3);
+    add(P2,'f4','Έγινε κοινοποίηση στον Γενικό Εισαγγελέα.','Αμέσως, το αργότερο σε 7 ημέρες. Νομική Υπηρεσία, Απελλή 1, 1403 Λευκωσία · '+T.tel('22889100','22 889 100')+' · φαξ 22 665 080.','Διεύθυνση',7);
+    add(P3,'f5','Έλεγξα ότι η υπηρεσία παρέλαβε την αναφορά.','','Εσύ',null);
+    add(P3,'f6','Συντόνισα με τις ΥΚΕ ποιος και πότε ενημερώνει τους γονείς.','Η αναφορά γίνεται χωρίς συγκατάθεση γονέων. Τηρώ εχεμύθεια.','Διεύθυνση',null);
+    add(P3,'f7','Οργάνωσα την επόμενη επικοινωνία με την αρμόδια υπηρεσία.','','Εσύ / ΣΕΑ',null);
+    add(P3,'f8','Έλεγξα την απαιτούμενη καταγραφή προς το Υπουργείο.','','Διεύθυνση',null);
+  }
+
+  if(type==='sex' && perp){
+    const famLike = perp==='family' || ((perp==='minor14'||perp==='minorU14'||perp==='online') && fm);
+    add(P2,'s0','Ενημέρωσα αμέσως τη Διεύθυνση και τον Καθηγητή ΣΕΑ.','Η αναφορά παραμένει δική σου ατομική ευθύνη. Μόνο σε εξαιρετικές, τεκμηριωμένες περιπτώσεις την προωθεί άλλος, σε συνεννόηση με τη Διεύθυνση.','Εσύ',0);
+
+    const eao=()=>add(P2,'s1','Τηλεφωνική αναφορά στην Ειδική Ανακριτική Ομάδα.',T.tel('22808442','22 808 442')+' (παγκύπρια)'+(off?' · εκτός ωραρίου: ΤΑΕ / '+T.tel('199'):'')+'. Αν υπάρχουν ιδιάζουσες συνθήκες για την ενημέρωση γονέων, ρώτα τη γνώμη του αστυνομικού σε αυτό το τηλεφώνημα.','Εσύ',0,'var(--risk)');
+    const yke=(alone)=>add(P2,'s2',alone?'Αναφορά στις ΥΚΕ (γραπτώς ή και τηλεφωνικώς).':'Παράλληλα: ενημέρωση ΥΚΕ, τηλεφωνικά και γραπτώς.','Τοπικό γραφείο της περιοχής του παιδιού, με το Έντυπο της ypp10880 (02/06/2020).','Διεύθυνση',0,'var(--warn)');
+    const ge=()=>add(P2,'s3','Γραπτή ενημέρωση της Γενικής Εισαγγελίας.','Κοινοποίηση του εντύπου των ΥΚΕ στη Νομική Υπηρεσία, Απελλή 1, 1403 Λευκωσία · '+T.tel('22889100','22 889 100')+' · φαξ 22 665 080.','Διεύθυνση',7,'var(--warn)');
+    const yep=()=>add(P2,'s4','Ενημέρωση του οικείου Εκπαιδευτικού Ψυχολόγου (ΥΕΨ).',T.tel('22800806','22 800 806')+'. Αναλαμβάνει τις ανάγκες του παιδιού στο σχολείο, όχι τη διερεύνηση.','Σχολείο',0);
+
+    if(perp==='family'){eao();yke();ge();yep();}
+    if(perp==='adult'){eao();yep();}
+    if(perp==='minor14'){eao();yke();if(fm)ge();yep();}
+    if(perp==='minorU14'){yke(true);if(fm)ge();yep();}
+    if(perp==='staff'){eao();add(P2,'s5','Άμεση προφορική ενημέρωση του Επαρχιακού Γραφείου Παιδείας.','Με πλήρη στοιχεία, για να στηρίξει το σχολείο στη διαχείριση.','Διεύθυνση',0,'var(--warn)');yep();}
+    if(perp==='online'){add(P2,'s1','Ειδοποίηση του Γραφείου Καταπολέμησης Ηλεκτρονικού Εγκλήματος.',T.tel('22808200','22 808 200')+' (παγκύπρια). Αν δεν απαντά άμεσα: Ειδική Ανακριτική Ομάδα '+T.tel('22808442','22 808 442')+'. Μην προωθήσεις και μην αποθηκεύσεις το υλικό.','Εσύ',0,'var(--risk)');yke();if(fm)ge();yep();}
+
+    // Γονείς
+    let par;
+    if(famLike) par=['Οι γονείς ενημερώνονται από τις αρμόδιες αρχές (ΥΚΕ ή Ειδική Ανακριτική Ομάδα), όχι από το σχολείο.','Ούτε οι αναίτιοι γονείς ούτε ο πιθανός θύτης ενημερώνονται από το σχολείο: μπορεί να επηρεαστεί η διερεύνηση.','Αρχές',null];
+    else if(perp==='adult') par=['Η Διεύθυνση ενημέρωσε τους γονείς την ίδια μέρα με την αναφορά.','Εκτός αν η Ειδική Ανακριτική Ομάδα συστήσει κάτι άλλο. Δες «Μετά την αναφορά» για τη συνάντηση.','Διεύθυνση',0];
+    else if(perp==='staff') par=['Η Διεύθυνση ενημέρωσε τους γονείς την ίδια μέρα με την αναφορά.','Εκτός αν η Ομάδα συστήσει κάτι άλλο. Το εμπλεκόμενο άτομο ενημερώνεται μόνο όταν ΕΓΕ και σχολείο το αποφασίσουν σε συνεννόηση με τις αρχές.','Διεύθυνση',0];
+    else par=['Η Διεύθυνση ενημέρωσε τους γονείς του παιδιού-θύματος την ίδια μέρα με την αναφορά.','Για τους γονείς του παιδιού-θύτη αποφασίζεται κατά περίπτωση· σε ιδιάζουσες συνθήκες ζητάτε τη γνώμη της Αστυνομίας.','Διεύθυνση',0];
+    add(P2,'s6',par[0],par[1],par[2],par[3]);
+
+    add(P3,'s7','Ο Καθηγητής ΣΕΑ συντονίζει τη στήριξη με τον Εκπαιδευτικό Ψυχολόγο.','Στήριξη, όχι άτυπη διερεύνηση. Και για όποιον δέχτηκε την αποκάλυψη.','ΣΕΑ',null);
+    add(P3,'s8','Οργανώθηκε η διακριτική παρακολούθηση και, αν χρειάζεται, διευκολύνσεις στα μαθήματα.','','Σχολείο',null);
+    if(perp!=='staff') add(P3,'s9','Το Επαρχιακό Γραφείο Παιδείας ΔΕΝ ενημερώθηκε.','Λόγω προστασίας δεδομένων ενημερώνεται μόνο όταν εμπλέκεται εργαζόμενος του σχολείου.','Διεύθυνση',null);
+  }
+  return L;
+}
+
+const state={checked:{}};
+function render(){
+  const type=val('type'), perp=val('perp');
+  $('fs-perp').hidden = type!=='sex';
+  $('opt-fammember').hidden = !(type==='sex' && (perp==='minor14'||perp==='minorU14'||perp==='online'));
+  const ready = type==='fam' || (type==='sex' && perp);
+  $('planEmpty').hidden=ready; $('planBody').hidden=!ready;
+  $('emptyPerp').hidden = type!=='sex';
+  if(!ready) return;
+
+  // Μηνύματα
+  const b=[]; const risk=val('risk');
+  if(risk==='yes') b.push('<div class="alert"><b>Άμεσος κίνδυνος:</b> κάλεσε '+T.tel('112')+' / '+T.tel('199')+' τώρα και ενημέρωσε αμέσως τις αρμόδιες υπηρεσίες. Το παιδί δεν μένει μόνο.</div>');
+  if(risk==='unsure') b.push('<div class="warnbox"><b>Δεν είσαι βέβαιος/η;</b> Ζήτησε άμεσα καθοδήγηση από την αρμόδια υπηρεσία στο πρώτο τηλεφώνημα. Αν η κατάσταση γίνει επείγουσα: '+T.tel('112')+' / '+T.tel('199')+'.</div>');
+  if(type==='fam') b.push('<div class="note">Αν υπάρχει <b>και</b> υποψία σεξουαλικής κακοποίησης, διάλεξε στο 1 «Σεξουαλική κακοποίηση»: ισχύουν πρόσθετα βήματα με την Αστυνομία.</div>');
+  if($('f-past').checked) b.push('<div class="note"><b>Παλιό περιστατικό:</b> η αναφορά γίνεται κανονικά, με όλα τα στοιχεία, όσα χρόνια κι αν έχουν περάσει.</div>');
+  if($('f-abroad').checked) b.push('<div class="note"><b>Εκτός Κύπρου:</b> η αναφορά και η διερεύνηση απαιτούνται κανονικά, ιδιαίτερα όταν ο θύτης ανήκει στην οικογένεια.</div>');
+  if($('f-dis').checked) b.push('<div class="note"><b>Παιδί με αναπηρία:</b> ιδιαίτερη προσοχή στην αξιοπρέπειά του σε όλη τη διαδικασία. Αν το παιδί-θύτης έχει αναπηρία, αυτό δεν είναι ελαφρυντικό· η αναφορά γίνεται κανονικά.</div>');
+  if($('date').value){
+    const d=$('date').value;
+    b.push('<div class="note">'+(type==='fam'
+      ? 'Προθεσμίες: γραπτή αναφορά ΥΚΕ <b>'+fmt(shiftDate(d,3))+'</b> · Γενικός Εισαγγελέας <b>'+fmt(shiftDate(d,7))+'</b>.'
+      : 'Αναφορές στην Αστυνομία και στις ΥΚΕ: <b>αμέσως</b> · Γενική Εισαγγελία (όπου προβλέπεται) <b>'+fmt(shiftDate(d,7))+'</b>.')
+      +' Ημερολογιακές ημέρες, χωρίς προσαρμογή αργιών.</div>');
+  }
+  $('banners').innerHTML=b.join('');
+
+  // Βήματα
+  const L=buildTasks(); let html='', ph='';
+  L.forEach(t=>{
+    if(t.phase!==ph){ph=t.phase;html+='<div class="phase">'+ph+'</div>';}
+    const due = t.due===null||t.due===undefined ? '' : '<span class="due">'+esc(dueText(t.due))+'</span>';
+    html+='<label class="task" style="--tc:'+(t.color||'var(--accent)')+'"><input type="checkbox" data-id="'+t.id+'"'+(state.checked[t.id]?' checked':'')+'>'
+      +'<h4>'+esc(t.title)+'</h4><div class="meta"><span>'+esc(t.who)+'</span>'+due+'</div>'
+      +(t.detail?'<p>'+t.detail+'</p>':'')+'</label>';
+  });
+  $('tasks').innerHTML=html;
+  $('tasks').querySelectorAll('input').forEach(c=>c.addEventListener('change',()=>{state.checked[c.dataset.id]=c.checked;progress();}));
+  progress();
+}
+function progress(){
+  const all=[...$('tasks').querySelectorAll('input')], done=all.filter(c=>c.checked).length;
+  $('progText').textContent=done+' / '+all.length+' ενέργειες τσεκαρισμένες';
+  $('progBar').style.width=(all.length?done/all.length*100:0)+'%';
+}
+document.querySelectorAll('#v-odigos input').forEach(i=>i.addEventListener('change',e=>{
+  if(e.target.name==='type'||e.target.name==='perp'||e.target.id==='fammember') state.checked={};
+  render();
+}));
+
+function reportText(){
+  const lab=n=>{const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.closest('label').innerText.split('\n')[0].trim():'Δεν επιλέχθηκε';};
+  const type=val('type');
+  const lines=['ΠΡΟΣΤΑΣΙΑ ΤΟΥ ΠΑΙΔΙΟΥ — ΛΙΣΤΑ ΕΝΕΡΓΕΙΩΝ','Προσωπική λίστα οργάνωσης. Δεν αποτελεί επίσημη αναφορά.','',
+    'Τύπος: '+lab('type')];
+  if(type==='sex') lines.push('Πιθανός θύτης: '+lab('perp')+($('fammember').checked&&!$('opt-fammember').hidden?' (μέλος οικογένειας)':''));
+  lines.push('Άμεσος κίνδυνος: '+lab('risk'),'Ημερομηνία πληροφορίας: '+($('date').value||'Δεν ορίστηκε'),'Επόμενος έλεγχος: '+($('follow').value||'Δεν ορίστηκε'),'');
+  let ph='';
+  buildTasks().forEach(t=>{
+    if(t.phase!==ph){ph=t.phase;lines.push('',ph);}
+    lines.push((state.checked[t.id]?'[✓] ':'[ ] ')+t.title+(t.due!=null?' — '+dueText(t.due):''));
+  });
+  lines.push('','Πηγές: Εγχειρίδιο Διατμηματικών Διαδικασιών (2017) κεφ. 6 · Εγχειρίδιο σεξουαλικής κακοποίησης ΥΠΑΝ (2023).');
+  return lines.join('\n');
+}
+function printView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('printme',v.id===id));window.print();}
+$('btnPrint').onclick=()=>printView('v-odigos');
+$('btnCard').onclick=()=>printView('v-karta');
+$('btnDl').onclick=()=>{const blob=new Blob([reportText()],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='lista_energeion.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);};
+$('btnReset').onclick=()=>{if(!confirm('Να καθαριστούν όλες οι επιλογές; Δεν υπάρχει αποθηκευμένο αντίγραφο.'))return;
+  document.querySelectorAll('#v-odigos input').forEach(i=>{if(i.type==='radio'||i.type==='checkbox')i.checked=false;else i.value='';});state.checked={};render();};
+window.addEventListener('beforeprint',()=>{if(!document.querySelector('.view.printme'))document.querySelector('.view.on').classList.add('printme');});
+window.addEventListener('afterprint',()=>document.querySelectorAll('.view').forEach(v=>v.classList.remove('printme')));
+
+/* ---------- Εξάσκηση ---------- */
+const Q=[
+  ['Σε άγγιξε κάποιος σε μέρος που δεν σου άρεσε ή που σε έκανε να νιώσεις άβολα;',1,'Συγκεκριμένη και διευκολυντική ερώτηση, όχι διερευνητική. Παράδειγμα του εγχειριδίου.'],
+  ['Γιατί δεν είπες όχι;',0,'Εκπέμπει επίκριση και μεταφέρει την ευθύνη στο παιδί.'],
+  ['Μπράβο που μου το είπες. Έκανες το σωστό και δεν φταις εσύ.',1,'Απενοχοποίηση και διαβεβαίωση ότι η αποκάλυψη ήταν σωστή.'],
+  ['Μην ανησυχείς, δεν θα το πω σε κανέναν.',0,'Δεν μπορείς να το υποσχεθείς: η αναφορά είναι υποχρέωση. Το παιδί πρέπει να το ξέρει από την αρχή.'],
+  ['Σου ζήτησε κάποιος να κρατήσεις κάτι μυστικό;',1,'Διευκολυντική ερώτηση. Παράδειγμα του εγχειριδίου.'],
+  ['Είσαι σίγουρος/η; Πες μου ακριβώς τι έγινε, με κάθε λεπτομέρεια.',0,'Αμφισβήτηση και διερεύνηση. Η διερεύνηση ανήκει στις αρμόδιες υπηρεσίες.'],
+  ['Γιατί δεν μίλησες πιο νωρίς;',0,'Επικριτική ερώτηση. Υπάρχουν πολλοί λόγοι που ένα παιδί δεν μιλά νωρίτερα.'],
+  ['Θα το πω μόνο στα άτομα που πρέπει να βοηθήσουν να είσαι ασφαλής, και θα σου εξηγώ τι γίνεται.',1,'Ειλικρινής ενημέρωση για τα επόμενα βήματα. Δεν είναι «σπάσιμο» της εχεμύθειας.'],
+  ['Μα, δέχτηκες το δώρο του;',0,'Επικριτική ερώτηση. Παράδειγμα του εγχειριδίου.']
+];
+const ans={};
+function renderQuiz(){
+  $('quiz').innerHTML=Q.map((q,i)=>{
+    const a=ans[i];
+    const fb = a===undefined?'':'<div class="fb '+(a===q[1]?'good':'bad')+'"><b>'+(a===q[1]?'Σωστά. ':'Όχι ακριβώς. ')+(q[1]?'Βοηθά.':'Να αποφευχθεί.')+'</b> '+esc(q[2])+'</div>';
+    return '<div class="qitem"><div class="say" style="--c:var(--accent)">'+esc(q[0])+'</div><div class="row">'
+      +'<button class="btn" data-q="'+i+'" data-a="1"'+(a!==undefined?' disabled':'')+'>Βοηθά</button>'
+      +'<button class="btn" data-q="'+i+'" data-a="0"'+(a!==undefined?' disabled':'')+'>Να αποφευχθεί</button></div>'+fb+'</div>';
+  }).join('');
+  $('quiz').querySelectorAll('button').forEach(b=>b.onclick=()=>{ans[b.dataset.q]=Number(b.dataset.a);renderQuiz();});
+  const n=Object.keys(ans).length, ok=Object.keys(ans).filter(k=>ans[k]===Q[k][1]).length;
+  $('qscore').textContent=n?ok+' / '+n+' σωστές'+(n===Q.length?' · ολοκληρώθηκε':''):'';
+}
+$('qreset').onclick=()=>{for(const k in ans)delete ans[k];renderQuiz();};
+renderQuiz();
+
+/* ---------- Αξιολόγηση συμπεριφοράς ---------- */
+const A=[
+  ['Εμφανίζεται συχνά ή συστηματικά, ή συνεχίζεται μετά την παρέμβαση ενηλίκων;',1],
+  ['Περιέχει εξαναγκασμό, επιβολή ή απειλή;',2],
+  ['Προκαλεί πόνο ή τραυματισμό;',2],
+  ['Δείχνει έλλειψη σεβασμού προς τον εαυτό ή τους άλλους;',1],
+  ['Δεν είναι κατάλληλη για την ηλικία ή την αναπτυξιακή φάση;',1],
+  ['Υπάρχει ανισοτιμία σε ηλικία, ανάστημα ή αναπτυξιακό επίπεδο;',2],
+  ['Δεν είναι κατάλληλη για το πλαίσιο (π.χ. σχολείο);',1],
+  ['Γίνεται με μυστικότητα;',1]
+];
+$('assess').innerHTML=A.map((a,i)=>'<label class="check"><input type="checkbox" data-w="'+a[1]+'"> '+esc(a[0])+'</label>').join('');
+function assess(){
+  const c=[...$('assess').querySelectorAll('input:checked')], n=c.length, heavy=c.some(x=>x.dataset.w==='2');
+  const out=$('assessOut');
+  if(!n){out.className='note';out.innerHTML='Τίποτα τσεκαρισμένο: πιθανόν αναμενόμενη συμπεριφορά. Αν κάτι σε προβληματίζει, συζήτησέ το με τον Καθηγητή ΣΕΑ.';return;}
+  if(heavy){out.className='alert';out.innerHTML='<b>Υπάρχει εξαναγκασμός, πόνος ή ανισοτιμία.</b> Διακόπτεις τη συμπεριφορά, ενημερώνεις αμέσως Διεύθυνση και ΣΕΑ και αξιολογείτε αν πρόκειται για σεξουαλική κακοποίηση από ανήλικο, που απαιτεί αναφορά. <button class="btn" id="goGuide" style="margin-top:8px">Άνοιξε τον Οδηγό ενεργειών</button>';
+    $('goGuide').onclick=()=>{document.querySelector('input[name=type][value=sex]').checked=true;render();showView('odigos');};return;}
+  out.className='warnbox';out.innerHTML='<b>Χρειάζεται παρέμβαση.</b> Διακοπή και επανακατεύθυνση, καθοδήγηση του παιδιού, εφαρμογή των κανόνων και συζήτηση με ΣΕΑ / Εκπαιδευτικό Ψυχολόγο για πιθανή παραπομπή ή αξιολόγηση της οικογενειακής κατάστασης.';
+}
+$('assess').querySelectorAll('input').forEach(i=>i.addEventListener('change',assess));
+assess();
+render();
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(()=>{});});}
+</script>
+</body>
+</html>
