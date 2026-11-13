@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Θερμόμετρο συναισθημάτων: Πώς είμαι σήμερα;</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a daily weather report for your inner world. Pick today's weather, name up to three feelings, and get one small next step: a technique from «Ανάσα», a one-minute exercise right here, or «Ζήτα βοήθεια». */
+:root{
+  --bg:#EDF3EF;--surface:#FFFFFF;--soft:#DCEAE2;--ink:#14281F;--muted:#55695F;--line:#CBDCD2;
+  --accent:#137A5B;--accent-ink:#FFFFFF;--warm:#F2994A;--warm-soft:#FCEBDA;
+  --good:#2D8A57;--ok:#B7791F;--bad:#C2412D;--myth:#C2412D;--truth:#2D6FB8;
+  --c-vape:#5B6BD6;--c-alc:#B5462E;--c-subs:#8A3FB0;--c-bet:#2E7D4F;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1813;--surface:#15241D;--soft:#1D3229;--ink:#E3EEE8;--muted:#9AB2A6;--line:#2A4237;
+  --accent:#4CC79E;--accent-ink:#06201A;--warm:#F5AE6B;--warm-soft:#3A2A1B;
+  --good:#5CC48A;--ok:#E5B04F;--bad:#F07C66;--myth:#F07C66;--truth:#7FB2EE;
+  --c-vape:#97A3F2;--c-alc:#EE8A70;--c-subs:#C58BEA;--c-bet:#6FCB94;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.4rem)}h2{font-size:1.55rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.prose{max-width:65ch}
+ul.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.25rem}
+.grow{flex:1}
+.lvl{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.2}
+.lvl b{display:block;color:var(--ink);font-size:.95rem}
+@media (max-width:560px){.lvl{display:none}}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+main{padding:24px 0 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.alert{border:2px solid var(--bad);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sec-title{margin:30px 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.topic{--sc:var(--accent);text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--sc);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s}
+.topic:hover{transform:translateY(-2px);border-color:var(--sc)}
+.ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--sc) 14%,var(--surface));color:var(--sc)}
+.ico svg{width:26px;height:26px}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);align-self:flex-start}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,var(--surface));color:var(--good)}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tools a{text-decoration:none;color:var(--ink)}
+.tools .card{height:100%;display:flex;flex-direction:column;gap:6px}
+.tools .card:hover{border-color:var(--accent)}
+.big{font-family:var(--font-d);font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+
+/* myth card */
+.sbar{display:flex;gap:5px}.sbar span{flex:1;height:6px;border-radius:999px;background:var(--line)}.sbar span.on{background:var(--sc,var(--accent))}
+.deck{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px 24px;min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.07);border-top:8px solid var(--sc,var(--accent))}
+.mcard .stmt{font-family:var(--font-d);font-size:clamp(1.3rem,3.6vw,1.65rem);line-height:1.3}
+.mcard .tag{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sc,var(--accent))}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice button{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:16px;font-weight:700;font-size:1.1rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.choice button small{font-weight:500;font-size:.8rem;color:var(--muted)}
+.choice .bm:hover{border-color:var(--myth)}.choice .bt:hover{border-color:var(--truth)}
+.choice button[disabled]{cursor:default;opacity:.5}
+.verdict{border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.verdict.myth{background:color-mix(in srgb,var(--myth) 11%,var(--surface));border:1px solid var(--myth)}
+.verdict.truth{background:color-mix(in srgb,var(--truth) 11%,var(--surface));border:1px solid var(--truth)}
+.verdict .lab{font-family:var(--font-d);font-size:1.3rem;font-weight:700}
+.verdict.myth .lab{color:var(--myth)}.verdict.truth .lab{color:var(--truth)}
+.res{font-weight:700}.res.y{color:var(--good)}.res.n{color:var(--bad)}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+/* scenario */
+.sit{font-family:var(--font-d);font-size:1.3rem;line-height:1.35;padding:20px;border-radius:16px;background:var(--soft)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.s2{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.s1{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.s0{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.dim{opacity:.6}
+.fb{border-radius:12px;padding:14px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.fb b.t2{color:var(--good)}.fb b.t1{color:var(--ok)}.fb b.t0{color:var(--bad)}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.ways .card{display:flex;flex-direction:column;gap:6px}
+.ways .q{font-family:var(--font-d);font-style:italic}
+textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);min-height:70px;resize:vertical}
+.mine{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.mine button{border:none;background:none;cursor:pointer;color:var(--muted)}
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--accent);min-width:110px;font-variant-numeric:tabular-nums;text-decoration:none}
+@media (max-width:520px){.line{flex-direction:column;align-items:flex-start;gap:4px}}
+.overlay{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 97%,transparent);overflow:auto;padding:24px 16px}
+.overlay[hidden]{display:none}
+.overlay .inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+@media print{.top,.no-print,footer,.ergal-back{display:none!important}body{background:#fff;color:#000}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* app-specific */
+:root{--bg:#EDF4F9;--surface:#FFFFFF;--soft:#DCEAF4;--ink:#132634;--muted:#55697A;--line:#CADCE8;--accent:#2B7BB9;--accent-ink:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1620;--surface:#13212D;--soft:#1B2E3D;--ink:#E2EDF5;--muted:#9AB0C0;--line:#29404F;--accent:#6FB6EA;--accent-ink:#0C1620}}
+.wx{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.wx{gap:5px}}
+.wx button{border:2px solid var(--line);background:var(--surface);border-radius:18px;padding:14px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:600;font-size:.9rem;transition:transform .12s}
+.wx button:hover{transform:translateY(-2px);border-color:var(--accent)}
+.wx button .e{font-size:clamp(1.9rem,7vw,2.8rem);line-height:1}
+.wx button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+@media (max-width:620px){.wx button small{display:none}.wx button{font-size:.68rem;padding:10px 2px;min-width:0;overflow-wrap:anywhere;hyphens:auto}}
+.feel{display:flex;flex-wrap:wrap;gap:8px}
+.feel button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;cursor:pointer}
+.feel button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.step{display:flex;flex-direction:column;gap:12px}
+.step h3{display:flex;gap:10px;align-items:center}
+.step h3 .n{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.9rem;font-family:var(--font-b)}
+.strip{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}
+.strip div{aspect-ratio:1;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-size:clamp(.9rem,3vw,1.4rem)}
+.strip small{display:block;text-align:center;font-size:.65rem;color:var(--muted)}
+.sug{display:flex;flex-direction:column;gap:10px}
+.sug a.card,.sug .card{text-decoration:none;color:var(--ink);display:flex;gap:14px;align-items:flex-start}
+.sug .ic{font-size:1.8rem;line-height:1}
+.ball{width:200px;height:200px;border-radius:50%;margin:10px auto;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--accent) 50%,var(--surface)),var(--accent));color:var(--accent-ink);font-weight:700;font-size:1.15rem;transform:scale(.6);transition-property:transform;transition-timing-function:ease-in-out}
+.g54 li{padding:8px 0;border-bottom:1px solid var(--line)}
+.g54 b{font-family:var(--font-d);font-size:1.3rem;color:var(--accent);margin-right:8px}
+.danger{border:2px solid var(--bad);background:color-mix(in srgb,var(--bad) 7%,var(--surface));border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
+textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);min-height:64px;resize:vertical}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Θερμόμετρο συναισθημάτων, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="var(--accent)"/><rect x="14.5" y="6" width="5" height="15" rx="2.5" fill="none" stroke="var(--accent-ink)" stroke-width="2"/><circle cx="17" cy="23.5" r="4" fill="var(--accent-ink)"/><path d="M17 12v10" stroke="var(--accent-ink)" stroke-width="2.4" stroke-linecap="round"/></svg>
+      Θερμόμετρο
+    </a>
+    <div class="grow"></div>
+    <a class="btn sos" href="#help">Ζήτα βοήθεια</a>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Θερμόμετρο συναισθημάτων», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>. Συνεργάζεται με την <a href="../anasa/">Ανάσα</a>.</p>
+  <p class="small">Ό,τι γράφεις μένει μόνο σε αυτή τη συσκευή. Δεν το βλέπει κανείς άλλος και μπορείς να το σβήσεις όποτε θέλεις. Αυτό δεν είναι τεστ ούτε διάγνωση. <a href="#teachers">Για εκπαιδευτικούς</a></p>
+</div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const app=document.getElementById('app');
+const back='<a class="back" href="#home">← Αρχική</a>';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2400);}
+const WX=[['☀️','Λιακάδα','πολύ καλά'],['🌤️','Λίγα σύννεφα','καλά'],['☁️','Συννεφιά','έτσι κι έτσι'],['🌧️','Βροχή','άσχημα'],['⛈️','Καταιγίδα','πολύ άσχημα']];
+const FE=[['Χαρά','+'],['Ηρεμία','+'],['Ενθουσιασμός','+'],['Ευγνωμοσύνη','+'],['Περηφάνια','+'],['Κούραση','tired'],['Βαρεμάρα','tired'],['Άγχος','anx'],['Φόβος','anx'],['Θυμός','ang'],['Λύπη','sad'],['Μοναξιά','lone'],['Απογοήτευση','down'],['Ντροπή','down'],['Σύγχυση','conf'],['Απελπισία','crit']];
+const SL=[['Καλός','😴'],['Μέτριος','🥱'],['Κακός','😵']];
+const KEY='thermometro-v1';
+let S={log:{}}; // log[YYYY-MM-DD]={w,f:[],s,n}
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function dkey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+let cur={w:null,f:[],s:null,n:''};
+const today=S.log[dkey()]; if(today) cur=JSON.parse(JSON.stringify(today));
+
+/* ---------- suggestions ---------- */
+const SUG={
+ anx:['🫁','Ηρέμησε το σώμα','Όταν νιώθεις άγχος ή φόβο, το σώμα σου είναι σε «συναγερμό». Η αργή αναπνοή του λέει ότι είσαι ασφαλής.','#breath','Ανάπνευσε μαζί μου 1 λεπτό','../anasa/#tools','Εργαλειοθήκη ηρεμίας στην Ανάσα'],
+ ang:['✋','Πάτα «παύση»','Ο θυμός σου λέει ότι κάτι σε πείραξε, και αυτό είναι χρήσιμο να το ξέρεις. Πριν αντιδράσεις: Σταμάτα, πάρε μια ανάσα, κοίτα τι συμβαίνει και μετά διάλεξε τι θα κάνεις.','#breath','Ανάπνευσε μαζί μου 1 λεπτό','../anasa/#alarm','Ο συναγερμός του σώματος στην Ανάσα'],
+ sad:['💬','Μη το κρατάς μόνος/η','Η λύπη ελαφρώνει όταν μοιράζεται. Σκέψου έναν άνθρωπο που μπορείς να του στείλεις ένα μήνυμα σήμερα.','#help','Σε ποιον μπορώ να μιλήσω','../anasa/#help','Ζητώ βοήθεια, στηρίζω φίλο'],
+ lone:['🤝','Ένα μικρό βήμα προς τους άλλους','Η μοναξιά είναι πολύ πιο συχνή απ\' ό,τι φαίνεται. Ένα μικρό βήμα αρκεί: ένα «γεια», ένα μήνυμα, μια θέση δίπλα σε κάποιον στο διάλειμμα.','../parea/','Η εφαρμογή «Παρέα»','#help','Σε ποιον μπορώ να μιλήσω'],
+ tired:['🔋','Φόρτισε την μπαταρία','Η κούραση και η βαρεμάρα συχνά έρχονται από λίγο ύπνο, πολλή οθόνη ή λίγη κίνηση. Τι από αυτά μπορείς να αλλάξεις σήμερα;','../anasa/#life','Η μπαταρία μου στην Ανάσα','../psifiaki-zoi/#t/plan','Το σχέδιό μου για την οθόνη'],
+ down:['🪞','Μίλα στον εαυτό σου σαν φίλος','Η απογοήτευση και η ντροπή συχνά φέρνουν σκέψεις-παγίδες, όπως «πάντα τα χαλάω». Θα το έλεγες αυτό σε έναν φίλο σου;','../anasa/#mind','Τα παιχνίδια του μυαλού','../anasa/#strengths','Οι δυνάμεις μου'],
+ conf:['🧩','Ένα βήμα τη φορά','Όταν όλα μπερδεύονται, γράψε το πρόβλημα σε μία πρόταση. Τι είναι στον έλεγχό σου; Ποιο είναι το πρώτο, μικρό βήμα;','../anasa/#problem','Λύνω το πρόβλημα στην Ανάσα','#ground','Γείωση 5-4-3-2-1'],
+ '+':['✨','Κράτα το','Ωραία μέρα! Σημείωσε τι την έκανε καλή. Όταν έρθουν δύσκολες μέρες, θα θυμάσαι τι σε βοηθά.','#note','Γράψε τι πήγε καλά','../anasa/#strengths','Οι δυνάμεις μου']
+};
+function cats(){return [...new Set(cur.f.map(f=>(FE.find(x=>x[0]===f)||[])[1]).filter(Boolean))];}
+function isCrit(){return cur.w===4||cur.f.includes('Απελπισία');}
+function rainyStreak(){let n=0;const d=new Date();for(let i=0;i<14;i++){const e=S.log[dkey(d)];if(e&&e.w>=3)n++;else if(i>0)break;d.setDate(d.getDate()-1);}return n;}
+
+/* ---------- views ---------- */
+function home(){
+ return `<div class="stack">
+ <div class="card stack"><span class="eyebrow">${new Date().toLocaleDateString('el-GR',{weekday:'long',day:'numeric',month:'long'})}</span><h1>Πώς είμαι σήμερα;</h1><p class="muted prose">Ένα λεπτό για σένα. Δεν υπάρχει σωστή ή λάθος απάντηση. Κάθε καιρός περνά.</p></div>
+ <div class="card step"><h3><span class="n">1</span>Ο καιρός μέσα μου</h3>
+  <div class="wx">${WX.map((w,i)=>`<button data-w="${i}" aria-pressed="${cur.w===i}"><span class="e" aria-hidden="true">${w[0]}</span>${w[1]}<small class="muted" style="font-weight:500">${w[2]}</small></button>`).join('')}</div></div>
+ ${cur.w!==null?`<div class="card step"><h3><span class="n">2</span>Ποιες λέξεις ταιριάζουν; <span class="small muted" style="font-family:var(--font-b);font-weight:500">μέχρι 3</span></h3>
+  <div class="feel">${FE.map(f=>`<button data-f="${f[0]}" aria-pressed="${cur.f.includes(f[0])}">${f[0]}</button>`).join('')}</div>
+  <h3 style="margin-top:6px"><span class="n">3</span>Ο ύπνος μου χθες</h3>
+  <div class="feel">${SL.map((s,i)=>`<button data-s="${i}" aria-pressed="${cur.s===i}">${s[1]} ${s[0]}</button>`).join('')}</div>
+  <div class="row" style="margin-top:6px"><button class="btn primary" id="go">Δες τι μπορεί να βοηθήσει →</button></div></div>`:''}
+ ${hist()}
+ </div>`;
+}
+function hist(){
+ const days=[];const d=new Date();d.setDate(d.getDate()-13);
+ for(let i=0;i<14;i++){days.push([dkey(d),d.toLocaleDateString('el-GR',{weekday:'narrow'})]);d.setDate(d.getDate()+1);}
+ const any=Object.keys(S.log).length;
+ if(!any) return '';
+ return `<div class="card stack"><h3>Οι τελευταίες 14 μέρες</h3><div class="strip">${days.map(([k,l])=>{const e=S.log[k];return `<div title="${k}">${e&&e.w!==null?WX[e.w][0]:''}</div>`;}).join('')}</div>
+  <div class="strip">${days.map(([k,l])=>`<small>${l}</small>`).join('')}</div>
+  <p class="small muted">Παρατήρησε μοτίβα: Τι συμβαίνει τις λιακάδες; Τι τις βροχές; Μήπως παίζουν ρόλο ο ύπνος, κάποια μέρα της εβδομάδας, κάποιο μάθημα;</p>
+  <button class="btn" id="wipe" style="align-self:flex-start">Σβήσε το ιστορικό μου</button></div>`;
+}
+function result(){
+ if(cur.w===null) return home();
+ const crit=isCrit(), rs=rainyStreak(), cs=cats();
+ let list=cs.length?cs.filter(c=>c!=='crit'):[cur.w<=1?'+':cur.w===2?'conf':'sad'];
+ if(cur.s===2&&!list.includes('tired')) list.push('tired');
+ list=list.slice(0,3);
+ const named=cur.f.length?`Σήμερα νιώθεις <b>${cur.f.join(', ').toLowerCase()}</b>.`:'';
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Σήμερα</span><h2>${WX[cur.w][0]} ${WX[cur.w][1]}</h2><p class="prose">${named} Το να βάζεις όνομα σε αυτό που νιώθεις είναι ήδη ένα βήμα: το κάνει πιο κατανοητό και πιο διαχειρίσιμο.</p></div>
+ ${crit?`<div class="danger" role="alert"><h3>Φαίνεται πως σήμερα είναι πολύ δύσκολα</h3><p>Δεν χρειάζεται να το περάσεις μόνος/η. <b>Μίλα σήμερα με έναν ενήλικα που εμπιστεύεσαι</b>: γονιό, τον/την Καθηγητή/τρια ΣΕΑ, τον Υπεύθυνο Τμήματος.</p><p><b>Αν σκέφτεσαι να κάνεις κακό στον εαυτό σου ή νιώθεις ότι δεν αντέχεις άλλο, ζήτα βοήθεια τώρα:</b> κάλεσε το <a href="tel:1466">1466</a> (24 ώρες, δωρεάν) ή το <a href="tel:116111">116 111</a>. Αν κινδυνεύεις άμεσα, κάλεσε το <a href="tel:112">112</a>.</p><a class="btn sos" href="#help" style="align-self:flex-start">Όλες οι επιλογές βοήθειας →</a></div>`:''}
+ ${!crit&&rs>=3?`<div class="take">Τις τελευταίες ${rs} μέρες ο καιρός σου είναι βροχερός. Όταν η βροχή κρατά πολύ, αξίζει να το πεις σε κάποιον. Δεν είναι αδυναμία. Είναι φροντίδα για τον εαυτό σου. <a href="#help">Σε ποιον μπορώ να μιλήσω →</a></div>`:''}
+ <h3>Ένα μικρό επόμενο βήμα</h3>
+ <div class="sug">${list.map(c=>{const s=SUG[c];return `<div class="card"><span class="ic">${s[0]}</span><div class="stack" style="gap:6px"><h3>${s[1]}</h3><p class="small">${s[2]}</p><div class="row"><a class="btn primary" href="${s[3]}">${s[4]}</a><a class="btn" href="${s[5]}">${s[6]}</a></div></div></div>`;}).join('')}</div>
+ <div class="row"><a class="btn" href="#home">← Αλλαγή απαντήσεων</a></div></div>`;
+}
+let br=null;
+function breath(){
+ return `<div class="stack" style="max-width:560px;margin:0 auto;text-align:center"><div class="vhead" style="text-align:left">${back}<span class="eyebrow">1 λεπτό</span><h2>Ανάπνευσε μαζί μου</h2><p class="muted">Εισπνοή από τη μύτη για 4, κράτα για 2, εκπνοή από το στόμα για 6. Η μεγάλη εκπνοή λέει στο σώμα «είσαι ασφαλής».</p></div>
+ <div class="ball" id="ball"><span id="bTxt">Έτοιμος/η;</span></div>
+ <div class="row" style="justify-content:center"><button class="btn primary" id="bGo">Ξεκίνα</button></div>
+ <p class="small muted" id="bLeft"></p>
+ <p class="small">Περισσότερες τεχνικές: <a href="../anasa/#tools">Εργαλειοθήκη ηρεμίας στην Ανάσα</a> · <a href="#ground">Γείωση 5-4-3-2-1</a></p></div>`;
+}
+function runBreath(){
+ const ball=document.getElementById('ball'),t=document.getElementById('bTxt'),left=document.getElementById('bLeft');
+ let end=Date.now()+60000; const seq=[['Εισπνοή',4000,1],['Κράτα',2000,1],['Εκπνοή',6000,.6]]; let i=0;
+ function step(){ if(!document.getElementById('ball')) return; if(Date.now()>=end){t.textContent='Μπράβο 🌿';ball.style.transitionDuration='2s';ball.style.transform='scale(.8)';left.textContent='Πώς νιώθεις τώρα;';br=null;return;}
+  const [lab,ms,sc]=seq[i%3]; t.textContent=lab; ball.style.transitionDuration=ms+'ms'; ball.style.transform='scale('+sc+')'; left.textContent=Math.ceil((end-Date.now())/1000)+' δευτερόλεπτα'; i++; br=setTimeout(step,ms);}
+ step();
+}
+function ground(){
+ return `<div class="stack" style="max-width:620px;margin:0 auto"><div class="vhead">${back}<span class="eyebrow">2 λεπτά</span><h2>Γείωση 5-4-3-2-1</h2><p class="muted">Όταν το μυαλό τρέχει, φέρ' το πίσω στο «εδώ και τώρα» μέσα από τις αισθήσεις. Κοίτα γύρω σου και βρες:</p></div>
+ <ol class="clean g54" style="list-style:none;padding:0"><li><b>5</b>πράγματα που <b>βλέπεις</b></li><li><b>4</b>πράγματα που <b>αγγίζεις</b> (τα ρούχα σου, το θρανίο, τα πόδια σου στο πάτωμα)</li><li><b>3</b>ήχους που <b>ακούς</b></li><li><b>2</b>μυρωδιές που <b>μυρίζεις</b></li><li><b>1</b>γεύση ή κάτι καλό που <b>λες</b> στον εαυτό σου</li></ol>
+ <p class="small">Περισσότερα: <a href="../anasa/#tools">Εργαλειοθήκη ηρεμίας στην Ανάσα</a></p></div>`;
+}
+function note(){
+ return `<div class="stack" style="max-width:620px;margin:0 auto"><div class="vhead">${back}<span class="eyebrow">Σημείωση</span><h2>Τι πήγε καλά σήμερα;</h2><p class="muted">Τρία μικρά πράγματα αρκούν. Μένουν μόνο στη συσκευή σου.</p></div>
+ <textarea id="nt" placeholder="π.χ. γέλασα με τον Μάριο στο διάλειμμα, έλυσα την άσκηση που με δυσκόλευε, βγήκα για τρέξιμο">${(cur.n||'').replace(/</g,'&lt;')}</textarea>
+ <div class="row"><button class="btn primary" id="saveNote">Αποθήκευση</button></div>
+ ${Object.entries(S.log).filter(([k,v])=>v.n).sort().reverse().slice(0,10).map(([k,v])=>`<div class="card small"><b>${k.split('-').reverse().join('/')}</b> ${v.w!==null?WX[v.w][0]:''}<p>${v.n.replace(/</g,'&lt;')}</p></div>`).join('')}</div>`;
+}
+function help(){
+ const L=[['112','Άμεσος κίνδυνος','Αν εσύ ή κάποιος άλλος κινδυνεύει τώρα.'],['1466','Hope For Children','24 ώρες, δωρεάν. Για κάθε δυσκολία, βία ή κακοποίηση.'],['116 111','Ευρωπαϊκή Γραμμή Στήριξης Παιδιών και Εφήβων','Δωρεάν συμβουλευτική για ό,τι σε απασχολεί.'],['1410','Οργανισμός Νεολαίας Κύπρου (ΟΝΕΚ)','Συμβουλευτική και στήριξη για παιδιά, εφήβους και γονείς.'],['1440','ΣΠΑΒΟ','Αν υπάρχει βία στο σπίτι ή στη σχέση σου.'],['1480','CYberSafety','Αν σε πληγώνει κάτι που συμβαίνει online.']];
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow" style="color:var(--warm)">Ζήτα βοήθεια</span><h2>Σε ποιον μπορώ να μιλήσω;</h2><p class="muted prose">Το να ζητάς βοήθεια είναι δύναμη, όχι αδυναμία. Οι περισσότεροι άνθρωποι νιώθουν ανακούφιση όταν τελικά μιλήσουν.</p></div>
+ <div class="grid2">
+  <div class="card stack"><h3>👥 Στο σχολείο</h3><ul class="clean small"><li>Ο/Η Καθηγητής/τρια ΣΕΑ</li><li>Ο/Η Υπεύθυνος/η του τμήματός σου</li><li>Ένας καθηγητής που εμπιστεύεσαι</li><li>Ο/Η Βοηθός Διευθυντής/τρια</li></ul></div>
+  <div class="card stack"><h3>🏠 Έξω από το σχολείο</h3><ul class="clean small"><li>Ένας γονιός ή κηδεμόνας</li><li>Ένας συγγενής: θεία, παππούς, μεγαλύτερο αδέρφι</li><li>Ο γιατρός σου</li><li>Ένας προπονητής ή ένας ενήλικας σε μια δραστηριότητά σου</li></ul></div>
+ </div>
+ <div class="card stack"><h3>Δεν ξέρεις πώς να ξεκινήσεις;</h3><p class="script" style="font-family:var(--font-d);font-style:italic">«Μπορώ να σας μιλήσω λίγο; Τελευταία δεν είμαι καλά και δεν ξέρω τι να κάνω.»</p><p class="small muted">Μπορείς και να γράψεις αυτή τη φράση σε ένα χαρτάκι ή σε μήνυμα. Δεν χρειάζεται να τα πεις όλα με τη μία.</p></div>
+ <div class="card stack"><h3>Γραμμές στήριξης στην Κύπρο</h3><div class="stack" style="gap:8px">${L.map(l=>`<div class="line"><a class="tel" href="tel:${l[0].replace(/\s/g,'')}">${l[0]}</a><div><b>${l[1]}</b><p class="small muted">${l[2]}</p></div></div>`).join('')}</div></div>
+ <p class="small">Για να στηρίξεις έναν φίλο: <a href="../anasa/#help">Ζητώ βοήθεια, στηρίζω φίλο (Ανάσα)</a></p></div>`;
+}
+function teachers(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Για εκπαιδευτικούς</span><h2>Το θερμόμετρο στην τάξη</h2></div>
+ <div class="card stack"><ul class="clean">
+  <li><b>Πρωινή ρουτίνα (2′):</b> στην ώρα του Υπεύθυνου Τμήματος ή στην αρχή της μέρας, οι μαθητές κάνουν το check-in στο κινητό τους. Κανείς δεν δείχνει την απάντησή του. Η εφαρμογή δεν στέλνει δεδομένα πουθενά.</li>
+  <li><b>Χωρίς κινητά:</b> δείξτε τους πέντε καιρούς στον πίνακα. Κάθε μαθητής δείχνει με τα δάχτυλα (1–5) ή γράφει τον αριθμό σε ανώνυμο χαρτάκι. Έτσι βλέπετε το «κλίμα» της τάξης χωρίς να εκτίθεται κανείς.</li>
+  <li><b>Λεξιλόγιο συναισθημάτων:</b> οι 16 λέξεις είναι εξαιρετική αφετηρία για συζήτηση: Ποια η διαφορά ανάμεσα σε απογοήτευση και λύπη; Πού νιώθουμε τον θυμό στο σώμα;</li>
+  <li><b>Σύνδεση με την <a href="../anasa/">Ανάσα</a>:</b> κάθε πρόταση οδηγεί σε έναν σταθμό της. Μπορείτε να κάνετε μαζί την άσκηση αναπνοής του 1 λεπτού πριν από ένα διαγώνισμα.</li></ul></div>
+ <div class="alert stack"><h3>Αν μαθητής σάς πει ότι είναι «στην καταιγίδα» για μέρες ή ότι δεν αντέχει</h3><ul class="clean">
+  <li>Ευχαριστήστε τον που το είπε. Ακούστε ήρεμα, χωρίς να βιαστείτε να δώσετε λύσεις.</li>
+  <li>Αν αναφέρει σκέψεις αυτοτραυματισμού ή ότι δεν θέλει να ζει, μην τον αφήσετε μόνο. Ενημερώστε αμέσως τη Διεύθυνση και τον/την Καθηγητή/τρια ΣΕΑ και ακολουθήστε το πρωτόκολλο του σχολείου. Επικοινωνήστε με τους γονείς και την Υπηρεσία Εκπαιδευτικής Ψυχολογίας.</li>
+  <li>Αν υπάρχει άμεσος κίνδυνος, καλέστε το 112.</li></ul></div></div>`;
+}
+
+function route(){
+ if(br){clearTimeout(br);br=null;}
+ const h=(location.hash||'#home').slice(1);
+ app.innerHTML=({result,breath,ground,note,help,teachers}[h]||home)(); window.scrollTo(0,0);
+}
+function commit(){S.log[dkey()]=JSON.parse(JSON.stringify(cur)); save();}
+window.addEventListener('hashchange',route);
+app.addEventListener('click',e=>{
+ const w=e.target.closest('[data-w]'); if(w){cur.w=+w.dataset.w; commit(); const y=scrollY; app.innerHTML=home(); scrollTo(0,y); return;}
+ const f=e.target.closest('[data-f]'); if(f){const v=f.dataset.f,i=cur.f.indexOf(v); if(i>=0)cur.f.splice(i,1); else if(cur.f.length<3)cur.f.push(v); else {toast('Μέχρι 3 λέξεις. Ποιες ταιριάζουν περισσότερο;');return;} commit(); const y=scrollY; app.innerHTML=home(); scrollTo(0,y); return;}
+ const s=e.target.closest('[data-s]'); if(s){cur.s=+s.dataset.s; commit(); const y=scrollY; app.innerHTML=home(); scrollTo(0,y); return;}
+ if(e.target.closest('#go')){commit(); location.hash='#result'; return;}
+ if(e.target.closest('#bGo')){if(!br){e.target.textContent='Ξανά';runBreath();} return;}
+ if(e.target.closest('#saveNote')){cur.n=document.getElementById('nt').value.slice(0,500); if(cur.w===null) cur.w=null; commit(); app.innerHTML=note(); toast('Αποθηκεύτηκε 🌱'); return;}
+ if(e.target.closest('#wipe')){if(wipeArmed){S={log:{}};cur={w:null,f:[],s:null,n:''};save();wipeArmed=false;route();toast('Το ιστορικό σβήστηκε');}else{wipeArmed=true;toast('Πάτησε ξανά για να σβηστεί');setTimeout(()=>wipeArmed=false,3000);}return;}
+});
+let wipeArmed=false;
+route();
+})();
+</script>
+
+<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
+</body></html>

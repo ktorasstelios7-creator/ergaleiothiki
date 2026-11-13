@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Σχέσεις με σεβασμό: Υγιείς σχέσεις και συναίνεση</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a relationship "traffic light". Behaviours are sorted green/orange/red, then phone-chat scenarios, consent as five letters, a personal boundaries card, and a quick-exit button for safety. */
+:root{
+  --bg:#EDF3EF;--surface:#FFFFFF;--soft:#DCEAE2;--ink:#14281F;--muted:#55695F;--line:#CBDCD2;
+  --accent:#137A5B;--accent-ink:#FFFFFF;--warm:#F2994A;--warm-soft:#FCEBDA;
+  --good:#2D8A57;--ok:#B7791F;--bad:#C2412D;--myth:#C2412D;--truth:#2D6FB8;
+  --c-vape:#5B6BD6;--c-alc:#B5462E;--c-subs:#8A3FB0;--c-bet:#2E7D4F;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1813;--surface:#15241D;--soft:#1D3229;--ink:#E3EEE8;--muted:#9AB2A6;--line:#2A4237;
+  --accent:#4CC79E;--accent-ink:#06201A;--warm:#F5AE6B;--warm-soft:#3A2A1B;
+  --good:#5CC48A;--ok:#E5B04F;--bad:#F07C66;--myth:#F07C66;--truth:#7FB2EE;
+  --c-vape:#97A3F2;--c-alc:#EE8A70;--c-subs:#C58BEA;--c-bet:#6FCB94;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.4rem)}h2{font-size:1.55rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.prose{max-width:65ch}
+ul.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.25rem}
+.grow{flex:1}
+.lvl{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.2}
+.lvl b{display:block;color:var(--ink);font-size:.95rem}
+@media (max-width:560px){.lvl{display:none}}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+main{padding:24px 0 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.alert{border:2px solid var(--bad);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sec-title{margin:30px 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.topic{--sc:var(--accent);text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--sc);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s}
+.topic:hover{transform:translateY(-2px);border-color:var(--sc)}
+.ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--sc) 14%,var(--surface));color:var(--sc)}
+.ico svg{width:26px;height:26px}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);align-self:flex-start}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,var(--surface));color:var(--good)}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tools a{text-decoration:none;color:var(--ink)}
+.tools .card{height:100%;display:flex;flex-direction:column;gap:6px}
+.tools .card:hover{border-color:var(--accent)}
+.big{font-family:var(--font-d);font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+
+/* myth card */
+.sbar{display:flex;gap:5px}.sbar span{flex:1;height:6px;border-radius:999px;background:var(--line)}.sbar span.on{background:var(--sc,var(--accent))}
+.deck{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px 24px;min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.07);border-top:8px solid var(--sc,var(--accent))}
+.mcard .stmt{font-family:var(--font-d);font-size:clamp(1.3rem,3.6vw,1.65rem);line-height:1.3}
+.mcard .tag{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sc,var(--accent))}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice button{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:16px;font-weight:700;font-size:1.1rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.choice button small{font-weight:500;font-size:.8rem;color:var(--muted)}
+.choice .bm:hover{border-color:var(--myth)}.choice .bt:hover{border-color:var(--truth)}
+.choice button[disabled]{cursor:default;opacity:.5}
+.verdict{border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.verdict.myth{background:color-mix(in srgb,var(--myth) 11%,var(--surface));border:1px solid var(--myth)}
+.verdict.truth{background:color-mix(in srgb,var(--truth) 11%,var(--surface));border:1px solid var(--truth)}
+.verdict .lab{font-family:var(--font-d);font-size:1.3rem;font-weight:700}
+.verdict.myth .lab{color:var(--myth)}.verdict.truth .lab{color:var(--truth)}
+.res{font-weight:700}.res.y{color:var(--good)}.res.n{color:var(--bad)}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+/* scenario */
+.sit{font-family:var(--font-d);font-size:1.3rem;line-height:1.35;padding:20px;border-radius:16px;background:var(--soft)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.s2{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.s1{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.s0{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.dim{opacity:.6}
+.fb{border-radius:12px;padding:14px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.fb b.t2{color:var(--good)}.fb b.t1{color:var(--ok)}.fb b.t0{color:var(--bad)}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.ways .card{display:flex;flex-direction:column;gap:6px}
+.ways .q{font-family:var(--font-d);font-style:italic}
+textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);min-height:70px;resize:vertical}
+.mine{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.mine button{border:none;background:none;cursor:pointer;color:var(--muted)}
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--accent);min-width:110px;font-variant-numeric:tabular-nums;text-decoration:none}
+@media (max-width:520px){.line{flex-direction:column;align-items:flex-start;gap:4px}}
+.overlay{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 97%,transparent);overflow:auto;padding:24px 16px}
+.overlay[hidden]{display:none}
+.overlay .inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+@media print{.top,.no-print,footer,.ergal-back{display:none!important}body{background:#fff;color:#000}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* app-specific */
+:root{--bg:#F6EEF2;--surface:#FFFFFF;--soft:#F0DCE6;--ink:#2A1622;--muted:#715A67;--line:#E5CFDA;--accent:#B83A72;--accent-ink:#FFFFFF;--g:#2D8A57;--o:#D08A10;--r2:#C2412D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1A1016;--surface:#24161E;--soft:#331F2A;--ink:#F2E4EB;--muted:#BFA2B1;--line:#45303B;--accent:#F08CB8;--accent-ink:#1A1016;--g:#5CC48A;--o:#E9AE4E;--r2:#F07C66}}
+.lights{display:flex;gap:8px;flex-wrap:wrap}
+.lights button{flex:1;min-width:110px;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:12px;cursor:pointer;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px}
+.lights .dot{width:26px;height:26px;border-radius:50%}
+.lights button[disabled]{cursor:default;opacity:.55}
+.lights button.pick{opacity:1;border-color:var(--ink)}
+.bh{font-family:var(--font-d);font-size:clamp(1.25rem,3.4vw,1.55rem);line-height:1.3;padding:24px 22px;border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.06);min-height:150px;display:flex;align-items:center}
+.lv{border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;border-left:6px solid}
+.lv.g{border-color:var(--g);background:color-mix(in srgb,var(--g) 10%,var(--surface))}
+.lv.o{border-color:var(--o);background:color-mix(in srgb,var(--o) 12%,var(--surface))}
+.lv.r{border-color:var(--r2);background:color-mix(in srgb,var(--r2) 10%,var(--surface))}
+.sbar{display:flex;gap:4px}.sbar span{flex:1;height:6px;border-radius:999px;background:var(--line)}.sbar span.on{background:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:640px){.three{grid-template-columns:1fr}}
+.three div{border-radius:12px;padding:12px;font-size:.92rem}
+.letters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.letters .card{display:flex;flex-direction:column;gap:6px}
+.letters b.L{font-family:var(--font-d);font-size:2rem;color:var(--accent);line-height:1}
+.phone{border:10px solid var(--ink);border-radius:34px;background:var(--bg);overflow:hidden;max-width:340px;width:100%;margin:0 auto}
+.phone .ph{background:var(--surface);border-bottom:1px solid var(--line);padding:12px 14px;font-weight:700}
+.msgs{padding:14px 12px 18px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:84%;padding:8px 12px;border-radius:16px;font-size:.93rem;line-height:1.4;background:var(--surface);border:1px solid var(--line);align-self:flex-start}
+.msg.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.msg.sys{align-self:center;background:transparent;border:none;color:var(--muted);font-size:.8rem;text-align:center;max-width:100%}
+.scene{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:760px){.scene{grid-template-columns:1fr}}
+.bnd{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.bnd button{border:1px solid var(--line);background:var(--surface);padding:10px 12px;border-radius:10px;cursor:pointer;text-align:left}
+.bnd button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface));font-weight:600}
+.script{font-family:var(--font-d);font-style:italic}
+@media (max-width:560px){.top .btn{padding:7px 10px;font-size:.85rem}.brand{font-size:1.05rem}.brand svg{width:28px;height:28px}}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Σχέσεις με σεβασμό, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="var(--accent)"/><path d="M17 25s-7-4.2-7-9.2A3.8 3.8 0 0 1 17 13.5a3.8 3.8 0 0 1 7 2.3c0 5-7 9.2-7 9.2z" fill="none" stroke="var(--accent-ink)" stroke-width="2.2" stroke-linejoin="round"/></svg>
+      Σχέσεις με σεβασμό
+    </a>
+    <div class="grow"></div>
+    <button class="btn sos" id="helpBtn" type="button">Βοήθεια</button>
+    <button class="btn" id="exitBtn" type="button" title="Κλείνει αμέσως τη σελίδα και ανοίγει τον καιρό">✕ Γρήγορη έξοδος</button>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Σχέσεις με σεβασμό», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>.</p>
+  <p class="small">Οι απαντήσεις σου μένουν μόνο σε αυτή τη συσκευή και μπορείς να τις σβήσεις όποτε θέλεις. Το κουμπί «Γρήγορη έξοδος» κλείνει αμέσως τη σελίδα. <a href="#teachers">Για εκπαιδευτικούς</a> · <a href="#sources">Πηγές</a></p>
+</div></footer>
+
+<div class="overlay" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="inner">
+    <div class="row" style="justify-content:space-between"><h2 id="helpTitle">Βοήθεια</h2><button class="btn" id="helpX" type="button">Κλείσιμο</button></div>
+    <div class="take"><b>Αν κάτι σε φοβίζει στη σχέση σου, δεν φταις εσύ και δεν χρειάζεται να το λύσεις μόνος/η.</b> Μίλα σήμερα με τον/την Καθηγητή/τρια ΣΕΑ ή με έναν ενήλικα που εμπιστεύεσαι. Αν κινδυνεύεις τώρα, κάλεσε το 112.</div>
+    <div id="helpLines"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const app=document.getElementById('app');
+const back='<a class="back" href="#home">← Αρχική</a>';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2400);}
+const LINES=[
+ ['112','Άμεσος κίνδυνος','Αστυνομία, Ασθενοφόρο.'],
+ ['1440','ΣΠΑΒΟ · Γραμμή για τη βία','Για παιδιά, εφήβους και ενήλικες. Δωρεάν και εμπιστευτική. Υπάρχει και δωρεάν SMS / live chat στο 99984042, αν δεν μπορείς να μιλήσεις.'],
+ ['1455','ΚΣΟΠ · Σεξουαλική υγεία και ευημερία','Ερωτήσεις για σχέσεις, σώμα, συναίνεση, προστασία.'],
+ ['1466','Hope For Children','Βία, κακοποίηση ή παραμέληση. 24 ώρες, δωρεάν.'],
+ ['116 111','Ευρωπαϊκή Γραμμή Στήριξης Παιδιών και Εφήβων','Για ό,τι σε απασχολεί.'],
+ ['1480','CYberSafety','Αν η πίεση ή ο έλεγχος γίνεται μέσα από το κινητό: μηνύματα, φωτογραφίες, εκβιασμός.']
+];
+function linesHTML(f){return '<div class="stack" style="gap:8px">'+LINES.filter(l=>!f||f.includes(l[0])).map(l=>`<div class="line"><a class="tel" href="tel:${l[0].replace(/\s/g,'')}">${l[0]}</a><div><b>${l[1]}</b><p class="small muted">${l[2]}</p></div></div>`).join('')+'</div>';}
+
+const KEY='scheseis-v1';
+let S={l:{},sc:{},b:[],me:{f:'',w:'',n:''}};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* g = υγιές, o = προσοχή, r = κακοποιητικό */
+const BH=[
+ ['Σέβεται το «όχι» σου χωρίς να θυμώνει, να σου κρατά μούτρα ή να σε «τιμωρεί».','g','Το «όχι» σε μια υγιή σχέση δεν κοστίζει. Ο σεβασμός στα όριά σου είναι η βάση.'],
+ ['Θέλει να ξέρει πού είσαι κάθε στιγμή. Θυμώνει αν δεν απαντήσεις αμέσως.','r','Αυτό είναι έλεγχος, όχι αγάπη. Συχνά ξεκινά σαν «ενδιαφέρον» και σιγά σιγά σφίγγει.'],
+ ['Χαίρεται όταν περνάς χρόνο με τους φίλους και την οικογένειά σου.','g','Σε μια υγιή σχέση έχετε και κοινή ζωή και δική σας ζωή ο καθένας.'],
+ ['Ζηλεύει όταν μιλάς με άλλους και μετά σου κρατά μούτρα για μέρες.','o','Λίγη ζήλια είναι ανθρώπινη. Όταν όμως γίνεται τρόπος να σε κάνει να αλλάξεις συμπεριφορά, είναι προειδοποιητικό σημάδι. Μιλήστε το. Αν συνεχίζεται ή χειροτερεύει, γίνεται έλεγχος.'],
+ ['Σου ζητά τους κωδικούς σου «για να μην έχετε μυστικά».','o','Η εμπιστοσύνη δεν χτίζεται με κωδικούς. Ο καθένας έχει δικαίωμα σε ιδιωτικότητα. Αν το απαιτεί ή ελέγχει το κινητό σου, γίνεται κόκκινο.'],
+ ['Σε σπρώχνει, σε σφίγγει στο χέρι ή πετά πράγματα όταν θυμώνει.','r','Είναι σωματική βία, ακόμα κι αν γίνει «μία φορά», ακόμα κι αν μετά ζητήσει συγγνώμη. Συχνά επαναλαμβάνεται. Μίλα σε έναν ενήλικα.'],
+ ['Μπορείτε να διαφωνείτε χωρίς φωνές, βρισιές και προσβολές.','g','Οι διαφωνίες είναι φυσιολογικές. Το θέμα είναι πώς τις λύνετε: με σεβασμό, ακούγοντας ο ένας τον άλλον.'],
+ ['Σε πιέζει να κάνεις σεξουαλικά πράγματα ή να στείλεις φωτογραφίες, λέγοντας «αν μ\' αγαπούσες θα το έκανες».','r','Αυτό είναι σεξουαλική πίεση και εξαναγκασμός. Έχεις κάθε δικαίωμα να πεις «όχι» όποτε δεν θέλεις, χωρίς αυτό να σημαίνει ότι δεν αγαπάς.'],
+ ['Σε πειράζει μπροστά σε άλλους με τρόπο που σε πληγώνει. Μετά λέει «αστειευόμουν».','o','Αν το «αστείο» πληγώνει και επαναλαμβάνεται, είναι υποτίμηση. Πες του πώς νιώθεις. Αν δεν αλλάζει, είναι σημάδι.'],
+ ['Σε απειλεί ότι θα πει μυστικά σου, θα ανεβάσει φωτογραφίες ή θα κάνει κακό στον εαυτό του αν τον/την αφήσεις.','r','Οι απειλές είναι τρόπος να σε κρατήσει με τον φόβο και την ενοχή. Δεν είναι δική σου ευθύνη να μείνεις. Ζήτα βοήθεια από ενήλικα.'],
+ ['Υποστηρίζει τους στόχους σου: σχολείο, αθλητισμό, όνειρα.','g','Ένας καλός σύντροφος σε θέλει να μεγαλώνεις, όχι να μικραίνεις για να χωράς στη σχέση.'],
+ ['Λέει ότι οι φίλοι σου «δεν σε καταλαβαίνουν όπως εκείνος/η» και ότι δεν χρειάζεσαι κανέναν άλλον.','o','Η απομόνωση από φίλους και οικογένεια είναι από τα πρώτα σημάδια ελέγχου. Κράτα τους ανθρώπους σου κοντά.'],
+ ['Σου λέει ότι πράγματα που θυμάσαι δεν έγιναν ποτέ, ώσπου αρχίζεις να αμφιβάλλεις για τον εαυτό σου.','r','Αυτό λέγεται gaslighting και είναι συναισθηματική κακοποίηση. Το να σε κάνει να αμφιβάλλεις για τη μνήμη σου είναι τρόπος ελέγχου.'],
+ ['Σου ζητά συγγνώμη όταν κάνει λάθος και πραγματικά αλλάζει συμπεριφορά.','g','Όλοι κάνουμε λάθη. Η διαφορά είναι αν η συγγνώμη συνοδεύεται από αλλαγή ή αν το ίδιο επαναλαμβάνεται.'],
+ ['Σου απαγορεύει να βγαίνεις χωρίς αυτόν/ή ή αποφασίζει τι θα φορέσεις.','r','Δεν είναι ιδιοκτησία σου και δεν είσαι ιδιοκτησία του. Οι απαγορεύσεις είναι έλεγχος.'],
+ ['Σου στέλνει 40 μηνύματα σε μια ώρα όταν είσαι με φίλους, «επειδή του λείπεις».','o','Μπορεί να μοιάζει ρομαντικό, αλλά συχνά είναι τρόπος παρακολούθησης. Δες αν σέβεται όταν του πεις «θα σου απαντήσω αργότερα».']
+];
+const LAB={g:['Πράσινο','Υγιές'],o:['Πορτοκαλί','Προσοχή'],r:['Κόκκινο','Κακοποιητικό']};
+const SC=[
+ {app:'Νίκος 💬',msgs:[['Νίκος','Ποιος είναι αυτός στο story σου;;'],['Νίκος','Γιατί γελάς έτσι μαζί του'],['me','Ο Αντρέας από το τμήμα μου, πήγαμε όλοι μαζί για καφέ'],['Νίκος','Αν μ\' αγαπούσες δεν θα έβγαινες χωρίς εμένα'],['Νίκος','Σβήσ\' το']],
+  q:'Η Ελένη διαβάζει αυτά τα μηνύματα. Τι θα ήταν καλό να κάνει;',opts:[
+  ['Σβήνει το story, ζητά συγγνώμη και δεν ξαναβγαίνει χωρίς τον Νίκο.',0,'Έτσι μαθαίνει και ο Νίκος ότι η ζήλια «δουλεύει». Την επόμενη φορά θα ζητήσει κάτι παραπάνω.'],
+  ['Γράφει ήρεμα: «Καταλαβαίνω ότι ζήλεψες, αλλά οι φίλοι μου είναι σημαντικοί για μένα. Δεν θα σταματήσω να τους βλέπω.» Και προσέχει αν αυτό επαναλαμβάνεται.',2,'Σταθερό όριο με ηρεμία. Η αντίδρασή του θα της δείξει πολλά: σέβεται ή πιέζει περισσότερο;'],
+  ['Αρχίζει κι εκείνη να ελέγχει τα δικά του stories και τους φίλους του.',0,'Ο έλεγχος δεν διορθώνεται με περισσότερο έλεγχο. Η σχέση γίνεται πεδίο μάχης.'],
+  ['Δείχνει τα μηνύματα σε μια φίλη ή σε έναν ενήλικα και ρωτά: «Είναι εντάξει αυτό;»',2,'Πολύ καλή κίνηση. Μια ματιά απ\' έξω βοηθά να δεις καθαρά, ειδικά όταν είσαι ερωτευμένος/η.']]},
+ {app:'Μαρίνα 💬',msgs:[['Μαρίνα','Δώσε μου τον κωδικό σου στο Insta'],['me','Γιατί;'],['Μαρίνα','Αν δεν κρύβεις τίποτα, γιατί όχι; 🤨'],['Μαρίνα','Κι άνοιξε και κοινή τοποθεσία να ξέρω ότι είσαι καλά']],
+  q:'Ο Στέφανος δεν ξέρει τι να απαντήσει. Τι θα ήταν καλό να κάνει;',opts:[
+  ['Δίνει τον κωδικό και ανοίγει τοποθεσία, για να μην τσακωθούν.',0,'Ένα «για να μην τσακωθούμε» σήμερα γίνεται έλεγχος κάθε στιγμή αύριο. Και ο κωδικός σου είναι μόνο δικός σου.'],
+  ['«Σε εμπιστεύομαι και θέλω να με εμπιστεύεσαι κι εσύ. Αλλά τον κωδικό και την τοποθεσία μου τα κρατάω για μένα.»',2,'Ακριβώς. Η ιδιωτικότητα δεν σημαίνει ότι κρύβεις κάτι. Είναι δικαίωμα.'],
+  ['Της λέει «οκ» και μετά αλλάζει κωδικό κρυφά.',1,'Προστατεύει τον λογαριασμό του, αλλά δεν λέει καθαρά το όριό του. Το θέμα θα ξαναέρθει.']]},
+ {app:'Ανδρέας 💬',msgs:[['Ανδρέας','Είμαστε μαζί 4 μήνες'],['Ανδρέας','Όλα τα ζευγάρια το κάνουν'],['Ανδρέας','Αν μ\' αγαπούσες θα το έκανες'],['sys','Εννοεί να προχωρήσουν σε κάτι για το οποίο η Δανάη δεν νιώθει έτοιμη']],
+  q:'Τι θα ήταν καλό να κάνει η Δανάη;',opts:[
+  ['Λέει «ναι» για να μην τον χάσει.',0,'Ένα «ναι» από φόβο ή πίεση δεν είναι συναίνεση. Η αγάπη δεν μετριέται με το τι δίνεις όταν δεν θέλεις.'],
+  ['«Όχι. Δεν είμαι έτοιμη. Αν μ\' αγαπάς, θα το σεβαστείς.»',2,'Καθαρό και δυνατό. Έχεις πάντα το δικαίωμα να πεις όχι, όσο καιρό κι αν είστε μαζί.'],
+  ['«Ίσως αργότερα…», για να κερδίσει χρόνο.',1,'Κατανοητό, αλλά αφήνει περιθώριο για περισσότερη πίεση. Ένα καθαρό «όχι τώρα» είναι πιο προστατευτικό.'],
+  ['Μιλά με μια φίλη, με έναν ενήλικα ή με τη γραμμή 1455 για το πώς νιώθει.',2,'Δεν χρειάζεται να το σκεφτεί μόνη της. Η πίεση με το «αν μ\' αγαπούσες» είναι σημάδι που αξίζει κουβέντα.']]},
+ {app:'Μαρία 💬',msgs:[['Μαρία','Χθες ο Κώστας με έσπρωξε στον τοίχο'],['Μαρία','Αλλά ήταν η πρώτη φορά, ήταν πολύ θυμωμένος'],['Μαρία','Μου ζήτησε συγγνώμη. Μη το πεις σε κανέναν πλιζ 🙏']],
+  q:'Είσαι η καλύτερη φίλη της Μαρίας. Τι απαντάς;',opts:[
+  ['«Αφού ζήτησε συγγνώμη, εντάξει. Όλοι θυμώνουμε.»',0,'Η σωματική βία δεν είναι «θυμός που συμβαίνει». Συχνά επαναλαμβάνεται και χειροτερεύει.'],
+  ['«Χώρισέ τον τώρα, αλλιώς δεν σου ξαναμιλάω.»',1,'Το λες από αγάπη, αλλά τα τελεσίγραφα συχνά απομακρύνουν τη φίλη σου, ακριβώς όταν σε χρειάζεται πιο κοντά.'],
+  ['«Σε πιστεύω. Δεν φταις εσύ. Ανησυχώ για σένα. Θες να μιλήσουμε μαζί σε έναν ενήλικα που εμπιστευόμαστε;»',2,'Τέλεια. Πιστεύεις, στηρίζεις, δεν κατηγορείς και ανοίγεις δρόμο για βοήθεια. Αν υπάρχει κίνδυνος, ένας ενήλικας πρέπει να το μάθει, ακόμα κι αν σου ζήτησε να μην το πεις.']]}
+];
+const CONS=[['Ε','Ελεύθερη','Χωρίς πίεση, απειλή, ενοχή ή αλκοόλ. Αν «ναι» λες από φόβο, δεν είναι «ναι».'],['Α','Ανακλήσιμη','Μπορείς να αλλάξεις γνώμη όποτε θέλεις, ακόμα και στη μέση.'],['Ε','Ενημερωμένη','Ξέρεις σε τι λες «ναι». Αν κάποιος σου κρύβει κάτι (π.χ. ότι βιντεοσκοπεί), δεν υπάρχει συναίνεση.'],['Ε','Ενθουσιώδης','Θέλω, όχι «ε, εντάξει…». Η σιωπή, το πάγωμα και το «δεν ξέρω» δεν είναι «ναι».'],['Σ','Συγκεκριμένη','Το «ναι» σε κάτι δεν είναι «ναι» σε όλα. Και το «ναι» χθες δεν είναι «ναι» σήμερα.']];
+const BND={'Σωματικά':['Ρωτάμε πριν από μια αγκαλιά ή ένα φιλί.','Δεν θέλω αγγίγματα μπροστά σε άλλους.','Κανείς δεν με πιάνει όταν είναι θυμωμένος.','Πάω με τον δικό μου ρυθμό.'],'Συναισθηματικά':['Δεν δέχομαι βρισιές ή προσβολές, ούτε «για αστείο».','Κρατάω χρόνο για τους φίλους και την οικογένειά μου.','Δεν χρειάζεται να δικαιολογώ κάθε μου κίνηση.','Αν διαφωνούμε, μιλάμε χωρίς φωνές.'],'Ψηφιακά':['Ο κωδικός μου είναι μόνο δικός μου.','Δεν μοιράζομαι την τοποθεσία μου συνέχεια.','Δεν στέλνω φωτογραφίες που δεν θέλω.','Δεν ανεβάζουμε φωτογραφίες ο ένας του άλλου χωρίς να ρωτήσουμε.','Δεν απαντώ πάντα αμέσως, και αυτό είναι οκ.']};
+
+/* views */
+function home(){
+ const n=Object.keys(S.l).length;
+ return `<div class="hero">
+  <div class="card stack"><span class="eyebrow">Για μαθητές 13–18</span><h1>Η αγάπη δεν ελέγχει.</h1>
+   <p class="prose">Ζήλια, κωδικοί, «αν μ' αγαπούσες…». Πού τελειώνει το ενδιαφέρον και πού αρχίζει ο έλεγχος; Εδώ μαθαίνεις να αναγνωρίζεις τα σημάδια, να βάζεις όρια και να στηρίζεις έναν φίλο. Ισχύει για όλες τις σχέσεις, όποιο φύλο κι αν έχετε.</p>
+   <div class="row"><a class="btn primary" href="#light">Το φανάρι της σχέσης</a><a class="btn" href="#teachers">Για εκπαιδευτικούς</a></div></div>
+  <div class="card soft stack"><h3>Το φανάρι σου</h3><span class="big">${n}<span class="muted" style="font-size:1.1rem"> / ${BH.length}</span></span><p class="small muted">συμπεριφορές που έχεις ταξινομήσει</p>${n||Object.keys(S.sc).length||S.b.length?'<button class="btn" id="wipe" style="align-self:flex-start">Σβήσε όλες τις απαντήσεις μου</button>':''}</div>
+ </div>
+ <h2 class="sec-title">Ενότητες</h2>
+ <div class="tools">
+  <a href="#light"><div class="card"><span class="eyebrow">1 · Αναγνωρίζω</span><h3>Το φανάρι της σχέσης</h3><p class="small muted">16 συμπεριφορές: πράσινο, πορτοκαλί ή κόκκινο;</p></div></a>
+  <a href="#sc/0"><div class="card"><span class="eyebrow">2 · Τι θα έκανες;</span><h3>Τέσσερις συνομιλίες</h3><p class="small muted">Ζήλια, κωδικοί, πίεση, μια φίλη που σου εμπιστεύεται κάτι.</p></div></a>
+  <a href="#consent"><div class="card"><span class="eyebrow">3 · Συναίνεση</span><h3>Ε-Α-Ε-Ε-Σ</h3><p class="small muted">Πέντε γράμματα για το πότε ένα «ναι» είναι πραγματικό «ναι».</p></div></a>
+  <a href="#bounds"><div class="card"><span class="eyebrow">4 · Όρια</span><h3>Τα όριά μου</h3><p class="small muted">Διάλεξε τα όριά σου και βρες τα λόγια για να τα πεις.</p></div></a>
+  <a href="#safe"><div class="card"><span class="eyebrow" style="color:var(--warm)">5 · Στήριξη</span><h3>Αν συμβαίνει σε μένα ή σε φίλο</h3><p class="small muted">Βήματα, λόγια και πού απευθύνεσαι στην Κύπρο.</p></div></a>
+ </div>`;
+}
+function light(){
+ let i=BH.findIndex((_,k)=>S.l[k]===undefined); {const q=location.hash.split('/')[1]; if(q!==undefined&&q!==''&&q!=='end') i=+q;}
+ if(i<0) return lightEnd();
+ const b=BH[i], a=S.l[i];
+ const bars=BH.map((_,k)=>`<span class="${S.l[k]!==undefined||k===i?'on':''}"></span>`).join('');
+ return `<div class="stack" style="max-width:680px;margin:0 auto"><div class="vhead">${back}<span class="eyebrow">Το φανάρι της σχέσης · ${i+1} από ${BH.length}</span><div class="sbar">${bars}</div></div>
+ <p class="small muted">Σε μια σχέση, ο/η σύντροφος…</p>
+ <div class="bh">${b[0]}</div>
+ <div class="lights">${['g','o','r'].map(k=>`<button data-light="${k}" class="${a===k?'pick':''}" ${a!==undefined?'disabled':''}><span class="dot" style="background:var(--${k==='r'?'r2':k})"></span>${LAB[k][0]}<small class="muted" style="font-weight:500">${LAB[k][1]}</small></button>`).join('')}</div>
+ ${a!==undefined?`<div class="lv ${b[1]}" role="status"><b>${a===b[1]?'✓ Συμφωνούμε.':'Εμείς θα το βάζαμε αλλού.'} ${LAB[b[1]][0]}: ${LAB[b[1]][1]}</b><p>${b[2]}</p></div>
+ <div class="next"><span></span><a class="btn primary" href="#light/${i+1<BH.length?i+1:''}" data-nextlight="${i+1}">${i+1<BH.length?'Επόμενη →':'Αποτελέσματα →'}</a></div>`:''}</div>`;
+}
+function lightEnd(){
+ const ok=BH.filter((b,k)=>S.l[k]===b[1]).length;
+ const col=k=>BH.filter(b=>b[1]===k).map(b=>`<li>${b[0]}</li>`).join('');
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Το φανάρι της σχέσης</span><h2>${ok} από ${BH.length} ίδια με εμάς</h2><p class="muted prose">Δεν υπάρχει «βαθμός». Το πορτοκαλί, ειδικά, θέλει κουβέντα: μια μεμονωμένη ζήλια δεν είναι το ίδιο με ένα μοτίβο που επαναλαμβάνεται και σφίγγει. Το κόκκινο θέλει βοήθεια από ενήλικα.</p></div>
+ <div class="three"><div style="background:color-mix(in srgb,var(--g) 12%,var(--surface))"><b style="color:var(--g)">Πράσινο · Υγιές</b><ul class="clean">${col('g')}</ul></div><div style="background:color-mix(in srgb,var(--o) 14%,var(--surface))"><b style="color:var(--o)">Πορτοκαλί · Προσοχή</b><ul class="clean">${col('o')}</ul></div><div style="background:color-mix(in srgb,var(--r2) 12%,var(--surface))"><b style="color:var(--r2)">Κόκκινο · Κακοποιητικό</b><ul class="clean">${col('r')}</ul></div></div>
+ <div class="row"><button class="btn" id="relight">Ξανά από την αρχή</button><a class="btn primary" href="#sc/0">Τι θα έκανες; →</a></div></div>`;
+}
+function sc(i){
+ const s=SC[i]; if(!s) return home(); const a=S.sc[i];
+ const msgs=s.msgs.map(m=>m[0]==='sys'?`<div class="msg sys">${m[1]}</div>`:m[0]==='me'?`<div class="msg me">${m[1]}</div>`:`<div class="msg">${m[1]}</div>`).join('');
+ const opts=s.opts.map((o,k)=>{let c='';if(a!==undefined){c='s'+o[1];if(k!==a&&o[1]!==2)c+=' dim';}return `<button class="opt ${c}" data-sc="${k}" ${a!==undefined?'disabled':''}>${o[0]}</button>`;}).join('');
+ let fb=''; if(a!==undefined){const o=s.opts[a];fb=`<div class="fb"><b class="t${o[1]}">${['Ρίσκο','Μισό βήμα','Δυνατή επιλογή'][o[1]]}</b><p>${o[2]}</p></div>`;}
+ return `<div><div class="vhead">${back}<span class="eyebrow">Τι θα έκανες; · ${i+1} από ${SC.length}</span></div>
+ <div class="scene"><div class="phone"><div class="ph">${s.app}</div><div class="msgs">${msgs}</div></div>
+ <div class="stack"><p class="q" style="font-family:var(--font-d);font-size:1.3rem">${s.q}</p><div class="opts">${opts}</div>${fb}
+ ${a!==undefined?`<div class="next"><span></span><a class="btn primary" href="${i+1<SC.length?'#sc/'+(i+1):'#consent'}">${i+1<SC.length?'Επόμενη συνομιλία →':'Συναίνεση →'}</a></div>`:''}</div></div></div>`;
+}
+function consent(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Συναίνεση</span><h2>Πότε ένα «ναι» είναι πραγματικό «ναι»;</h2><p class="muted prose">Συναίνεση σημαίνει ότι και οι δύο θέλουν αυτό που κάνουν, κάθε φορά. Ισχύει για ένα φιλί, μια αγκαλιά, μια φωτογραφία, μια ανάρτηση. Θυμήσου πέντε γράμματα:</p></div>
+ <div class="letters">${CONS.map(c=>`<div class="card"><b class="L">${c[0]}</b><h3>${c[1]}</h3><p class="small">${c[2]}</p></div>`).join('')}</div>
+ <div class="grid2">
+  <div class="card stack"><h3>Δεν είναι συναίνεση όταν…</h3><ul class="clean small"><li>κάποιος έχει πιει πολύ, έχει πάρει ουσίες ή κοιμάται,</li><li>λέει «ναι» από φόβο, ενοχή ή για να μη χάσει τον άλλον,</li><li>υπάρχει πίεση: «όλοι το κάνουν», «αν μ' αγαπούσες…», επιμονή μετά από «όχι»,</li><li>απλώς δεν αντιστέκεται ή «παγώνει».</li></ul></div>
+  <div class="card stack"><h3>Και online</h3><ul class="clean small"><li>Μια φωτογραφία που σου έστειλε κάποιος δεν σημαίνει ότι μπορείς να την προωθήσεις.</li><li>Ρωτάς πριν ανεβάσεις φωτογραφία του άλλου.</li><li>Κανείς δεν σου χρωστά φωτογραφίες ή «αποδείξεις αγάπης».</li></ul><p class="small">Περισσότερα στην εφαρμογή <a href="../psifiaki-zoi/#w/sext">Ψηφιακή ζωή</a>.</p></div>
+ </div>
+ <div class="take">Έχεις το απόλυτο δικαίωμα να πεις «όχι» οποτεδήποτε δεν θέλεις να προχωρήσεις σε κάτι, όσο καιρό κι αν είστε μαζί. Αυτό δεν σημαίνει ότι δεν αγαπάς τον άλλον.</div>
+ <div class="row"><a class="btn primary" href="#bounds">Τα όριά μου →</a></div></div>`;
+}
+function bounds(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Όρια</span><h2>Τα όριά μου</h2><p class="muted prose">Τα όρια δεν είναι τείχη. Είναι οδηγίες για το πώς θέλεις να σου φέρονται. Διάλεξε όσα ισχύουν για σένα, ή γράψε τα δικά σου.</p></div>
+ ${Object.entries(BND).map(([cat,arr])=>`<div class="card stack no-print"><h3>${cat}</h3><div class="bnd">${arr.map(t=>`<button data-bnd="${t.replace(/"/g,'&quot;')}" aria-pressed="${S.b.includes(t)}">${t}</button>`).join('')}</div></div>`).join('')}
+ <div class="card stack no-print"><h3>Πώς το λέω</h3><p class="small muted">Μια απλή συνταγή: <b>Νιώθω…</b> <b>όταν…</b> <b>Χρειάζομαι…</b></p>
+  <div class="grid2"><input type="text" id="mf" placeholder="Νιώθω… (π.χ. πίεση)" value="${esc(S.me.f)}"><input type="text" id="mw" placeholder="όταν… (π.χ. μου ζητάς τον κωδικό μου)" value="${esc(S.me.w)}"><input type="text" id="mn" placeholder="Χρειάζομαι… (π.χ. να το σεβαστείς)" value="${esc(S.me.n)}"></div></div>
+ <div class="card stack"><h3>Η κάρτα των ορίων μου</h3>${S.b.length?`<ul class="clean">${S.b.map(t=>`<li>${t}</li>`).join('')}</ul>`:'<p class="small muted">Διάλεξε όρια από πάνω.</p>'}
+  <p class="script" id="scriptP">${scriptTxt()}</p>
+  <p class="small muted">Αν κάποιος παραβιάζει ξανά και ξανά ένα όριο αφού του το είπες καθαρά, αυτό σου λέει κάτι σημαντικό για τη σχέση.</p>
+  <div class="row no-print"><button class="btn" onclick="window.print()">Τύπωσε ή κράτα την κάρτα</button></div></div></div>`;
+}
+function scriptTxt(){return (S.me.f||S.me.w||S.me.n)?`«Νιώθω ${esc(S.me.f)||'…'} όταν ${esc(S.me.w)||'…'}. Χρειάζομαι ${esc(S.me.n)||'…'}.»`:'';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+function safe(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow" style="color:var(--warm)">Στήριξη</span><h2>Αν συμβαίνει σε μένα ή σε έναν φίλο</h2></div>
+ <div class="grid2">
+  <div class="card stack"><h3>Αν συμβαίνει σε μένα</h3><ul class="clean small">
+   <li><b>Εμπιστέψου αυτό που νιώθεις.</b> Αν νιώθεις φόβο, ενοχή ή ότι «περπατάς στις μύτες», κάτι δεν πάει καλά.</li>
+   <li><b>Δεν φταις εσύ.</b> Τίποτα δεν δικαιολογεί έλεγχο, απειλές ή βία.</li>
+   <li><b>Πες το σε έναν ενήλικα</b> που εμπιστεύεσαι: γονιό, συγγενή, τον/την Καθηγητή/τρια ΣΕΑ.</li>
+   <li><b>Κράτα αποδείξεις</b> αν υπάρχουν απειλές ή μηνύματα: screenshots με ημερομηνία.</li>
+   <li><b>Σχέδιο ασφάλειας:</b> πού πηγαίνεις, ποιον παίρνεις τηλέφωνο, μια λέξη-κωδικό με φίλο που σημαίνει «έλα να με πάρεις».</li>
+   <li>Αν θέλεις να χωρίσεις και φοβάσαι την αντίδραση, κάν' το με έναν ενήλικα ενήμερο, σε δημόσιο χώρο ή με μήνυμα.</li></ul></div>
+  <div class="card stack"><h3>Αν συμβαίνει σε φίλο/η</h3><ul class="clean small">
+   <li>Άκουσέ τον/την χωρίς να κρίνεις. Πες: «Σε πιστεύω. Δεν φταις εσύ.»</li>
+   <li>Μην τον/την κατηγορείς που μένει στη σχέση. Συχνά είναι δύσκολο να φύγει κανείς.</li>
+   <li>Μείνε κοντά, ακόμα κι αν δεν κάνει αμέσως αυτό που θα ήθελες.</li>
+   <li>Αν υπάρχει βία, απειλές ή κίνδυνος, ένας ενήλικας πρέπει να το μάθει, ακόμα κι αν σου ζήτησε να μην το πεις. Αυτό δεν είναι προδοσία. Είναι φροντίδα.</li></ul></div>
+ </div>
+ <div class="card stack"><h3>Πού απευθύνεσαι στην Κύπρο</h3>${linesHTML()}</div></div>`;
+}
+function teachers(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Για εκπαιδευτικούς</span><h2>Αξιοποίηση στην τάξη</h2><p class="muted prose">Το εργαλείο είναι για Γ΄ Γυμνασίου και Λύκειο. Μπορεί να γίνει σε δύο διδακτικές περιόδους: (1) Φανάρι και συνομιλίες, (2) Συναίνεση, όρια και στήριξη φίλου.</p></div>
+ <div class="card"><div class="tablebox"><table><thead><tr><th>Χρόνος</th><th>Περίοδος 1</th><th>Περίοδος 2</th></tr></thead><tbody>
+  <tr><td>5′</td><td>«Τι σημαίνει για σας μια καλή σχέση;» Λέξεις στον πίνακα.</td><td>Ανάκληση: ένα πράσινο, ένα πορτοκαλί, ένα κόκκινο σημάδι.</td></tr>
+  <tr><td>20′</td><td>Το φανάρι στον πίνακα. Ψηφοφορία με χρωματιστές κάρτες και συζήτηση για τις διαφωνίες, ιδίως στο πορτοκαλί.</td><td>Τα πέντε γράμματα της συναίνεσης με παραδείγματα, και ψηφιακή συναίνεση.</td></tr>
+  <tr><td>15′</td><td>Δύο συνομιλίες σε ομάδες.</td><td>Η τελευταία συνομιλία («Η φίλη μου μού εμπιστεύεται κάτι») και τα βήματα στήριξης. Οι γραμμές στήριξης στον πίνακα.</td></tr></tbody></table></div></div>
+ <div class="card stack"><h3>Καλές πρακτικές</h3><ul class="clean">
+  <li>Συζητάτε για χαρακτήρες και «φίλους», όχι για προσωπικές εμπειρίες μπροστά στην τάξη.</li>
+  <li>Μιλάτε ουδέτερα ως προς το φύλο: ο έλεγχος και η βία συμβαίνουν σε κάθε σχέση. Ταυτόχρονα, μην κρύψετε ότι η έμφυλη βία πλήττει δυσανάλογα τα κορίτσια.</li>
+  <li>Πριν το μάθημα, πείτε στους μαθητές ότι μπορούν να βγουν από την τάξη αν το θέμα τούς δυσκολεύει. Πείτε τους επίσης πού θα σας βρουν μετά.</li>
+  <li>Η έμφαση είναι στα σημάδια ελέγχου (ζήλια, απομόνωση, παρακολούθηση), γιατί συνήθως προηγούνται της σωματικής βίας.</li></ul></div>
+ <div class="alert stack"><h3>Αν μαθητής σάς αποκαλύψει βία ή σεξουαλική κακοποίηση</h3><ul class="clean">
+  <li>Ακούστε ήρεμα, πιστέψτε τον, μην κάνετε ερωτήσεις καθοδήγησης και μην υποσχεθείτε μυστικότητα.</li>
+  <li>Καταγράψτε όσα είπε με τα δικά του λόγια και ενημερώστε άμεσα τη Διεύθυνση, σύμφωνα με το πρωτόκολλο του σχολείου.</li>
+  <li>Αναλυτικά βήματα: <a href="../prostasia-paidiou/">Βία στην οικογένεια &amp; σεξουαλική κακοποίηση</a>. Αν εμπλέκεται διακίνηση εικόνων: <a href="../psifiaki-zoi/#teachers">Ψηφιακή ζωή</a>.</li></ul></div>
+ <div class="card stack"><h3>Γραμμές στήριξης στην Κύπρο</h3>${linesHTML()}</div></div>`;
+}
+function sources(){
+ const P=[['Κύπρος','ΣΠΑΒΟ · Γραμμή 1440','Σύνδεσμος για την Πρόληψη και Αντιμετώπιση της Βίας στην Οικογένεια. Γραμμή βοήθειας, SMS/live chat και εκπαιδευτικά προγράμματα.','https://domviolence.org.cy/en/'],
+  ['Κύπρος','Hope For Children · «Σπάσε τη σιωπή»','Ενημερωτικό φυλλάδιο για εφήβους για τη σεξουαλική κακοποίηση, τη συναίνεση και το δικαίωμα στο «όχι».','https://www.pio.gov.cy/assets/pdf/Sexual%20abuse%20in%20teenagers%20Leaflet%2003_21%20(1)%20(002).pdf'],
+  ['Κύπρος','Πανεπιστήμιο Frederick · «Κόκκινη κάρτα στη βία στις σχέσεις των νέων»','Έρευνα του 2022 σε φοιτητές: 1 στους 4 δεν νιώθει ασφαλής στη σχέση του, 1 στους 5 βιώνει ζήλια και 1 στους 10 σωματική βία.','https://cyprus-mail.com/2023/12/15/warnings-over-abusive-relationships-among-university-students'],
+  ['ΥΠΑΝ','Τηλεφωνικές γραμμές βοήθειας','Επίσημος κατάλογος γραμμών για παιδιά και εφήβους, με ΣΠΑΒΟ 1440, ΚΣΟΠ 1455, ΟΝΕΚ 1410 και 116 111.','https://moec.gov.cy/dme/programmata/scholiki_paravatikotita/enimerosi/syndeseis/tilefonikes_grammes_voitheias.pdf'],
+  ['ΗΠΑ','Safe Dates · Love Is Respect','Το Safe Dates είναι σχολικό πρόγραμμα πρόληψης της βίας στις σχέσεις των εφήβων με θετικά αποτελέσματα σε μακροχρόνια αξιολόγηση. Το Love Is Respect παρουσιάζει τα σημάδια μιας υγιούς και μιας κακοποιητικής σχέσης.','https://www.loveisrespect.org'],
+  ['Καναδάς','The Fourth R','Σχολικό πρόγραμμα για υγιείς σχέσεις στην εφηβεία, βασισμένο σε δεξιότητες και παιχνίδι ρόλων.','https://youthrelationships.org']];
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Πηγές</span><h2>Πηγές και καλές πρακτικές</h2></div><div class="grid2">${P.map(p=>`<div class="card stack"><span class="small muted" style="font-weight:600">${p[0]}</span><h3>${p[1]}</h3><p class="small">${p[2]}</p><a class="small" href="${p[3]}" target="_blank" rel="noopener">${p[3].replace('https://','').replace(/\/.*$/,'')}</a></div>`).join('')}</div></div>`;
+}
+
+function route(){
+ const h=(location.hash||'#home').slice(1).split('/');
+ if(h[0]==='help'){openHelp(); if(!app.innerHTML) app.innerHTML=home(); return;}
+ let html;
+ if(h[0]==='light') html=(h[1]==='end')?lightEnd():light();
+ else if(h[0]==='sc') html=sc(+(h[1]||0));
+ else html=({consent,bounds,safe,teachers,sources}[h[0]]||home)();
+ app.innerHTML=html; window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+app.addEventListener('click',e=>{
+ const l=e.target.closest('[data-light]'); if(l&&!l.disabled){const h=location.hash.split('/');let i=h[1]!==undefined&&h[1]!==''?+h[1]:BH.findIndex((_,k)=>S.l[k]===undefined);S.l[i]=l.dataset.light;save();if(h[1]===undefined||h[1]==='')history.replaceState(null,'','#light/'+i);app.innerHTML=light();return;}
+ const nl=e.target.closest('[data-nextlight]'); if(nl&&+nl.dataset.nextlight>=BH.length){e.preventDefault();location.hash='#light/end';return;}
+ if(e.target.closest('#relight')){S.l={};save();location.hash='#light';route();return;}
+ const s=e.target.closest('[data-sc]'); if(s&&!s.disabled){const i=+(location.hash.split('/')[1]||0);S.sc[i]=+s.dataset.sc;save();app.innerHTML=sc(i);const f=app.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'nearest'});return;}
+ const b=e.target.closest('[data-bnd]'); if(b){const t=b.dataset.bnd,j=S.b.indexOf(t); if(j>=0)S.b.splice(j,1); else S.b.push(t); save();const y=scrollY;app.innerHTML=bounds();scrollTo(0,y);return;}
+ if(e.target.closest('#wipe')){if(wipeArmed){S={l:{},sc:{},b:[],me:{f:'',w:'',n:''}};save();wipeArmed=false;route();toast('Όλα σβήστηκαν');}else{wipeArmed=true;toast('Πάτησε ξανά για να σβηστούν όλα');setTimeout(()=>wipeArmed=false,3000);}return;}
+});
+let wipeArmed=false;
+app.addEventListener('input',e=>{const m={mf:'f',mw:'w',mn:'n'}[e.target.id]; if(m){S.me[m]=e.target.value.slice(0,120);save();const sp=document.getElementById('scriptP');if(sp)sp.innerHTML=scriptTxt();}});
+const help=document.getElementById('help'); let lastFocus=null;
+document.getElementById('helpLines').innerHTML=linesHTML();
+function openHelp(){lastFocus=document.activeElement;help.hidden=false;document.getElementById('helpX').focus();}
+function closeHelp(){help.hidden=true; if(location.hash==='#help') history.replaceState(null,'','#home'); if(lastFocus) lastFocus.focus();}
+document.getElementById('helpBtn').onclick=openHelp;
+document.getElementById('helpX').onclick=closeHelp;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!help.hidden) closeHelp();});
+document.getElementById('exitBtn').onclick=()=>{location.replace('https://www.google.com/search?q=%CE%BA%CE%B1%CE%B9%CF%81%CF%8C%CF%82');};
+route();
+})();
+</script>
+
+<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
+</body></html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Διαβάζω έξυπνα: Μελέτη και εξετάσεις</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a study desk. Six evidence-based techniques as cards, a weekly planner grid you colour by subject, a focus timer, and a season plan for the Pancyprian exams. Stress links go to «Ανάσα». */
+:root{
+  --bg:#EDF3EF;--surface:#FFFFFF;--soft:#DCEAE2;--ink:#14281F;--muted:#55695F;--line:#CBDCD2;
+  --accent:#137A5B;--accent-ink:#FFFFFF;--warm:#F2994A;--warm-soft:#FCEBDA;
+  --good:#2D8A57;--ok:#B7791F;--bad:#C2412D;--myth:#C2412D;--truth:#2D6FB8;
+  --c-vape:#5B6BD6;--c-alc:#B5462E;--c-subs:#8A3FB0;--c-bet:#2E7D4F;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1813;--surface:#15241D;--soft:#1D3229;--ink:#E3EEE8;--muted:#9AB2A6;--line:#2A4237;
+  --accent:#4CC79E;--accent-ink:#06201A;--warm:#F5AE6B;--warm-soft:#3A2A1B;
+  --good:#5CC48A;--ok:#E5B04F;--bad:#F07C66;--myth:#F07C66;--truth:#7FB2EE;
+  --c-vape:#97A3F2;--c-alc:#EE8A70;--c-subs:#C58BEA;--c-bet:#6FCB94;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.4rem)}h2{font-size:1.55rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.prose{max-width:65ch}
+ul.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.25rem}
+.grow{flex:1}
+.lvl{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.2}
+.lvl b{display:block;color:var(--ink);font-size:.95rem}
+@media (max-width:560px){.lvl{display:none}}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+main{padding:24px 0 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.alert{border:2px solid var(--bad);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sec-title{margin:30px 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.topic{--sc:var(--accent);text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--sc);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s}
+.topic:hover{transform:translateY(-2px);border-color:var(--sc)}
+.ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--sc) 14%,var(--surface));color:var(--sc)}
+.ico svg{width:26px;height:26px}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);align-self:flex-start}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,var(--surface));color:var(--good)}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tools a{text-decoration:none;color:var(--ink)}
+.tools .card{height:100%;display:flex;flex-direction:column;gap:6px}
+.tools .card:hover{border-color:var(--accent)}
+.big{font-family:var(--font-d);font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+
+/* myth card */
+.sbar{display:flex;gap:5px}.sbar span{flex:1;height:6px;border-radius:999px;background:var(--line)}.sbar span.on{background:var(--sc,var(--accent))}
+.deck{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px 24px;min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.07);border-top:8px solid var(--sc,var(--accent))}
+.mcard .stmt{font-family:var(--font-d);font-size:clamp(1.3rem,3.6vw,1.65rem);line-height:1.3}
+.mcard .tag{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sc,var(--accent))}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice button{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:16px;font-weight:700;font-size:1.1rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.choice button small{font-weight:500;font-size:.8rem;color:var(--muted)}
+.choice .bm:hover{border-color:var(--myth)}.choice .bt:hover{border-color:var(--truth)}
+.choice button[disabled]{cursor:default;opacity:.5}
+.verdict{border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.verdict.myth{background:color-mix(in srgb,var(--myth) 11%,var(--surface));border:1px solid var(--myth)}
+.verdict.truth{background:color-mix(in srgb,var(--truth) 11%,var(--surface));border:1px solid var(--truth)}
+.verdict .lab{font-family:var(--font-d);font-size:1.3rem;font-weight:700}
+.verdict.myth .lab{color:var(--myth)}.verdict.truth .lab{color:var(--truth)}
+.res{font-weight:700}.res.y{color:var(--good)}.res.n{color:var(--bad)}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+/* scenario */
+.sit{font-family:var(--font-d);font-size:1.3rem;line-height:1.35;padding:20px;border-radius:16px;background:var(--soft)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.s2{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.s1{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.s0{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.dim{opacity:.6}
+.fb{border-radius:12px;padding:14px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.fb b.t2{color:var(--good)}.fb b.t1{color:var(--ok)}.fb b.t0{color:var(--bad)}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.ways .card{display:flex;flex-direction:column;gap:6px}
+.ways .q{font-family:var(--font-d);font-style:italic}
+textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);min-height:70px;resize:vertical}
+.mine{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.mine button{border:none;background:none;cursor:pointer;color:var(--muted)}
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--accent);min-width:110px;font-variant-numeric:tabular-nums;text-decoration:none}
+@media (max-width:520px){.line{flex-direction:column;align-items:flex-start;gap:4px}}
+.overlay{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 97%,transparent);overflow:auto;padding:24px 16px}
+.overlay[hidden]{display:none}
+.overlay .inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+@media print{.top,.no-print,footer,.ergal-back{display:none!important}body{background:#fff;color:#000}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* app-specific */
+:root{--bg:#EEF1F8;--surface:#FFFFFF;--soft:#DFE5F3;--ink:#16203A;--muted:#58637E;--line:#CFD7EA;--accent:#2F5BD3;--accent-ink:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1322;--surface:#161D31;--soft:#1F2842;--ink:#E5EAF6;--muted:#9AA6C2;--line:#2C3657;--accent:#7FA0FF;--accent-ink:#0E1322}}
+.tech{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.tech .card{display:flex;flex-direction:column;gap:8px;border-top:5px solid var(--accent)}
+.tech .em{font-size:1.8rem}
+.tech .how{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:.93rem}
+.week{display:grid;grid-template-columns:110px repeat(7,minmax(0,1fr));gap:4px;min-width:760px}
+.week .h{font-size:.8rem;font-weight:700;color:var(--muted);text-align:center;padding:6px 0}
+.week .rl{font-size:.82rem;color:var(--muted);display:flex;align-items:center}
+.cell{min-height:54px;border:1px dashed var(--line);border-radius:10px;background:var(--surface);cursor:pointer;font-size:.8rem;font-weight:600;padding:4px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2}
+.cell.f{border-style:solid;color:#fff}
+.cell:hover{border-color:var(--accent)}
+.subj{display:flex;gap:6px;flex-wrap:wrap}
+.subj button{border:2px solid transparent;border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:600;color:#fff}
+.subj button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--surface) inset}
+.timer{font-family:var(--font-d);font-size:clamp(3.5rem,14vw,6rem);font-weight:700;font-variant-numeric:tabular-nums;text-align:center;line-height:1}
+.ring{width:240px;height:240px;margin:0 auto;display:block}
+.phase{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.phase .when{font-weight:700;color:var(--accent);min-width:120px}
+.phase.now{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:10px;padding:14px}
+@media (max-width:560px){.phase{grid-template-columns:1fr}}
+input[type=date],input[type=text]{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.qz{display:flex;flex-direction:column;gap:8px}
+.qz .opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.qz .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.tablebox{overflow-x:auto}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Διαβάζω έξυπνα, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="var(--accent)"/><path d="M8 11c3-1.5 6-1.5 9 0v13c-3-1.5-6-1.5-9 0zM17 11c3-1.5 6-1.5 9 0v13c-3-1.5-6-1.5-9 0z" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linejoin="round"/></svg>
+      Διαβάζω έξυπνα
+    </a>
+    <div class="grow"></div>
+    <a class="btn" href="../anasa/#exam" style="white-space:nowrap">Άγχος; → Ανάσα</a>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Διαβάζω έξυπνα», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>.</p>
+  <p class="small">Το πρόγραμμά σου μένει μόνο σε αυτή τη συσκευή. <a href="#teachers">Για εκπαιδευτικούς</a> · <a href="#sources">Πηγές</a></p>
+</div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const app=document.getElementById('app');
+const back='<a class="back" href="#home">← Αρχική</a>';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2400);}
+const KEY='meleti-v1';
+let S={subs:[['Μαθηματικά','#2F5BD3'],['Νέα Ελληνικά','#B5462E'],['Φυσική','#2E7D4F'],['Αγγλικά','#8A3FB0']],grid:{},exam:'',quiz:{}};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const PAL=['#2F5BD3','#B5462E','#2E7D4F','#8A3FB0','#C27C0E','#1F7A8C','#C2417A','#5A6270'];
+
+/* ---------- techniques ---------- */
+const TECH=[
+ ['🧠','Ανάκληση','Κλείσε το βιβλίο και ανάκαλε από μνήμης.','Κάθε φορά που «τραβάς» μια πληροφορία από τη μνήμη, τη δυναμώνεις. Είναι η πιο ισχυρή τεχνική που ξέρουμε, πολύ πιο αποτελεσματική από το ξαναδιάβασμα.','Διάβασε μία ενότητα. Κλείσε το βιβλίο. Γράψε σε λευκό χαρτί ό,τι θυμάσαι. Μετά άνοιξε και συμπλήρωσε με άλλο χρώμα όσα ξέχασες. Αυτά είναι που πρέπει να ξαναδείς.'],
+ ['📅','Κατανεμημένη επανάληψη','Λίγο και συχνά, όχι όλα την τελευταία νύχτα.','Όταν αφήνεις λίγο χρόνο να περάσει και επανέρχεσαι, ο εγκέφαλος κρατά την πληροφορία πολύ περισσότερο. Το «φόρτωμα» της τελευταίας νύχτας ξεχνιέται γρήγορα.','Μετά το μάθημα: επανάληψη την επόμενη μέρα, μετά από 3 μέρες, μετά από μία εβδομάδα και μετά από έναν μήνα. Βάλε τις επαναλήψεις στον προγραμματιστή σου.'],
+ ['🔀','Εναλλαγή','Ανακάτεψε τύπους ασκήσεων.','Αν λύνεις 10 ίδιες ασκήσεις στη σειρά, μαθαίνεις τη «συνταγή» και όχι πότε να τη χρησιμοποιείς. Στις εξετάσεις τα θέματα έρχονται ανακατεμένα.','Αντί για 10 ασκήσεις παραγώγων και μετά 10 ολοκληρωμάτων, κάνε τις ανακατεμένες. Πριν λύσεις, ρώτα: «Τι είδους άσκηση είναι αυτή;»'],
+ ['🗣️','Εξήγησέ το','Δίδαξέ το σε κάποιον, ακόμα και φανταστικό.','Όταν εξηγείς «γιατί» και «πώς», συνδέεις τη νέα γνώση με όσα ήδη ξέρεις. Τα κενά σου φαίνονται αμέσως.','Εξήγησε την ενότητα σε έναν φίλο, στον αδερφό σου ή στον καθρέφτη, με απλά λόγια. Όπου κολλάς, εκεί χρειάζεσαι δουλειά.'],
+ ['🖼️','Λέξεις και εικόνες','Κάνε το κείμενο σχήμα.','Όταν έχεις την ίδια πληροφορία και σε λέξεις και σε εικόνα, έχεις δύο «δρόμους» για να τη βρεις στη μνήμη σου.','Μετάτρεψε μια ενότητα σε χρονογραμμή, διάγραμμα ροής ή εννοιολογικό χάρτη. Μετά ζωγράφισέ τον ξανά από μνήμης.'],
+ ['🔍','Συγκεκριμένα παραδείγματα','Από το αφηρημένο στο πραγματικό.','Οι αφηρημένες ιδέες κολλάνε πιο εύκολα όταν τις δένεις με κάτι συγκεκριμένο.','Για κάθε έννοια βρες δύο παραδείγματα από τη ζωή και ρώτα: «Τι κοινό έχουν;»']
+];
+const QZ=[
+ ['Έχεις διαγώνισμα σε 4 μέρες. Τι βοηθά περισσότερο;',['3 ώρες την παραμονή','45 λεπτά κάθε μέρα και για τις 4 μέρες'],1,'Ο ίδιος χρόνος, μοιρασμένος σε μέρες, δίνει πολύ καλύτερη μνήμη. Είναι η κατανεμημένη επανάληψη.'],
+ ['Ποιο δουλεύει καλύτερα;',['Να ξαναδιαβάσω το κεφάλαιο 3 φορές','Να το διαβάσω μία φορά και να απαντήσω ερωτήσεις χωρίς βιβλίο'],1,'Η ανάκληση νικά το ξαναδιάβασμα. Το ξαναδιάβασμα σου δίνει την ψευδαίσθηση ότι «το ξέρω».'],
+ ['Η υπογράμμιση με μαρκαδόρο…',['…είναι από τις πιο αποτελεσματικές τεχνικές','…βοηθά λίγο. Μόνη της δεν φτάνει'],1,'Είναι εύκολη και ευχάριστη, αλλά δεν σε κάνει να σκεφτείς. Χρησιμοποίησέ τη μόνο για να βρίσκεις τι θα ανακαλέσεις μετά.'],
+ ['Ακούω μουσική με στίχους ενώ διαβάζω. Αυτό…',['…συνήθως δυσκολεύει την κατανόηση κειμένου','…δεν κάνει καμία διαφορά'],0,'Οι στίχοι «μιλούν» στο ίδιο κανάλι με αυτό που διαβάζεις. Αν θες μουσική, προτίμησε χωρίς στίχους.'],
+ ['Ξενύχτησα για να διαβάσω την ύλη. Ο ύπνος…',['…είναι χαμένος χρόνος πριν το διαγώνισμα','…είναι η στιγμή που ο εγκέφαλος αποθηκεύει όσα έμαθες'],1,'Χωρίς ύπνο η μνήμη και η συγκέντρωση πέφτουν. Ο ύπνος είναι μέρος του διαβάσματος.']
+];
+
+/* ---------- views ---------- */
+function home(){
+ const d=daysLeft();
+ return `<div class="hero">
+  <div class="card stack"><span class="eyebrow">Για μαθητές Γυμνασίου και Λυκείου</span><h1>Διάβασε λιγότερο,<br>θυμήσου περισσότερο.</h1>
+   <p class="prose">Το πόσες ώρες κάθεσαι στο γραφείο δεν φτάνει. Μετράει <b>πώς</b> διαβάζεις. Εδώ θα βρεις τις έξι τεχνικές με τα ισχυρότερα ερευνητικά δεδομένα, έναν εβδομαδιαίο προγραμματιστή, ένα χρονόμετρο συγκέντρωσης και ένα σχέδιο για τη χρονιά των Παγκυπρίων.</p>
+   <div class="row"><a class="btn primary" href="#tech">Οι 6 τεχνικές</a><a class="btn" href="#quiz">Κουίζ: τι δουλεύει;</a></div></div>
+  <div class="card soft stack"><h3>Παγκύπριες</h3>${d!==null?`<span class="big">${d}</span><span class="small muted">μέρες μέχρι την πρώτη σου εξέταση</span>`:'<p class="small muted">Βάλε την ημερομηνία της πρώτης σου εξέτασης για να δεις την αντίστροφη μέτρηση και σε ποια φάση βρίσκεσαι.</p>'}<a class="btn" href="#pep" style="align-self:flex-start">Το σχέδιο της χρονιάς →</a></div>
+ </div>
+ <h2 class="sec-title">Εργαλεία</h2>
+ <div class="tools">
+  <a href="#tech"><div class="card"><span class="eyebrow">Τεχνικές</span><h3>Οι 6 τεχνικές που δουλεύουν</h3><p class="small muted">Τι είναι, γιατί λειτουργούν και πώς τις κάνεις αύριο.</p></div></a>
+  <a href="#week"><div class="card"><span class="eyebrow">Οργάνωση</span><h3>Ο εβδομαδιαίος μου προγραμματιστής</h3><p class="small muted">Χρωμάτισε την εβδομάδα σου ανά μάθημα και τύπωσέ τη.</p></div></a>
+  <a href="#timer"><div class="card"><span class="eyebrow">Συγκέντρωση</span><h3>Χρονόμετρο Pomodoro</h3><p class="small muted">25 λεπτά συγκέντρωση και 5 λεπτά διάλειμμα. Ή όπως σου ταιριάζει.</p></div></a>
+  <a href="#pep"><div class="card"><span class="eyebrow">Γ΄ Λυκείου</span><h3>Η χρονιά των Παγκυπρίων</h3><p class="small muted">Φάσεις, αντίστροφη μέτρηση, παλιά θέματα, οι τελευταίες μέρες.</p></div></a>
+  <a href="../anasa/#exam"><div class="card"><span class="eyebrow" style="color:var(--warm)">Ανάσα</span><h3>Άγχος πριν το διαγώνισμα</h3><p class="small muted">Σχέδιο για την εβδομάδα, το βράδυ, το πρωί και την αίθουσα.</p></div></a>
+  <a href="../proorismos/"><div class="card"><span class="eyebrow" style="color:var(--warm)">Ο προορισμός σου</span><h3>Πώς λειτουργούν οι ΠΕΠ</h3><p class="small muted">Πλαίσια Πρόσβασης, βαθμός, αίτηση, σχολές Κύπρου και Ελλάδας.</p></div></a>
+ </div>`;
+}
+function tech(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Τεχνικές</span><h2>Οι 6 τεχνικές που δουλεύουν</h2><p class="muted prose">Οι γνωστικοί ψυχολόγοι έχουν δοκιμάσει δεκάδες τρόπους μελέτης. Αυτοί οι έξι έχουν τα πιο σταθερά αποτελέσματα. Δεν χρειάζεσαι και τους έξι κάθε φορά. Ξεκίνα με την ανάκληση.</p></div>
+ <div class="tech">${TECH.map(t=>`<div class="card"><span class="em">${t[0]}</span><h3>${t[1]}</h3><p><b>${t[2]}</b></p><p class="small muted">${t[3]}</p><div class="how"><b>Δοκίμασέ το:</b> ${t[4]}</div></div>`).join('')}</div>
+ <div class="take"><b>Τι δουλεύει λιγότερο απ' όσο νομίζουμε:</b> το να ξαναδιαβάζεις ξανά και ξανά, να υπογραμμίζεις και να αντιγράφεις τις σημειώσεις καθαρογραμμένες. Σου δίνουν την αίσθηση ότι «το ξέρεις», επειδή το κείμενο σου φαίνεται γνώριμο. Το τεστ είναι απλό: μπορείς να το πεις χωρίς να κοιτάξεις;</div>
+ <div class="row"><a class="btn primary" href="#quiz">Κάνε το κουίζ →</a><a class="btn" href="#week">Βάλ' τις στο πρόγραμμά σου →</a></div></div>`;
+}
+function quiz(){
+ const n=Object.keys(S.quiz).length, ok=QZ.filter((q,i)=>S.quiz[i]===q[2]).length;
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Κουίζ</span><h2>Τι δουλεύει πραγματικά;</h2></div>
+ ${QZ.map((q,i)=>{const a=S.quiz[i];return `<div class="card stack"><b>${i+1}. ${q[0]}</b><div class="qz">${q[1].map((o,k)=>`<button class="opt ${a!==undefined?(k===q[2]?'right':(k===a?'wrong':'')):''}" data-q="${i}" data-k="${k}" ${a!==undefined?'disabled':''}>${o}</button>`).join('')}</div>${a!==undefined?`<div class="fb"><b class="${a===q[2]?'t2':'t0'}">${a===q[2]?'Σωστά!':'Όχι ακριβώς.'}</b><p>${q[3]}</p></div>`:''}</div>`;}).join('')}
+ ${n===QZ.length?`<div class="card stack" style="text-align:center;align-items:center"><span class="big">${ok}/${QZ.length}</span><div class="row"><button class="btn" id="qzReset">Ξανά</button><a class="btn primary" href="#tech">Δες τις τεχνικές →</a></div></div>`:''}</div>`;
+}
+const DAYS=['Δευ','Τρί','Τετ','Πέμ','Παρ','Σάβ','Κυρ'], SLOTS=['Απόγευμα Α','Απόγευμα Β','Βράδυ'];
+let brush=0;
+function week(){
+ const tot={}; Object.values(S.grid).forEach(v=>{if(v!==null&&S.subs[v]) tot[v]=(tot[v]||0)+1;});
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Οργάνωση</span><h2>Ο εβδομαδιαίος μου προγραμματιστής</h2><p class="muted prose">Διάλεξε ένα μάθημα από πάνω και πάτα στα κουτάκια για να το βάλεις. Πάτα ξανά για να το σβήσεις. Κάθε κουτάκι είναι περίπου 45–60 λεπτά. Άφησε κενά για ξεκούραση, άθληση και φίλους. Κι αυτά είναι μέρος του πλάνου.</p></div>
+ <div class="card stack no-print"><div class="subj">${S.subs.map((s,i)=>`<button data-brush="${i}" aria-pressed="${brush===i}" style="background:${s[1]}">${s[0]}</button>`).join('')}<button data-brush="-1" aria-pressed="${brush===-1}" style="background:var(--muted)">🌿 Ξεκούραση</button></div>
+  <div class="row"><input type="text" id="newSub" placeholder="Νέο μάθημα" maxlength="24"><button class="btn" id="addSub">Πρόσθεσε μάθημα</button>${S.subs.length>1&&brush>=0?`<button class="btn" id="delSub">Αφαίρεσε «${S.subs[brush]?S.subs[brush][0]:''}»</button>`:''}</div></div>
+ <div class="card tablebox"><div class="week"><div></div>${DAYS.map(d=>`<div class="h">${d}</div>`).join('')}
+  ${SLOTS.map((sl,r)=>`<div class="rl">${sl}</div>`+DAYS.map((_,c)=>{const v=S.grid[r+'-'+c];const s=v>=0&&S.subs[v];return `<button class="cell ${s||v===-1?'f':''}" data-cell="${r}-${c}" style="${s?'background:'+s[1]+';border-color:'+s[1]:v===-1?'background:var(--muted);border-color:var(--muted)':''}">${s?s[0]:v===-1?'🌿':''}</button>`;}).join('')).join('')}
+ </div></div>
+ <div class="card stack"><h3>Η εβδομάδα σου</h3><p class="small">${S.subs.map((s,i)=>tot[i]?`<b style="color:${s[1]}">${s[0]}</b>: ${tot[i]} ${tot[i]===1?'μπλοκ':'μπλοκ'}`:'').filter(Boolean).join(' · ')||'<span class="muted">Ακόμα άδεια.</span>'}</p>
+  <p class="small muted">Συμβουλή: μοίρασε κάθε μάθημα σε 2–3 μέρες αντί να το βάλεις όλο σε μία (κατανεμημένη επανάληψη). Και ξεκίνα κάθε μπλοκ με 5 λεπτά ανάκληση από την προηγούμενη φορά.</p>
+  <div class="row no-print"><button class="btn primary" onclick="window.print()">Τύπωσε το πρόγραμμα</button><button class="btn" id="clearGrid">Καθάρισε</button></div></div></div>`;
+}
+/* timer */
+let T={mode:[25,5],left:25*60,run:false,work:true,done:0,iv:null};
+function timer(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Συγκέντρωση</span><h2>Χρονόμετρο Pomodoro</h2><p class="muted prose">Κινητό σε λειτουργία εστίασης και σε άλλο δωμάτιο. Ένα μάθημα, ένας στόχος. Όταν χτυπήσει, σήκω, πιες νερό, κουνήσου.</p></div>
+ <div class="card stack" style="align-items:center">
+  <div class="seg" role="group">${[[25,5],[45,10],[15,5]].map(m=>`<button data-mode="${m}" aria-pressed="${T.mode.join()===m.join()}">${m[0]}′ / ${m[1]}′</button>`).join('')}</div>
+  <span class="eyebrow" id="tLab">${T.work?'Συγκέντρωση':'Διάλειμμα'}</span>
+  <div class="timer" id="tDisp"></div>
+  <div class="row" style="justify-content:center"><button class="btn primary" id="tGo">${T.run?'Παύση':'Ξεκίνα'}</button><button class="btn" id="tReset">Μηδενισμός</button></div>
+  <p class="small muted" id="tDone">Ολοκληρωμένοι γύροι σήμερα: ${T.done}</p></div>
+ <div class="take"><b>Στο διάλειμμα:</b> όχι social. Σε 5 λεπτά scroll το μυαλό δεν ξεκουράζεται, απλώς αλλάζει κανάλι. Τέντωμα, νερό, παράθυρο.</div></div>`;
+}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function tDraw(){const d=document.getElementById('tDisp'); if(d){d.textContent=fmt(T.left); document.getElementById('tLab').textContent=T.work?'Συγκέντρωση':'Διάλειμμα'; document.getElementById('tGo').textContent=T.run?'Παύση':'Ξεκίνα'; document.getElementById('tDone').textContent='Ολοκληρωμένοι γύροι σήμερα: '+T.done;} document.title=(T.run?fmt(T.left)+' · ':'')+'Διαβάζω έξυπνα';}
+function tick(){T.left--; if(T.left<=0){ if(T.work){T.done++; toast('Μπράβο! Ώρα για διάλειμμα ☕');} else toast('Πίσω στη δουλειά 💪'); T.work=!T.work; T.left=(T.work?T.mode[0]:T.mode[1])*60; beep();} tDraw();}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=660;g.gain.value=.08;o.start();setTimeout(()=>{o.stop();a.close();},400);}catch(e){}}
+/* PEP */
+function daysLeft(){if(!S.exam) return null; const d=Math.ceil((new Date(S.exam+'T00:00:00')-new Date())/864e5); return d>=0?d:null;}
+const PH=[
+ [999,120,'Χτίσιμο','Σεπτέμβριος–Δεκέμβριος','Κατανοείς την ύλη την ώρα που διδάσκεται. Κρατάς δικές σου σημειώσεις ή εννοιολογικούς χάρτες ανά κεφάλαιο και κάνεις κατανεμημένες επαναλήψεις κάθε εβδομάδα. Αυτή η φάση κάνει τη μεγαλύτερη διαφορά. Ό,τι καταλαβαίνεις τώρα δεν θα χρειαστεί να το «παπαγαλίσεις» τον Μάιο.'],
+ [120,60,'Επανάληψη και θέματα','Ιανουάριος–Μάρτιος','Επαναλαμβάνεις ανά κεφάλαιο με ανάκληση και ασκήσεις ανακατεμένων τύπων. Αρχίζεις να λύνεις θέματα προηγούμενων ετών, χωρίς χρόνο στην αρχή. Κράτα ένα «τετράδιο λαθών»: κάθε λάθος, γιατί έγινε, πώς το διορθώνεις.'],
+ [60,14,'Προσομοιώσεις','Απρίλιος–Μάιος','Λύνεις ολόκληρα θέματα με χρονόμετρο, στην ώρα που θα γράψεις, χωρίς κινητό. Διορθώνεις με τις οδηγίες βαθμολόγησης. Ξαναδιαβάζεις το τετράδιο λαθών. Ύπνος και άσκηση δεν «κόβονται».'],
+ [14,0,'Οι τελευταίες μέρες','Οι 2 εβδομάδες πριν','Τίποτα καινούργιο. Γρήγορες ανακλήσεις, τυπολόγιο, τετράδιο λαθών. Το πρόγραμμα ύπνου στις ώρες των εξετάσεων. Την παραμονή: ελαφριά επανάληψη, βόλτα, νωρίς στο κρεβάτι. Το σχέδιο για το πρωί και την αίθουσα είναι στην <a href="../anasa/#exam">Ανάσα</a>.']];
+function pep(){
+ const d=daysLeft();
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Γ΄ Λυκείου</span><h2>Η χρονιά των Παγκυπρίων</h2><p class="muted prose">Οι Παγκύπριες είναι μαραθώνιος, όχι σπριντ. Ένα σχέδιο ανά φάση σε κρατά σταθερό. Για το πώς λειτουργούν οι ΠΕΠ (Πλαίσια, βαθμός, αίτηση) δες τον <a href="../proorismos/">«Ο προορισμός σου»</a>.</p></div>
+ <div class="card stack"><label for="exD"><b>Η ημερομηνία της πρώτης μου εξέτασης</b></label><div class="row"><input type="date" id="exD" value="${S.exam}"><span class="small muted">Θα τη βρεις στο επίσημο πρόγραμμα της Υπηρεσίας Εξετάσεων.</span></div>
+  ${d!==null?`<p><span class="big">${d}</span> <span class="muted">μέρες · περίπου ${Math.floor(d/7)} εβδομάδες</span></p>`:''}</div>
+ <div class="card">${PH.map(p=>`<div class="phase ${d!==null&&d<=p[0]&&d>p[1]-(p[1]===0?1:0)?'now':''}"><div class="when">${p[3]}${d!==null&&d<=p[0]&&d>p[1]-(p[1]===0?1:0)?'<br><span class="chip ok">Είσαι εδώ</span>':''}</div><div><h3>${p[2]}</h3><p class="small">${p[4]}</p></div></div>`).join('')}</div>
+ <div class="grid2">
+  <div class="card stack"><h3>📄 Θέματα προηγούμενων ετών</h3><p class="small">Είναι ο καλύτερος οδηγός για το επίπεδο και το ύφος των ερωτήσεων. Τα βρίσκεις μαζί με τις λύσεις και τις οδηγίες βαθμολόγησης στην ιστοσελίδα της <a href="https://www.moec.gov.cy/ypexams" target="_blank" rel="noopener">Υπηρεσίας Εξετάσεων του ΥΠΑΝ</a> και στο <a href="https://panexams.moec.gov.cy" target="_blank" rel="noopener">panexams.moec.gov.cy</a>.</p></div>
+  <div class="card stack"><h3>⚖️ Ισορροπία</h3><p class="small">7–9 ώρες ύπνου, 30 λεπτά κίνηση τη μέρα και μία ώρα την εβδομάδα για κάτι που αγαπάς. Δεν είναι πολυτέλεια. Είναι αυτό που κρατά το μυαλό σου σε φόρμα ως τον Ιούνιο.</p></div>
+  <div class="card stack"><h3>🧾 Το τετράδιο λαθών</h3><p class="small">Τρεις στήλες: <b>Το λάθος</b> · <b>Γιατί έγινε</b> (απροσεξία, δεν ήξερα, κακή διαχείριση χρόνου) · <b>Τι κάνω την επόμενη φορά</b>. Ξαναδιάβασέ το κάθε εβδομάδα.</p></div>
+ </div></div>`;
+}
+function teachers(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Για εκπαιδευτικούς</span><h2>Αξιοποίηση στην τάξη</h2></div>
+ <div class="card stack"><ul class="clean">
+  <li><b>Ώρα Υπεύθυνου Τμήματος (40′):</b> κουίζ «Τι δουλεύει;» με ψηφοφορία (10′), δύο τεχνικές με εφαρμογή στο τρέχον μάθημα (15′), κάθε μαθητής φτιάχνει τον προγραμματιστή της εβδομάδας του (15′).</li>
+  <li><b>Μέσα σε κάθε μάθημα:</b> ξεκινάτε με 3 ερωτήσεις ανάκλησης από το προηγούμενο μάθημα, χωρίς βαθμό. Είναι από τους πιο απλούς τρόπους να εφαρμοστεί η έρευνα στην πράξη.</li>
+  <li><b>Γ΄ Λυκείου:</b> παρουσιάστε τις τέσσερις φάσεις τον Σεπτέμβριο και ξανά τον Ιανουάριο. Συνδυάστε με τον «Ο προορισμός σου» για τη διαδικασία των ΠΕΠ και με την «Ανάσα» για το άγχος.</li>
+  <li><b>Προσοχή:</b> μαθητές με μαθησιακές δυσκολίες ή ΔΕΠΥ μπορεί να χρειάζονται μικρότερα μπλοκ (15′/5′) και διευκολύνσεις στις εξετάσεις. Παραπέμψτε στον/στην Καθηγητή/τρια ΣΕΑ.</li></ul></div></div>`;
+}
+function sources(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Πηγές</span><h2>Πηγές</h2></div><div class="grid2">
+  <div class="card stack"><h3>The Learning Scientists</h3><p class="small">Ομάδα γνωστικών ψυχολόγων από ΗΠΑ και Ηνωμένο Βασίλειο που παρουσιάζει τις «έξι στρατηγικές μάθησης» με υλικό για μαθητές και εκπαιδευτικούς.</p><a class="small" href="https://www.learningscientists.org" target="_blank" rel="noopener">learningscientists.org</a></div>
+  <div class="card stack"><h3>Dunlosky κ.ά. (2013)</h3><p class="small">Ανασκόπηση δέκα τεχνικών μελέτης στο Psychological Science in the Public Interest. Η ανάκληση και η κατανεμημένη επανάληψη βγήκαν με «υψηλή χρησιμότητα», ενώ η υπογράμμιση και το ξαναδιάβασμα με «χαμηλή».</p></div>
+  <div class="card stack"><h3>Τεχνική Pomodoro</h3><p class="small">Μέθοδος διαχείρισης χρόνου του Francesco Cirillo: σύντομα, προστατευμένα διαστήματα συγκέντρωσης με τακτικά διαλείμματα.</p></div>
+  <div class="card stack"><h3>Εργαλειοθήκη</h3><p class="small">Για το άγχος: <a href="../anasa/">Ανάσα</a>. Για τη διαδικασία των ΠΕΠ: <a href="../proorismos/">Ο προορισμός σου</a>. Για τον χρόνο οθόνης: <a href="../psifiaki-zoi/#t/plan">Ψηφιακή ζωή</a>.</p></div></div></div>`;
+}
+
+function route(){
+ const h=(location.hash||'#home').slice(1);
+ const V={tech,quiz,week,timer,pep,teachers,sources}[h]||home;
+ app.innerHTML=V(); window.scrollTo(0,0); if(h==='timer') tDraw();
+}
+window.addEventListener('hashchange',route);
+app.addEventListener('click',e=>{
+ const q=e.target.closest('[data-q]'); if(q&&!q.disabled){S.quiz[q.dataset.q]=+q.dataset.k;save();const y=scrollY;app.innerHTML=quiz();scrollTo(0,y);return;}
+ if(e.target.closest('#qzReset')){S.quiz={};save();route();return;}
+ const b=e.target.closest('[data-brush]'); if(b){brush=+b.dataset.brush;const y=scrollY;app.innerHTML=week();scrollTo(0,y);return;}
+ const c=e.target.closest('[data-cell]'); if(c){const k=c.dataset.cell; S.grid[k]=(S.grid[k]===brush)?null:brush; if(S.grid[k]===null) delete S.grid[k]; save();const y=scrollY;app.innerHTML=week();scrollTo(0,y);return;}
+ if(e.target.closest('#addSub')){const v=document.getElementById('newSub').value.trim(); if(v){S.subs.push([v.slice(0,24),PAL[S.subs.length%PAL.length]]);brush=S.subs.length-1;save();app.innerHTML=week();} return;}
+ if(e.target.closest('#delSub')){const i=brush; S.subs.splice(i,1); const g={}; Object.entries(S.grid).forEach(([k,v])=>{if(v===i)return; g[k]=v>i?v-1:v;}); S.grid=g; brush=0; save(); app.innerHTML=week(); return;}
+ if(e.target.closest('#clearGrid')){S.grid={};save();app.innerHTML=week();return;}
+ const m=e.target.closest('[data-mode]'); if(m){T.mode=m.dataset.mode.split(',').map(Number); clearInterval(T.iv); T.run=false; T.work=true; T.left=T.mode[0]*60; app.innerHTML=timer(); tDraw(); return;}
+ if(e.target.closest('#tGo')){T.run=!T.run; clearInterval(T.iv); if(T.run) T.iv=setInterval(tick,1000); tDraw(); return;}
+ if(e.target.closest('#tReset')){clearInterval(T.iv); T.run=false; T.work=true; T.left=T.mode[0]*60; tDraw(); return;}
+});
+app.addEventListener('change',e=>{if(e.target.id==='exD'){S.exam=e.target.value;save();app.innerHTML=pep();}});
+route();
+})();
+</script>
+
+<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
+</body></html>
