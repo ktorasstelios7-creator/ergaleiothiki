@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ψηφιακή ζωή: Τι θα έκανες;</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: five "worlds" of a teenager's phone. Each scenario is shown as a phone screen; you choose what you'd do and get honest feedback. A help button is always on top. */
+:root{
+  --bg:#EEF0F7;--surface:#FFFFFF;--soft:#E2E6F4;--ink:#161C33;--muted:#5A627C;--line:#D3D8E8;
+  --accent:#3D4FD8;--accent-ink:#FFFFFF;--warm:#F2994A;--warm-soft:#FCEBDA;
+  --good:#2D8A57;--ok:#B7791F;--bad:#C2412D;
+  --c-cyber:#C2412D;--c-sext:#8A3FB0;--c-foot:#1F7A8C;--c-screen:#C27C0E;--c-bet:#2E7D4F;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1120;--surface:#171B2E;--soft:#20263F;--ink:#E6E9F5;--muted:#9AA2BE;--line:#2C3352;
+  --accent:#8592FF;--accent-ink:#0E1120;--warm:#F5AE6B;--warm-soft:#3A2A1B;
+  --good:#5CC48A;--ok:#E5B04F;--bad:#F07C66;
+  --c-cyber:#F07C66;--c-sext:#C58BEA;--c-foot:#5BC0D1;--c-screen:#E9AE4E;--c-bet:#6FCB94;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.4rem)}h2{font-size:1.55rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.prose{max-width:65ch}
+ul.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.25rem}
+.grow{flex:1}
+.lvl{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.2}
+.lvl b{display:block;color:var(--ink);font-size:.95rem}
+@media (max-width:560px){.lvl{display:none}}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+main{padding:24px 0 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.alert{border:2px solid var(--bad);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sec-title{margin:30px 0 12px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+
+/* home */
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-bottom:8px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.seals{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.seal{width:52px;height:52px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;color:var(--muted);text-decoration:none}
+.seal svg{width:24px;height:24px}
+.seal.on{border:2px solid var(--sc);background:var(--sc);color:var(--surface)}
+.worlds{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.world{--sc:var(--accent);display:flex;gap:14px;align-items:flex-start;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--sc);border-radius:var(--r);padding:16px;transition:transform .15s,border-color .15s}
+.world:hover{transform:translateY(-2px);border-color:var(--sc)}
+.ico{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--sc) 14%,var(--surface));color:var(--sc)}
+.ico svg{width:26px;height:26px}
+.world h3{margin-bottom:2px}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);margin-top:8px}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,var(--surface));color:var(--good)}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tools a{text-decoration:none;color:var(--ink)}
+.tools .card{height:100%;display:flex;flex-direction:column;gap:6px}
+.tools .card:hover{border-color:var(--accent)}
+
+/* scenario */
+.sbar{display:flex;gap:6px}.sbar span{flex:1;height:6px;border-radius:999px;background:var(--line)}.sbar span.on{background:var(--sc)}
+.scene{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:760px){.scene{grid-template-columns:1fr}}
+.phone{border:10px solid var(--ink);border-radius:34px;background:var(--bg);overflow:hidden;max-width:340px;width:100%;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.phone .ph{background:var(--surface);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;gap:10px;align-items:center}
+.ava{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;background:color-mix(in srgb,var(--sc) 22%,var(--surface));color:var(--sc);flex:none}
+.ph b{display:block;font-size:.95rem;line-height:1.2}.ph small{color:var(--muted);font-size:.78rem}
+.msgs{padding:14px 12px 18px;display:flex;flex-direction:column;gap:8px;min-height:240px}
+.msg{max-width:84%;padding:8px 12px;border-radius:16px;font-size:.93rem;line-height:1.4;background:var(--surface);border:1px solid var(--line);align-self:flex-start}
+.msg .who{display:block;font-size:.72rem;font-weight:700;color:var(--sc);margin-bottom:1px}
+.msg.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.msg.sys{align-self:center;background:transparent;border:none;color:var(--muted);font-size:.8rem;text-align:center;max-width:100%}
+.msg.img{padding:4px}.msg.img i{display:grid;place-items:center;width:180px;height:110px;border-radius:12px;background:repeating-linear-gradient(45deg,var(--soft),var(--soft) 10px,var(--line) 10px,var(--line) 20px);font-style:normal;font-size:.8rem;color:var(--muted);text-align:center;padding:8px}
+.q{font-family:var(--font-d);font-size:1.35rem;line-height:1.3}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;display:flex;gap:10px;align-items:flex-start;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-weight:700;font-size:.85rem}
+.opt[disabled]{cursor:default}
+.opt.s2{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.s1{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.s0{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.dim{opacity:.6}
+.fb{border-radius:12px;padding:14px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.fb b.t2{color:var(--good)}.fb b.t1{color:var(--ok)}.fb b.t0{color:var(--bad)}
+.next{margin-top:22px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.steps5{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.steps5 div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.steps5 b{display:block;font-family:var(--font-d);font-size:1.05rem;color:var(--sc)}
+.score{font-family:var(--font-d);font-size:2.4rem;font-weight:700;color:var(--sc);font-variant-numeric:tabular-nums}
+
+/* tools */
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.check input{width:22px;height:22px;margin-top:2px;accent-color:var(--accent);flex:none}
+.check small{display:block;color:var(--muted)}
+.meter{height:12px;background:var(--line);border-radius:999px;overflow:hidden}.meter i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.qrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+@media (max-width:560px){.qrow{grid-template-columns:1fr}}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--surface);padding:6px 11px;border-radius:8px;cursor:pointer;font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
+.pick button{border:1px solid var(--line);background:var(--surface);padding:10px 12px;border-radius:10px;cursor:pointer;text-align:left}
+.pick button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface));font-weight:600}
+.money{font-family:var(--font-d);font-size:2.6rem;font-weight:700;font-variant-numeric:tabular-nums}
+.chart{width:100%;height:180px;display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat div{background:var(--soft);border-radius:12px;padding:12px}.stat b{display:block;font-family:var(--font-d);font-size:1.5rem;font-variant-numeric:tabular-nums}
+
+/* help */
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--accent);min-width:118px;font-variant-numeric:tabular-nums;text-decoration:none}
+@media (max-width:520px){.line{flex-direction:column;align-items:flex-start;gap:4px}}
+.overlay{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 97%,transparent);overflow:auto;padding:24px 16px}
+.overlay[hidden]{display:none}
+.overlay .inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+.print-only{display:none}
+@media print{.top,.no-print,footer,.ergal-back{display:none!important}.print-only{display:block}body{background:#fff;color:#000}.card{border-color:#999}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Ψηφιακή ζωή, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="9" y="3" width="16" height="28" rx="4" fill="var(--accent)"/><rect x="12" y="7" width="10" height="16" rx="1.5" fill="var(--accent-ink)" opacity=".9"/><circle cx="17" cy="27" r="1.6" fill="var(--accent-ink)"/><path d="M14.5 15l2 2 3.5-4" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ψηφιακή ζωή
+    </a>
+    <div class="grow"></div>
+    <div class="lvl" id="lvl"></div>
+    <button class="btn sos" id="helpBtn" type="button">Βοήθεια τώρα</button>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Ψηφιακή ζωή: Τι θα έκανες;», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>.</p>
+  <p class="small">Οι απαντήσεις και η πρόοδός σου μένουν μόνο σε αυτή τη συσκευή. Η εφαρμογή δεν στέλνει τίποτα πουθενά. <a href="#sources">Πηγές και καλές πρακτικές</a> · <a href="#teachers">Για εκπαιδευτικούς</a></p>
+</div></footer>
+
+<!-- HELP OVERLAY -->
+<div class="overlay" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="inner">
+    <div class="row" style="justify-content:space-between"><h2 id="helpTitle">Βοήθεια τώρα</h2><button class="btn" id="helpX" type="button">Κλείσιμο</button></div>
+    <div class="take"><b>Δεν είσαι μόνος/η και δεν φταις εσύ.</b> Μίλα με τον/την Καθηγητή/τρια ΣΕΑ ή με έναν ενήλικα που εμπιστεύεσαι. Αν κινδυνεύεις άμεσα, κάλεσε το 112.</div>
+    <div id="helpLines"></div>
+    <div class="card stack">
+      <h3>Αν κάποιος σε εκβιάζει με φωτογραφία ή βίντεο</h3>
+      <ul class="clean">
+        <li><b>Σταμάτα</b> να απαντάς. Μη διαπραγματευτείς.</li>
+        <li><b>Μην πληρώσεις</b> και μη στείλεις τίποτα άλλο. Όσοι πληρώνουν, συνήθως δέχονται κι άλλα αιτήματα.</li>
+        <li><b>Κράτα αποδείξεις:</b> screenshots της συνομιλίας, του ονόματος χρήστη και του προφίλ. Μην σβήσεις τη συνομιλία.</li>
+        <li><b>Ανάφερε και μπλόκαρε</b> τον λογαριασμό στην πλατφόρμα.</li>
+        <li><b>Μίλα σήμερα</b> σε έναν ενήλικα. Μαζί μπορείτε να καλέσετε το 1480 ή την Αστυνομία.</li>
+      </ul>
+      <p class="small muted">Αν η φωτογραφία τραβήχτηκε πριν γίνεις 18, το δωρεάν <a href="https://takeitdown.ncmec.org/" target="_blank" rel="noopener">Take It Down</a> βοηθά να αφαιρεθεί από συνεργαζόμενες πλατφόρμες, χωρίς η εικόνα να φύγει ποτέ από το κινητό σου.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+/* ---------- icons ---------- */
+const I={
+ cyber:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 10l6 4M15 10l-6 4"/></svg>',
+ sext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg>',
+ foot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c2 0 3 2 3 5s-1 5-3 5-3-2-3-5 1-5 3-5z"/><path d="M5 16h6v2a3 3 0 0 1-6 0z"/><path d="M16 7c2 0 3 2 3 4.5S18 16 16 16s-3-2-3-4.5S14 7 16 7z"/></svg>',
+ screen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/></svg>',
+ bet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg>'
+};
+
+/* ---------- help lines (Κύπρος) ---------- */
+const LINES=[
+ ['112','Άμεσος κίνδυνος','Αστυνομία, Ασθενοφόρο, Πυροσβεστική.'],
+ ['1480','CYberSafety · Γραμμή Βοήθειας και Καταγγελιών','Διαδικτυακός εκφοβισμός, sexting, εκβιασμός, πολύωρη ενασχόληση με οθόνες. Τηλέφωνο, email, φόρμα, chat στο cybersafety.cy. Ωράριο: Δευ–Παρ 9:00–13:00 και 15:00–18:00, Σάβ 10:00–13:00.'],
+ ['22808200','Αστυνομία · Γραφείο Καταπολέμησης Ηλεκτρονικού Εγκλήματος','Καταγγελία εκβιασμού, πλαστοπροσωπίας ή διακίνησης εικόνων. Και στο cyberalert.cy.'],
+ ['1466','Hope For Children','Βία ή παραμέληση. 24 ώρες, δωρεάν.'],
+ ['116 111','Ευρωπαϊκή Γραμμή Στήριξης Παιδιών και Εφήβων','Δωρεάν συμβουλευτική για παιδιά και εφήβους.'],
+ ['1422','Στήριξη για τα τυχερά παιχνίδια','ΑΑΕΚ και ΚΕΝΘΕΑ. Και για γονείς ή φίλους που ανησυχούν.'],
+ ['1456','Κέντρο Συμβουλευτικής Εφήβων και Οικογένειας «Περσέας/Προμηθέας»','Συμβουλευτική για εξαρτητικές συμπεριφορές.']
+];
+function linesHTML(filter){
+ return '<div class="stack" style="gap:8px">'+LINES.filter(l=>!filter||filter.includes(l[0])).map(l=>
+  `<div class="line"><a class="tel" href="tel:${l[0].replace(/\s/g,'')}">${l[0]}</a><div><b>${l[1]}</b><p class="small muted">${l[2]}</p></div></div>`).join('')+'</div>';
+}
+
+/* ---------- worlds & scenarios ----------
+   s: 2 = η καλύτερη κίνηση, 1 = μισό βήμα, 0 = ρίσκο */
+const W=[
+{id:'cyber',name:'Το group',topic:'Διαδικτυακός εκφοβισμός',blurb:'Όταν το «αστείο» στο chat πληγώνει. Τι κάνεις ως θεατής, ως στόχος, ως αυτός που το έκανε;',
+ sc:[
+ {app:'Β2 😎 · 27 μέλη',ava:'Β2',msgs:[['Μάριος','Δείτε τον Άλεξ στο διάλειμμα 😂😂'],['img','φωτογραφία του Άλεξ ενώ τρώει'],['Μάριος','«ο μάγειρας» 🤢'],['Ελένη','χαχαχα 💀'],['Νίκος','😂😂😂'],['sys','Ο Άλεξ είναι κι αυτός στο group']],
+  q:'Τι θα έκανες;',opts:[
+  ['Βάζω κι εγώ ένα 😂 για να μη φανώ ξενέρωτος.',0,'Κάθε reaction είναι χειροκρότημα. Όποιος κοροϊδεύει μετράει το κοινό του, και ο Άλεξ μετράει πόσοι γέλασαν.'],
+  ['Δεν γράφω τίποτα και κλείνω το κινητό.',1,'Δεν συμμετέχεις, και αυτό μετράει. Όμως ο Άλεξ βλέπει μόνο όσους γέλασαν. Δεν ξέρει ότι κάποιος είναι μαζί του.'],
+  ['Στέλνω στον Άλεξ ιδιωτικά: «Είδα τι έγινε, δεν είναι οκ. Είμαι μαζί σου.» και κάνω αναφορά στην ανάρτηση.',2,'Ένα μήνυμα στήριξης αλλάζει πολλά για αυτόν που δέχεται την επίθεση. Η αναφορά βοηθά να κατέβει η φωτογραφία.'],
+  ['Γράφω στο group: «Σβήστε το, δεν είναι αστείο.»',2,'Αν νιώθεις ασφαλής να το πεις, συχνά ένα μήνυμα φτάνει για να σταματήσουν κι άλλοι. Οι περισσότεροι περιμένουν κάποιον να κάνει την αρχή.']],
+  tip:'Αν συνεχιστεί, πες το σε έναν ενήλικα. Το να ζητάς βοήθεια δεν είναι «κάρφωμα».'},
+ {app:'Instagram · Αιτήματα',ava:'IG',msgs:[['sys','Μια φίλη σου στέλνει link'],['Χριστίνα','Αυτό είσαι εσύ;;; 😳'],['img','προφίλ με το όνομα και τη φωτογραφία σου'],['Χριστίνα','Ανεβάζει πράγματα για τους καθηγητές… και τα βάζει σαν να τα λες εσύ'],['Χριστίνα','Το έχουν δει όλοι']],
+  q:'Κάποιος έφτιαξε ψεύτικο λογαριασμό με το όνομά σου. Τι κάνεις;',opts:[
+  ['Φτιάχνω κι εγώ έναν ψεύτικο λογαριασμό για να τον βρίσω.',0,'Έτσι μπαίνεις κι εσύ στο ίδιο παιχνίδι και θολώνεις ποιος φταίει. Κρατήσου έξω.'],
+  ['Το αγνοώ. Θα βαρεθεί και θα το σβήσει.',0,'Ένας ψεύτικος λογαριασμός με το όνομά σου μπορεί να σε εκθέσει για πολύ καιρό. Αυτό δεν «περνάει» μόνο του.'],
+  ['Τραβάω screenshots (όνομα χρήστη, link, αναρτήσεις, ημερομηνίες), κάνω αναφορά πλαστοπροσωπίας στην πλατφόρμα και το λέω σε γονιό και στον/στην Καθηγητή/τρια ΣΕΑ.',2,'Αποδείξεις, αναφορά, ενήλικας. Αυτή είναι η σειρά. Οι πλατφόρμες έχουν ειδική φόρμα για «κάποιος προσποιείται ότι είναι εγώ». Αν δεν κατέβει, βοηθά το 1480.'],
+  ['Γράφω στο group της τάξης ότι θα βρω ποιος το έκανε και θα το πληρώσει.',0,'Οι απειλές μπορούν να γυρίσουν εναντίον σου, ακόμα κι αν έχεις δίκιο. Άφησε τους ενήλικες να το ψάξουν.']],
+  tip:'Μην απαντάς με θυμό. Οι αποδείξεις είναι η δύναμή σου.'},
+ {app:'Μηνύματα',ava:'Ν',msgs:[['sys','Χθες ανέβασες ένα meme για τη Δανάη. Είχε 60 likes.'],['Νεφέλη','Η Δανάη δεν ήρθε σήμερα σχολείο'],['Νεφέλη','Λένε ότι έκλαιγε όλο το απόγευμα'],['Νεφέλη','Εσύ το ανέβασες, έτσι;']],
+  q:'Εσύ το ανέβασες. Τι κάνεις τώρα;',opts:[
+  ['Το σβήνω και κάνω πως δεν έγινε τίποτα.',1,'Καλά κάνεις και το σβήνεις. Όμως οι 60 που το είδαν δεν το ξέχασαν, και η Δανάη δεν ξέρει ότι το μετάνιωσες.'],
+  ['Λέω «Χιούμορ είναι, ας μην είναι τόσο ευαίσθητη».',0,'Το αν ένα αστείο πληγώνει το κρίνει αυτός που το δέχεται, όχι αυτός που το λέει.'],
+  ['Το σβήνω, της ζητώ συγγνώμη ειλικρινά και μιλώ σε έναν ενήλικα για το πώς να το διορθώσω.',2,'Χρειάζεται θάρρος. Μια αληθινή συγγνώμη («Ήταν λάθος μου, σε πλήγωσα») είναι η αρχή της επανόρθωσης. Η σχολική διαμεσολάβηση μπορεί να βοηθήσει.']],
+  tip:'Όλοι κάνουμε λάθη. Αυτό που μετράει είναι τι κάνεις μετά.'}
+ ],
+ keep:['Ο θεατής έχει δύναμη: στήριξε, μη χειροκροτάς.','Μην απαντάς με θυμό. Κράτα αποδείξεις, μπλόκαρε, ανάφερε.','Πες το σε έναν ενήλικα ή κάλεσε το 1480.'],
+ lines:['1480','116 111','1466']},
+
+{id:'sext',name:'Μην πληρώσεις',topic:'Sexting & sextortion',blurb:'Αιτήματα για φωτογραφίες, εκβιασμός, εικόνες που κυκλοφορούν. Τι κάνεις για να προστατέψεις εσένα και τους άλλους;',
+ sc:[
+ {app:'«marina.x16»',ava:'Μ',msgs:[['sys','Νέο αίτημα φιλίας · 3 κοινοί φίλοι'],['Μαρίνα','Γεια! Σε είδα στο προφίλ του Στέφανου 😊'],['me','Γεια! Από πού είσαι;'],['Μαρίνα','Λεμεσό. Είσαι πολύ γλυκός'],['Μαρίνα','Σου στέλνω κάτι αν μου στείλεις κι εσύ μια φωτό χωρίς μπλούζα 😏']],
+  q:'Τι θα έκανες;',opts:[
+  ['Στέλνω. Φαίνεται εντάξει και έχουμε κοινούς φίλους.',0,'Πίσω από τέτοια προφίλ συχνά κρύβονται οργανωμένοι απατεώνες, και μάλιστα από άλλες χώρες. Οι κοινοί φίλοι απλώς δέχτηκαν κι αυτοί το αίτημα.'],
+  ['Της ζητώ πρώτα βιντεοκλήση για να δω αν είναι αληθινή.',1,'Καλό ένστικτο να ελέγξεις, αλλά δεν λύνει το πρόβλημα: σου ζητά προσωπικές φωτογραφίες. Και μια βιντεοκλήση μπορεί να καταγραφεί ή να είναι ψεύτικη.'],
+  ['Δεν στέλνω τίποτα. Μπλοκάρω και κάνω αναφορά στο προφίλ.',2,'Ακριβώς. Όποιος σε πιέζει να στείλεις φωτογραφία γρήγορα, μετά από λίγα μηνύματα, είναι σήμα κινδύνου.']],
+  tip:'Σήματα κινδύνου: νέος λογαριασμός, πολλά κομπλιμέντα, βιασύνη, αίτημα για φωτογραφία.'},
+ {app:'«marina.x16»',ava:'Μ',msgs:[['sys','Ο Ανδρέας έστειλε φωτογραφία πριν από 10 λεπτά'],['Μαρίνα','Έχω τη λίστα με όλους τους φίλους σου και την οικογένειά σου'],['Μαρίνα','Στείλε 300€ σε gift cards σε 1 ώρα'],['Μαρίνα','Αλλιώς τη στέλνω σε ΟΛΟΥΣ ⏱️']],
+  q:'Είσαι ο Ανδρέας. Τι κάνεις;',opts:[
+  ['Πληρώνω για να τελειώσει.',0,'Δυστυχώς δεν τελειώνει. Όσοι πληρώνουν, συνήθως δέχονται νέα αιτήματα για περισσότερα χρήματα.'],
+  ['Σβήνω τον λογαριασμό μου και δεν το λέω σε κανέναν.',0,'Η ντροπή και η μοναξιά είναι το όπλο του εκβιαστή. Αν σβήσεις τη συνομιλία, χάνονται και οι αποδείξεις.'],
+  ['Του γράφω ότι θα πάω στην Αστυνομία, μήπως φοβηθεί.',1,'Δεν χρειάζεται να τον πείσεις για τίποτα. Κάθε απάντηση τον κρατά στη συζήτηση. Απλώς σταμάτα και ζήτα βοήθεια.'],
+  ['Σταματώ να απαντώ. Δεν πληρώνω. Κρατώ screenshots της συνομιλίας και του προφίλ. Μπλοκάρω, κάνω αναφορά και το λέω αμέσως σε έναν ενήλικα. Μαζί καλούμε το 1480 ή την Αστυνομία.',2,'Αυτό είναι το σωστό σχέδιο. Και να θυμάσαι: <b>δεν φταις εσύ</b>, φταίει αυτός που εκβιάζει. Οι ενήλικες και η Αστυνομία έχουν αντιμετωπίσει πολλές τέτοιες υποθέσεις και ξέρουν τι να κάνουν.']],
+  tip:'Αν η φωτογραφία τραβήχτηκε πριν γίνεις 18, το Take It Down βοηθά να αφαιρεθεί.'},
+ {app:'Γ1 ΑΓΟΡΙΑ 🔥',ava:'Γ1',msgs:[['Κώστας','Δείτε τι κυκλοφορεί από το Β3 👀'],['img','φωτογραφία μιας μαθήτριας<br>(θολωμένη)'],['Παύλος','ωωω 😳'],['Κώστας','Στείλτε το παρακάτω']],
+  q:'Τι θα έκανες;',opts:[
+  ['Το αποθηκεύω, «για αποδεικτικό».',0,'Μην κρατάς τέτοιες εικόνες, ούτε για καλό λόγο. Αν η εικόνα δείχνει ανήλικο, η κατοχή και η προώθησή της μπορεί να είναι αδίκημα. Αποδεικτικά συλλέγει η Αστυνομία.'],
+  ['Το στέλνω μόνο σε έναν κολλητό.',0,'Κάθε προώθηση πολλαπλασιάζει τη ζημιά σε ένα παιδί που δεν το επέλεξε. Και ο «ένας κολλητός» έχει κι αυτός φίλους.'],
+  ['Δεν το προωθώ. Το σβήνω από το κινητό μου, κάνω αναφορά, γράφω στο group «Σταματήστε, είναι παράνομο» και το λέω σε έναν ενήλικα ή στον/στην Καθηγητή/τρια ΣΕΑ.',2,'Έτσι προστατεύεις τη συμμαθήτριά σου και τον εαυτό σου. Ο ενήλικας μπορεί να κινητοποιήσει το σχολείο και το 1480 για να κατέβει η εικόνα.']],
+  tip:'Το ίδιο ισχύει για ψεύτικες εικόνες που φτιάχνονται με AI (deepfakes). Είναι εξίσου βλαπτικές.'}
+ ],
+ keep:['Σταμάτα, μην πληρώσεις, κράτα αποδείξεις, ανάφερε, μίλα.','Δεν φταις εσύ. Φταίει αυτός που εκβιάζει.','Μην προωθείς και μην κρατάς εικόνες άλλων. Πες το σε έναν ενήλικα.'],
+ lines:['1480','22808200','112']},
+
+{id:'foot',name:'Ό,τι ανεβαίνει μένει',topic:'Ψηφιακό αποτύπωμα',blurb:'Τοποθεσία, tags, παλιές αναρτήσεις, deepfakes. Τι λέει για σένα το ίχνος που αφήνεις;',
+ sc:[
+ {app:'Story · Δημόσιο',ava:'Εσ',msgs:[['sys','Αύριο φεύγετε οικογενειακώς για μία εβδομάδα'],['me','Έτοιμο το story: «Μύκονος για 7 μέρες ✈️ σπίτι άδειο lol» 📍Λευκωσία, Στρόβολος'],['sys','Οι followers σου: 1.240 (τους μισούς δεν τους ξέρεις)']],
+  q:'Τι θα έκανες;',opts:[
+  ['Το ανεβάζω όπως είναι, δημόσια με τοποθεσία.',0,'Μόλις είπες σε 1.240 ανθρώπους πού μένεις και πότε το σπίτι θα είναι άδειο.'],
+  ['Το ανεβάζω, αλλά μόνο στα «Close friends».',1,'Καλύτερα. Όμως κι εκεί κάποιος μπορεί να τραβήξει screenshot. Το «σπίτι άδειο» δεν χρειάζεται να το μάθει κανείς.'],
+  ['Ανεβάζω τις φωτογραφίες όταν γυρίσουμε, χωρίς διεύθυνση και ώρα.',2,'Το καλοκαίρι δεν χάνει τίποτα αν το δείξεις λίγο αργότερα. Η ασφάλεια όμως κερδίζει πολλά.']],
+  tip:'Κλείσε την κοινή τοποθεσία (π.χ. «Ghost mode» στο Snap Map).'},
+ {app:'Φωτογραφίες',ava:'📷',msgs:[['sys','Φωτογραφία από το πάρτι του Σάββα'],['img','ο Γιάννης σε πολύ άβολη στιγμή 😅'],['Σάββας','Ανέβασέ τη, είναι επική χαχα']],
+  q:'Τι θα έκανες;',opts:[
+  ['Την ανεβάζω και κάνω tag τον Γιάννη.',0,'Κάτι που σε σένα φαίνεται αστείο, για αυτόν μπορεί να είναι ντροπή που θα τον ακολουθεί για χρόνια.'],
+  ['Την ανεβάζω χωρίς tag, για να μη φανεί.',0,'Οι φίλοι του θα τον αναγνωρίσουν, και δεν θα μπορεί καν να την αφαιρέσει από το προφίλ του.'],
+  ['Ρωτάω πρώτα τον Γιάννη αν είναι οκ. Αν πει όχι, δεν την ανεβάζω.',2,'Ο κανόνας είναι απλός: ρωτάς πριν ανεβάσεις κάποιον άλλον. Όπως θα ήθελες να ρωτήσουν κι εσένα.']],
+  tip:'Ένα «ναι» σήμερα δεν σημαίνει «για πάντα». Αν σου ζητήσει να τη σβήσεις, σβήσ\' τη.'},
+ {app:'Β1 τμήμα',ava:'Β1',msgs:[['Λευτέρης','Βρήκα app που βάζει το πρόσωπο οποιουδήποτε σε βίντεο 🤯'],['Λευτέρης','Να βάλουμε την κ. Σοφία να χορεύει τρελά και να το ανεβάσουμε;'],['Μαρία','χαχα ναι!!'],['Λευτέρης','Στείλτε μου φωτογραφίες της']],
+  q:'Τι θα έκανες;',opts:[
+  ['Στέλνω μια φωτογραφία, απλώς για πλάκα.',0,'Ένα deepfake μπορεί να κάνει μεγάλη ζημιά στη φήμη ενός ανθρώπου, και δεν παίρνεται πίσω. Μπορεί να έχει και νομικές συνέπειες.'],
+  ['Δεν στέλνω τίποτα, αλλά θα το δω όταν βγει.',1,'Δεν βοηθάς να φτιαχτεί, και αυτό μετράει. Αν όμως το βλέπουν πολλοί, είναι σαν να το χειροκροτούν.'],
+  ['Γράφω «Όχι, αυτό είναι πολύ σοβαρό. Μην το κάνετε.» και, αν συνεχίσουν, το λέω σε έναν ενήλικα.',2,'Το να βάζεις το πρόσωπο κάποιου σε βίντεο χωρίς τη συγκατάθεσή του δεν είναι αστείο. Είναι παραβίαση. Καλά έκανες και το σταμάτησες.']],
+  tip:'Ρώτα τον εαυτό σου: «Θα ήθελα να το δει η γιαγιά μου, ο μελλοντικός μου εργοδότης, ο ίδιος ο άνθρωπος;»'}
+ ],
+ keep:['Ό,τι ανεβαίνει μπορεί να αποθηκευτεί, να προωθηθεί και να μείνει.','Ρωτάς πριν ανεβάσεις φωτογραφία ενός άλλου.','Κάνε τον «Έλεγχο απορρήτου» στα εργαλεία της εφαρμογής.'],
+ lines:['1480']},
+
+{id:'screen',name:'Ποιος κρατά το τηλεκοντρόλ;',topic:'Χρόνος οθόνης',blurb:'Ύπνος, streaks, ειδοποιήσεις. Οι εφαρμογές είναι φτιαγμένες να μη σταματάς. Πώς παίρνεις πίσω τον έλεγχο;',
+ sc:[
+ {app:'01:40 · Τρίτη',ava:'⏰',msgs:[['sys','Αύριο στις 7:45 έχεις διαγώνισμα Χημείας'],['sys','Βλέπεις βίντεο εδώ και 2 ώρες'],['me','Ακόμα ένα και κλείνω…'],['sys','Επόμενο βίντεο σε 3… 2… 1…']],
+  q:'Τι θα έκανες;',opts:[
+  ['Συνεχίζω μέχρι να νυστάξω.',0,'Η αυτόματη αναπαραγωγή είναι σχεδιασμένη ώστε να μη νυστάζεις ποτέ αρκετά. Και ο ύπνος είναι εκεί που το μυαλό αποθηκεύει όσα διάβασες.'],
+  ['Χαμηλώνω τη φωτεινότητα και βλέπω λίγο ακόμα.',1,'Βοηθά λίγο, αλλά το «λίγο ακόμα» σπάνια μένει λίγο.'],
+  ['Βάζω το κινητό να φορτίζει μακριά από το κρεβάτι και ξυπνώ με ξυπνητήρι.',2,'Ένα από τα πιο απλά και πιο αποτελεσματικά κόλπα: αν το κινητό δεν είναι δίπλα σου, δεν σε τραβά.']],
+  tip:'Ξεκίνα με κάτι μικρό: χωρίς οθόνη μισή ώρα πριν τον ύπνο.'},
+ {app:'Snap · Λουκάς',ava:'Λ',msgs:[['sys','🔥 214 μέρες streak'],['Λουκάς','Μη μου χαλάσεις το streak στην εκδρομή!!'],['sys','Η εκδρομή είναι 3 μέρες στο βουνό, χωρίς σήμα']],
+  q:'Τι θα έκανες;',opts:[
+  ['Δίνω τον κωδικό μου σε άλλον φίλο να στέλνει για μένα.',0,'Ο κωδικός σου είναι το κλειδί του σπιτιού σου. Δεν τον δίνεις, ούτε σε κολλητό.'],
+  ['Περνάω όλη την εκδρομή ψάχνοντας σήμα.',0,'Θα θυμάσαι την εκδρομή ως «αυτή που έψαχνα σήμα». Ένας αριθμός σε κράτησε μακριά από τους ανθρώπους που είχες δίπλα σου.'],
+  ['Λέω στον Λουκά ότι θα λείπω και θα του πω τα νέα μόλις γυρίσω.',2,'Η φιλία σας δεν είναι ένας αριθμός με φλογίτσα. Ένας καλός φίλος θα καταλάβει.']],
+  tip:'Τα streaks είναι μηχανισμός για να επιστρέφεις κάθε μέρα. Δεν μετρούν πόσο καλοί φίλοι είστε.'},
+ {app:'Ειδοποιήσεις',ava:'🔔',msgs:[['sys','Διαβάζεις Ιστορία για αύριο'],['sys','🔔 Instagram · 🔔 TikTok · 🔔 Β2 😎 (14) · 🔔 YouTube'],['sys','Σε 20 λεπτά διάβασες μία σελίδα']],
+  q:'Τι θα έκανες;',opts:[
+  ['Απαντώ σε όλα. Μπορώ να κάνω δύο πράγματα μαζί.',0,'Κάθε φορά που αλλάζεις από το βιβλίο στο κινητό και πίσω, το μυαλό χρειάζεται χρόνο να ξαναμπεί στο διάβασμα. Γι\' αυτό τα 20 λεπτά έγιναν μία σελίδα.'],
+  ['Το βάζω στο αθόρυβο, αλλά το αφήνω δίπλα μου με την οθόνη προς τα πάνω.',1,'Μισό βήμα. Ακόμα και αθόρυβο, ένα κινητό που φαίνεται τραβά την προσοχή σου.'],
+  ['Βάζω λειτουργία εστίασης, αφήνω το κινητό σε άλλο δωμάτιο, διαβάζω 25 λεπτά και κάνω 5 λεπτά διάλειμμα.',2,'Η τεχνική Pomodoro. Στο διάλειμμα μπορείς να δεις τα μηνύματα χωρίς ενοχές.']],
+  tip:'Κλείσε τις ειδοποιήσεις από τα social. Τα σημαντικά θα τα δεις όταν τα ανοίξεις.'}
+ ],
+ keep:['Οι εφαρμογές είναι σχεδιασμένες να μη σταματάς. Δεν φταις, αλλά μπορείς να το αλλάξεις.','Το κινητό έξω από το δωμάτιο τη νύχτα.','Φτιάξε «Το σχέδιό μου για την οθόνη» στα εργαλεία της εφαρμογής.'],
+ lines:['1480','1456']},
+
+{id:'bet',name:'Το σπίτι κερδίζει πάντα',topic:'Online στοίχημα & τζόγος',blurb:'«Σίγουρα» στοιχήματα, VIP tips, loot boxes. Γιατί τελικά χάνει σχεδόν πάντα αυτός που παίζει;',
+ sc:[
+ {app:'Μηνύματα · Ξάδερφος',ava:'Θ',msgs:[['Θωμάς (19)','Έλα να βάλουμε 10€ στο ντέρμπι από τον λογαριασμό μου'],['Θωμάς (19)','Απόδοση 2.40, είναι σίγουρο 💰'],['Θωμάς (19)','Ξέρεις από μπάλα, θα τα πάρουμε πίσω διπλά']],
+  q:'Τι θα έκανες;',opts:[
+  ['Δέχομαι. Ξέρω από μπάλα.',0,'Στην Κύπρο το στοίχημα απαγορεύεται κάτω των 18. Και η «γνώση» δεν νικά τις αποδόσεις: οι εταιρείες τις υπολογίζουν ώστε, συνολικά, να κερδίζουν εκείνες.'],
+  ['Μόνο μία φορά, για πλάκα.',0,'Το «μία φορά για πλάκα» είναι ο πιο συνηθισμένος τρόπος να ξεκινήσει μια συνήθεια. Ειδικά αν κερδίσεις την πρώτη φορά.'],
+  ['Λέω όχι. Θα δω το ματς με την παρέα χωρίς λεφτά από πάνω.',2,'Το ματς έχει την ίδια ένταση και χωρίς στοίχημα. Και τα 10€ σου μένουν στην τσέπη.']],
+  tip:'Δεν υπάρχει «σίγουρο» στοίχημα. Αν υπήρχε, οι εταιρείες θα έκλειναν.'},
+ {app:'Telegram · VIP TIPS 💎',ava:'💎',msgs:[['VIP TIPS','🔥 95% επιτυχία τον τελευταίο μήνα!'],['VIP TIPS','Μπες στο VIP με μόνο 20€ και πάρε τα σίγουρα της ημέρας'],['img','screenshot με «κέρδη 1.250€»'],['VIP TIPS','Μόνο 5 θέσεις έμειναν ⏳']],
+  q:'Τι θα έκανες;',opts:[
+  ['Μπαίνω. Το 95% είναι πολύ.',0,'Τα screenshots φτιάχνονται εύκολα, και κανείς δεν δείχνει τις χαμένες μέρες. Το «5 θέσεις έμειναν» είναι τεχνική πίεσης.'],
+  ['Ρωτάω φίλους αν τους δούλεψε.',1,'Καλό να ρωτάς. Όμως όσοι έχασαν συνήθως ντρέπονται να το πουν, άρα θα ακούσεις μόνο για τα κέρδη.'],
+  ['Σκέφτομαι: αν ήξερε σίγουρα, θα πόνταρε ο ίδιος αντί να πουλά tips. Δεν μπαίνω και κάνω αναφορά στο κανάλι.',2,'Ακριβώς. Ο «tipster» βγάζει λεφτά από τις συνδρομές, όχι από τα στοιχήματα.']],
+  tip:'Αν κάποιος σε πιέζει να αποφασίσεις «τώρα», είναι λόγος να πεις όχι.'},
+ {app:'Παιχνίδι · Κατάστημα',ava:'🎮',msgs:[['sys','Αυτόν τον μήνα ξόδεψες 40€ σε κουτιά-έκπληξη (loot boxes)'],['img','✨ Σχεδόν! Το σπάνιο skin ήταν δίπλα!'],['sys','Άλλο ένα κουτί: 4,99€']],
+  q:'Τι θα έκανες;',opts:[
+  ['Αγοράζω άλλο ένα. Τώρα θα έρθει.',0,'Αυτή είναι η «πλάνη του παίκτη»: κάθε κουτί έχει τις ίδιες πιθανότητες με το προηγούμενο. Και το «σχεδόν» είναι σχεδιασμένο για να σε κάνει να ξαναπροσπαθήσεις.'],
+  ['Παίρνω την κάρτα των γονιών μου χωρίς να ρωτήσω. Θα τους το πω μετά.',0,'Όταν αρχίζεις να κρύβεις πόσα ξοδεύεις, είναι σημάδι ότι το παιχνίδι έχει πάρει τον έλεγχο.'],
+  ['Σταματώ, απενεργοποιώ τις αγορές και μιλώ με τους γονείς μου για ένα μηνιαίο όριο.',2,'Ένα όριο που αποφασίζεις όταν είσαι ήρεμος σε προστατεύει από αποφάσεις της στιγμής.']],
+  tip:'Τα loot boxes λειτουργούν όπως ο κουλοχέρης: πληρώνεις για μια πιθανότητα.'}
+ ],
+ keep:['Κάτω των 18 το στοίχημα απαγορεύεται.','Οι αποδόσεις είναι φτιαγμένες ώστε, συνολικά, να κερδίζει η εταιρεία.','Δοκίμασε τον προσομοιωτή «Κράτα τα 20€» στα εργαλεία της εφαρμογής. Αν ανησυχείς για εσένα ή για κάποιον φίλο, κάλεσε το 1422.'],
+ lines:['1422','1456']}
+];
+const WI=Object.fromEntries(W.map(w=>[w.id,w]));
+
+/* ---------- state ---------- */
+const KEY='psifiaki-zoi-v1';
+let S={ans:{},priv:{},self:{},plan:[]};
+try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function done(id){const a=S.ans[id]; return a && WI[id].sc.every((_,i)=>a[i]!==undefined);}
+function nDone(){return W.filter(w=>done(w.id)).length;}
+const LV=['Νέος χρήστης','Προσεκτικός χρήστης','Έξυπνος χρήστης','Ψηφιακός φύλακας','Ψηφιακός μέντορας','Master της ψηφιακής ζωής'];
+function lvl(){document.getElementById('lvl').innerHTML=`<b>${LV[nDone()]}</b>${nDone()} από 5 κόσμους`;}
+
+const app=document.getElementById('app');
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2600);}
+const back='<a class="back" href="#home">← Αρχική</a>';
+
+/* ---------- HOME ---------- */
+function home(){
+ const seals=W.map(w=>`<a class="seal ${done(w.id)?'on':''}" style="--sc:var(--c-${w.id})" href="#w/${w.id}" title="${w.topic}">${I[w.id]}</a>`).join('');
+ return `
+ <div class="hero">
+  <div class="card stack">
+   <span class="eyebrow">Για μαθητές 13–18</span>
+   <h1>Τι θα έκανες;</h1>
+   <p class="prose">Πέντε κόσμοι του κινητού σου. Σε κάθε κόσμο υπάρχουν τρεις ιστορίες που συμβαίνουν κάθε μέρα. Διαλέγεις τι θα έκανες και βλέπεις τι μπορεί να ακολουθήσει. Δεν υπάρχουν βαθμοί και δεν βλέπει κανείς τις απαντήσεις σου.</p>
+   <div class="row"><a class="btn primary" href="#w/${(W.find(w=>!done(w.id))||W[0]).id}">${nDone()?'Συνέχισε':'Ξεκίνα'}</a><a class="btn" href="#teachers">Για εκπαιδευτικούς</a></div>
+  </div>
+  <div class="card soft stack">
+   <h3>Οι σφραγίδες σου</h3>
+   <div class="seals">${seals}</div>
+   <p class="small muted">${nDone()===5?'Πέρασες όλους τους κόσμους! Δείξε στους φίλους σου τι έμαθες.':'Μια σφραγίδα για κάθε κόσμο που ολοκληρώνεις.'}</p>
+  </div>
+ </div>
+ <div class="sec-title"><h2>Οι πέντε κόσμοι</h2></div>
+ <div class="worlds">${W.map((w,i)=>`
+  <a class="world" style="--sc:var(--c-${w.id})" href="#w/${w.id}">
+   <span class="ico">${I[w.id]}</span>
+   <span><span class="small muted">${i+1} · ${w.topic}</span><h3>${w.name}</h3><span class="small muted">${w.blurb}</span><br>
+   <span class="chip ${done(w.id)?'ok':''}">${done(w.id)?'✓ Ολοκληρώθηκε':'3 ιστορίες'}</span></span>
+  </a>`).join('')}
+ </div>
+ <div class="sec-title"><h2>Εργαλεία</h2></div>
+ <div class="tools">
+  <a href="#t/privacy"><div class="card"><span class="eyebrow" style="color:var(--c-foot)">Αποτύπωμα</span><h3>Έλεγχος απορρήτου</h3><p class="small muted">12 ρυθμίσεις που κάνεις στα δικά σου social, σε 10 λεπτά.</p></div></a>
+  <a href="#t/plan"><div class="card"><span class="eyebrow" style="color:var(--c-screen)">Οθόνη</span><h3>Το σχέδιό μου για την οθόνη</h3><p class="small muted">Ένα γρήγορο check-in και τρεις μικρές αλλαγές που διαλέγεις εσύ.</p></div></a>
+  <a href="#t/sim"><div class="card"><span class="eyebrow" style="color:var(--c-bet)">Στοίχημα</span><h3>Κράτα τα 20€</h3><p class="small muted">Παίξε με εικονικά λεφτά και δες γιατί κερδίζει πάντα το σπίτι.</p></div></a>
+  <a href="#help" data-help><div class="card"><span class="eyebrow" style="color:var(--warm)">Στήριξη</span><h3>Γραμμές βοήθειας</h3><p class="small muted">Πού τηλεφωνείς στην Κύπρο, για τι, και πότε.</p></div></a>
+ </div>`;
+}
+
+/* ---------- WORLD ---------- */
+function world(id,i){
+ const w=WI[id]; if(!w) return home();
+ if(i===undefined) i=done(id)?w.sc.length:w.sc.findIndex((_,k)=>!(S.ans[id]&&S.ans[id][k]!==undefined));
+ if(i<0||i>=w.sc.length) return summary(id);
+ const sc=w.sc[i], a=S.ans[id]&&S.ans[id][i];
+ const bars=w.sc.map((_,k)=>`<span class="${k<=i?'on':''}"></span>`).join('');
+ const msgs=sc.msgs.map(m=>{
+  if(m[0]==='sys') return `<div class="msg sys">${m[1]}</div>`;
+  if(m[0]==='me') return `<div class="msg me">${m[1]}</div>`;
+  if(m[0]==='img') return `<div class="msg img"><i>🖼️ ${m[1]}</i></div>`;
+  return `<div class="msg"><span class="who">${m[0]}</span>${m[1]}</div>`;}).join('');
+ const L='ΑΒΓΔ';
+ const opts=sc.opts.map((o,k)=>{
+  let cls=''; if(a!==undefined){cls='s'+o[1]; if(k!==a && o[1]!==2) cls+=' dim';}
+  return `<button class="opt ${cls}" data-k="${k}" ${a!==undefined?'disabled':''}><span class="k">${L[k]}</span><span>${o[0]}</span></button>`;}).join('');
+ let fb='';
+ if(a!==undefined){const o=sc.opts[a];const T=['Ρίσκο','Μισό βήμα','Δυνατή επιλογή'][o[1]];
+  const best=sc.opts.filter(x=>x[1]===2);
+  fb=`<div class="fb" role="status"><b class="t${o[1]}">${T}</b><p>${o[2]}</p>${o[1]<2?`<p class="small"><b>Δυνατή επιλογή:</b> ${best.map(b=>b[0]).join(' <i>ή</i> ')}</p>`:''}<p class="small muted">💡 ${sc.tip}</p></div>`;}
+ return `<div style="--sc:var(--c-${id})">
+ <div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">${w.topic} · Ιστορία ${i+1} από ${w.sc.length}</span><h2>${w.name}</h2><div class="sbar">${bars}</div></div>
+ <div class="scene">
+  <div class="phone" aria-label="Οθόνη κινητού"><div class="ph"><span class="ava">${sc.ava}</span><span><b>${sc.app}</b><small>τώρα</small></span></div><div class="msgs">${msgs}</div></div>
+  <div class="stack">
+   <p class="q">${sc.q}</p>
+   <div class="opts" id="opts">${opts}</div>
+   ${fb}
+   ${a!==undefined?`<div class="next"><span></span><a class="btn primary" href="#w/${id}/${i+1}">${i+1<w.sc.length?'Επόμενη ιστορία →':'Τι κρατάω →'}</a></div>`:''}
+  </div>
+ </div></div>`;
+}
+function summary(id){
+ const w=WI[id], a=S.ans[id]||{};
+ const pts=w.sc.reduce((s,sc,k)=>s+(a[k]!==undefined?sc.opts[a[k]][1]:0),0);
+ const nxt=W.find(x=>!done(x.id));
+ return `<div style="--sc:var(--c-${id})" class="stack">
+ <div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">${w.topic} · Ολοκληρώθηκε</span><h2>Τι κρατάω από «${w.name}»</h2></div>
+ <div class="grid2">
+  <div class="card stack"><span class="muted small">Δυνατές επιλογές</span><span class="score">${w.sc.filter((sc,k)=>a[k]!==undefined&&sc.opts[a[k]][1]===2).length} / ${w.sc.length}</span>
+   <p class="small muted">${pts>=5?'Πολύ δυνατό ένστικτο. Μπορείς να βοηθήσεις και τους φίλους σου.':pts>=3?'Καλή βάση. Ξαναδιάβασε τις ιστορίες όπου έκανες μισό βήμα.':'Τώρα ξέρεις τι να κάνεις. Αυτό ακριβώς είναι το νόημα.'}</p></div>
+  <div class="card stack"><h3>Τα τρία που κρατάω</h3><div class="steps5">${w.keep.map((k,j)=>`<div><b>${j+1}</b>${k}</div>`).join('')}</div></div>
+ </div>
+ <div class="card stack"><h3>Αν χρειαστείς βοήθεια</h3><p class="small">Μίλα με τον/την Καθηγητή/τρια ΣΕΑ ή με έναν ενήλικα που εμπιστεύεσαι.</p>${linesHTML(w.lines)}</div>
+ <div class="next"><button class="btn" data-reset="${id}">Παίξε ξανά αυτόν τον κόσμο</button>${nxt?`<a class="btn primary" href="#w/${nxt.id}">Επόμενος κόσμος: ${nxt.name} →</a>`:'<a class="btn primary" href="#home">Στην αρχική →</a>'}</div>
+ </div>`;
+}
+
+/* ---------- TOOL: privacy ---------- */
+const PRIV=[
+ ['Ο λογαριασμός μου είναι ιδιωτικός','Ρυθμίσεις → Απόρρητο. Έτσι διαλέγεις ποιος βλέπει τι ανεβάζεις.'],
+ ['Έκλεισα την κοινή τοποθεσία','Π.χ. «Ghost mode» στο Snap Map, χωρίς τοποθεσία στις αναρτήσεις.'],
+ ['Διαλέγω ποιος μπορεί να μου στείλει μήνυμα','Μόνο φίλοι ή άτομα που ακολουθώ, όχι όλοι.'],
+ ['Ελέγχω τα tags πριν εμφανιστούν στο προφίλ μου','Ενεργοποίησε την έγκριση των tags.'],
+ ['Έχω ισχυρό κωδικό, διαφορετικό σε κάθε εφαρμογή','Μια μεγάλη φράση είναι πιο δυνατή από μια σύντομη λέξη με σύμβολα.'],
+ ['Έχω ενεργοποιήσει τον έλεγχο ταυτότητας δύο βημάτων (2FA)','Ακόμα κι αν κάποιος μάθει τον κωδικό σου, δεν μπαίνει.'],
+ ['Δεν δίνω τον κωδικό μου σε κανέναν','Ούτε στον κολλητό ή στο αγόρι ή κορίτσι μου.'],
+ ['Δεν δέχομαι αιτήματα από αγνώστους','Ούτε όταν έχουμε «κοινούς φίλους».'],
+ ['Έλεγξα ποιες εφαρμογές έχουν πρόσβαση σε κάμερα, μικρόφωνο και τοποθεσία','Ρυθμίσεις κινητού → Απόρρητο.'],
+ ['Έψαξα το όνομά μου στο Google','Δες τι θα βρει ένας ξένος, ένας καθηγητής ή ένας μελλοντικός εργοδότης.'],
+ ['Έσβησα ή έκρυψα παλιές αναρτήσεις που δεν με εκφράζουν πια','Μπορείς να τις αρχειοθετήσεις αντί να τις σβήσεις.'],
+ ['Αποσυνδέομαι όταν χρησιμοποιώ ξένη συσκευή','Υπολογιστές στο σχολείο, κινητά φίλων.']
+];
+function privacy(){
+ const n=PRIV.filter((_,i)=>S.priv[i]).length;
+ return `<div class="stack" style="--sc:var(--c-foot)">
+ <div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">Εργαλείο · Ψηφιακό αποτύπωμα</span><h2>Έλεγχος απορρήτου</h2><p class="muted prose">Άνοιξε τα social σου δίπλα σε αυτή τη σελίδα και τσέκαρε ό,τι έχεις κάνει. Η λίστα αποθηκεύεται μόνο σε αυτή τη συσκευή.</p></div>
+ <div class="card stack"><div class="row" style="justify-content:space-between"><b id="privN">${n} από ${PRIV.length}</b><span class="small muted" id="privL">${n===PRIV.length?'Θωρακισμένος λογαριασμός! 🔒':n>=8?'Σχεδόν εκεί.':'Κάθε τικ σε κάνει πιο ασφαλή.'}</span></div><div class="meter"><i id="privM" style="width:${n/PRIV.length*100}%"></i></div>
+ <div>${PRIV.map((p,i)=>`<label class="check"><input type="checkbox" data-priv="${i}" ${S.priv[i]?'checked':''}><span><b>${p[0]}</b><small>${p[1]}</small></span></label>`).join('')}</div></div>
+ </div>`;
+}
+
+/* ---------- TOOL: screen plan ---------- */
+const SQ=['Πιάνω το κινητό πρώτο πράγμα μόλις ξυπνήσω.','Χάνω την αίσθηση του χρόνου όταν σκρολάρω.','Κοιμάμαι αργότερα απ\' ό,τι θέλω εξαιτίας της οθόνης.','Νιώθω ανησυχία ή εκνευρισμό όταν δεν έχω το κινητό μου.','Αφήνω διάβασμα ή υποχρεώσεις για την οθόνη.','Συγκρίνω τον εαυτό μου με άλλους στα social και μετά νιώθω χειρότερα.','Κοιτάζω το κινητό ενώ μιλάω με φίλους ή τρώμε.','Έχω προσπαθήσει να το μειώσω, αλλά δεν τα κατάφερα.'];
+const CH=['Το κινητό φορτίζει έξω από το δωμάτιο τη νύχτα','Χωρίς οθόνη μισή ώρα πριν τον ύπνο','Λειτουργία εστίασης όταν διαβάζω','Κλείνω τις ειδοποιήσεις από τα social','Όριο χρόνου σε 1–2 εφαρμογές','Ασπρόμαυρη οθόνη (grayscale) το βράδυ','Τρώμε χωρίς κινητά στο τραπέζι','Μία δραστηριότητα χωρίς οθόνη κάθε μέρα (αθλητισμός, μουσική, βόλτα)','Unfollow σε λογαριασμούς που με κάνουν να νιώθω χειρότερα','Δεν ανοίγω social τα πρώτα 30 λεπτά της μέρας'];
+function plan(){
+ const answered=SQ.filter((_,i)=>S.self[i]!==undefined).length;
+ const sum=SQ.reduce((s,_,i)=>s+(S.self[i]||0),0);
+ let res='';
+ if(answered===SQ.length){
+  const z=sum<=5?['Καλή ισορροπία','Φαίνεται ότι εσύ ελέγχεις την οθόνη. Κράτα όσα σε βοηθούν.','var(--good)']:sum<=10?['Κίτρινη ζώνη','Η οθόνη τρώει χρόνο από πράγματα που μετράνε για σένα. Μικρές αλλαγές κάνουν μεγάλη διαφορά.','var(--ok)']:['Ώρα για αλλαγές','Η οθόνη φαίνεται να επηρεάζει τον ύπνο, τη διάθεση ή τις υποχρεώσεις σου. Διάλεξε τις αλλαγές σου και μίλησε με κάποιον που εμπιστεύεσαι ή με τον/την Καθηγητή/τρια ΣΕΑ. Το 1480 βοηθά και για την πολύωρη ενασχόληση με οθόνες.','var(--bad)'];
+  res=`<div class="card stack" style="border-left:6px solid ${z[2]}"><h3>${z[0]}</h3><p>${z[1]}</p><p class="small muted">Δεν είναι τεστ ούτε διάγνωση. Είναι ένας καθρέφτης για να σκεφτείς.</p></div>`;}
+ return `<div class="stack" style="--sc:var(--c-screen)">
+ <div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">Εργαλείο · Χρόνος οθόνης</span><h2>Το σχέδιό μου για την οθόνη</h2><p class="muted prose">Βήμα 1: πόσο ισχύουν για σένα; Βήμα 2: διάλεξε μέχρι τρεις μικρές αλλαγές για αυτή την εβδομάδα.</p></div>
+ <div class="card no-print"><h3>Βήμα 1 · Check-in</h3>${SQ.map((q,i)=>`<div class="qrow"><span>${q}</span><div class="seg" role="group">${[['Όχι',0],['Μερικές φορές',1],['Ναι',2]].map(o=>`<button data-sq="${i}" data-v="${o[1]}" aria-pressed="${S.self[i]===o[1]}">${o[0]}</button>`).join('')}</div></div>`).join('')}</div>
+ ${res}
+ <div class="card stack"><h3>Βήμα 2 · Οι τρεις αλλαγές μου <span class="small muted">(${S.plan.length}/3)</span></h3>
+  <div class="pick no-print">${CH.map((c,i)=>`<button data-ch="${i}" aria-pressed="${S.plan.includes(i)}">${c}</button>`).join('')}</div>
+  ${S.plan.length?`<div class="take"><b>Αυτή την εβδομάδα:</b><ul class="clean">${S.plan.map(i=>`<li>${CH[i]}</li>`).join('')}</ul></div><div class="row no-print"><button class="btn" id="printPlan">Τύπωσε ή κράτα το σχέδιο</button></div>`:''}
+ </div></div>`;
+}
+
+/* ---------- TOOL: simulator ---------- */
+let sim={bal:20,hist:[20],spins:0};
+function simView(){
+ return `<div class="stack" style="--sc:var(--c-bet)">
+ <div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">Εργαλείο · Στοίχημα</span><h2>Κράτα τα 20€</h2><p class="muted prose">Εικονικά λεφτά, πραγματικά μαθηματικά. Ποντάρεις 1€ στο «κόκκινο» μιας ρουλέτας. Μοιάζει 50–50, αλλά η ρουλέτα έχει 18 κόκκινα, 18 μαύρα και ένα πράσινο μηδέν. Αυτό το ένα πράσινο είναι το κέρδος του «σπιτιού».</p></div>
+ <div class="grid2">
+  <div class="card stack"><span class="muted small">Υπόλοιπο</span><span class="money" id="bal"></span><span class="small muted" id="spins"></span>
+   <div class="row"><button class="btn primary" data-spin="1">1 γύρος</button><button class="btn" data-spin="10">10 γύροι</button><button class="btn" data-spin="100">100 γύροι</button><button class="btn" id="simReset">Από την αρχή</button></div>
+   <p class="small" id="last" aria-live="polite"></p></div>
+  <div class="card stack"><span class="muted small">Η πορεία σου</span><svg class="chart" id="chart" viewBox="0 0 400 180" preserveAspectRatio="none" role="img" aria-label="Γράφημα υπολοίπου"></svg></div>
+ </div>
+ <div class="card stack"><h3>Και αν παίξουν 1.000 άτομα;</h3><p class="small muted">Ο καθένας ξεκινά με 20€ και παίζει 100 γύρους των 1€ (ή μέχρι να μείνει χωρίς λεφτά).</p>
+  <div class="row"><button class="btn primary" id="many">Τρέξε την προσομοίωση</button></div><div id="manyRes"></div></div>
+ <div class="take"><b>Τι δείχνει αυτό;</b> Σε κάθε γύρο το σπίτι έχει ένα μικρό πλεονέκτημα (περίπου 2,7%). Βραχυπρόθεσμα μπορεί να κερδίσεις. Όσο περισσότερο παίζεις, τόσο πιο σίγουρα κερδίζει το σπίτι. Το ίδιο ισχύει για τις αποδόσεις στο αθλητικό στοίχημα και για τα loot boxes.</div>
+ <div class="card stack"><h3>Τρεις παγίδες του μυαλού</h3><ul class="clean">
+  <li><b>«Ήρθαν 5 μαύρα, τώρα θα έρθει κόκκινο».</b> Η ρουλέτα δεν θυμάται. Κάθε γύρος είναι καινούργιος.</li>
+  <li><b>«Παρά λίγο!»</b> Το «σχεδόν» δεν σε φέρνει πιο κοντά στη νίκη. Απλώς σε κάνει να θες να ξαναπαίξεις.</li>
+  <li><b>«Θα τα πάρω πίσω».</b> Το κυνήγι των χαμένων είναι ο πιο γρήγορος δρόμος για να χάσεις περισσότερα.</li></ul>
+  <p class="small">Ανησυχείς για εσένα ή για κάποιον φίλο; <b>1422</b>, γραμμή στήριξης για τα τυχερά παιχνίδια.</p></div>
+ </div>`;
+}
+function spin(){return Math.floor(Math.random()*37);} // 0 πράσινο, 1–18 κόκκινο, 19–36 μαύρο
+function drawSim(){
+ const b=document.getElementById('bal'); if(!b) return;
+ b.textContent=sim.bal+'€'; b.style.color=sim.bal>=20?'var(--good)':'var(--bad)';
+ document.getElementById('spins').textContent=sim.spins+' γύροι · '+(sim.bal-20>=0?'+':'')+(sim.bal-20)+'€ από την αρχή';
+ document.querySelectorAll('[data-spin]').forEach(x=>x.disabled=sim.bal<=0);
+ const h=sim.hist, max=Math.max(40,...h), n=Math.max(h.length-1,1);
+ const pts=h.map((v,i)=>`${(i/n*400).toFixed(1)},${(180-v/max*170-5).toFixed(1)}`).join(' ');
+ const y20=(180-20/max*170-5).toFixed(1);
+ document.getElementById('chart').innerHTML=`<line x1="0" x2="400" y1="${y20}" y2="${y20}" stroke="var(--line)" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="${pts}" fill="none" stroke="var(--c-bet)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`;
+}
+function doSpins(k){
+ let w=0,l=0,last;
+ for(let j=0;j<k&&sim.bal>0;j++){last=spin(); if(last>=1&&last<=18){sim.bal++;w++;}else{sim.bal--;l++;} sim.spins++; sim.hist.push(sim.bal);}
+ const col=last===0?'πράσινο μηδέν 🟢':last<=18?'κόκκινο 🔴':'μαύρο ⚫';
+ document.getElementById('last').textContent=k===1?`Ήρθε ${col}. ${last>=1&&last<=18?'Κέρδισες 1€.':'Έχασες 1€.'}`:`${w} νίκες, ${l} ήττες.`+(sim.bal<=0?' Τα λεφτά τελείωσαν.':'');
+ drawSim();
+}
+function many(){
+ let ahead=0,broke=0,total=0;
+ for(let p=0;p<1000;p++){let b=20;for(let j=0;j<100&&b>0;j++){const r=spin(); b+=(r>=1&&r<=18)?1:-1;} if(b>20)ahead++; if(b<=0)broke++; total+=b;}
+ const avg=(total/1000).toFixed(2).replace('.',',');
+ document.getElementById('manyRes').innerHTML=`<div class="stat"><div><b>${ahead}</b><span class="small">τελείωσαν με κέρδος</span></div><div><b>${1000-ahead-broke}</b><span class="small">τελείωσαν με λιγότερα ή ίσα</span></div><div><b>${broke}</b><span class="small">έμειναν χωρίς λεφτά</span></div><div><b>${avg}€</b><span class="small">έμειναν κατά μέσο όρο από τα 20€</span></div></div><p class="small muted">Τρέξε το ξανά: οι αριθμοί αλλάζουν λίγο, αλλά οι περισσότεροι παίκτες πάντα τελειώνουν με λιγότερα από όσα ξεκίνησαν. Ο μέσος όρος μένει κάτω από 20€.</p>`;
+}
+
+/* ---------- TEACHERS ---------- */
+function teachers(){
+ const Q={cyber:['Γιατί οι περισσότεροι γελάνε σε ένα «αστείο» που δεν τους αρέσει;','Τι θα μας βοηθούσε να μιλάμε πιο εύκολα σε ένα group;','Πού τελειώνει το πείραγμα και πού αρχίζει ο εκφοβισμός;'],
+  sext:['Ποια είναι τα σήματα κινδύνου σε ένα καινούργιο προφίλ;','Γιατί ο εκβιαστής θέλει να νιώθεις ντροπή και να μην το πεις σε κανέναν;','Τι θα έλεγες σε έναν φίλο που σου εμπιστεύεται ότι τον εκβιάζουν;'],
+  foot:['Τι θα έβρισκε κάποιος αν έψαχνε το όνομά σου στο Google;','Πότε χρειάζεται να ρωτήσουμε πριν ανεβάσουμε μια φωτογραφία;','Γιατί ένα deepfake βλάπτει, ακόμα κι αν όλοι ξέρουν ότι είναι ψεύτικο;'],
+  screen:['Ποιες λειτουργίες μιας εφαρμογής σε κρατούν να σκρολάρεις;','Τι κερδίζεις και τι χάνεις όταν δεν έχεις το κινητό σου;','Ποια αλλαγή θα δοκιμάσεις αυτή την εβδομάδα;'],
+  bet:['Γιατί οι εταιρείες στοιχημάτων χορηγούν ομάδες και κάνουν τόσες διαφημίσεις;','Σε τι μοιάζουν τα loot boxes με τον κουλοχέρη;','Πώς καταλαβαίνεις ότι ένα παιχνίδι έχει πάψει να είναι απλώς παιχνίδι;']};
+ return `<div class="stack">
+ <div class="vhead">${back}<span class="eyebrow">Για εκπαιδευτικούς</span><h2>Πώς το χρησιμοποιώ στην τάξη</h2><p class="muted prose">Κάθε κόσμος χωράει σε μία διδακτική περίοδο. Μπορείτε να προβάλλετε την εφαρμογή στον πίνακα και να ψηφίζει η τάξη, ή να δουλεύουν οι μαθητές σε ζευγάρια στα κινητά τους. Δεν χρειάζεται λογαριασμός και δεν συλλέγονται δεδομένα.</p></div>
+ <div class="card"><div class="tablebox"><table><thead><tr><th>Χρόνος</th><th>Τι γίνεται</th></tr></thead><tbody>
+  <tr><td>5′</td><td>Ζέσταμα: «Σήκωσε το χέρι αν σου έχει συμβεί κάτι παρόμοιο ή το έχεις δει να συμβαίνει.» Χωρίς ονόματα.</td></tr>
+  <tr><td>20′</td><td>Οι τρεις ιστορίες του κόσμου. Πριν το κλικ, κάθε ζευγάρι ή ομάδα ψηφίζει Α/Β/Γ/Δ και εξηγεί γιατί.</td></tr>
+  <tr><td>12′</td><td>Συζήτηση με τις ερωτήσεις πιο κάτω.</td></tr>
+  <tr><td>3′</td><td>Κλείσιμο: «Ένα πράγμα που αλλάζω» σε χαρτάκι, και οι γραμμές βοήθειας στον πίνακα.</td></tr>
+ </tbody></table></div></div>
+ <div class="grid2">${W.map(w=>`<div class="card stack" style="border-top:5px solid var(--c-${w.id})"><span class="eyebrow" style="color:var(--c-${w.id})">${w.topic}</span><h3>${w.name}</h3><ul class="clean small">${Q[w.id].map(q=>`<li>${q}</li>`).join('')}</ul></div>`).join('')}</div>
+ <div class="alert stack"><h3>Αν μαθητής σάς αποκαλύψει εκβιασμό ή διακίνηση εικόνων</h3>
+  <ul class="clean">
+   <li>Ακούστε ήρεμα και χωρίς επίκριση. Πείτε του ότι έκανε καλά που το είπε και ότι δεν φταίει.</li>
+   <li><b>Μη ζητήσετε να δείτε την εικόνα.</b> Μην την αντιγράψετε, μην την προωθήσετε, μην τραβήξετε φωτογραφία ή screenshot, ούτε για αποδεικτικό. Τα αποδεικτικά τα συλλέγει η Αστυνομία.</li>
+   <li>Συμβουλέψτε τον μαθητή να μην πληρώσει, να μη σβήσει τη συνομιλία και να μην απαντήσει άλλο.</li>
+   <li>Καταγράψτε όσα είπε με τα δικά του λόγια, με ημερομηνία και ώρα.</li>
+   <li>Ενημερώστε άμεσα τη Διεύθυνση και ακολουθήστε το πρωτόκολλο του σχολείου. Συμβουλευτείτε το 1480 και, για εκβιασμό ή διακίνηση, την Αστυνομία (Γραφείο Καταπολέμησης Ηλεκτρονικού Εγκλήματος, 22808200).</li>
+   <li>Αν υπάρχει άμεσος κίνδυνος για την ασφάλεια του μαθητή, καλέστε το 112.</li>
+  </ul>
+  <p class="small">Δείτε επίσης: <a href="../protokollo-ekfovismou/">Πρωτόκολλο Σχολικού Εκφοβισμού</a> (και για τον διαδικτυακό εκφοβισμό) · <a href="../prostasia-paidiou/">Βία στην οικογένεια &amp; σεξουαλική κακοποίηση</a> · <a href="../asfales-scholeio/">Ασφαλές σχολείο</a></p>
+ </div>
+ <div class="card stack"><h3>Γραμμές στήριξης στην Κύπρο</h3>${linesHTML()}</div>
+ </div>`;
+}
+
+/* ---------- SOURCES ---------- */
+function sources(){
+ const P=[
+  ['Κύπρος','Κέντρο Ασφαλούς Διαδικτύου CYberSafety · Παιδαγωγικό Ινστιτούτο','Η Γραμμή Βοήθειας και Καταγγελιών 1480 δέχεται αναφορές για διαδικτυακό εκφοβισμό, sexting, εκβιασμό και πολύωρη ενασχόληση με οθόνες. Τα στατιστικά της δείχνουν ότι ο σεξουαλικός εκβιασμός είναι ένα από τα συχνότερα θέματα κλήσεων.','https://cybersafety.cy'],
+  ['Κύπρος','Αστυνομία Κύπρου · Γραφείο Καταπολέμησης Ηλεκτρονικού Εγκλήματος','Οδηγοί «Staying safe online» και πλατφόρμα καταγγελιών CyberAlert.','https://cyberalert.cy'],
+  ['Κύπρος','Εθνική Αρχή Στοιχημάτων · Ασφαλές Παιχνίδι','Το στοίχημα απαγορεύεται κάτω των 18. Στρατηγική Ασφαλούς Παιχνιδιού και κέντρα «Κίνητρο» με την ΑΑΕΚ. Γραμμή 1422.','https://safergambling.gov.cy'],
+  ['Ευρωπαϊκή Ένωση','Better Internet for Kids','Το ευρωπαϊκό δίκτυο των Κέντρων Ασφαλούς Διαδικτύου. Από εδώ προέρχεται και η επιμονή στο «μην πληρώσεις».','https://better-internet-for-kids.europa.eu'],
+  ['ΗΠΑ · διεθνώς','Take It Down (NCMEC)','Δωρεάν υπηρεσία που δημιουργεί ένα ψηφιακό «αποτύπωμα» (hash) της εικόνας, ώστε οι συνεργαζόμενες πλατφόρμες να την εντοπίζουν και να την αφαιρούν, χωρίς η εικόνα να φεύγει από τη συσκευή.','https://takeitdown.ncmec.org'],
+  ['Ηνωμένο Βασίλειο','ThinkUKnow (CEOP)','Εκπαίδευση με σενάρια για τις σχέσεις στο διαδίκτυο και τον εκβιασμό. Η ίδια ιδέα με τις ιστορίες «Τι θα έκανες;».','https://www.thinkuknow.co.uk'],
+  ['Γερμανία','klicksafe','Υλικό για τάξεις για το ψηφιακό αποτύπωμα, τα δικαιώματα της εικόνας και τον χρόνο οθόνης.','https://www.klicksafe.de'],
+  ['Ελλάδα','SaferInternet4Kids','Υλικό στα ελληνικά για μαθητές, γονείς και εκπαιδευτικούς, με θέματα όπως deepfakes και gaming.','https://saferinternet4kids.gr']
+ ];
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Πηγές</span><h2>Πηγές και καλές πρακτικές</h2><p class="muted prose">Η «Ψηφιακή ζωή» αντλεί από φορείς της Κύπρου και από ευρωπαϊκά και διεθνή προγράμματα που χρησιμοποιούν σενάρια, συζήτηση και πρακτικά βήματα αντί για εκφοβιστικά μηνύματα.</p></div>
+ <div class="grid2">${P.map(p=>`<div class="card stack"><span class="small muted" style="font-weight:600">${p[0]}</span><h3>${p[1]}</h3><p class="small">${p[2]}</p><a class="small" href="${p[3]}" target="_blank" rel="noopener">${p[3].replace('https://','')}</a></div>`).join('')}</div></div>`;
+}
+
+/* ---------- router ---------- */
+function route(){
+ const h=(location.hash||'#home').slice(1).split('/');
+ if(h[0]==='help'){openHelp(); if(!app.innerHTML) app.innerHTML=home(); return;}
+ let html;
+ if(h[0]==='w') html=world(h[1],h[2]!==undefined?+h[2]:undefined);
+ else if(h[0]==='t'&&h[1]==='privacy') html=privacy();
+ else if(h[0]==='t'&&h[1]==='plan') html=plan();
+ else if(h[0]==='t'&&h[1]==='sim') html=simView();
+ else if(h[0]==='teachers') html=teachers();
+ else if(h[0]==='sources') html=sources();
+ else html=home();
+ app.innerHTML=html; lvl();
+ if(h[0]==='t'&&h[1]==='sim') drawSim();
+ window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- events ---------- */
+app.addEventListener('click',e=>{
+ const o=e.target.closest('.opt');
+ if(o&&!o.disabled){
+  const h=location.hash.slice(1).split('/'), id=h[1];
+  const w=WI[id]; let i=h[2]!==undefined?+h[2]:w.sc.findIndex((_,k)=>!(S.ans[id]&&S.ans[id][k]!==undefined));
+  S.ans[id]=S.ans[id]||{}; S.ans[id][i]=+o.dataset.k; save();
+  const wasDone=done(id);
+  app.innerHTML=world(id,i); lvl();
+  if(wasDone&&i===w.sc.length-1) toast('Νέα σφραγίδα: '+w.name+' ✓');
+  const fb=app.querySelector('.fb'); if(fb) fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  return;}
+ const r=e.target.closest('[data-reset]');
+ if(r){delete S.ans[r.dataset.reset]; save(); location.hash='#w/'+r.dataset.reset+'/0'; return;}
+ const sq=e.target.closest('[data-sq]');
+ if(sq){S.self[sq.dataset.sq]=+sq.dataset.v; save(); const y=window.scrollY; app.innerHTML=plan(); window.scrollTo(0,y); return;}
+ const ch=e.target.closest('[data-ch]');
+ if(ch){const k=+ch.dataset.ch, j=S.plan.indexOf(k);
+  if(j>=0) S.plan.splice(j,1); else if(S.plan.length<3) S.plan.push(k); else {toast('Μέχρι τρεις αλλαγές. Λίγες και σταθερές είναι καλύτερες!');return;}
+  save(); const y=window.scrollY; app.innerHTML=plan(); window.scrollTo(0,y); return;}
+ if(e.target.closest('#printPlan')){window.print();return;}
+ const sp=e.target.closest('[data-spin]'); if(sp){doSpins(+sp.dataset.spin);return;}
+ if(e.target.closest('#simReset')){sim={bal:20,hist:[20],spins:0};document.getElementById('last').textContent='';drawSim();return;}
+ if(e.target.closest('#many')){many();return;}
+ const hl=e.target.closest('[data-help]'); if(hl){e.preventDefault();openHelp();}
+});
+app.addEventListener('change',e=>{
+ const p=e.target.closest('[data-priv]'); if(!p) return;
+ S.priv[p.dataset.priv]=p.checked; save();
+ const n=PRIV.filter((_,i)=>S.priv[i]).length;
+ document.getElementById('privN').textContent=n+' από '+PRIV.length;
+ document.getElementById('privM').style.width=(n/PRIV.length*100)+'%';
+ document.getElementById('privL').textContent=n===PRIV.length?'Θωρακισμένος λογαριασμός! 🔒':n>=8?'Σχεδόν εκεί.':'Κάθε τικ σε κάνει πιο ασφαλή.';
+});
+
+/* help overlay */
+const help=document.getElementById('help'); let lastFocus=null;
+document.getElementById('helpLines').innerHTML=linesHTML();
+function openHelp(){lastFocus=document.activeElement;help.hidden=false;document.getElementById('helpX').focus();}
+function closeHelp(){help.hidden=true; if(location.hash==='#help') history.replaceState(null,'','#home'); if(lastFocus) lastFocus.focus();}
+document.getElementById('helpBtn').onclick=openHelp;
+document.getElementById('helpX').onclick=closeHelp;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!help.hidden) closeHelp();});
+
+route();
+})();
+</script>
+
+<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
+</body></html>
