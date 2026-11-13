@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ελεύθερα: Μύθοι και αλήθειες για τις εξαρτήσεις</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a deck of "Myth or Truth?" cards. Each card flips to the explanation. Four topics, a mixed challenge, refusal practice and a help button that is always visible. */
+:root{
+  --bg:#EDF3EF;--surface:#FFFFFF;--soft:#DCEAE2;--ink:#14281F;--muted:#55695F;--line:#CBDCD2;
+  --accent:#137A5B;--accent-ink:#FFFFFF;--warm:#F2994A;--warm-soft:#FCEBDA;
+  --good:#2D8A57;--ok:#B7791F;--bad:#C2412D;--myth:#C2412D;--truth:#2D6FB8;
+  --c-vape:#5B6BD6;--c-alc:#B5462E;--c-subs:#8A3FB0;--c-bet:#2E7D4F;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1813;--surface:#15241D;--soft:#1D3229;--ink:#E3EEE8;--muted:#9AB2A6;--line:#2A4237;
+  --accent:#4CC79E;--accent-ink:#06201A;--warm:#F5AE6B;--warm-soft:#3A2A1B;
+  --good:#5CC48A;--ok:#E5B04F;--bad:#F07C66;--myth:#F07C66;--truth:#7FB2EE;
+  --c-vape:#97A3F2;--c-alc:#EE8A70;--c-subs:#C58BEA;--c-bet:#6FCB94;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.4rem)}h2{font-size:1.55rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.prose{max-width:65ch}
+ul.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.25rem}
+.grow{flex:1}
+.lvl{font-size:.85rem;color:var(--muted);text-align:right;line-height:1.2}
+.lvl b{display:block;color:var(--ink);font-size:.95rem}
+@media (max-width:560px){.lvl{display:none}}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+main{padding:24px 0 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.alert{border:2px solid var(--bad);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sec-title{margin:30px 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.topic{--sc:var(--accent);text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--sc);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s}
+.topic:hover{transform:translateY(-2px);border-color:var(--sc)}
+.ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--sc) 14%,var(--surface));color:var(--sc)}
+.ico svg{width:26px;height:26px}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);align-self:flex-start}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,var(--surface));color:var(--good)}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tools a{text-decoration:none;color:var(--ink)}
+.tools .card{height:100%;display:flex;flex-direction:column;gap:6px}
+.tools .card:hover{border-color:var(--accent)}
+.big{font-family:var(--font-d);font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+
+/* myth card */
+.sbar{display:flex;gap:5px}.sbar span{flex:1;height:6px;border-radius:999px;background:var(--line)}.sbar span.on{background:var(--sc,var(--accent))}
+.deck{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px 24px;min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.07);border-top:8px solid var(--sc,var(--accent))}
+.mcard .stmt{font-family:var(--font-d);font-size:clamp(1.3rem,3.6vw,1.65rem);line-height:1.3}
+.mcard .tag{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sc,var(--accent))}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice button{border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:16px;font-weight:700;font-size:1.1rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.choice button small{font-weight:500;font-size:.8rem;color:var(--muted)}
+.choice .bm:hover{border-color:var(--myth)}.choice .bt:hover{border-color:var(--truth)}
+.choice button[disabled]{cursor:default;opacity:.5}
+.verdict{border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.verdict.myth{background:color-mix(in srgb,var(--myth) 11%,var(--surface));border:1px solid var(--myth)}
+.verdict.truth{background:color-mix(in srgb,var(--truth) 11%,var(--surface));border:1px solid var(--truth)}
+.verdict .lab{font-family:var(--font-d);font-size:1.3rem;font-weight:700}
+.verdict.myth .lab{color:var(--myth)}.verdict.truth .lab{color:var(--truth)}
+.res{font-weight:700}.res.y{color:var(--good)}.res.n{color:var(--bad)}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+/* scenario */
+.sit{font-family:var(--font-d);font-size:1.3rem;line-height:1.35;padding:20px;border-radius:16px;background:var(--soft)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.s2{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.s1{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.s0{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.dim{opacity:.6}
+.fb{border-radius:12px;padding:14px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.fb b.t2{color:var(--good)}.fb b.t1{color:var(--ok)}.fb b.t0{color:var(--bad)}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.ways .card{display:flex;flex-direction:column;gap:6px}
+.ways .q{font-family:var(--font-d);font-style:italic}
+textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);min-height:70px;resize:vertical}
+.mine{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.mine button{border:none;background:none;cursor:pointer;color:var(--muted)}
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--accent);min-width:110px;font-variant-numeric:tabular-nums;text-decoration:none}
+@media (max-width:520px){.line{flex-direction:column;align-items:flex-start;gap:4px}}
+.overlay{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 97%,transparent);overflow:auto;padding:24px 16px}
+.overlay[hidden]{display:none}
+.overlay .inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+@media print{.top,.no-print,footer,.ergal-back{display:none!important}body{background:#fff;color:#000}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Ελεύθερα, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="var(--accent)"/><path d="M9 21c4-1 6-4 8-9 2 5 4 8 8 9" stroke="var(--accent-ink)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 13l4-4 4 4" stroke="var(--accent-ink)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ελεύθερα
+    </a>
+    <div class="grow"></div>
+    <div class="lvl" id="lvl"></div>
+    <button class="btn sos" id="helpBtn" type="button">Βοήθεια τώρα</button>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Ελεύθερα: Μύθοι και αλήθειες για τις εξαρτήσεις», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>.</p>
+  <p class="small">Οι απαντήσεις σου μένουν μόνο σε αυτή τη συσκευή. <a href="#sources">Πηγές και καλές πρακτικές</a> · <a href="#teachers">Για εκπαιδευτικούς</a></p>
+</div></footer>
+
+<div class="overlay" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="inner">
+    <div class="row" style="justify-content:space-between"><h2 id="helpTitle">Βοήθεια τώρα</h2><button class="btn" id="helpX" type="button">Κλείσιμο</button></div>
+    <div class="alert stack">
+      <h3>Αν κάποιος δεν είναι καλά από αλκοόλ ή ουσίες</h3>
+      <p class="small">Δεν ξυπνά ή δεν απαντά, αναπνέει πολύ αργά ή ακανόνιστα, κάνει εμετό ενώ είναι μισοκοιμισμένος, έχει χλωμό ή μελανιασμένο δέρμα, έχει σπασμούς:</p>
+      <ul class="clean">
+        <li><b>Κάλεσε αμέσως το 112.</b> Πες τι ήπιε ή τι πήρε, αν το ξέρεις.</li>
+        <li><b>Μην τον αφήσεις μόνο</b> και μην τον αφήσεις να «κοιμηθεί για να του περάσει».</li>
+        <li><b>Γύρισέ τον στο πλάι</b> (πλάγια θέση ασφαλείας), για να μην πνιγεί αν κάνει εμετό.</li>
+        <li><b>Όχι καφές, όχι κρύο ντους, όχι «περπάτημα».</b> Δεν βοηθούν και μπορεί να κάνουν ζημιά.</li>
+        <li>Φώναξε έναν ενήλικα. Η ζωή του φίλου σου μετράει περισσότερο από το «μην μπλέξουμε».</li>
+      </ul>
+    </div>
+    <div class="take"><b>Δεν είσαι μόνος/η.</b> Μίλα με τον/την Καθηγητή/τρια ΣΕΑ ή με έναν ενήλικα που εμπιστεύεσαι. Οι γραμμές πιο κάτω είναι δωρεάν και εμπιστευτικές.</div>
+    <div id="helpLines"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const I={
+ vape:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="8" width="6" height="14" rx="2"/><path d="M11 8V5h2v3"/><path d="M8 3c0-1 1-1 1-2M12 3c0-1 1-1 1-2M16 3c0-1 1-1 1-2"/></svg>',
+ alc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l-1 7a4 4 0 0 1-8 0z"/><path d="M12 14v6M8 21h8"/></svg>',
+ subs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12.5)"/><path d="M10 7.5l4 7.5"/></svg>',
+ bet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg>'
+};
+const LINES=[
+ ['112','Άμεσος κίνδυνος','Ασθενοφόρο, Αστυνομία, Πυροσβεστική.'],
+ ['1402','Αρχή Αντιμετώπισης Εξαρτήσεων Κύπρου (ΑΑΕΚ)','Εξάρτηση από νόμιμες ή παράνομες ουσίες.'],
+ ['1456','Κέντρο Συμβουλευτικής Εφήβων και Οικογένειας «Περσέας/Προμηθέας»','Συμβουλευτική για εξαρτητικές συμπεριφορές, για εφήβους και γονείς.'],
+ ['1498','Υπηρεσία Καταπολέμησης Ναρκωτικών (ΥΚΑΝ)','Θέματα χρήσης ναρκωτικών ουσιών.'],
+ ['1431','Γραμμή διακοπής του καπνίσματος (ΟΚΥπΥ)','Βοήθεια για να κόψεις τσιγάρο ή ηλεκτρονικό τσιγάρο.'],
+ ['1422','Στήριξη για τα τυχερά παιχνίδια (ΑΑΕΚ, ΚΕΝΘΕΑ)','Και για φίλους ή γονείς που ανησυχούν.'],
+ ['1410','Οργανισμός Νεολαίας Κύπρου (ΟΝΕΚ)','Συμβουλευτική και στήριξη για παιδιά και γονείς.'],
+ ['116 111','Ευρωπαϊκή Γραμμή Στήριξης Παιδιών και Εφήβων','Δωρεάν, για ό,τι σε απασχολεί.']
+];
+function linesHTML(f){return '<div class="stack" style="gap:8px">'+LINES.filter(l=>!f||f.includes(l[0])).map(l=>`<div class="line"><a class="tel" href="tel:${l[0].replace(/\s/g,'')}">${l[0]}</a><div><b>${l[1]}</b><p class="small muted">${l[2]}</p></div></div>`).join('')+'</div>';}
+
+/* m: true = Μύθος, false = Αλήθεια */
+const T=[
+{id:'vape',name:'Vaping',sub:'Ηλεκτρονικό τσιγάρο & νικοτίνη',lines:['1431','1402','1456'],cards:[
+ ['«Ο ατμός του ηλεκτρονικού τσιγάρου είναι απλώς υδρατμός.»',true,'Δεν είναι νερό. Είναι αερόλυμα με μικροσωματίδια, νικοτίνη, αρωματικές χημικές ουσίες και ίχνη μετάλλων από τη θερμαινόμενη αντίσταση. Όλα αυτά φτάνουν βαθιά στους πνεύμονες.'],
+ ['«Η νικοτίνη προκαλεί εξάρτηση, και ο εγκέφαλος των εφήβων είναι πιο ευάλωτος σε αυτήν.»',false,'Ο εγκέφαλος συνεχίζει να αναπτύσσεται μέχρι τα μέσα της δεκαετίας των 20. Σε αυτή την ηλικία η νικοτίνη «γράφει» πιο εύκολα τη συνήθεια και επηρεάζει την προσοχή και τη διάθεση.'],
+ ['«Αν γράφει 0% νικοτίνη, είναι σίγουρα ακίνδυνο.»',true,'Ακόμα και χωρίς νικοτίνη εισπνέεις χημικές ουσίες που ερεθίζουν τους πνεύμονες. Και οι ετικέτες δεν είναι πάντα ακριβείς, ειδικά σε προϊόντα από ανεπίσημες πηγές.'],
+ ['«Οι περισσότεροι έφηβοι στην Ευρώπη ατμίζουν τακτικά.»',true,'Σύμφωνα με την ευρωπαϊκή έρευνα ESPAD 2024, η τακτική χρήση ανέβηκε στο 22% των μαθητών 15–16 ετών. Είναι ανησυχητικό, αλλά σημαίνει ότι περίπου 8 στους 10 <b>δεν</b> ατμίζουν τακτικά. Δεν «το κάνουν όλοι».'],
+ ['«Οι γεύσεις καραμέλας και φρούτων δεν υπάρχουν τυχαία.»',false,'Οι γλυκές γεύσεις και τα χρωματιστά σχέδια κάνουν το προϊόν να φαίνεται αθώο και ελκυστικό για νέους. Η νικοτίνη όμως είναι ίδια, όποια γεύση κι αν έχει.'],
+ ['«Μπορώ να το κόψω όποτε θέλω.»',true,'Σχεδόν όλοι το λένε στην αρχή. Η εξάρτηση από τη νικοτίνη χτίζεται σιγά σιγά. Σημάδια είναι ο εκνευρισμός όταν δεν το έχεις και η σκέψη «πότε θα ξαναπάρω τζούρα;». Η γραμμή 1431 βοηθά και τους νέους.'],
+ ['«Στην Κύπρο απαγορεύεται η πώληση ηλεκτρονικών τσιγάρων σε άτομα κάτω των 18.»',false,'Ισχύει. Ο νόμος υπάρχει για να προστατεύει τον εγκέφαλο που αναπτύσσεται. Επίσης απαγορεύεται η χρήση του σε κλειστούς δημόσιους χώρους και σε αυτοκίνητο όπου επιβαίνει ανήλικος.']],
+ sc:{sit:'Πάρτι στο σπίτι ενός φίλου. Κάποιος σου δίνει ένα vape: «Έλα μια τζούρα, γεύση καρπούζι, τίποτα δεν είναι.»',opts:[
+  ['«Οκ, μόνο μία.»',0,'Το «μόνο μία» είναι ο πιο συνηθισμένος τρόπος να ξεκινήσει. Και όταν πεις «ναι» μία φορά, την επόμενη φορά το «όχι» είναι πιο δύσκολο.'],
+  ['«Όχι, ευχαριστώ, δεν μου αρέσει.»',2,'Απλό, ήρεμο, χωρίς εξηγήσεις. Συνήθως αρκεί. Αν επιμείνουν, το ξαναλές με τα ίδια λόγια.'],
+  ['«Δεν γίνεται, έχω προπόνηση αύριο.»',2,'Μια δικαιολογία είναι κι αυτή θεμιτός τρόπος να πεις όχι, ειδικά όταν δεν θες κουβέντα.'],
+  ['«Σιγά μην γίνω σαν εσάς.»',1,'Λες όχι, και αυτό μετράει. Όμως η επίθεση προκαλεί ένταση. Μπορείς να αρνηθείς χωρίς να κρίνεις τους άλλους.']]}},
+{id:'alc',name:'Αλκοόλ',sub:'Ποτό, μέθη & ασφάλεια',lines:['112','1402','1456'],cards:[
+ ['«Ένας καφές ή ένα κρύο ντους σε ξεμεθάνε.»',true,'Μόνο ο χρόνος βγάζει το αλκοόλ από τον οργανισμό. Το συκώτι το καθαρίζει με σταθερό ρυθμό που δεν επιταχύνεται. Ο καφές απλώς σε κάνει έναν ξύπνιο μεθυσμένο.'],
+ ['«Η μπύρα είναι "ελαφριά". Με μπύρα δεν μεθάς.»',true,'Ένα κουτάκι μπύρα, ένα ποτήρι κρασί και ένα σφηνάκι έχουν περίπου την ίδια ποσότητα αλκοόλ. Μετράει πόσο αλκοόλ πίνεις, όχι το είδος του ποτού.'],
+ ['«Ο εγκέφαλος συνεχίζει να αναπτύσσεται μέχρι τα μέσα της δεκαετίας των 20.»',false,'Γι\' αυτό το αλκοόλ στην εφηβεία επηρεάζει περισσότερο τη μνήμη, τη μάθηση και τον έλεγχο των παρορμήσεων απ\' ό,τι στους ενήλικες.'],
+ ['«Αν ένας φίλος λιποθυμήσει από το ποτό, τον αφήνουμε να κοιμηθεί για να του περάσει.»',true,'Μπορεί να είναι δηλητηρίαση από αλκοόλ. Το αλκοόλ στο αίμα μπορεί να συνεχίσει να ανεβαίνει ενώ κοιμάται. Γύρισέ τον στο πλάι, μην τον αφήσεις μόνο και κάλεσε το 112.'],
+ ['«Αλκοόλ μαζί με ενεργειακό ποτό σε κρατά πιο "νηφάλιο".»',true,'Το ενεργειακό ποτό κρύβει την κούραση, όχι τη μέθη. Νομίζεις ότι είσαι καλά, πίνεις περισσότερο και παίρνεις πιο ριψοκίνδυνες αποφάσεις.'],
+ ['«Οι έφηβοι στην Ευρώπη πίνουν λιγότερο απ\' ό,τι πριν από 30 χρόνια.»',false,'Σύμφωνα με την ESPAD, όσοι μαθητές 15–16 ετών είχαν δοκιμάσει αλκοόλ έπεσαν από 88% το 1995 σε 74% το 2024. Πολλοί νέοι επιλέγουν να μην πίνουν ή να πίνουν λίγο.']],
+ sc:{sit:'Στο πάρτι, η Άννα έχει πιει πολύ. Είναι στο μπάνιο, μισοκοιμισμένη, δεν σου απαντά καθαρά και έχει κάνει εμετό.',opts:[
+  ['Την αφήνω να κοιμηθεί. Το πρωί θα είναι καλά.',0,'Μπορεί να είναι δηλητηρίαση από αλκοόλ. Αν κάνει εμετό ενώ κοιμάται ανάσκελα, μπορεί να πνιγεί. Ποτέ μόνη της.'],
+  ['Της φτιάχνω καφέ και τη βάζω στο ντους.',0,'Δεν βοηθούν. Το κρύο νερό μπορεί να της ρίξει τη θερμοκρασία και να τη ζαλίσει περισσότερο.'],
+  ['Τη γυρίζω στο πλάι, μένω μαζί της, φωνάζω έναν ενήλικα και καλούμε το 112.',2,'Αυτό σώζει ζωές. Μην ανησυχείς ότι θα «μπλέξετε». Οι διασώστες είναι εκεί για να βοηθήσουν, όχι για να τιμωρήσουν.'],
+  ['Παίρνω τηλέφωνο τους γονείς της και περιμένω.',1,'Καλό να ενημερωθούν, αλλά αν δεν απαντά καθαρά, μην περιμένεις. Πρώτα το 112 και η πλάγια θέση.']]}},
+{id:'subs',name:'Ουσίες',sub:'Κάνναβη, χάπια & «νόμιμες» ουσίες',lines:['112','1402','1498','1456'],cards:[
+ ['«Η κάνναβη είναι φυτό, άρα είναι ακίνδυνη.»',true,'«Φυσικό» δεν σημαίνει «ακίνδυνο». Η τακτική χρήση στην εφηβεία συνδέεται με προβλήματα μνήμης και συγκέντρωσης. Σε ευάλωτα άτομα συνδέεται και με ψυχωσικά επεισόδια. Η σημερινή κάνναβη είναι συχνά πολύ πιο δυνατή απ\' ό,τι στο παρελθόν.'],
+ ['«Περίπου 9 στους 10 μαθητές 15–16 ετών στην Ευρώπη δεν έχουν δοκιμάσει ποτέ κάνναβη.»',false,'Στην έρευνα ESPAD 2024, το 12% είχε δοκιμάσει κάνναβη, το χαμηλότερο ποσοστό από το 1995. Η συντριπτική πλειονότητα δεν το έχει κάνει.'],
+ ['«Ένα χάπι από φίλο είναι ασφαλές, αφού το πήρε κι εκείνος.»',true,'Δεν ξέρεις τι περιέχει. Τα χάπια από ανεπίσημες πηγές συχνά είναι νοθευμένα ή πολύ πιο δυνατά απ\' ό,τι λένε. Και κάθε οργανισμός αντιδρά διαφορετικά. Το ίδιο ισχύει για φάρμακα με συνταγή που ήταν για κάποιον άλλο.'],
+ ['«Η ανάμειξη ουσιών με αλκοόλ είναι πιο επικίνδυνη από την καθεμιά μόνη της.»',false,'Οι συνδυασμοί πολλαπλασιάζουν τον κίνδυνο, κυρίως για την αναπνοή και την καρδιά. Είναι από τις πιο συχνές αιτίες για επείγοντα περιστατικά.'],
+ ['«Μία φορά δεν κάνει κακό.»',true,'Ακόμα και μία φορά μπορεί να φέρει ατύχημα, νοθευμένη ουσία ή μια απόφαση που δεν θα έπαιρνες νηφάλιος. Και κάθε συνήθεια ξεκινά με μία φορά.'],
+ ['«Τα "φυτικά" ή "νόμιμα" χάπια και σκόνες που πουλιούνται στο internet είναι ασφαλή.»',true,'Πολλές νέες ψυχοδραστικές ουσίες πουλιούνται ως «φυτικές» ή «νόμιμες», αλλά κανείς δεν ξέρει τι περιέχουν ούτε τη δόση. Μπορεί να είναι πιο επικίνδυνες από γνωστές ουσίες.'],
+ ['«Αν κάποιος πάθει κάτι, καλύτερα να μην καλέσουμε ασθενοφόρο για να μην μπλέξουμε.»',true,'Η ζωή του φίλου σου είναι πάνω απ\' όλα. Κάλεσε το 112 και πες τι πήρε, αν το ξέρεις. Οι διασώστες χρειάζονται αυτή την πληροφορία για να τον βοηθήσουν.']],
+ sc:{sit:'Πριν μπείτε σε μια συναυλία, ένας γνωστός σού δείχνει ένα χάπι: «Πάρε ένα, θα είσαι στα πάνω σου όλο το βράδυ. Όλοι το παίρνουν.»',opts:[
+  ['Το παίρνω. Αν το παίρνουν όλοι, δεν μπορεί να είναι τόσο κακό.',0,'Το «όλοι» σπάνια ισχύει. Κι εσύ δεν ξέρεις ούτε τι περιέχει ούτε πώς θα αντιδράσει ο οργανισμός σου.'],
+  ['«Όχι, είμαι καλά έτσι.» Και μένω με την παρέα μου.',2,'Ακριβώς. Δεν χρωστάς εξηγήσεις. Το να μείνεις με ανθρώπους που εμπιστεύεσαι είναι το καλύτερο σχέδιο για τη βραδιά.'],
+  ['Το βάζω στην τσέπη και λέω «αργότερα».',1,'Απέφυγες την πίεση της στιγμής, αλλά κουβαλάς μια παράνομη ουσία. Καλύτερα ένα καθαρό «όχι».'],
+  ['«Όχι». Και ειδοποιώ τους φίλους μου να μην πάρουν κι αυτοί.',2,'Πολύ δυνατό. Προστατεύεις και την παρέα σου.']]}},
+{id:'bet',name:'Τζόγος',sub:'Στοίχημα, καζίνο & loot boxes',lines:['1422','1456'],cards:[
+ ['«Στην Κύπρο το στοίχημα απαγορεύεται για άτομα κάτω των 18.»',false,'Ισχύει, και η Εθνική Αρχή Στοιχημάτων καλεί τους γονείς να φροντίζουν να μη συμμετέχουν ανήλικοι. Ο λόγος είναι ότι όσο νωρίτερα ξεκινά κάποιος, τόσο μεγαλύτερος είναι ο κίνδυνος.'],
+ ['«Αν ξέρεις καλά από μπάλα, βγάζεις λεφτά από το στοίχημα.»',true,'Οι αποδόσεις υπολογίζονται ώστε, συνολικά, να κερδίζει η εταιρεία. Όσο κι αν ξέρεις, παίζεις απέναντι σε μαθηματικά που είναι στημένα υπέρ της.'],
+ ['«Μετά από πολλές ήττες, "χρωστάει" να έρθει νίκη.»',true,'Είναι η «πλάνη του παίκτη». Κάθε γύρος, κάθε κουτί και κάθε αγώνας είναι ανεξάρτητος. Η τύχη δεν θυμάται.'],
+ ['«Τα loot boxes στα παιχνίδια λειτουργούν με παρόμοιο τρόπο με τα τυχερά παιχνίδια.»',false,'Πληρώνεις πραγματικά λεφτά για μια πιθανότητα να κερδίσεις κάτι σπάνιο. Αυτός ο μηχανισμός είναι ίδιος με τον κουλοχέρη.'],
+ ['«Μια μεγάλη νίκη στην αρχή είναι καλό σημάδι.»',true,'Συχνά συμβαίνει το αντίθετο: η πρώτη μεγάλη νίκη κάνει το μυαλό να πιστέψει ότι «το έχει» και κάνει πιο δύσκολο να σταματήσεις.'],
+ ['«Μπορεί να εξαρτηθεί κάποιος και χωρίς να πάρει καμία ουσία.»',false,'Ο τζόγος είναι συμπεριφορική εξάρτηση. Ενεργοποιεί το ίδιο «σύστημα ανταμοιβής» του εγκεφάλου με τις ουσίες. Το κυνήγι των χαμένων και η κρυφή ενασχόληση είναι σημάδια κινδύνου.']],
+ sc:{sit:'Μετά το σχολείο, η παρέα πάει να δει το ματς σε ένα πρακτορείο. «Έλα, βάλε κι εσύ 5€, ο ταμίας δεν ρωτάει ηλικία.»',opts:[
+  ['Βάζω 5€. Είναι λίγα.',0,'Είναι παράνομο κάτω των 18. Και το «λίγα» είναι συνήθως η αρχή.'],
+  ['«Πάμε να το δούμε σε καφετέρια ή σπίτι, θα έχει την ίδια πλάκα.»',2,'Προτείνεις κάτι άλλο αντί για ένα σκέτο «όχι», και μένεις με την παρέα. Συχνά κι άλλοι το ήθελαν αλλά δεν το έλεγαν.'],
+  ['Πάω μαζί αλλά δεν παίζω.',1,'Δεν παίζεις, και αυτό μετράει. Όμως ο χώρος και η πίεση της παρέας κάνουν το «όχι» πιο δύσκολο κάθε φορά.'],
+  ['«Όχι, δεν παίζω στοίχημα.»',2,'Καθαρό και σταθερό. Όποιος σε σέβεται θα το δεχτεί.']]}}
+];
+const TI=Object.fromEntries(T.map(t=>[t.id,t]));
+const ALL=T.flatMap(t=>t.cards.map((c,i)=>({t:t.id,i})));
+
+/* state */
+const KEY='eleuthera-v1';
+let S={a:{},sc:{},mine:[],best:0};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const ck=(t,i)=>t+'-'+i;
+function tDone(id){return TI[id].cards.every((_,i)=>S.a[ck(id,i)]!==undefined);}
+function nAns(){return Object.keys(S.a).length;}
+function nRight(){return Object.entries(S.a).filter(([k,v])=>{const [t,i]=k.split('-');return TI[t]&&v===TI[t].cards[+i][1];}).length;}
+function lvl(){document.getElementById('lvl').innerHTML=`<b>${nRight()} σωστές</b>${nAns()} από ${ALL.length} κάρτες`;}
+const app=document.getElementById('app');
+const back='<a class="back" href="#home">← Αρχική</a>';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2600);}
+
+/* HOME */
+function home(){
+ return `<div class="hero">
+  <div class="card stack"><span class="eyebrow">Για μαθητές 13–18</span><h1>Μύθος ή αλήθεια;</h1>
+   <p class="prose">Για το vaping, το αλκοόλ, τις ουσίες και τον τζόγο κυκλοφορούν πολλά «ξέρω ότι…». Κάποια ισχύουν, κάποια όχι. Διάβασε την κάρτα, αποφάσισε και δες την εξήγηση. Χωρίς κήρυγμα, μόνο στοιχεία, ώστε να αποφασίζεις <b>ελεύθερα</b>.</p>
+   <div class="row"><a class="btn primary" href="#mix">Γρήγορη πρόκληση: 10 κάρτες</a><a class="btn" href="#teachers">Για εκπαιδευτικούς</a></div></div>
+  <div class="card soft stack"><h3>Η πρόοδός σου</h3><span class="big">${nRight()}<span class="muted" style="font-size:1.1rem"> / ${ALL.length}</span></span>
+   <p class="small muted">σωστές απαντήσεις σε όλες τις κάρτες${S.best?` · Καλύτερο σκορ στην πρόκληση: ${S.best}/10`:''}</p>
+   ${nAns()?'<button class="btn" id="resetAll" style="align-self:flex-start">Μηδένισε την πρόοδο</button>':''}</div>
+ </div>
+ <h2 class="sec-title">Τέσσερα θέματα</h2>
+ <div class="topics">${T.map(t=>{const n=t.cards.filter((_,i)=>S.a[ck(t.id,i)]!==undefined).length;return `
+  <a class="topic" style="--sc:var(--c-${t.id})" href="#t/${t.id}"><span class="ico">${I[t.id]}</span><h3>${t.name}</h3><span class="small muted">${t.sub}</span>
+  <span class="chip ${tDone(t.id)?'ok':''}">${tDone(t.id)?'✓ Ολοκληρώθηκε':n+' / '+t.cards.length+' κάρτες'}</span></a>`;}).join('')}</div>
+ <h2 class="sec-title">Δεξιότητες</h2>
+ <div class="tools">
+  <a href="#no"><div class="card"><span class="eyebrow">Άρνηση</span><h3>Πώς λες «όχι»</h3><p class="small muted">Πέντε τρόποι και οι δικές σου ατάκες, για να είσαι έτοιμος/η.</p></div></a>
+  <a href="#s/vape"><div class="card"><span class="eyebrow">Σενάρια</span><h3>Τι θα έκανες;</h3><p class="small muted">Τέσσερις στιγμές πίεσης: πάρτι, συναυλία, πρακτορείο, φίλη που δεν είναι καλά.</p></div></a>
+  <a href="#brain"><div class="card"><span class="eyebrow">Επιστήμη</span><h3>Ο εγκέφαλος στην εφηβεία</h3><p class="small muted">Γιατί οι εξαρτήσεις «πιάνουν» πιο εύκολα σε αυτή την ηλικία.</p></div></a>
+  <a href="#friend"><div class="card"><span class="eyebrow" style="color:var(--warm)">Στήριξη</span><h3>Ανησυχώ για έναν φίλο</h3><p class="small muted">Τι να προσέξεις, τι να πεις, πού να απευθυνθείς.</p></div></a>
+ </div>
+ <p class="small muted" style="margin-top:22px">Θες περισσότερα για το στοίχημα; Δοκίμασε τον προσομοιωτή «Κράτα τα 20€» στην εφαρμογή <a href="../psifiaki-zoi/#t/sim">Ψηφιακή ζωή</a>.</p>`;
+}
+
+/* CARD (topic or mix) */
+let MIX=null;
+function cardView(list,pos,ctx){
+ const it=list[pos], t=TI[it.t], c=t.cards[it.i], a=S.a[ck(it.t,it.i)], ans=(ctx.mode==='mix'?MIX.ans[pos]:a);
+ const bars=list.map((_,k)=>`<span class="${k<=pos?'on':''}"></span>`).join('');
+ let v='';
+ if(ans!==undefined){const right=ans===c[1];
+  v=`<div class="verdict ${c[1]?'myth':'truth'}" role="status"><span class="res ${right?'y':'n'}">${right?'✓ Σωστά!':'✗ Όχι ακριβώς.'}</span><span class="lab">${c[1]?'Μύθος':'Αλήθεια'}</span><p>${c[2]}</p></div>`;}
+ const last=pos===list.length-1;
+ const nextHref=ctx.mode==='mix'?(last?'#mixend':'#mix/'+(pos+1)):(last?'#s/'+it.t:'#t/'+it.t+'/'+(pos+1));
+ return `<div style="--sc:var(--c-${it.t})"><div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">${ctx.mode==='mix'?'Γρήγορη πρόκληση':t.name} · Κάρτα ${pos+1} από ${list.length}</span><div class="sbar">${bars}</div></div>
+ <div class="deck">
+  <div class="mcard"><span class="tag">${t.name}</span><p class="stmt">${c[0]}</p></div>
+  <div class="choice"><button class="bm" data-ans="1" ${ans!==undefined?'disabled':''}>Μύθος<small>δεν ισχύει</small></button><button class="bt" data-ans="0" ${ans!==undefined?'disabled':''}>Αλήθεια<small>ισχύει</small></button></div>
+  ${v}
+  ${ans!==undefined?`<div class="next"><span class="small muted">${ctx.mode==='mix'?'Σκορ: '+MIX.ans.filter((x,k)=>x!==undefined&&x===TI[list[k].t].cards[list[k].i][1]).length:''}</span><a class="btn primary" href="${nextHref}">${last?(ctx.mode==='mix'?'Δες το σκορ σου →':'Σενάριο: Τι θα έκανες; →'):'Επόμενη κάρτα →'}</a></div>`:''}
+ </div></div>`;
+}
+function topicList(id){return TI[id].cards.map((_,i)=>({t:id,i}));}
+function newMix(){const a=ALL.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}MIX={list:a.slice(0,10),ans:[]};}
+function mixEnd(){
+ if(!MIX) return home();
+ const sc=MIX.ans.filter((x,k)=>x===TI[MIX.list[k].t].cards[MIX.list[k].i][1]).length;
+ if(sc>S.best){S.best=sc;save();}
+ const msg=sc>=9?'Εξαιρετικά! Ξεχωρίζεις τους μύθους από τα γεγονότα.':sc>=6?'Πολύ καλά. Κάποιοι μύθοι είναι πειστικοί, γι\' αυτό κυκλοφορούν.':'Τώρα ξέρεις περισσότερα απ\' ό,τι πριν 5 λεπτά. Αυτό ακριβώς είναι το νόημα.';
+ return `<div class="stack">${back}<div class="card stack" style="text-align:center;align-items:center"><span class="eyebrow">Γρήγορη πρόκληση</span><span class="big" style="font-size:3.4rem">${sc}/10</span><p class="prose">${msg}</p><div class="row" style="justify-content:center"><a class="btn primary" href="#mix" data-newmix>Νέα πρόκληση</a><a class="btn" href="#home">Αρχική</a></div><p class="small muted">Προκάλεσε έναν φίλο να κάνει καλύτερο σκορ!</p></div></div>`;
+}
+
+/* SCENARIO */
+function scView(id){
+ const t=TI[id]; if(!t) return home(); const sc=t.sc, a=S.sc[id];
+ const opts=sc.opts.map((o,k)=>{let cls='';if(a!==undefined){cls='s'+o[1];if(k!==a&&o[1]!==2)cls+=' dim';}return `<button class="opt ${cls}" data-sc="${k}" ${a!==undefined?'disabled':''}>${o[0]}</button>`;}).join('');
+ let fb=''; if(a!==undefined){const o=sc.opts[a];fb=`<div class="fb" role="status"><b class="t${o[1]}">${['Ρίσκο','Μισό βήμα','Δυνατή επιλογή'][o[1]]}</b><p>${o[2]}</p></div>`;}
+ const idx=T.findIndex(x=>x.id===id), nx=T[idx+1];
+ return `<div class="stack" style="--sc:var(--c-${id})"><div class="vhead">${back}<span class="eyebrow" style="color:var(--sc)">${t.name} · Τι θα έκανες;</span><h2>Η στιγμή της πίεσης</h2></div>
+ <p class="sit">${sc.sit}</p><div class="opts">${opts}</div>${fb}
+ ${a!==undefined?`<div class="card stack"><h3>Αν χρειαστείς βοήθεια</h3>${linesHTML(t.lines)}</div>
+ <div class="next"><a class="btn" href="#no">Πώς λες «όχι» →</a>${nx?`<a class="btn primary" href="#t/${nx.id}">Επόμενο θέμα: ${nx.name} →</a>`:'<a class="btn primary" href="#home">Στην αρχική →</a>'}</div>`:''}</div>`;
+}
+
+/* NO */
+const WAYS=[['Το απλό «όχι»','«Όχι, ευχαριστώ.»','Δεν χρειάζεται εξήγηση. Αν επιμείνουν, το επαναλαμβάνεις ήρεμα, σαν «χαλασμένος δίσκος».'],
+ ['Η δικαιολογία','«Έχω αγώνα αύριο.» · «Θα με σκοτώσει η μάνα μου.»','Θεμιτή, ειδικά όταν δεν θες συζήτηση.'],
+ ['Η εναλλακτική','«Πάμε καλύτερα για σουβλάκια;»','Αλλάζεις το σχέδιο, όχι την παρέα.'],
+ ['Το χιούμορ','«Είμαι ήδη αρκετά τρελός χωρίς βοήθεια.»','Χαλαρώνει την ένταση χωρίς να προσβάλλει κανέναν.'],
+ ['Η αποχώρηση','«Πάω λίγο έξω.»','Αν η πίεση συνεχίζεται, έχεις δικαίωμα να φύγεις. Κανόνισε από πριν ποιον θα πάρεις τηλέφωνο να σε πάρει.']];
+function noView(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Δεξιότητα</span><h2>Πώς λες «όχι»</h2><p class="muted prose">Το «όχι» είναι πιο εύκολο όταν το έχεις σκεφτεί από πριν. Δεν χρειάζεται να είσαι αγενής ούτε να δίνεις διαλέξεις.</p></div>
+ <div class="ways">${WAYS.map(w=>`<div class="card"><h3>${w[0]}</h3><p class="q">${w[1]}</p><p class="small muted">${w[2]}</p></div>`).join('')}</div>
+ <div class="card stack"><h3>Οι δικές μου ατάκες</h3><p class="small muted">Γράψε πώς θα το έλεγες εσύ, με τα δικά σου λόγια. Μένουν μόνο σε αυτή τη συσκευή.</p>
+  <textarea id="mineT" placeholder="π.χ. «Άσε, φίλε, εγώ είμαι ο οδηγός απόψε.»"></textarea><button class="btn primary" id="mineAdd" style="align-self:flex-start">Πρόσθεσε</button>
+  <div class="stack" style="gap:8px">${S.mine.map((m,i)=>`<div class="mine"><span>${m.replace(/</g,'&lt;')}</span><button data-del="${i}" aria-label="Διαγραφή">✕</button></div>`).join('')}</div></div>
+ <div class="take"><b>Θυμήσου:</b> οι περισσότεροι συνομήλικοί σου δεν κάνουν χρήση. Συχνά, όταν ένας πει «όχι», το λένε και άλλοι που δεν τολμούσαν.</div></div>`;
+}
+
+/* BRAIN */
+function brainView(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Επιστήμη</span><h2>Ο εγκέφαλος στην εφηβεία</h2></div>
+ <div class="grid2">
+  <div class="card stack"><h3>🚗 Γκάζι πριν από φρένα</h3><p>Το «σύστημα ανταμοιβής», που ψάχνει τη συγκίνηση, ωριμάζει νωρίς. Ο προμετωπιαίος φλοιός, το «φρένο» που σχεδιάζει και ελέγχει τις παρορμήσεις, ολοκληρώνεται γύρω στα μέσα της δεκαετίας των 20.</p></div>
+  <div class="card stack"><h3>🧱 Ο εγκέφαλος χτίζεται</h3><p>Στην εφηβεία ο εγκέφαλος «κλαδεύει» και δυναμώνει συνδέσεις, ανάλογα με το τι κάνεις συχνά. Γι' αυτό μαθαίνεις γρήγορα, αλλά γι' αυτό και οι συνήθειες «γράφουν» πιο βαθιά, και οι καλές και οι κακές.</p></div>
+  <div class="card stack"><h3>⚡ Ντοπαμίνη</h3><p>Η νικοτίνη, το αλκοόλ, οι ουσίες και ο τζόγος προκαλούν απότομη έκρηξη ντοπαμίνης. Με τον καιρό ο εγκέφαλος συνηθίζει και χρειάζεται περισσότερο για το ίδιο αποτέλεσμα. Τα καθημερινά ευχάριστα αρχίζουν να μοιάζουν «βαρετά».</p></div>
+  <div class="card stack"><h3>✨ Τα καλά νέα</h3><p>Ο ίδιος εύπλαστος εγκέφαλος ανταμείβεται με αθλητισμό, μουσική, δημιουργία, ρίσκο που σε εξελίσσει (μια σκηνή, ένας αγώνας) και πραγματικές σχέσεις. Η συγκίνηση δεν χρειάζεται ουσία.</p></div>
+ </div></div>`;
+}
+
+/* FRIEND */
+function friendView(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow" style="color:var(--warm)">Στήριξη</span><h2>Ανησυχώ για έναν φίλο</h2></div>
+ <div class="grid2">
+  <div class="card stack"><h3>Σημάδια που αξίζει να προσέξεις</h3><ul class="clean small"><li>Άλλαξε παρέα ή απομακρύνεται από τους παλιούς φίλους.</li><li>Χάνει μαθήματα, οι βαθμοί του πέφτουν.</li><li>Ζητά ή χρωστά συχνά λεφτά, κρύβει πού τα ξοδεύει.</li><li>Έχει μεγάλες αλλαγές στη διάθεση ή στον ύπνο.</li><li>Λέει «το ελέγχω» αλλά δεν σταματά.</li></ul><p class="small muted">Κανένα σημάδι μόνο του δεν «αποδεικνύει» κάτι. Αξίζει όμως μια κουβέντα.</p></div>
+  <div class="card stack"><h3>Τι λες</h3><ul class="clean small"><li>Διάλεξε ήρεμη στιγμή, όχι όταν έχει πιει ή πάρει κάτι.</li><li>Μίλα για σένα: «Ανησυχώ για σένα γιατί σε νοιάζομαι».</li><li>Ρώτα και άκου περισσότερο απ' ό,τι μιλάς. Όχι κήρυγμα, όχι απειλές.</li><li>Προσφέρσου να πάτε μαζί σε έναν ενήλικα ή στον/στην Καθηγητή/τρια ΣΕΑ.</li></ul></div>
+ </div>
+ <div class="take"><b>Δεν είναι δικό σου βάρος να τον «σώσεις».</b> Το να το πεις σε έναν ενήλικα δεν είναι «κάρφωμα». Είναι φροντίδα. Αν υπάρχει άμεσος κίνδυνος, κάλεσε το 112.</div>
+ <div class="card stack"><h3>Πού απευθύνεσαι</h3>${linesHTML()}</div></div>`;
+}
+
+/* TEACHERS */
+function teachers(){
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Για εκπαιδευτικούς</span><h2>Πώς το χρησιμοποιώ στην τάξη</h2><p class="muted prose">Οι κάρτες λειτουργούν καλά προβεβλημένες στον πίνακα. Η τάξη ψηφίζει «Μύθος» ή «Αλήθεια» σηκώνοντας χέρι ή κάρτα με κόκκινο/μπλε χρώμα και μετά συζητάτε την εξήγηση.</p></div>
+ <div class="card"><div class="tablebox"><table><thead><tr><th>Χρόνος</th><th>Τι γίνεται</th></tr></thead><tbody>
+  <tr><td>5′</td><td>Ζέσταμα: «Τι ποσοστό των συνομηλίκων σας στην Ευρώπη νομίζετε ότι έχει δοκιμάσει κάνναβη;» Γράψτε τις εκτιμήσεις στον πίνακα. Συνήθως είναι πολύ πάνω από το πραγματικό 12%.</td></tr>
+  <tr><td>20′</td><td>Ένα ή δύο θέματα με κάρτες, με ψηφοφορία πριν από κάθε αποκάλυψη.</td></tr>
+  <tr><td>10′</td><td>Το σενάριο «Τι θα έκανες;» και οι πέντε τρόποι να πεις «όχι». Σε ζευγάρια, οι μαθητές δοκιμάζουν μια ατάκα.</td></tr>
+  <tr><td>5′</td><td>Κλείσιμο: ο καθένας γράφει μια δική του ατάκα. Οι γραμμές βοήθειας μένουν στον πίνακα.</td></tr></tbody></table></div></div>
+ <div class="card stack"><h3>Αρχές που κάνουν την πρόληψη να λειτουργεί</h3><ul class="clean">
+  <li><b>Κοινωνικές νόρμες, όχι φόβος.</b> Οι έφηβοι υπερεκτιμούν πόσοι συνομήλικοι κάνουν χρήση. Η αλήθεια («οι περισσότεροι δεν κάνουν») προστατεύει περισσότερο από τις τρομακτικές εικόνες.</li>
+  <li><b>Δεξιότητες, όχι μόνο πληροφορίες.</b> Η άρνηση, η διαχείριση της πίεσης και η λήψη αποφάσεων χρειάζονται εξάσκηση.</li>
+  <li><b>Χωρίς ηθικολογία.</b> Το μήνυμα «αποφασίζεις εσύ, με σωστά στοιχεία» σέβεται την αυτονομία που χρειάζονται οι έφηβοι.</li>
+  <li><b>Μη ζητάτε από μαθητές να μιλήσουν δημόσια για προσωπική χρήση.</b> Μιλάτε πάντα για «έναν φίλο» ή «κάποιον στην ηλικία σας».</li></ul></div>
+ <div class="alert stack"><h3>Αν μαθητής σάς εμπιστευτεί ότι κάνει χρήση ή ότι ανησυχεί για κάποιον</h3><ul class="clean">
+  <li>Ακούστε ήρεμα, χωρίς να τιμωρείτε και χωρίς να υποσχεθείτε απόλυτη μυστικότητα.</li>
+  <li>Αν υπάρχει άμεσος κίνδυνος για την υγεία του, καλέστε το 112.</li>
+  <li>Ενημερώστε τη Διεύθυνση και τον/την Καθηγητή/τρια ΣΕΑ και ακολουθήστε τις διαδικασίες του σχολείου για την ενημέρωση των γονέων.</li>
+  <li>Κατευθύνετε σε εξειδικευμένη στήριξη: 1456 (Περσέας/Προμηθέας), 1402 (ΑΑΕΚ), ΚΕΝΘΕΑ, Υπηρεσία Εκπαιδευτικής Ψυχολογίας.</li></ul></div>
+ <div class="card stack"><h3>Γραμμές στήριξης στην Κύπρο</h3>${linesHTML()}</div></div>`;
+}
+function sources(){
+ const P=[['Ευρώπη','ESPAD 2024 · Οργανισμός της ΕΕ για τα Ναρκωτικά (EUDA)','Έρευνα σε σχεδόν 114.000 μαθητές 15–16 ετών σε 37 χώρες. Από εδώ προέρχονται τα ποσοστά για το vaping, το αλκοόλ και την κάνναβη.','https://www.euda.europa.eu/publications/data-factsheets/espad-2024-key-findings_en'],
+  ['Κύπρος','Αρχή Αντιμετώπισης Εξαρτήσεων Κύπρου (ΑΑΕΚ)','Γραμμή 1402 για τις ουσίες. Με την Εθνική Αρχή Στοιχημάτων λειτουργεί προγράμματα πρόληψης για ανηλίκους και, με την ΚΕΝΘΕΑ, τα κέντρα «Κίνητρο» για τον τζόγο.','https://nba.gov.cy/?p=8025'],
+  ['Κύπρος','Εθνική Αρχή Στοιχημάτων','Απαγόρευση του στοιχήματος κάτω των 18 και πρόγραμμα «Ασφαλές Παιχνίδι».','https://safergambling.gov.cy'],
+  ['Κύπρος','Ν. 24(Ι)/2017 για τον έλεγχο του καπνίσματος','Η απαγόρευση ισχύει και για το ηλεκτρονικό τσιγάρο σε κλειστούς δημόσιους χώρους και σε αυτοκίνητο με ανήλικο επιβάτη.','https://enimerosi.moec.gov.cy/archeia/1/ypp6277c'],
+  ['Ευρώπη','Unplugged (EU-Dap)','Σχολικό πρόγραμμα πρόληψης που συνδυάζει κοινωνικές δεξιότητες, διόρθωση λανθασμένων πεποιθήσεων για το «τι κάνουν όλοι» και ενημέρωση. Η ίδια λογική με τις κάρτες «Μύθος ή αλήθεια;».','https://eudap.eu/unplugged/'],
+  ['Ισλανδία','Planet Youth (Ισλανδικό μοντέλο)','Πρόληψη μέσω της κοινότητας: σχολείο, οικογένεια, παρέα και ελεύθερος χρόνος με αθλητισμό και δημιουργία. Στη δεκαετία του 1990 η Ισλανδία είχε από τα υψηλότερα ποσοστά χρήσης στην Ευρώπη. Σήμερα έχει από τα χαμηλότερα.','https://www.euda.europa.eu/best-practice/xchange/planet-youth-%E2%80%94-icelandic-model-application-environmental-prevention-principles-based-systematic-local-assessment-risk-and-protective-factors_en']];
+ return `<div class="stack"><div class="vhead">${back}<span class="eyebrow">Πηγές</span><h2>Πηγές και καλές πρακτικές</h2></div>
+ <div class="grid2">${P.map(p=>`<div class="card stack"><span class="small muted" style="font-weight:600">${p[0]}</span><h3>${p[1]}</h3><p class="small">${p[2]}</p><a class="small" href="${p[3]}" target="_blank" rel="noopener">${p[3].replace('https://','').replace(/\/.*$/,'')}</a></div>`).join('')}</div></div>`;
+}
+
+/* ROUTER */
+function route(){
+ const h=(location.hash||'#home').slice(1).split('/');
+ if(h[0]==='help'){openHelp(); if(!app.innerHTML) app.innerHTML=home(); return;}
+ let html;
+ if(h[0]==='t'&&TI[h[1]]){const L=topicList(h[1]);let p=h[2]!==undefined?+h[2]:L.findIndex(x=>S.a[ck(x.t,x.i)]===undefined);if(p<0)p=0;html=cardView(L,Math.min(p,L.length-1),{mode:'topic'});}
+ else if(h[0]==='mix'){if(!MIX||h[1]===undefined) newMix(); html=cardView(MIX.list,h[1]!==undefined?+h[1]:0,{mode:'mix'});}
+ else if(h[0]==='mixend') html=mixEnd();
+ else if(h[0]==='s') html=scView(h[1]);
+ else if(h[0]==='no') html=noView();
+ else if(h[0]==='brain') html=brainView();
+ else if(h[0]==='friend') html=friendView();
+ else if(h[0]==='teachers') html=teachers();
+ else if(h[0]==='sources') html=sources();
+ else html=home();
+ app.innerHTML=html; lvl(); window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+app.addEventListener('click',e=>{
+ const b=e.target.closest('[data-ans]');
+ if(b&&!b.disabled){
+  const h=location.hash.slice(1).split('/'), v=b.dataset.ans==='1';
+  if(h[0]==='mix'){const p=h[1]!==undefined?+h[1]:0, it=MIX.list[p]; MIX.ans[p]=v; S.a[ck(it.t,it.i)]=v; save(); app.innerHTML=cardView(MIX.list,p,{mode:'mix'});}
+  else {const id=h[1], L=topicList(id); let p=h[2]!==undefined?+h[2]:L.findIndex(x=>S.a[ck(x.t,x.i)]===undefined); if(p<0)p=0;
+   S.a[ck(id,p)]=v; save(); app.innerHTML=cardView(L,p,{mode:'topic'}); if(tDone(id)&&p===L.length-1) toast('Ολοκλήρωσες τις κάρτες: '+TI[id].name+' ✓');}
+  lvl(); const vd=app.querySelector('.verdict'); if(vd) vd.scrollIntoView({behavior:'smooth',block:'nearest'}); return;}
+ const o=e.target.closest('[data-sc]');
+ if(o&&!o.disabled){const id=location.hash.split('/')[1]; S.sc[id]=+o.dataset.sc; save(); app.innerHTML=scView(id); const f=app.querySelector('.fb'); if(f) f.scrollIntoView({behavior:'smooth',block:'nearest'}); return;}
+ if(e.target.closest('[data-newmix]')){e.preventDefault(); newMix(); location.hash='#mix/0'; return;}
+ if(e.target.closest('#resetAll')){if(confirmReset()){S={a:{},sc:{},mine:S.mine,best:0};save();route();}return;}
+ if(e.target.closest('#mineAdd')){const t=document.getElementById('mineT').value.trim(); if(t){S.mine.push(t.slice(0,200));save();app.innerHTML=noView();toast('Η ατάκα σου αποθηκεύτηκε');} return;}
+ const d=e.target.closest('[data-del]'); if(d){S.mine.splice(+d.dataset.del,1);save();app.innerHTML=noView();return;}
+});
+let resetArmed=false;
+function confirmReset(){if(resetArmed){resetArmed=false;return true;} resetArmed=true; toast('Πάτησε ξανά για μηδενισμό'); setTimeout(()=>resetArmed=false,3000); return false;}
+
+const help=document.getElementById('help'); let lastFocus=null;
+document.getElementById('helpLines').innerHTML=linesHTML();
+function openHelp(){lastFocus=document.activeElement;help.hidden=false;document.getElementById('helpX').focus();}
+function closeHelp(){help.hidden=true; if(location.hash==='#help') history.replaceState(null,'','#home'); if(lastFocus) lastFocus.focus();}
+document.getElementById('helpBtn').onclick=openHelp;
+document.getElementById('helpX').onclick=closeHelp;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!help.hidden) closeHelp();});
+route();
+})();
+</script>
+
+<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
+<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
+</body></html>
