@@ -72,6 +72,36 @@ footer strong{color:var(--ink);font-weight:600}
 [hidden]{display:none!important}
 .count{font-size:14px;color:var(--muted);margin:-28px 0 0}
 @media (prefers-reduced-motion:reduce){.door,.go::after{transition:none}.door:hover{transform:none}}
+/* Πόρτες κοινού */
+:root{--c2:#2f7f74;--c5:#2f6aa8;--c6:#3f7d3a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c2:#5cc0b1;--c5:#7fb0ea;--c6:#86c77e}}
+:root[data-theme="dark"]{--c2:#5cc0b1;--c5:#7fb0ea;--c6:#86c77e}
+.zone.z4{--sc:var(--c6)} .zone.z5{--sc:var(--c2)} .zone.z6{--sc:var(--c5)}
+.gate{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:560px){.gate{grid-template-columns:1fr}}
+.gbtn{font:inherit;display:flex;gap:14px;align-items:center;text-align:left;padding:18px 20px;border-radius:10px;cursor:pointer;
+  background:var(--paper);color:var(--ink);border:2px solid var(--line);transition:border-color .15s,background .15s}
+.gbtn svg{width:34px;height:34px;flex:none;color:var(--gc)}
+.gbtn.st{--gc:var(--c3)} .gbtn.te{--gc:var(--c4)}
+.gbtn b{display:block;font-family:var(--display);font-size:21px;line-height:1.2}
+.gbtn small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.gbtn:hover{border-color:var(--gc)}
+.gbtn[aria-pressed="true"]{border-color:var(--gc);background:color-mix(in srgb,var(--gc) 10%,var(--paper))}
+.showall{font:inherit;font-size:14px;font-weight:500;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.showall[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bar{margin-top:-18px}
+.aud{display:flex;flex-direction:column;gap:40px}
+.audhead{display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--ink);padding-top:14px}
+.audhead .eyebrow{color:var(--ink);font-weight:700}
+.audhead p{margin:0;color:var(--muted);max-width:70ch}
+.share{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;color:var(--muted);margin-top:4px}
+.share code{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:3px 8px;color:var(--ink);font-size:13px;word-break:break-all}
+.share button{font:inherit;font-size:13px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.chip.note{border-style:dashed;font-style:italic}
+body.only-st .gate,body.only-st .showall,body.only-st .tonly,body.only-st .audhead{display:none}
+body.only-st .bar{margin-top:0}
+.count{display:none}
+
 </style>
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -95,31 +125,25 @@ header{max-width:900px}
     <img src="icons/logo.png" alt="Λογότυπο: Εργαλειοθήκη για εκπαιδευτικούς και μαθητές" width="132" height="132">
     <div class="txt"><div class="eyebrow">ΣΥΜΒΟΥΛΕΥΤΙΚΗ &amp; ΕΠΑΓΓΕΛΜΑΤΙΚΗ ΑΓΩΓΗ</div>
     <h1>Σύγχρονη Εργαλειοθήκη για εκπαιδευτικούς και μαθητές</h1>
-    <p class="lede">Διαδραστικά εργαλεία, οδηγοί και παρουσιάσεις για την επαγγελματική αγωγή, το σχολικό κλίμα και τη στήριξη του εκπαιδευτικού στην τάξη.</p></div>
+    <p class="lede">Για τους μαθητές: το μέλλον τους, το άγχος, οι σχέσεις και η ψηφιακή ζωή. Για τους εκπαιδευτικούς: πρωτόκολλα, διαχείριση περιστατικών και στήριξη στην τάξη.</p></div>
   </header>
   <div class="install" id="install"><span><b>Βάλ' το στην αρχική οθόνη:</b> <span id="installHow"></span></span><button type="button" id="installX">Κλείσιμο</button></div>
 
+  <div class="gate" role="group" aria-label="Για ποιον είναι">
+    <button type="button" class="gbtn st" data-f="st" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span><b>Είμαι μαθητής/τρια</b><small>Το μέλλον μου, άγχος, σχέσεις, ψηφιακή ζωή</small></span></button>
+    <button type="button" class="gbtn te" data-f="te" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/><path d="M7 9h6M7 12h4"/></svg><span><b>Είμαι εκπαιδευτικός</b><small>Πρωτόκολλα, περιστατικά, η τάξη</small></span></button>
+  </div>
   <div class="bar">
-    <div class="filters" role="group" aria-label="Φίλτρο κοινού">
-      <button id="f-all" data-f="all" aria-pressed="true">Όλα</button>
-      <button id="f-st" data-f="st" aria-pressed="false">Για μαθητές</button>
-      <button id="f-te" data-f="te" aria-pressed="false">Για εκπαιδευτικούς</button>
-    </div>
-    <nav class="jump" aria-label="Ενότητες">
-      <a href="#career" style="--sc:var(--c3)">Επαγγελματική αγωγή</a>
-      <a href="#climate" style="--sc:var(--c1)">Σχολικό κλίμα</a>
-      <a href="#teacher" style="--sc:var(--c4)">Για τον εκπαιδευτικό</a>
-    </nav>
+    <button type="button" class="showall" data-f="all" aria-pressed="true">Δες όλα τα εργαλεία</button>
+    <nav class="jump" aria-label="Ενότητες"></nav>
   </div>
 
-  <p class="count" id="count" aria-live="polite"></p>
-
-  <main style="display:flex;flex-direction:column;gap:44px">
-
-  <!-- Ενότητα 1 -->
-  <section class="zone z1" id="career">
-    <div class="zhead"><h2>Επαγγελματική αγωγή</h2><p>Από την Α΄ Λυκείου ως τις Παγκύπριες Εξετάσεις.</p></div>
-    <div class="grid three">
+  <main style="display:flex;flex-direction:column;gap:56px">
+  <div class="aud" id="gia-mathites" data-aud="st">
+    <div class="audhead"><span class="eyebrow">ΓΙΑ ΜΑΘΗΤΕΣ</span><p>Εργαλεία που ανοίγεις μόνος/η σου, στο κινητό ή στον υπολογιστή. Ό,τι γράφεις μένει στη συσκευή σου.</p></div>
+    <section class="zone z1" id="mellon">
+      <div class="zhead"><h2>Το μέλλον μου</h2><p>Επιλογές, Παγκύπριες, σωστή μελέτη.</p></div>
+      <div class="grid three">
       <a class="door" data-a="st" href="files/level-up.pdf" target="_blank" rel="noopener">
         <div class="plate"><span>Α΄ ΛΥΚΕΙΟΥ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4v-5h4v-5h4V5h4"/></svg></div>
         <div class="inner"><h3>Level Up: Ο δρόμος σου μετά την Α΄ Λυκείου</h3>
@@ -134,34 +158,114 @@ header{max-width:900px}
           <p>Οδηγός για τις Παγκύπριες Εξετάσεις Πρόσβασης: πώς λειτουργούν, πώς επιλέγεις σχολές και πώς οργανώνεις τη χρονιά.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Γ΄ Λυκείου</span></div>
           <span class="go">Άνοιξε τον οδηγό</span></div></a>
-      <a class="door" data-a="st te" href="anakefalaiosi/">
+      <a class="door" data-a="st" href="anakefalaiosi/">
         <div class="plate"><span>ΕΠΑΝΑΛΗΨΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg></div>
         <div class="inner"><h3>Ανακεφαλαίωση: η διεργασία της Επαγγελματικής Αγωγής</h3>
           <div class="sub">Διαδραστικό εργαλείο</div>
           <p>Εργαλείο επανάληψης των μαθημάτων Επαγγελματικής Αγωγής και Συμβουλευτικής για τη Γ΄ Γυμνασίου και την Α΄ Λυκείου.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
+          <div class="chips"><span class="chip">Μαθητές</span></div>
           <span class="go">Ξεκίνα την επανάληψη</span></div></a>
-      <a class="door" data-a="st te" href="meleti/">
+      <a class="door" data-a="st" href="meleti/">
         <div class="plate"><span>ΜΕΛΕΤΗ · ΕΞΕΤΑΣΕΙΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6c3-1.5 6-1.5 9 0v13c-3-1.5-6-1.5-9 0zM12 6c3-1.5 6-1.5 9 0v13c-3-1.5-6-1.5-9 0z"/></svg></div>
         <div class="inner"><h3>Διαβάζω έξυπνα</h3>
           <div class="sub">Μελέτη και εξετάσεις</div>
           <p>Οι έξι τεχνικές μελέτης που δουλεύουν, κουίζ, εβδομαδιαίος προγραμματιστής, χρονόμετρο Pomodoro και το σχέδιο της χρονιάς των Παγκυπρίων, σε συνδυασμό με την Ανάσα και τον Προορισμό σου.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Γ΄ Λυκείου</span></div>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Γ΄ Λυκείου</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
           <span class="go">Οργάνωσε τη μελέτη σου</span></div></a>
-    </div>
-  </section>
-
-  <!-- Ενότητα 2 -->
-  <section class="zone z2" id="climate">
-    <div class="zhead"><h2>Σχολικό κλίμα</h2><p>Πρόληψη του εκφοβισμού, επίλυση συγκρούσεων και ένταξη στην παρέα.</p></div>
-    <div class="grid three">
-      <a class="door" data-a="st te" href="bullied-proof/">
+      </div>
+    </section>
+    <section class="zone z5" id="nionthw-kala">
+      <div class="zhead"><h2>Νιώθω καλά</h2><p>Άγχος, συναισθήματα και τι κάνω όταν δεν είμαι καλά.</p></div>
+      <div class="grid">
+      <a class="door" data-a="st" href="anasa/">
+        <div class="plate"><span>ΑΓΧΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c3-4 6-4 9 0s6 4 9 0"/><path d="M3 9c3-3 6-3 9 0s6 3 9 0"/></svg></div>
+        <div class="inner"><h3>Ανάσα</h3>
+          <div class="sub">Δέκα σταθμοί για τη διαχείριση του άγχους</div>
+          <p>Εφαρμογή για μαθητές 13–18: σύστημα επιβίωσης, χάρτης σώματος, σκέψεις-παγίδες, ασκήσεις αναπνοής, σχέδιο πριν το διαγώνισμα και γραμμές στήριξης στην Κύπρο, με ιδέες από 10 χώρες.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Παιχνίδι</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
+          <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
+      <a class="door" data-a="st" href="thermometro/">
+        <div class="plate"><span>ΣΥΝΑΙΣΘΗΜΑΤΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9.5" y="2" width="5" height="13" rx="2.5"/><circle cx="12" cy="18" r="4"/></svg></div>
+        <div class="inner"><h3>Θερμόμετρο συναισθημάτων</h3>
+          <div class="sub">Πώς είμαι σήμερα;</div>
+          <p>Ημερήσιο check-in ενός λεπτού: ο «καιρός» μέσα μου, λέξεις για τα συναισθήματα και ένα μικρό επόμενο βήμα, δηλαδή μια τεχνική από την Ανάσα, άσκηση αναπνοής ή «Ζήτα βοήθεια». Με ιστορικό 14 ημερών που μένει μόνο στη συσκευή.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Καθημερινό</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
+          <span class="go">Κάνε το check-in</span></div></a>
+      </div>
+    </section>
+    <section class="zone z2" id="scheseis-parea">
+      <div class="zhead"><h2>Σχέσεις &amp; παρέα</h2><p>Φιλίες, ένταξη, σεβασμός και εκφοβισμός.</p></div>
+      <div class="grid three">
+      <a class="door" data-a="st" href="parea/">
+        <div class="plate"><span>ΚΟΙΝΩΝΙΚΟΠΟΙΗΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="17" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="20" cy="15" r="2"/><path d="M5.5 15.5 10.5 8.5M13.8 8l4.6 5.6"/></svg></div>
+        <div class="inner"><h3>Παρέα</h3>
+          <div class="sub">Έξι σταθμοί ως την παρέα</div>
+          <p>Παιχνίδι για μαθητές 13–18 που δυσκολεύονται να κοινωνικοποιηθούν, με σταθμούς από προγράμματα της Δανίας, της Ελλάδας, της Γερμανίας, της Σουηδίας, της Ιταλίας και της Ισπανίας, και κλειδωμένο χώρο για τον εκπαιδευτικό.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Παιχνίδι</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
+          <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
+      <a class="door" data-a="st" href="https://claude.ai/artifact/KQyGSTq3NAp5pp4AyguXar" target="_blank" rel="noopener">
+        <div class="plate"><span>ΕΝΤΑΞΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 14.3c.6-.2 1.3-.3 2-.3 3.3 0 6 2.7 6 6"/></svg></div>
+        <div class="inner"><h3>Ανοιχτή Παρέα</h3>
+          <p>Οι μαθητές ανοίγουν «παρέες» για το διάλειμμα και όποιος είναι μόνος βρίσκει πού να κάτσει, με εβδομαδιαίες προκλήσεις και έγκριση από τον υπεύθυνο.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εφαρμογή</span></div>
+          <span class="go">Άνοιξε την εφαρμογή (εξωτερικός σύνδεσμος)</span></div></a>
+      <a class="door" data-a="st" href="scheseis/">
+        <div class="plate"><span>ΣΧΕΣΕΙΣ · ΣΥΝΑΙΝΕΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.2-7-9.2A3.8 3.8 0 0 1 12 8.5a3.8 3.8 0 0 1 7 2.3c0 5-7 9.2-7 9.2z"/></svg></div>
+        <div class="inner"><h3>Σχέσεις με σεβασμό</h3>
+          <div class="sub">Υγιείς σχέσεις και συναίνεση</div>
+          <p>Το φανάρι της σχέσης (16 συμπεριφορές), τέσσερις συνομιλίες για ζήλια, κωδικούς, πίεση και στήριξη φίλης, τα πέντε γράμματα της συναίνεσης, η κάρτα των ορίων μου, γραμμές στήριξης και κουμπί γρήγορης εξόδου.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Σενάρια</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
+          <span class="go">Ξεκίνα με το φανάρι</span></div></a>
+      <a class="door" data-a="st" href="bullied-proof/">
         <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ · ΠΡΟΛΗΨΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
         <div class="inner"><h3>Bullied Proof</h3>
           <div class="sub">Πρόληψη και δραστηριότητες για την τάξη</div>
           <p>Διαδραστική εφαρμογή κατά του εκφοβισμού, με ιδέες από προγράμματα της Δανίας, της Σουηδίας, της Γερμανίας, της Ελλάδας, της Ισπανίας και του Ηνωμένου Βασιλείου.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
+          <div class="chips"><span class="chip">Μαθητές</span></div>
           <span class="go">Ξεκίνα τη δραστηριότητα</span></div></a>
+      </div>
+    </section>
+    <section class="zone z6" id="psifiaki">
+      <div class="zhead"><h2>Ψηφιακή ζωή &amp; επιλογές</h2><p>Κινητό, διαδίκτυο, εξαρτήσεις.</p></div>
+      <div class="grid">
+      <a class="door" data-a="st" href="psifiaki-zoi/">
+        <div class="plate"><span>ΨΗΦΙΑΚΗ ΖΩΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/><path d="M9.5 10l2 2 3-3.5"/></svg></div>
+        <div class="inner"><h3>Ψηφιακή ζωή</h3>
+          <div class="sub">Τι θα έκανες;</div>
+          <p>Δεκαπέντε ιστορίες από το κινητό για τον διαδικτυακό εκφοβισμό, το sextortion, το ψηφιακό αποτύπωμα, τον χρόνο οθόνης και το online στοίχημα, με έλεγχο απορρήτου, σχέδιο για την οθόνη, προσομοιωτή στοιχήματος και γραμμές βοήθειας στην Κύπρο.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Σενάρια</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
+          <span class="go">Ξεκίνα τις ιστορίες</span></div></a>
+      <a class="door" data-a="st" href="eleuthera/">
+        <div class="plate"><span>ΠΡΟΛΗΨΗ ΕΞΑΡΤΗΣΕΩΝ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 15c2-.5 3-2 4-5 1 3 2 4.5 4 5"/><path d="M10 10l2-2 2 2"/></svg></div>
+        <div class="inner"><h3>Ελεύθερα</h3>
+          <div class="sub">Μύθος ή αλήθεια;</div>
+          <p>Κάρτες μύθων και αλήθειας για το vaping, το αλκοόλ, τις ουσίες και τον τζόγο, με γρήγορη πρόκληση, σενάρια πίεσης, πέντε τρόπους να πεις «όχι», τι κάνεις αν ένας φίλος δεν είναι καλά και γραμμές στήριξης στην Κύπρο.</p>
+          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Κουίζ</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
+          <span class="go">Ξεκίνα το κουίζ</span></div></a>
+      </div>
+    </section>
+  </div>
+
+  <div class="aud" id="gia-ekpaideftikous" data-aud="te">
+    <div class="audhead"><span class="eyebrow">ΓΙΑ ΕΚΠΑΙΔΕΥΤΙΚΟΥΣ</span><p>Υπηρεσιακά εργαλεία και οδηγοί. Οι μαθητικές εφαρμογές έχουν επίσης οδηγίες για τον εκπαιδευτικό.</p>
+      <div class="share"><span>Link μόνο για μαθητές (για QR στην τάξη):</span> <code id="stlink">ktorasstelios7-creator.github.io/ergaleiothiki/?mathites</code> <button type="button" id="copyst">Αντιγραφή</button></div></div>
+    <section class="zone z3" id="protokolla">
+      <div class="zhead"><h2>Πρωτόκολλα &amp; περιστατικά</h2><p>Τι κάνω, ποιον ενημερώνω και πότε, βάσει των οδηγιών του ΥΠΑΝ.</p></div>
+      <div class="grid three">
+      <a class="door" data-a="te" href="protokolla-sea/">
+        <div class="plate"><span>ΠΡΩΤΟΚΟΛΛΑ Σ.Ε.Α.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="M9 12l2 2 4-4"/><path d="M9 17h6"/></svg></div>
+        <div class="inner"><h3>Πρωτόκολλα Σ.Ε.Α. — Βήμα προς βήμα</h3>
+          <div class="sub">Όλα τα πρωτόκολλα σε ένα σημείο</div>
+          <p>Βία στην οικογένεια, σεξουαλική κακοποίηση, εκφοβισμός, ρατσισμός, διατροφικές διαταραχές, κρίσεις, ουσίες, σοβαρή βία και πρόληψη: διαδρομές ανά περίπτωση, ρόλοι, τηλέφωνα και τα πλήρη έγγραφα.</p>
+          <div class="chips"><span class="chip">Καθηγητής ΣΕΑ</span><span class="chip">Διεύθυνση</span><span class="chip">9 πρωτόκολλα</span></div>
+          <span class="go">Άνοιξε τα πρωτόκολλα</span></div></a>
+      <a class="door" data-a="te" href="prostasia-paidiou/">
+        <div class="plate"><span>ΠΡΟΣΤΑΣΙΑ ΠΑΙΔΙΟΥ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M12 18s-3.5-2-3.5-4.3A1.8 1.8 0 0 1 12 12.5a1.8 1.8 0 0 1 3.5 1.2C15.5 16 12 18 12 18z"/></svg></div>
+        <div class="inner"><h3>Βία στην οικογένεια &amp; σεξουαλική κακοποίηση</h3>
+          <div class="sub">Οδηγός ενεργειών για το σχολείο</div>
+          <p>Απαντάς σε λίγες ερωτήσεις και παίρνεις τα βήματα για τη συγκεκριμένη περίπτωση: ποιον καλείς, προθεσμίες, ποιος ενημερώνει τους γονείς, πώς ακούς το παιδί και κάρτα εκπαιδευτικού για εκτύπωση.</p>
+          <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Καθηγητής ΣΕΑ</span><span class="chip">Πρωτόκολλο</span></div>
+          <span class="go">Άνοιξε τον οδηγό</span></div></a>
       <a class="door" data-a="te" href="protokollo-ekfovismou/">
         <div class="plate"><span>ΕΚΦΟΒΙΣΜΟΣ · ΧΕΙΡΙΣΜΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/><path d="M9 17h6"/></svg></div>
         <div class="inner"><h3>Πρωτόκολλο Σχολικού Εκφοβισμού</h3>
@@ -176,67 +280,11 @@ header{max-width:900px}
           <p>Όλα τα περιστατικά εκφοβισμού σε ένα σημείο: 7 σταθερά βήματα για το καθένα, υπενθυμίσεις επανελέγχων, κωδικοί αντί για ονόματα και ανώνυμη σύνοψη για εκτύπωση.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Καθηγητής ΣΕΑ</span></div>
           <span class="go">Άνοιξε τον χώρο εργασίας</span></div></a>
-      <a class="door" data-a="st te" href="diamesolavisi/">
-        <div class="plate"><span>ΣΥΓΚΡΟΥΣΕΙΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-3 3 3 3-3 5 5"/><path d="M3 16h5M16 16h5"/></svg></div>
-        <div class="inner"><h3>Σχολική Διαμεσολάβηση</h3>
-          <p>Πώς δύο μαθητές σε σύγκρουση βρίσκουν μαζί λύση με τη βοήθεια ενός ουδέτερου διαμεσολαβητή: αρχές, στάδια και πρακτική.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span></div>
-          <span class="go">Μάθε τα στάδια</span></div></a>
-      <a class="door" data-a="st" href="https://claude.ai/artifact/KQyGSTq3NAp5pp4AyguXar" target="_blank" rel="noopener">
-        <div class="plate"><span>ΕΝΤΑΞΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 14.3c.6-.2 1.3-.3 2-.3 3.3 0 6 2.7 6 6"/></svg></div>
-        <div class="inner"><h3>Ανοιχτή Παρέα</h3>
-          <p>Οι μαθητές ανοίγουν «παρέες» για το διάλειμμα και όποιος είναι μόνος βρίσκει πού να κάτσει, με εβδομαδιαίες προκλήσεις και έγκριση από τον υπεύθυνο.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εφαρμογή</span></div>
-          <span class="go">Άνοιξε την εφαρμογή (εξωτερικός σύνδεσμος)</span></div></a>
-      <a class="door" data-a="st te" href="parea/">
-        <div class="plate"><span>ΚΟΙΝΩΝΙΚΟΠΟΙΗΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="17" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="20" cy="15" r="2"/><path d="M5.5 15.5 10.5 8.5M13.8 8l4.6 5.6"/></svg></div>
-        <div class="inner"><h3>Παρέα</h3>
-          <div class="sub">Έξι σταθμοί ως την παρέα</div>
-          <p>Παιχνίδι για μαθητές 13–18 που δυσκολεύονται να κοινωνικοποιηθούν, με σταθμούς από προγράμματα της Δανίας, της Ελλάδας, της Γερμανίας, της Σουηδίας, της Ιταλίας και της Ισπανίας, και κλειδωμένο χώρο για τον εκπαιδευτικό.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Παιχνίδι</span></div>
-          <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
-      <a class="door" data-a="st te" href="anasa/">
-        <div class="plate"><span>ΑΓΧΟΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c3-4 6-4 9 0s6 4 9 0"/><path d="M3 9c3-3 6-3 9 0s6 3 9 0"/></svg></div>
-        <div class="inner"><h3>Ανάσα</h3>
-          <div class="sub">Δέκα σταθμοί για τη διαχείριση του άγχους</div>
-          <p>Εφαρμογή για μαθητές 13–18: σύστημα επιβίωσης, χάρτης σώματος, σκέψεις-παγίδες, ασκήσεις αναπνοής, σχέδιο πριν το διαγώνισμα και γραμμές στήριξης στην Κύπρο, με ιδέες από 10 χώρες.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Παιχνίδι</span></div>
-          <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
-      <a class="door" data-a="st te" href="psifiaki-zoi/">
-        <div class="plate"><span>ΨΗΦΙΑΚΗ ΖΩΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/><path d="M9.5 10l2 2 3-3.5"/></svg></div>
-        <div class="inner"><h3>Ψηφιακή ζωή</h3>
-          <div class="sub">Τι θα έκανες;</div>
-          <p>Δεκαπέντε ιστορίες από το κινητό για τον διαδικτυακό εκφοβισμό, το sextortion, το ψηφιακό αποτύπωμα, τον χρόνο οθόνης και το online στοίχημα, με έλεγχο απορρήτου, σχέδιο για την οθόνη, προσομοιωτή στοιχήματος και γραμμές βοήθειας στην Κύπρο.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Σενάρια</span></div>
-          <span class="go">Ξεκίνα τις ιστορίες</span></div></a>
-      <a class="door" data-a="st te" href="eleuthera/">
-        <div class="plate"><span>ΠΡΟΛΗΨΗ ΕΞΑΡΤΗΣΕΩΝ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 15c2-.5 3-2 4-5 1 3 2 4.5 4 5"/><path d="M10 10l2-2 2 2"/></svg></div>
-        <div class="inner"><h3>Ελεύθερα</h3>
-          <div class="sub">Μύθος ή αλήθεια;</div>
-          <p>Κάρτες μύθων και αλήθειας για το vaping, το αλκοόλ, τις ουσίες και τον τζόγο, με γρήγορη πρόκληση, σενάρια πίεσης, πέντε τρόπους να πεις «όχι», τι κάνεις αν ένας φίλος δεν είναι καλά και γραμμές στήριξης στην Κύπρο.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Κουίζ</span></div>
-          <span class="go">Ξεκίνα το κουίζ</span></div></a>
-      <a class="door" data-a="st te" href="scheseis/">
-        <div class="plate"><span>ΣΧΕΣΕΙΣ · ΣΥΝΑΙΝΕΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.2-7-9.2A3.8 3.8 0 0 1 12 8.5a3.8 3.8 0 0 1 7 2.3c0 5-7 9.2-7 9.2z"/></svg></div>
-        <div class="inner"><h3>Σχέσεις με σεβασμό</h3>
-          <div class="sub">Υγιείς σχέσεις και συναίνεση</div>
-          <p>Το φανάρι της σχέσης (16 συμπεριφορές), τέσσερις συνομιλίες για ζήλια, κωδικούς, πίεση και στήριξη φίλης, τα πέντε γράμματα της συναίνεσης, η κάρτα των ορίων μου, γραμμές στήριξης και κουμπί γρήγορης εξόδου.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Σενάρια</span></div>
-          <span class="go">Ξεκίνα με το φανάρι</span></div></a>
-      <a class="door" data-a="st te" href="thermometro/">
-        <div class="plate"><span>ΣΥΝΑΙΣΘΗΜΑΤΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9.5" y="2" width="5" height="13" rx="2.5"/><circle cx="12" cy="18" r="4"/></svg></div>
-        <div class="inner"><h3>Θερμόμετρο συναισθημάτων</h3>
-          <div class="sub">Πώς είμαι σήμερα;</div>
-          <p>Ημερήσιο check-in ενός λεπτού: ο «καιρός» μέσα μου, λέξεις για τα συναισθήματα και ένα μικρό επόμενο βήμα, δηλαδή μια τεχνική από την Ανάσα, άσκηση αναπνοής ή «Ζήτα βοήθεια». Με ιστορικό 14 ημερών που μένει μόνο στη συσκευή.</p>
-          <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εκπαιδευτικοί</span><span class="chip">Καθημερινό</span></div>
-          <span class="go">Κάνε το check-in</span></div></a>
-    </div>
-  </section>
-
-  <!-- Ενότητα 3 -->
-  <section class="zone z3" id="teacher">
-    <div class="zhead"><h2>Για τον εκπαιδευτικό</h2><p>Οδηγοί και παρουσιάσεις για τη στήριξη των μαθητών μέσα στην τάξη.</p></div>
-    <div class="grid">
+      </div>
+    </section>
+    <section class="zone z4" id="taxi">
+      <div class="zhead"><h2>Στην τάξη</h2><p>Δύσκολες συμπεριφορές και ειρηνική επίλυση συγκρούσεων.</p></div>
+      <div class="grid three">
       <a class="door" data-a="te" href="files/dyskoles-symperifores-odigos.pdf" target="_blank" rel="noopener">
         <div class="plate"><span>ΣΥΜΠΕΡΙΦΟΡΑ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h20"/><path d="M8 15l4-9 4 9"/><path d="M6 15l-1 5h14l-1-5"/></svg></div>
         <div class="inner"><h3>Δύσκολες Συμπεριφορές και Αντιμετώπισή τους</h3>
@@ -251,45 +299,49 @@ header{max-width:900px}
           <p>Δέκα βήματα, δώδεκα συναντήσεις με έτοιμο λεκτικό, ποιος κάνει τι, η στιγμή της έντασης και φάκελος περίπτωσης με Κάρτα Ημέρας.</p>
           <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Σχέδιο δράσης</span></div>
           <span class="go">Άνοιξε το σχέδιο δράσης</span></div></a>
-      <a class="door" data-a="te" href="prostasia-paidiou/">
-        <div class="plate"><span>ΠΡΟΣΤΑΣΙΑ ΠΑΙΔΙΟΥ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M12 18s-3.5-2-3.5-4.3A1.8 1.8 0 0 1 12 12.5a1.8 1.8 0 0 1 3.5 1.2C15.5 16 12 18 12 18z"/></svg></div>
-        <div class="inner"><h3>Βία στην οικογένεια &amp; σεξουαλική κακοποίηση</h3>
-          <div class="sub">Οδηγός ενεργειών για το σχολείο</div>
-          <p>Απαντάς σε λίγες ερωτήσεις και παίρνεις τα βήματα για τη συγκεκριμένη περίπτωση: ποιον καλείς, προθεσμίες, ποιος ενημερώνει τους γονείς, πώς ακούς το παιδί και κάρτα εκπαιδευτικού για εκτύπωση.</p>
-          <div class="chips"><span class="chip">Εκπαιδευτικοί</span><span class="chip">Καθηγητής ΣΕΑ</span><span class="chip">Πρωτόκολλο</span></div>
-          <span class="go">Άνοιξε τον οδηγό</span></div></a>
-      <a class="door" data-a="te" href="protokolla-sea/">
-        <div class="plate"><span>ΠΡΩΤΟΚΟΛΛΑ Σ.Ε.Α.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="M9 12l2 2 4-4"/><path d="M9 17h6"/></svg></div>
-        <div class="inner"><h3>Πρωτόκολλα Σ.Ε.Α. — Βήμα προς βήμα</h3>
-          <div class="sub">Όλα τα πρωτόκολλα σε ένα σημείο</div>
-          <p>Βία στην οικογένεια, σεξουαλική κακοποίηση, εκφοβισμός, ρατσισμός, διατροφικές διαταραχές, κρίσεις, ουσίες, σοβαρή βία και πρόληψη: διαδρομές ανά περίπτωση, ρόλοι, τηλέφωνα και τα πλήρη έγγραφα.</p>
-          <div class="chips"><span class="chip">Καθηγητής ΣΕΑ</span><span class="chip">Διεύθυνση</span><span class="chip">9 πρωτόκολλα</span></div>
-          <span class="go">Άνοιξε τα πρωτόκολλα</span></div></a>
-    </div>
-  </section>
+      <a class="door" data-a="te" href="diamesolavisi/">
+        <div class="plate"><span>ΣΥΓΚΡΟΥΣΕΙΣ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-3 3 3 3-3 5 5"/><path d="M3 16h5M16 16h5"/></svg></div>
+        <div class="inner"><h3>Σχολική Διαμεσολάβηση</h3>
+          <p>Πώς δύο μαθητές σε σύγκρουση βρίσκουν μαζί λύση με τη βοήθεια ενός ουδέτερου διαμεσολαβητή: αρχές, στάδια και πρακτική.</p>
+          <div class="chips"><span class="chip">Εκπαιδευτικοί</span></div>
+          <span class="go">Μάθε τα στάδια</span></div></a>
+      </div>
+    </section>
+  </div>
   </main>
 
   <footer>
     <span><strong>Στέλιος Κτώρας</strong>, Καθηγητής Σ.Ε.Α.</span>
-    <span>CC BY-NC 4.0 · <a href="idiotiko/" style="color:inherit">🔒 Ο χώρος μου</a></span>
+    <span>CC BY-NC 4.0<span class="tonly"> · <a href="idiotiko/" style="color:inherit">🔒 Ο χώρος μου</a></span></span>
   </footer>
 </div>
 
 <script>
-const btns=[...document.querySelectorAll('.filters button')];
-const doors=[...document.querySelectorAll('.door')];
-const zones=[...document.querySelectorAll('section.zone')];
+const params=new URLSearchParams(location.search);
+const onlySt=params.has('mathites');
+const fbtns=[...document.querySelectorAll('[data-f]')];
+const auds=[...document.querySelectorAll('.aud')];
+const jump=document.querySelector('.jump');
 function apply(f){
-  btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
-  doors.forEach(d=>{d.hidden = f!=='all' && !d.dataset.a.split(' ').includes(f);});
-  zones.forEach(z=>{z.hidden = ![...z.querySelectorAll('.door')].some(d=>!d.hidden);
-    const j=document.querySelector('.jump a[href="#'+z.id+'"]'); if(j) j.hidden=z.hidden;});
-  const n=doors.filter(d=>!d.hidden).length, lab={all:'',st:' για μαθητές',te:' για εκπαιδευτικούς'}[f]||'';
-  document.getElementById('count').textContent = f==='all' ? '' : n+' εργαλεία'+lab;
-  try{localStorage.setItem('sea-filter',f)}catch(e){}
+  if(onlySt) f='st';
+  fbtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
+  auds.forEach(a=>{a.hidden = f!=='all' && a.dataset.aud!==f;});
+  jump.innerHTML='';
+  document.querySelectorAll('.aud:not([hidden]) section.zone').forEach(z=>{
+    const a=document.createElement('a');a.href='#'+z.id;a.textContent=z.querySelector('h2').textContent;
+    a.style.setProperty('--sc',getComputedStyle(z).getPropertyValue('--sc'));jump.append(a);});
+  if(!onlySt){try{localStorage.setItem('sea-filter',f)}catch(e){}}
 }
-btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.f)));
-let saved='all'; try{saved=localStorage.getItem('sea-filter')||'all';}catch(e){} apply(saved);
+fbtns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.f)));
+if(onlySt) document.body.classList.add('only-st');
+let saved='all';
+if(params.has('ekpaideftikoi')) saved='te';
+else { try{saved=localStorage.getItem('sea-filter')||'all';}catch(e){} }
+if(!['all','st','te'].includes(saved)) saved='all';
+apply(saved);
+const cp=document.getElementById('copyst');
+if(cp) cp.onclick=()=>{const t='https://'+document.getElementById('stlink').textContent;
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{cp.textContent='Αντιγράφηκε ✓'},()=>{cp.textContent='Επίλεξε και αντίγραψε'});};
 </script>
 
 <script>
