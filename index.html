@@ -115,6 +115,38 @@ header{max-width:900px}
 .install.on{display:flex}
 .install b{color:var(--ink)}
 .install button{font:inherit;border:1px solid var(--line);background:transparent;border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--ink)}
+/* Αναζήτηση, κοινό, βοήθεια */
+.search{position:relative;flex:1 1 260px;max-width:420px}
+.search input{font:inherit;width:100%;box-sizing:border-box;padding:10px 14px 10px 40px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.search input:focus{outline:3px solid var(--c4);outline-offset:1px}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+.noresult{background:var(--paper);border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted);text-align:center}
+.pick{background:var(--paper);border:1px dashed var(--line);border-radius:10px;padding:22px;color:var(--muted);text-align:center;font-size:17px}
+.audhead{border-top:0;padding:18px 20px;border-radius:12px;background:color-mix(in srgb,var(--ac) 12%,var(--paper));border-left:8px solid var(--ac)}
+#gia-mathites{--ac:var(--c3)} #gia-ekpaideftikous{--ac:var(--c4)}
+.audhead .eyebrow{color:var(--ac);font-size:14px}
+.audhead h2{font-family:var(--display);font-size:clamp(26px,4.4vw,34px);line-height:1.15;margin:0}
+.door[data-a="st"] .chips::before,.door[data-a="te"] .chips::before{font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;color:var(--paper)}
+.door[data-a="st"] .chips::before{content:"Για μαθητές";background:var(--c3)}
+.door[data-a="te"] .chips::before{content:"Για εκπαιδευτικούς";background:var(--c4)}
+.gbtn{padding:24px 22px} .gbtn b{font-size:24px}
+.helpbtn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:20;font:inherit;font-weight:700;font-size:15px;border:0;border-radius:999px;padding:12px 18px;background:#b42318;color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;gap:8px;align-items:center}
+.helpbtn svg{width:20px;height:20px}
+dialog.help{border:0;border-radius:14px;padding:0;max-width:520px;width:calc(100% - 32px);background:var(--paper);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog.help::backdrop{background:rgba(10,15,20,.55)}
+.hwrap{padding:22px 22px 18px;display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow:auto}
+.hwrap h2{font-family:var(--display);margin:0;font-size:26px}
+.hwrap p{margin:0;color:var(--muted)}
+.lines{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.lines a{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.lines a:hover{border-color:#b42318}
+.lines b{font-family:var(--display);font-size:22px;min-width:92px;color:#b42318}
+.lines span{font-size:14.5px;line-height:1.35}
+.lines a.sos{background:#b42318;border-color:#b42318;color:#fff} .lines a.sos b{color:#fff}
+.hclose{font:inherit;align-self:flex-end;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:8px 16px;cursor:pointer}
+footer{margin-bottom:56px}
+.helpbtn .hs{display:none}
+@media (max-width:560px){.helpbtn .hl{display:none}.helpbtn .hs{display:inline}.helpbtn{padding:10px 14px;font-size:14px}}
 </style>
 </head>
 <body>
@@ -134,13 +166,16 @@ header{max-width:900px}
     <button type="button" class="gbtn te" data-f="te" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/><path d="M7 9h6M7 12h4"/></svg><span><b>Είμαι εκπαιδευτικός</b><small>Πρωτόκολλα, περιστατικά, η τάξη</small></span></button>
   </div>
   <div class="bar">
-    <button type="button" class="showall" data-f="all" aria-pressed="true">Δες όλα τα εργαλεία</button>
-    <nav class="jump" aria-label="Ενότητες"></nav>
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="q" placeholder="Αναζήτηση, π.χ. άγχος, εκφοβισμός, Παγκύπριες" aria-label="Αναζήτηση εργαλείων" autocomplete="off"></label>
+    <button type="button" class="showall" data-f="all" aria-pressed="false">Δες όλα τα εργαλεία</button>
   </div>
+  <nav class="jump" aria-label="Ενότητες"></nav>
+  <div class="pick" id="pick" hidden>Διάλεξε πιο πάνω αν είσαι μαθητής/τρια ή εκπαιδευτικός, ή γράψε τι ψάχνεις.</div>
+  <div class="noresult" id="noresult" hidden>Δεν βρέθηκε εργαλείο. Δοκίμασε άλλη λέξη.</div>
 
   <main style="display:flex;flex-direction:column;gap:56px">
   <div class="aud" id="gia-mathites" data-aud="st">
-    <div class="audhead"><span class="eyebrow">ΓΙΑ ΜΑΘΗΤΕΣ</span><p>Εργαλεία που ανοίγεις μόνος/η σου, στο κινητό ή στον υπολογιστή. Ό,τι γράφεις μένει στη συσκευή σου.</p></div>
+    <div class="audhead"><span class="eyebrow">ΓΙΑ ΜΑΘΗΤΕΣ</span><h2>Εργαλεία για μαθητές</h2><p>Εργαλεία που ανοίγεις μόνος/η σου, στο κινητό ή στον υπολογιστή. Ό,τι γράφεις μένει στη συσκευή σου.</p></div>
     <section class="zone z1" id="mellon">
       <div class="zhead"><h2>Το μέλλον μου</h2><p>Επιλογές, Παγκύπριες, σωστή μελέτη.</p></div>
       <div class="grid three">
@@ -203,12 +238,12 @@ header{max-width:900px}
           <p>Παιχνίδι για μαθητές 13–18 που δυσκολεύονται να κοινωνικοποιηθούν, με σταθμούς από προγράμματα της Δανίας, της Ελλάδας, της Γερμανίας, της Σουηδίας, της Ιταλίας και της Ισπανίας, και κλειδωμένο χώρο για τον εκπαιδευτικό.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Παιχνίδι</span><span class="chip note">Με οδηγίες για τον εκπαιδευτικό</span></div>
           <span class="go">Ξεκίνα το παιχνίδι</span></div></a>
-      <a class="door" data-a="st" href="https://claude.ai/artifact/KQyGSTq3NAp5pp4AyguXar" target="_blank" rel="noopener">
+      <a class="door" data-a="st" href="anoixti-parea/">
         <div class="plate"><span>ΕΝΤΑΞΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 14.3c.6-.2 1.3-.3 2-.3 3.3 0 6 2.7 6 6"/></svg></div>
         <div class="inner"><h3>Ανοιχτή Παρέα</h3>
           <p>Οι μαθητές ανοίγουν «παρέες» για το διάλειμμα και όποιος είναι μόνος βρίσκει πού να κάτσει, με εβδομαδιαίες προκλήσεις και έγκριση από τον υπεύθυνο.</p>
           <div class="chips"><span class="chip">Μαθητές</span><span class="chip">Εφαρμογή</span></div>
-          <span class="go">Άνοιξε την εφαρμογή (εξωτερικός σύνδεσμος)</span></div></a>
+          <span class="go">Βρες παρέα για το διάλειμμα</span></div></a>
       <a class="door" data-a="st" href="scheseis/">
         <div class="plate"><span>ΣΧΕΣΕΙΣ · ΣΥΝΑΙΝΕΣΗ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.2-7-9.2A3.8 3.8 0 0 1 12 8.5a3.8 3.8 0 0 1 7 2.3c0 5-7 9.2-7 9.2z"/></svg></div>
         <div class="inner"><h3>Σχέσεις με σεβασμό</h3>
@@ -247,7 +282,7 @@ header{max-width:900px}
   </div>
 
   <div class="aud" id="gia-ekpaideftikous" data-aud="te">
-    <div class="audhead"><span class="eyebrow">ΓΙΑ ΕΚΠΑΙΔΕΥΤΙΚΟΥΣ</span><p>Υπηρεσιακά εργαλεία και οδηγοί. Οι μαθητικές εφαρμογές έχουν επίσης οδηγίες για τον εκπαιδευτικό.</p>
+    <div class="audhead"><span class="eyebrow">ΓΙΑ ΕΚΠΑΙΔΕΥΤΙΚΟΥΣ</span><h2>Εργαλεία για εκπαιδευτικούς</h2><p>Υπηρεσιακά εργαλεία και οδηγοί. Οι μαθητικές εφαρμογές έχουν επίσης οδηγίες για τον εκπαιδευτικό.</p>
       <div class="share"><span>Link μόνο για μαθητές (για QR στην τάξη):</span> <code id="stlink">ktorasstelios7-creator.github.io/ergaleiothiki/?mathites</code> <button type="button" id="copyst">Αντιγραφή</button></div></div>
     <section class="zone z3" id="protokolla">
       <div class="zhead"><h2>Πρωτόκολλα &amp; περιστατικά</h2><p>Τι κάνω, ποιον ενημερώνω και πότε, βάσει των οδηγιών του ΥΠΑΝ.</p></div>
@@ -316,32 +351,73 @@ header{max-width:900px}
   </footer>
 </div>
 
+<button type="button" class="helpbtn" id="helpbtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/></svg><span class="hl">Χρειάζομαι βοήθεια</span><span class="hs">Βοήθεια</span></button>
+<dialog class="help" id="help" aria-labelledby="helpt">
+  <div class="hwrap">
+    <h2 id="helpt">Δεν είσαι μόνος/η</h2>
+    <p>Αν κάτι σε βαραίνει, μίλησε με έναν ενήλικα που εμπιστεύεσαι: γονιό, καθηγητή ή τον Καθηγητή Σ.Ε.Α. του σχολείου σου. Μπορείς να τηλεφωνήσεις και σε μία από αυτές τις γραμμές στην Κύπρο:</p>
+    <ul class="lines">
+      <li><a class="sos" href="tel:112"><b>112</b><span>Άμεσος κίνδυνος: αστυνομία, ασθενοφόρο, πυροσβεστική</span></a></li>
+      <li><a href="tel:116111"><b>116 111</b><span>Γραμμή στήριξης παιδιών και εφήβων</span></a></li>
+      <li><a href="tel:1466"><b>1466</b><span>Hope For Children: βία, παραμέληση ή οτιδήποτε σε απασχολεί</span></a></li>
+      <li><a href="tel:1440"><b>1440</b><span>ΣΠΑΒΟ: βία στην οικογένεια</span></a></li>
+      <li><a href="tel:1480"><b>1480</b><span>Cyber Safety: διαδικτυακός εκφοβισμός και ασφάλεια στο ίντερνετ</span></a></li>
+      <li><a href="tel:1410"><b>1410</b><span>ΟΝΕΚ: συμβουλευτική για παιδιά και γονείς</span></a></li>
+      <li><a href="tel:80007773"><b>8000 7773</b><span>Σαμαρείτες Κύπρου: όταν θέλεις απλώς να μιλήσεις με κάποιον</span></a></li>
+      <li><a href="tel:1498"><b>1498</b><span>ΥΚΑΝ: ουσίες</span></a></li>
+      <li><a href="tel:1422"><b>1422</b><span>Τζόγος και στοίχημα</span></a></li>
+    </ul>
+    <button type="button" class="hclose" id="helpx">Κλείσιμο</button>
+  </div>
+</dialog>
+
 <script>
 const params=new URLSearchParams(location.search);
 const onlySt=params.has('mathites');
 const fbtns=[...document.querySelectorAll('[data-f]')];
 const auds=[...document.querySelectorAll('.aud')];
 const jump=document.querySelector('.jump');
+const q=document.getElementById('q');
+const norm=t=>(t||'').toLocaleLowerCase('el').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ς/g,'σ');
+document.querySelectorAll('.door').forEach(d=>d.dataset.text=norm(d.textContent));
+let cur='none';
 function apply(f){
   if(onlySt) f='st';
-  fbtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
-  auds.forEach(a=>{a.hidden = f!=='all' && a.dataset.aud!==f;});
+  if(f) cur=f;
+  const term=norm(q.value.trim());
+  const view=onlySt ? 'st' : (term ? 'all' : cur);
+  fbtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===cur)));
+  let shown=0;
+  auds.forEach(a=>{
+    const audOk = view==='all' || a.dataset.aud===view;
+    let inAud=0;
+    a.querySelectorAll('section.zone').forEach(z=>{
+      let n=0; z.querySelectorAll('.door').forEach(d=>{const ok=audOk&&(!term||term.split(/\s+/).every(w=>d.dataset.text.includes(w)));d.hidden=!ok;if(ok)n++;});
+      z.hidden=!n; inAud+=n;});
+    a.hidden=!inAud; shown+=inAud;});
+  document.getElementById('pick').hidden = !(view==='none');
+  document.getElementById('noresult').hidden = !(term && !shown);
   jump.innerHTML='';
-  document.querySelectorAll('.aud:not([hidden]) section.zone').forEach(z=>{
+  if(!term) document.querySelectorAll('.aud:not([hidden]) section.zone:not([hidden])').forEach(z=>{
     const a=document.createElement('a');a.href='#'+z.id;a.textContent=z.querySelector('h2').textContent;
     a.style.setProperty('--sc',getComputedStyle(z).getPropertyValue('--sc'));jump.append(a);});
-  if(!onlySt){try{localStorage.setItem('sea-filter',f)}catch(e){}}
+  if(!onlySt && f){try{localStorage.setItem('sea-filter',cur)}catch(e){}}
 }
-fbtns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.f)));
+fbtns.forEach(b=>b.addEventListener('click',()=>{const f=(b.dataset.f===cur&&b.dataset.f!=='all')?'none':b.dataset.f;apply(f);}));
+q.addEventListener('input',()=>apply());
 if(onlySt) document.body.classList.add('only-st');
-let saved='all';
+let saved='none';
 if(params.has('ekpaideftikoi')) saved='te';
-else { try{saved=localStorage.getItem('sea-filter')||'all';}catch(e){} }
-if(!['all','st','te'].includes(saved)) saved='all';
+else { try{saved=localStorage.getItem('sea-filter')||'none';}catch(e){} }
+if(!['all','st','te','none'].includes(saved)) saved='none';
 apply(saved);
 const cp=document.getElementById('copyst');
 if(cp) cp.onclick=()=>{const t='https://'+document.getElementById('stlink').textContent;
   (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{cp.textContent='Αντιγράφηκε ✓'},()=>{cp.textContent='Επίλεξε και αντίγραψε'});};
+const hd=document.getElementById('help');
+document.getElementById('helpbtn').onclick=()=>{ if(hd.showModal) hd.showModal(); else hd.setAttribute('open',''); };
+document.getElementById('helpx').onclick=()=>hd.close?hd.close():hd.removeAttribute('open');
+hd.addEventListener('click',e=>{if(e.target===hd)hd.close();});
 </script>
 
 <script>

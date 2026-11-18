@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ανοιχτή Παρέα</title>
+<meta name="theme-color" content="#2457D6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ανοιχτή Παρέα">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700&family=Noto+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: στήλη πλάτους κινητού, μεγάλες καρτέλες κάτω (τρίτη «Διαχείριση» για τον υπεύθυνο), μία καθαρή ενέργεια ανά κάρτα */
+:root{
+  --bg:#F2F5FB; --surface:#FFFFFF; --sunk:#E4EAF5; --fg:#17213A; --muted:#56617A;
+  --accent:#2457D6; --accent-ink:#FFFFFF; --sun:#FFC83D; --sun-ink:#3A2A00;
+  --line:#D3DBEA; --ok:#1E7F55; --ok-bg:#DDF3E8; --warn:#8A5A00; --warn-bg:#FFF1D6; --crit:#B3261E; --crit-bg:#FBE4E1;
+  --display:"Ubuntu","Trebuchet MS",system-ui,sans-serif;
+  --body:"Noto Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1524; --surface:#18213A; --sunk:#222D49; --fg:#E8EDF8; --muted:#A3AEC8;
+  --accent:#7FA2FF; --accent-ink:#0B1430; --line:#2C3858; --ok:#6FD3A4; --ok-bg:#16372A;
+  --warn:#F5D58E; --warn-bg:#3A2E12; --crit:#FF8A80; --crit-bg:#3B1E1C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1524; --surface:#18213A; --sunk:#222D49; --fg:#E8EDF8; --muted:#A3AEC8;
+  --accent:#7FA2FF; --accent-ink:#0B1430; --line:#2C3858; --ok:#6FD3A4; --ok-bg:#16372A;
+  --warn:#F5D58E; --warn-bg:#3A2E12; --crit:#FF8A80; --crit-bg:#3B1E1C; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-top:env(safe-area-inset-top,0px)}
+.app{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:18px 110px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-family:var(--display);font-weight:700;font-size:24px;color:var(--accent)}
+.me{font-size:13px;color:var(--muted);text-align:right}
+main{display:flex;flex-direction:column;gap:16px}
+h1,h2{font-family:var(--display);margin:0;text-wrap:balance}
+h1{font-size:26px;line-height:1.2} h2{font-size:19px}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;background:var(--sunk);padding:4px;border-radius:14px}
+.seg button{border:none;background:transparent;color:var(--fg);padding:8px 4px;border-radius:10px;font-weight:600;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.place{font-family:var(--display);font-weight:700;font-size:18px;overflow-wrap:anywhere}
+.topic{font-size:15px;overflow-wrap:anywhere}
+.seats{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.seats i{width:12px;height:12px;border-radius:50%;background:var(--accent);display:inline-block}
+.seats i.free{background:transparent;border:2px solid var(--accent)}
+.host{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.av{width:30px;height:30px;border-radius:50%;background:var(--sun);color:var(--sun-ink);display:grid;place-items:center;font-weight:700;font-family:var(--display);font-size:14px;flex:none}
+button{font:inherit;cursor:pointer;border-radius:999px;border:1px solid transparent;padding:12px 18px;font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+button:disabled{opacity:.55;cursor:default}
+.btn{background:var(--accent);color:var(--accent-ink)}
+.btn-sun{background:var(--sun);color:var(--sun-ink)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--fg)}
+.btn-crit{background:transparent;border-color:var(--crit);color:var(--crit)}
+.btn-sm{padding:8px 14px;font-size:14px}
+.link{background:none;border:none;padding:0;color:var(--muted);font-size:13px;text-decoration:underline;font-weight:500}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.note{border-radius:12px;padding:10px 12px;font-size:14px}
+.note.ok{background:var(--ok-bg);color:var(--ok)}
+.note.warn{background:var(--warn-bg);color:var(--warn)}
+.note.crit{background:var(--crit-bg);color:var(--crit)}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.crit{background:var(--crit-bg);color:var(--crit)}
+.big{background:var(--accent);color:var(--accent-ink);border:none;gap:14px;padding:22px}
+.big .muted,.big .label{color:var(--accent-ink);opacity:.85}
+.big h1{font-size:28px}
+.label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.badges{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;text-align:center;color:var(--muted)}
+.badge b{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:var(--sun)}
+.badge.locked b{background:var(--sunk);filter:grayscale(1);opacity:.6}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:14px}
+.field input,.field select{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);min-width:0;width:100%}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.switch input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.help{font-size:13px;color:var(--muted);text-align:center}
+.help b{color:var(--fg);user-select:all}
+.count{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--crit);color:#fff;font-size:11px;font-weight:700}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px))}
+nav div{max-width:480px;margin:0 auto;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+nav button{background:none;color:var(--muted);border-radius:14px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px}
+nav button span{font-size:22px;line-height:1}
+nav button[aria-current="page"]{background:var(--sunk);color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px);text-align:center;z-index:5}
+.adminlink{text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<script>
+// ===== Ρυθμίσεις =====
+// Ίδιο Firebase project με το «Παίζουμε;». Οι μαθητές μπαίνουν ανώνυμα, ο υπεύθυνος με email.
+window.PAREA_CONFIG = {
+  adminEmail: "ktorasstelios7@gmail.com",
+  recess: ["1ο διάλειμμα","2ο διάλειμμα"],   // πρόσθεσε "3ο διάλειμμα" αν χρειαστεί
+  firebase: {
+    apiKey: "AIzaSyAYkrxgUQFlSRy-LQVEMS5u6xHPmRnElSM",
+    authDomain: "lamplay-57d2f.firebaseapp.com",
+    projectId: "lamplay-57d2f",
+    storageBucket: "lamplay-57d2f.firebasestorage.app",
+    messagingSenderId: "618471238407",
+    appId: "1:618471238407:web:8039df117d0eb70d3373a2"
+  }
+};
+</script>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">Ανοιχτή Παρέα</div>
+    <div class="me" id="me"></div>
+  </header>
+  <main id="view"><section class="card"><p class="muted">Φορτώνουν οι ανοιχτές παρέες…</p></section></main>
+  <p class="help">Θέλεις να μιλήσεις με κάποιον; Γραμμή για παιδιά και εφήβους <b>116 111</b> · Hope For Children <b>1466</b> · Καθηγητής Συμβουλευτικής και Επαγγελματικής Αγωγής: γραφείο 10</p>
+  <div class="adminlink"><button class="link" data-tab="login" id="adminLink">Χώρος υπευθύνου</button></div>
+</div>
+<nav aria-label="Μενού"><div id="tabs"></div></nav>
+
+<script type="module">
+const CFG=window.PAREA_CONFIG;
+const RECESS=CFG.recess;
+const WEEKS=[
+ {e:"👋",t:"Πες «γεια» με το όνομά του σε κάποιον που δεν έχεις μιλήσει ποτέ",tip:"Αρκεί ένα «Γεια, Μαρία!». Τα ονόματα κάνουν τους άλλους να νιώθουν ότι τους προσέχεις."},
+ {e:"🎧",t:"Ρώτα κάποιον τι μουσική ακούει τελευταία",tip:"Μετά ρώτα «ποιο να ακούσω πρώτο;». Οι άνθρωποι χαίρονται να προτείνουν."},
+ {e:"🪑",t:"Κάτσε σε μια ανοιχτή παρέα για ένα διάλειμμα",tip:"Δεν χρειάζεται να πεις πολλά. Αρκεί ένα «Γεια, είδα την παρέα στην εφαρμογή». Οι πρέσβεις σε περιμένουν."},
+ {e:"⭐",t:"Κάνε ένα κομπλιμέντο σε κάποιον για κάτι που έφτιαξε",tip:"Να είναι συγκεκριμένο: «Ωραίο σχέδιο, πώς έκανες τις σκιές;»."},
+ {e:"🙋",t:"Κάλεσε εσύ κάποιον που κάθεται μόνος/η στην παρέα σου",tip:"Ένα «Θες να έρθεις μαζί μας;» μπορεί να αλλάξει τη μέρα κάποιου."}];
+const REASONS=["Ακατάλληλο κείμενο","Με κοροϊδεύει / με πειράζει","Δεν υπάρχει τέτοια παρέα","Κάτι άλλο"];
+const MONTHS=["Ιανουαρίου","Φεβρουαρίου","Μαρτίου","Απριλίου","Μαΐου","Ιουνίου","Ιουλίου","Αυγούστου","Σεπτεμβρίου","Οκτωβρίου","Νοεμβρίου","Δεκεμβρίου"];
+
+// Πρόκληση: αλλάζει αυτόματα κάθε Δευτέρα
+const monday=(d=>{d=new Date(d);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d})(new Date());
+const weekNo=Math.round((monday-new Date(2026,0,5))/(7*864e5));
+const cur=()=>((weekNo%WEEKS.length)+WEEKS.length)%WEEKS.length;
+const weekLabel=(()=>{const f=new Date(monday);f.setDate(f.getDate()+4);
+  return monday.getMonth()===f.getMonth()?`${monday.getDate()}–${f.getDate()} ${MONTHS[f.getMonth()]}`:`${monday.getDate()} ${MONTHS[monday.getMonth()]} – ${f.getDate()} ${MONTHS[f.getMonth()]}`})();
+const todayStart=(()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()})();
+
+// ---- per-viewer conveniences (browser only)
+let L={tab:"tables",recess:0,done:{},form:false,reporting:null};
+try{const s=JSON.parse(localStorage.getItem("anoixti-parea3"));if(s)L={...L,...s,form:false,reporting:null}}catch(e){}
+if(L.recess>=RECESS.length)L.recess=0;
+const saveL=()=>{try{localStorage.setItem("anoixti-parea3",JSON.stringify({tab:L.tab==="login"?"tables":L.tab,recess:L.recess,done:L.done}))}catch(e){}};
+const doneKey=()=>String(weekNo);
+const isDone=()=>!!L.done[doneKey()];
+const badgeCount=()=>Object.keys(L.done).length;
+
+// ---- shared state
+let db=null,auth=null,AU=null,uid=null,isAdmin=false,ready=false,offline=false;
+const M={tables:{},mod:{},going:{},reports:{},cfg:{requireApproval:true}};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2800)}
+
+// Αυτόματο πρώτο φίλτρο· την τελική απόφαση την παίρνει ο υπεύθυνος
+function filterText(t){
+  if(/(\+?357)?\s?9\d\s?\d{3}\s?\d{3}|(\+?30)?\s?69\d{2}\s?\d{3}\s?\d{3}|\b\d{8,10}\b/.test(t)) return "Μην γράφεις τηλέφωνα. Κράτα τα προσωπικά σου στοιχεία ασφαλή.";
+  if(/https?:\/\/|www\.|\.(com|gr|cy|net)\b|instagram|snapchat|tiktok|@\w{3,}/i.test(t)) return "Δεν επιτρέπονται σύνδεσμοι και usernames από άλλες εφαρμογές.";
+  if(/(χαζ|βλάκ|βλακ|ηλίθι|ηλιθι|κόπαν|μαλάκ|μαλακ|σκατ|γαμ|πουτ|loser|stupid|fuck|shit)/i.test(t)) return "Αυτό μπορεί να πληγώσει κάποιον. Γράψ' το αλλιώς.";
+  return null;
+}
+
+const isToday=t=>t&&(t.at||0)>=todayStart;
+function status(id){
+  const t=M.tables[id],m=M.mod[id];
+  if(!t||!isToday(t)) return "gone";
+  const fresh=m&&m.at===t.at;
+  if(fresh&&m.state==="hidden") return "hidden";
+  if(fresh&&m.state==="approved") return "approved";
+  return M.cfg.requireApproval?"pending":"live";
+}
+const visible=id=>["approved","live"].includes(status(id));
+const todaysGoing=()=>Object.entries(M.going).filter(([,g])=>(g.at||0)>=todayStart);
+const goingTo=id=>todaysGoing().filter(([,g])=>g.table===id).length;
+const myGoing=()=>{const g=uid&&M.going[uid];return g&&(g.at||0)>=todayStart?g.table:null};
+const reportItems=()=>Object.entries(M.reports).flatMap(([by,d])=>(d.items||[]).map((it,i)=>({...it,by,i})));
+const pendingIds=()=>Object.keys(M.tables).filter(id=>status(id)==="pending");
+
+// ---------- views
+function tablesView(){
+  if(!ready) return `<section class="card"><p class="muted">Φορτώνουν οι ανοιχτές παρέες…</p></section>`;
+  const mine=uid&&M.tables[uid]&&isToday(M.tables[uid])&&!isAdmin?uid:null;
+  const ids=Object.keys(M.tables).filter(id=>id!==mine&&visible(id)&&M.tables[id].r===L.recess)
+    .sort((a,b)=>(M.tables[a].at||0)-(M.tables[b].at||0));
+  const card=(id,own)=>{const t=M.tables[id],st=status(id),going=myGoing()===id,n=1+goingTo(id),max=6;
+    return `<section class="card">
+    <div class="top"><div class="place">${esc(t.place)}</div>
+      <div class="seats" title="${n} από ${max} θέσεις">${Array.from({length:max},(_,k)=>`<i class="${k<n?"":"free"}"></i>`).join("")}</div></div>
+    <p class="topic">${esc(t.topic)}</p>
+    <div class="host"><span class="av">${esc((t.nick||"?")[0])}</span>Πρέσβης: ${esc(t.nick)}${own?" (εσύ)":""}</div>
+    ${own?(st==="pending"?`<div class="note warn">Η παρέα σου περιμένει έγκριση από τον υπεύθυνο. Θα εμφανιστεί μόλις εγκριθεί.</div>`
+        :st==="hidden"?`<div class="note crit">Ο υπεύθυνος έκρυψε αυτή την παρέα. Μίλησε μαζί του αν έχεις απορία.</div>`
+        :`<div class="note ok">Η παρέα σου είναι ανοιχτή (${RECESS[t.r]}). Όποιος έρθει, υποδέξου τον με ένα χαμόγελο.</div>`)
+        +`<div class="row"><button class="btn-ghost btn-sm" data-close="${id}">Κλείσε την παρέα</button></div>`
+     :isAdmin?"":going?`<div class="note ok">✓ Σε περιμένουν! Πες απλώς: «Γεια, είδα την παρέα στην εφαρμογή».</div><div class="row"><button class="btn-ghost btn-sm" data-go="${id}">Τελικά δεν θα έρθω</button></div>`
+     :n>=max?`<p class="muted small">Η παρέα γέμισε. Δες κάποια άλλη.</p>`
+     :`<div class="row"><button class="btn" data-go="${id}" ${offline?"disabled":""}>Έρχομαι</button></div>`}
+    ${!own&&!offline&&!isAdmin?(L.reporting===id?`<div class="card" style="background:var(--sunk);border:none">
+        <p class="small"><b>Τι δεν πάει καλά;</b> Η αναφορά πάει μόνο στον υπεύθυνο.</p>
+        <div class="row">${REASONS.map(r=>`<button class="btn-ghost btn-sm" data-reason="${esc(r)}">${esc(r)}</button>`).join("")}</div>
+        <div><button class="link" data-report="">Άκυρο</button></div></div>`
+      :`<div><button class="link" data-report="${id}">Αναφορά</button></div>`):""}
+  </section>`};
+  return `
+  ${offline?`<div class="note warn">Δεν υπάρχει σύνδεση με τη βάση. Δοκίμασε ξανά σε λίγο.</div>`:""}
+  <h1>Πού να κάτσεις σήμερα;</h1>
+  <p class="muted">Αυτές οι παρέες είναι ανοιχτές. Μπορείς να πας σε όποια θέλεις, κανείς δεν θα σε ρωτήσει γιατί.</p>
+  ${mine?card(mine,true):""}
+  ${RECESS.length>1?`<div class="seg" role="group" aria-label="Διάλειμμα">${RECESS.map((r,i)=>`<button data-recess="${i}" aria-pressed="${L.recess===i}">${r}</button>`).join("")}</div>`:""}
+  ${ids.length?ids.map(id=>card(id,false)).join(""):`<section class="card"><p class="muted">Δεν υπάρχει ανοιχτή παρέα σε αυτό το διάλειμμα ακόμα.${mine||offline||isAdmin?"":" Θέλεις να ανοίξεις εσύ την πρώτη;"}</p></section>`}
+  ${offline||mine||isAdmin?"":L.form?`
+  <form class="card" id="newtable">
+    <h2>Άνοιξε μια παρέα</h2>
+    <p class="muted small">Γράψε πού θα είσαι και τι σας αρέσει. Η παρέα ισχύει για σήμερα. ${M.cfg.requireApproval?"Ο υπεύθυνος θα την εγκρίνει πριν τη δουν οι άλλοι.":"Θα τη δουν αμέσως όλοι στο σχολείο."}</p>
+    <div class="field"><label for="f-nick">Πώς να σε λένε; (μικρό όνομα και τάξη)</label><input id="f-nick" required maxlength="30" placeholder="π.χ. Ελένη, Α1"></div>
+    <div class="field"><label for="f-place">Πού θα είσαι;</label><input id="f-place" required maxlength="50" placeholder="π.χ. Σκαλάκια στην είσοδο"></div>
+    <div class="field"><label for="f-topic">Τι θα κάνετε ή για τι θα μιλάτε;</label><input id="f-topic" required maxlength="60" placeholder="π.χ. Ταινίες και σειρές 🎬"></div>
+    <div class="field"><label for="f-r">Πότε;</label><select id="f-r">${RECESS.map((r,i)=>`<option value="${i}" ${i===L.recess?"selected":""}>${r}</option>`).join("")}</select></div>
+    <div id="f-err"></div>
+    <div class="row"><button class="btn" type="submit">Άνοιξε την παρέα</button><button class="btn-ghost" type="button" data-form="0">Άκυρο</button></div>
+  </form>`:`<div><button class="btn-sun" data-form="1">+ Άνοιξε εσύ μια παρέα</button></div>`}`;
+}
+
+function challengeView(){
+  const c=cur(),w=WEEKS[c],done=isDone();
+  return `
+  <section class="card big">
+    <span class="label">Πρόκληση της εβδομάδας · ${esc(weekLabel)}</span>
+    <h1>${w.e} ${esc(w.t)}</h1>
+    <p class="muted">${esc(w.tip)}</p>
+    <div><button class="btn-sun" data-done="1">${done?"✓ Το έκανες! Πάτα για αναίρεση":"Το έκανα!"}</button></div>
+  </section>
+  <section class="card">
+    <h2>Τα σήματά σου: ${badgeCount()}</h2>
+    <p class="muted small">Ένα σήμα για κάθε πρόκληση που κάνεις. Τα βλέπεις μόνο εσύ, σε αυτό το κινητό.</p>
+    <div class="badges">${WEEKS.map((x,i)=>{const has=Object.keys(L.done).some(k=>((+k%WEEKS.length)+WEEKS.length)%WEEKS.length===i);
+      return `<div class="badge ${has?"":"locked"}"><b>${x.e}</b>${i===c?"Αυτή τη βδομάδα":has?"Το έκανες":"Σύντομα"}</div>`}).join("")}</div>
+  </section>
+  <section class="card"><span class="label">Την επόμενη εβδομάδα</span><p>${WEEKS[(c+1)%WEEKS.length].e} ${esc(WEEKS[(c+1)%WEEKS.length].t)}</p></section>`;
+}
+
+function loginView(){
+  if(isAdmin){L.tab="admin";return adminView()}
+  return `<form class="card" id="login">
+    <h1>Χώρος υπευθύνου</h1>
+    <p class="muted small">Μόνο για τον υπεύθυνο εκπαιδευτικό.</p>
+    <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" autocomplete="username" required></div>
+    <div class="field"><label for="a-pass">Κωδικός</label><input id="a-pass" type="password" autocomplete="current-password" required></div>
+    <div id="a-err"></div>
+    <div class="row"><button class="btn" type="submit">Είσοδος</button><button class="btn-ghost" type="button" data-tab="tables">Πίσω</button></div>
+  </form>`;
+}
+
+function adminView(){
+  const tcard=(id,actions)=>{const t=M.tables[id];return `<div class="card">
+    <div class="top"><div class="place">${esc(t.place)}</div><span class="pill ${({pending:"warn",hidden:"crit",approved:"ok",live:"ok"})[status(id)]}">${({pending:"Περιμένει",hidden:"Κρυμμένη",approved:"Εγκρίθηκε",live:"Ανοιχτή"})[status(id)]}</span></div>
+    <p class="topic">${esc(t.topic)}</p>
+    <p class="muted small">Πρέσβης: ${esc(t.nick)} · ${esc(RECESS[t.r]||"")} · ${goingTo(id)} έρχονται</p>
+    <div class="row">${actions}</div></div>`};
+  const pend=pendingIds(),reps=reportItems(),live=Object.keys(M.tables).filter(id=>status(id)!=="gone"&&!pend.includes(id));
+  const old=Object.keys(M.tables).filter(id=>status(id)==="gone").length+Object.values(M.going).filter(g=>(g.at||0)<todayStart).length;
+  return `
+  <h1>Διαχείριση</h1>
+  <p class="muted">Μόνο εσύ το βλέπεις αυτό. Εδώ εγκρίνεις, κρύβεις ή σβήνεις παρέες, και βλέπεις τις αναφορές των μαθητών.</p>
+  <section class="card">
+    <label class="switch" for="req"><span><b>Έγκριση πριν εμφανιστεί</b><br><span class="muted small">Κάθε νέα παρέα περιμένει το «ΟΚ» σου πριν τη δουν οι μαθητές.</span></span>
+    <input type="checkbox" id="req" ${M.cfg.requireApproval?"checked":""}></label>
+  </section>
+  <section class="card" style="gap:12px">
+    <h2>Αναφορές ${reps.length?`<span class="count">${reps.length}</span>`:""}</h2>
+    ${reps.length?reps.map(r=>{const t=M.tables[r.table];return `<div class="card" style="background:var(--sunk);border:none">
+      <p><span class="pill crit">${esc(r.reason)}</span> <span class="muted small">${new Date(r.at).toLocaleString("el-GR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</span></p>
+      ${t?`<p class="small"><b>${esc(t.place)}</b> · ${esc(t.topic)}<br><span class="muted">Πρέσβης: ${esc(t.nick)}</span></p>`:`<p class="muted small">Η παρέα έχει ήδη κλείσει.</p>`}
+      <div class="row">${t&&status(r.table)!=="hidden"&&status(r.table)!=="gone"?`<button class="btn-crit btn-sm" data-hide="${r.table}">Κρύψε την παρέα</button>`:""}<button class="btn-ghost btn-sm" data-dismiss="${r.by}|${r.i}">Τέλος, το είδα</button></div></div>`}).join("")
+     :`<p class="muted small">Καμία αναφορά. Όταν ένας μαθητής πατήσει «Αναφορά», θα εμφανιστεί εδώ.</p>`}
+  </section>
+  <section class="card" style="gap:12px">
+    <h2>Περιμένουν έγκριση ${pend.length?`<span class="count">${pend.length}</span>`:""}</h2>
+    ${pend.length?pend.map(id=>tcard(id,`<button class="btn btn-sm" data-approve="${id}">Έγκριση</button><button class="btn-crit btn-sm" data-hide="${id}">Απόρριψη</button>`)).join("")
+     :`<p class="muted small">${M.cfg.requireApproval?"Τίποτα για έγκριση αυτή τη στιγμή.":"Η έγκριση είναι κλειστή: οι νέες παρέες εμφανίζονται αμέσως."}</p>`}
+  </section>
+  <section class="card" style="gap:12px">
+    <h2>Οι σημερινές παρέες</h2>
+    ${live.length?live.map(id=>tcard(id,(status(id)==="hidden"?`<button class="btn btn-sm" data-approve="${id}">Εμφάνισε ξανά</button>`:`<button class="btn-crit btn-sm" data-hide="${id}">Κρύψε</button>`)+`<button class="btn-ghost btn-sm" data-del="${id}">Σβήσε</button>`)).join("")
+     :`<p class="muted small">Δεν υπάρχουν άλλες παρέες σήμερα.</p>`}
+  </section>
+  <section class="card">
+    <p class="muted small">Οι παρέες ισχύουν μόνο για τη μέρα που ανοίγουν. ${old?`Υπάρχουν ${old} παλιές εγγραφές.`:"Δεν υπάρχουν παλιές εγγραφές."}</p>
+    <div class="row">${old?`<button class="btn-ghost btn-sm" data-clean="1">Καθάρισμα παλιών</button>`:""}<button class="btn-ghost btn-sm" data-logout="1">Έξοδος</button></div>
+  </section>`;
+}
+
+function render(){
+  const alerts=pendingIds().length+reportItems().length;
+  const tabs=[["tables","🪑","Ανοιχτές παρέες"],["challenge","🎯","Πρόκληση"]].concat(isAdmin?[["admin","🛡️","Διαχείριση"]]:[]);
+  if(L.tab==="admin"&&!isAdmin) L.tab="tables";
+  $("#tabs").innerHTML=tabs.map(([k,i,l])=>`<button data-tab="${k}" aria-current="${L.tab===k?"page":"false"}"><span>${i}</span>${l}${k==="admin"&&alerts?` <span class="count">${alerts}</span>`:""}</button>`).join("");
+  $("#me").textContent=isAdmin?"Υπεύθυνος":(badgeCount()===1?"1 σήμα":`${badgeCount()} σήματα`);
+  $("#adminLink").hidden=isAdmin;
+  const keep=id=>$("#"+id)?$("#"+id).value:null;
+  const draft=["f-nick","f-place","f-topic","a-email"].map(keep);
+  $("#view").innerHTML=L.tab==="admin"?adminView():L.tab==="login"?loginView():L.tab==="challenge"?challengeView():tablesView();
+  ["f-nick","f-place","f-topic","a-email"].forEach((id,k)=>{if(draft[k]!=null&&$("#"+id))$("#"+id).value=draft[k]});
+  saveL();
+}
+
+// ---------- writes
+async function write(fn,okMsg){
+  try{await fn();if(okMsg)toast(okMsg)}
+  catch(e){console.error(e);toast(e&&e.code==="permission-denied"?"Δεν επιτρέπεται αυτή η αλλαγή.":"Κάτι δεν πήγε καλά. Δοκίμασε ξανά.")}
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+  if(d.tab){L.tab=d.tab;render();scrollTo(0,0);if(d.tab==="login"&&$("#a-email"))$("#a-email").focus();return}
+  if(d.recess){L.recess=+d.recess;render();return}
+  if(d.form){L.form=d.form==="1";render();if(L.form)$("#f-nick").focus();return}
+  if(d.done){const k=doneKey();if(L.done[k])delete L.done[k];else{L.done[k]=1;toast("Μπράβο! Κέρδισες ένα νέο σήμα 🪑")}render();return}
+  if(offline||!db)return;
+  if(d.go){const id=d.go;if(myGoing()===id)write(()=>db.del("going/"+uid));
+    else write(()=>db.set("going/"+uid,{table:id,at:Date.now()}),"Τέλεια! Η παρέα ξέρει ότι έρχεσαι");return}
+  if(d.close){write(()=>db.del("tables/"+uid),"Η παρέα σου έκλεισε");return}
+  if(d.report!==undefined){L.reporting=d.report||null;render();return}
+  if(d.reason){const table=L.reporting;L.reporting=null;render();
+    write(async()=>{const s=await db.get("reports/"+uid);const items=(s&&s.items)||[];
+      await db.set("reports/"+uid,{items:[...items,{table,reason:d.reason,at:Date.now()}].slice(-20)})},"Η αναφορά στάλθηκε στον υπεύθυνο. Ευχαριστούμε!");return}
+  // admin
+  if(!isAdmin)return;
+  if(d.approve){const t=M.tables[d.approve];if(t)write(()=>db.set("mod/"+d.approve,{state:"approved",at:t.at}),"Η παρέα εμφανίζεται στους μαθητές");return}
+  if(d.hide){const t=M.tables[d.hide];if(t)write(()=>db.set("mod/"+d.hide,{state:"hidden",at:t.at}),"Η παρέα κρύφτηκε από τους μαθητές");return}
+  if(d.del){const id=d.del;if(confirm("Να σβηστεί η παρέα;"))write(async()=>{await db.del("tables/"+id);await db.del("mod/"+id)},"Η παρέα σβήστηκε");return}
+  if(d.dismiss){const [by,i]=d.dismiss.split("|");const items=(M.reports[by]?.items||[]).filter((_,k)=>k!==+i);
+    write(()=>items.length?db.set("reports/"+by,{items}):db.del("reports/"+by));return}
+  if(d.clean){write(async()=>{
+      for(const id of Object.keys(M.tables).filter(id=>status(id)==="gone")){await db.del("tables/"+id);await db.del("mod/"+id)}
+      for(const [id,g] of Object.entries(M.going))if((g.at||0)<todayStart)await db.del("going/"+id);
+    },"Τα παλιά σβήστηκαν");return}
+  if(d.logout){L.tab="tables";write(async()=>{await AU.signOut(auth)},"Αποσυνδέθηκες");return}
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="req"&&isAdmin){const v=e.target.checked;write(()=>db.set("config/parea",{requireApproval:v}),v?"Οι νέες παρέες θα περιμένουν έγκριση":"Οι νέες παρέες εμφανίζονται αμέσως")}
+});
+document.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(e.target.id==="login"){
+    const email=$("#a-email").value.trim(),pass=$("#a-pass").value;
+    try{
+      if(CFG.adminEmail&&email.toLowerCase()!==CFG.adminEmail.toLowerCase())throw new Error("x");
+      await AU.signInWithEmailAndPassword(auth,email,pass);L.tab="admin";
+    }catch(err){$("#a-err").innerHTML=`<div class="note crit">Λάθος email ή κωδικός.</div>`}
+    return;
+  }
+  if(e.target.id!=="newtable"||!db)return;
+  const nick=$("#f-nick").value.trim(),place=$("#f-place").value.trim(),topic=$("#f-topic").value.trim(),r=+$("#f-r").value;
+  if(!nick||!place||!topic)return;
+  const bad=filterText(nick+" "+place+" "+topic);
+  if(bad){$("#f-err").innerHTML=`<div class="note crit">${esc(bad)}</div>`;return}
+  L.form=false;L.recess=r;
+  write(()=>db.set("tables/"+uid,{r,place,topic,nick,at:Date.now()}),M.cfg.requireApproval?"Στάλθηκε! Περιμένει έγκριση από τον υπεύθυνο":"Η παρέα σου άνοιξε!");
+  render();
+});
+
+// ---------- σύνδεση με το Firebase
+async function start(){
+  try{
+    const B="https://www.gstatic.com/firebasejs/10.12.2/";
+    const [{initializeApp},FS,au]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-firestore.js"),import(B+"firebase-auth.js")]);
+    AU=au;
+    const app=initializeApp(CFG.firebase,"parea");
+    const fdb=FS.getFirestore(app);auth=au.getAuth(app);
+    db={
+      set:(p,d)=>FS.setDoc(FS.doc(fdb,p),d),
+      del:p=>FS.deleteDoc(FS.doc(fdb,p)),
+      get:async p=>{const s=await FS.getDoc(FS.doc(fdb,p));return s.exists()?s.data():null}
+    };
+    const subs=[];
+    const listen=(path,key)=>subs.push(FS.onSnapshot(FS.collection(fdb,path),s=>{const o={};s.forEach(d=>o[d.id]=d.data());M[key]=o;ready=true;render()},err=>{console.warn(path,err);ready=true;render()}));
+    let first=true;
+    au.onAuthStateChanged(auth,async u=>{
+      if(!u){try{await au.signInAnonymously(auth)}catch(e){console.error(e);offline=true;ready=true;render()}return}
+      uid=u.uid;
+      isAdmin=!u.isAnonymous&&(u.email||"").toLowerCase()===CFG.adminEmail.toLowerCase();
+      subs.splice(0).forEach(f=>f());
+      listen("tables","tables");listen("mod","mod");listen("going","going");
+      if(isAdmin)listen("reports","reports");else M.reports={};
+      subs.push(FS.onSnapshot(FS.doc(fdb,"config/parea"),s=>{M.cfg={requireApproval:s.exists()?s.data().requireApproval!==false:true};render()},()=>{}));
+      if(isAdmin&&L.tab==="login")L.tab="admin";
+      render();first=false;
+    });
+  }catch(e){console.error(e);offline=true;ready=true;render()}
+}
+if(location.hash==="#admin")L.tab="login";
+render();
+start();
+</script>
+</body>
+</html>
