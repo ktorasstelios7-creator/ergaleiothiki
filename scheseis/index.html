@@ -169,6 +169,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);f
 </style>
 </head>
 <body>
+<div class="ergal-top" role="navigation" aria-label="Εργαλειοθήκη"><a class="ergal-top-a" id="ergalTop" href="../">← Επιστροφή στην Εργαλειοθήκη</a></div>
+<style>.ergal-top{display:block;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 6px;position:relative;z-index:30;text-align:left}.ergal-top-a{display:inline-flex;align-items:center;gap:6px;background:#6b3f72;color:#fff!important;text-decoration:none!important;font:600 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;padding:11px 16px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.18)}.ergal-top-a:hover{background:#5a3360}.ergal-top-a:focus-visible{outline:3px solid #e0b84f;outline-offset:2px}@media print{.ergal-top{display:none!important}}</style>
+<script>try{if(localStorage.getItem('ergal-st')==='1')document.getElementById('ergalTop').href='../?mathites'}catch(e){}</script>
+
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#home" aria-label="Σχέσεις με σεβασμό, αρχική">
@@ -410,6 +414,4 @@ route();
 })();
 </script>
 
-<a class="ergal-back" href="../" aria-label="Επιστροφή στην Εργαλειοθήκη">← Εργαλειοθήκη</a>
-<style>.ergal-back{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;background:#6b3f72;color:#fff!important;text-decoration:none;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:.92}.ergal-back:hover{opacity:1}@media print{.ergal-back{display:none}}</style>
 </body></html>

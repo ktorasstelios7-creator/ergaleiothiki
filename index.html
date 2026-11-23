@@ -374,6 +374,7 @@ footer{margin-bottom:56px}
 <script>
 const params=new URLSearchParams(location.search);
 const onlySt=params.has('mathites');
+try{if(onlySt)localStorage.setItem('ergal-st','1');else localStorage.removeItem('ergal-st');}catch(e){}
 const fbtns=[...document.querySelectorAll('[data-f]')];
 const auds=[...document.querySelectorAll('.aud')];
 const jump=document.querySelector('.jump');
