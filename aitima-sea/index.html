@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Κλείσε συνάντηση με τον Καθηγητή Σ.Ε.Α.</title>
+<meta name="theme-color" content="#6b3f72">
+<link rel="icon" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,800&family=Commissioner:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Μαθητική φόρμα: ένα αίτημα ανά μαθητή, ανώνυμη σύνδεση στο Firebase, ο μαθητής βλέπει μόνο το δικό του αίτημα και την απάντηση. */
+:root{
+  --bg:#f4f1f5; --paper:#fff; --ink:#1f1a24; --muted:#5f5868; --line:#ddd4e2; --soft:#f8f5fa;
+  --accent:#6b3f72; --accent-ink:#fff; --ok:#2f7f55; --ok-bg:#e1f3e8; --warn:#8a5a00; --warn-bg:#fff1d6; --bad:#a3302a; --bad-bg:#fbe4e1;
+  --display:"Literata",Georgia,serif; --body:"Commissioner","Segoe UI",system-ui,sans-serif; color-scheme:light}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#151219; --paper:#1f1b25; --ink:#ece6f0; --muted:#aaa1b3; --line:#352e3d; --soft:#27222e;
+  --accent:#c99bd1; --accent-ink:#1b1220; --ok:#7dd3a4; --ok-bg:#173426; --warn:#f2d18c; --warn-bg:#3a2e12; --bad:#ff9a8f; --bad-bg:#3b1e1c; color-scheme:dark}}
+*{box-sizing:border-box} [hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.55 var(--body)}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.2;text-wrap:balance}
+p{margin:0}
+.app{max-width:560px;margin:0 auto;padding:8px 16px 60px;display:grid;gap:16px}
+.hero{padding:14px 0 2px;display:grid;gap:8px}
+.eyebrow{font-size:12.5px;letter-spacing:.09em;font-weight:700;color:var(--muted);text-transform:uppercase}
+.hero h1{font-size:clamp(28px,7vw,38px);font-weight:800}
+.hero p{color:var(--muted)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:14px}
+.urgent{background:var(--warn-bg);border-color:transparent;color:var(--ink)}
+.urgent b{color:var(--warn)}
+.urgent a{color:inherit;font-weight:700}
+label.f{display:grid;gap:6px;font-weight:600}
+label.f small,.hint{font-weight:400;color:var(--muted);font-size:14px}
+input[type=text],textarea,select{font:inherit;color:inherit;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;width:100%}
+textarea{min-height:90px;resize:vertical}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
+legend{font-weight:600;padding:0;margin-bottom:6px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{position:relative}
+.pill input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.pill span{display:inline-block;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--soft);font-size:15px;font-weight:500}
+.pill input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pill input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.btn{font:600 16px var(--body);border-radius:999px;padding:13px 22px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.6;cursor:wait}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.status{display:inline-flex;align-items:center;gap:8px;font-weight:700;padding:6px 12px;border-radius:999px;width:fit-content}
+.s-new{background:var(--warn-bg);color:var(--warn)} .s-scheduled{background:var(--ok-bg);color:var(--ok)}
+.s-done{background:var(--soft);color:var(--muted)} .s-declined{background:var(--bad-bg);color:var(--bad)}
+.reply{background:var(--soft);border-left:4px solid var(--accent);padding:12px 14px;border-radius:10px}
+.slot{font-family:var(--display);font-size:22px;font-weight:800}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:15px}
+dt{color:var(--muted)} dd{margin:0}
+.err{color:var(--bad);font-size:14.5px;min-height:1.2em}
+.lines{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.lines a{display:flex;gap:10px;align-items:baseline;color:inherit;text-decoration:none}
+.lines b{min-width:80px;color:var(--accent)}
+details summary{cursor:pointer;font-weight:600}
+footer{color:var(--muted);font-size:13.5px;text-align:center}
+</style>
+<script>
+// Ίδιο Firebase project με την «Ανοιχτή Παρέα» και το «Παίζουμε;».
+window.SEA_CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyAYkrxgUQFlSRy-LQVEMS5u6xHPmRnElSM",
+    authDomain: "lamplay-57d2f.firebaseapp.com",
+    projectId: "lamplay-57d2f",
+    storageBucket: "lamplay-57d2f.firebasestorage.app",
+    messagingSenderId: "618471238407",
+    appId: "1:618471238407:web:8039df117d0eb70d3373a2"
+  }
+};
+</script>
+</head>
+<body>
+<div class="ergal-top" role="navigation" aria-label="Εργαλειοθήκη"><a class="ergal-top-a" id="ergalTop" href="../">← Επιστροφή στην Εργαλειοθήκη</a></div>
+<style>.ergal-top{display:block;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 6px;position:relative;z-index:30;text-align:left}.ergal-top-a{display:inline-flex;align-items:center;gap:6px;background:#6b3f72;color:#fff!important;text-decoration:none!important;font:600 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;padding:11px 16px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.18)}.ergal-top-a:hover{background:#5a3360}.ergal-top-a:focus-visible{outline:3px solid #e0b84f;outline-offset:2px}@media print{.ergal-top{display:none!important}}</style>
+<script>try{if(localStorage.getItem('ergal-st')==='1')document.getElementById('ergalTop').href='../?mathites'}catch(e){}</script>
+
+<div class="app">
+  <header class="hero">
+    <span class="eyebrow">Γραφείο 10 · Καθηγητής Σ.Ε.Α.</span>
+    <h1>Θέλεις να τα πούμε;</h1>
+    <p>Στείλε αίτημα για συνάντηση με τον Καθηγητή Συμβουλευτικής και Επαγγελματικής Αγωγής. Μπορείς να έρθεις για οτιδήποτε: επιλογές μαθημάτων, σπουδές, κάτι που σε απασχολεί, φίλους, οικογένεια ή απλώς για να μιλήσεις.</p>
+  </header>
+
+  <aside class="card urgent" aria-label="Αν είναι επείγον">
+    <p><b>Αν είναι επείγον ή δεν νιώθεις ασφαλής, μην περιμένεις απάντηση.</b> Έλα τώρα στο γραφείο 10 ή μίλησε αμέσως με οποιονδήποτε καθηγητή ή τη Διεύθυνση. Μπορείς να πάρεις και το <a href="tel:116111">116 111</a> (γραμμή για παιδιά και εφήβους). Σε άμεσο κίνδυνο: <a href="tel:112">112</a>.</p>
+  </aside>
+
+  <main id="view"><section class="card"><p class="hint">Φορτώνει…</p></section></main>
+
+  <details class="card">
+    <summary>Γραμμές στήριξης στην Κύπρο</summary>
+    <ul class="lines">
+      <li><a href="tel:116111"><b>116 111</b><span>Γραμμή στήριξης παιδιών και εφήβων</span></a></li>
+      <li><a href="tel:1466"><b>1466</b><span>Hope For Children</span></a></li>
+      <li><a href="tel:1480"><b>1480</b><span>Cyber Safety</span></a></li>
+      <li><a href="tel:80007773"><b>8000 7773</b><span>Σαμαρείτες Κύπρου</span></a></li>
+      <li><a href="tel:112"><b>112</b><span>Άμεσος κίνδυνος</span></a></li>
+    </ul>
+  </details>
+
+  <footer>Το αίτημά σου το βλέπει μόνο ο Καθηγητής Σ.Ε.Α. Η απάντηση εμφανίζεται εδώ, σε αυτή τη συσκευή.<br>Λύκειο Αρχαγγέλου «Απόστολος Μάρκος» · Γραφείο 10</footer>
+</div>
+
+<script type="module">
+const CFG=window.SEA_CONFIG;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TOPICS=["Επιλογές μαθημάτων / κατευθύνσεις","Σπουδές & επάγγελμα","Μελέτη, βαθμοί, εξετάσεις","Φίλοι, παρέα, σχέσεις","Κάτι με απασχολεί / άγχος","Οικογένεια","Άλλο"];
+const DAYS=["Δευτέρα","Τρίτη","Τετάρτη","Πέμπτη","Παρασκευή"];
+const WHEN=["1ο διάλειμμα","2ο διάλειμμα","Σε ώρα μαθήματος (με άδεια)","Δεν με πειράζει"];
+const STATUS={new:["Στάλθηκε · περιμένει απάντηση","s-new"],scheduled:["Κλείστηκε συνάντηση","s-scheduled"],done:["Ολοκληρώθηκε","s-done"],declined:["Έλα να τα πούμε από κοντά","s-declined"]};
+let FS,fdb,uid,mine=null,editing=false,offline=false,ready=false;
+
+function render(){
+  const v=$("#view");
+  if(!ready){v.innerHTML=`<section class="card"><p class="hint">Φορτώνει…</p></section>`;return}
+  if(offline){v.innerHTML=`<section class="card"><h2>Η φόρμα δεν φορτώνει τώρα</h2><p>Ίσως δεν υπάρχει σύνδεση στο internet. Μπορείς να περάσεις από το γραφείο 10 ή να αφήσεις σημείωμα με το όνομα και το τμήμα σου.</p><div class="row"><button class="btn" onclick="location.reload()">Δοκίμασε ξανά</button></div></section>`;return}
+  if(mine&&!editing){v.innerHTML=statusCard(mine);bindStatus();return}
+  v.innerHTML=formCard(editing?mine:null);bindForm();
+}
+
+function statusCard(r){
+  const [lab,cls]=STATUS[r.status]||STATUS.new;
+  const canEdit=r.status==="new";
+  const canNew=r.status==="done"||r.status==="declined";
+  return `<section class="card" aria-live="polite">
+    <h2>Το αίτημά σου</h2>
+    <span class="status ${cls}">${lab}</span>
+    ${r.status==="scheduled"&&r.slot?`<div><p class="hint">Η συνάντησή σου</p><p class="slot">${esc(r.slot)}</p><p class="hint">Γραφείο 10. Αν δεν μπορείς τελικά, πέρνα να το αλλάξουμε.</p></div>`:""}
+    ${r.reply?`<div class="reply"><p class="hint">Μήνυμα από τον Καθηγητή Σ.Ε.Α.</p><p>${esc(r.reply)}</p></div>`:""}
+    ${r.status==="new"?`<p class="hint">Θα δεις εδώ την απάντηση μόλις το δει ο Καθηγητής Σ.Ε.Α. Άνοιξε ξανά αυτή τη σελίδα σε λίγες μέρες, από την ίδια συσκευή.</p>`:""}
+    <dl><dt>Όνομα</dt><dd>${esc(r.name)}</dd><dt>Τμήμα</dt><dd>${esc(r.cls)}</dd><dt>Θέμα</dt><dd>${esc(r.topic)}</dd>
+    <dt>Μέρες</dt><dd>${esc((r.days||[]).join(", ")||"Οποιαδήποτε")}</dd><dt>Πότε</dt><dd>${esc((r.when||[]).join(", ")||"—")}</dd></dl>
+    <div class="row">
+      ${canEdit?`<button class="btn" id="edit">Διόρθωση</button><button class="btn" id="cancel">Ακύρωση αιτήματος</button>`:""}
+      ${canNew?`<button class="btn primary" id="again">Νέο αίτημα</button>`:""}
+    </div><p class="err" id="err" aria-live="polite"></p></section>`;
+}
+function bindStatus(){
+  $("#edit")?.addEventListener("click",()=>{editing=true;render()});
+  $("#again")?.addEventListener("click",()=>{editing=true;mine={...mine,note:""};render()});
+  $("#cancel")?.addEventListener("click",async()=>{
+    if(!confirm("Να ακυρωθεί το αίτημα;"))return;
+    try{await FS.deleteDoc(FS.doc(fdb,"seaRequests/"+uid));mine=null;render()}catch(e){$("#err").textContent="Δεν έγινε η ακύρωση. Δοκίμασε ξανά."}
+  });
+}
+
+function pills(name,opts,sel,type="checkbox"){
+  return `<div class="pills">${opts.map(o=>`<label class="pill"><input type="${type}" name="${name}" value="${esc(o)}" ${sel.includes(o)?"checked":""}><span>${esc(o)}</span></label>`).join("")}</div>`;
+}
+function formCard(r){
+  r=r||{};
+  return `<form class="card" id="f" novalidate>
+    <h2>${r.name?"Διόρθωση αιτήματος":"Νέο αίτημα"}</h2>
+    <label class="f">Όνομα και επίθετο<input type="text" name="name" maxlength="60" autocomplete="name" value="${esc(r.name)}" required></label>
+    <label class="f">Τμήμα <small>π.χ. Α3, Β1, Γ2</small><input type="text" name="cls" maxlength="10" value="${esc(r.cls)}" required></label>
+    <fieldset><legend>Για ποιο θέμα; <span class="hint">(διάλεξε ένα)</span></legend>${pills("topic",TOPICS,r.topic?[r.topic]:[],"radio")}</fieldset>
+    <fieldset><legend>Ποιες μέρες σε βολεύουν;</legend>${pills("days",DAYS,r.days||[])}</fieldset>
+    <fieldset><legend>Πότε;</legend>${pills("when",WHEN,r.when||[])}</fieldset>
+    <fieldset><legend>Πόσο σύντομα;</legend>${pills("pace",["Μπορεί να περιμένει λίγες μέρες","Θα ήθελα σύντομα"],r.pace?[r.pace]:[],"radio")}</fieldset>
+    <label class="f">Θες να πεις κάτι ακόμα; <small>Προαιρετικό. Δεν χρειάζεται να εξηγήσεις: θα τα πούμε από κοντά.</small><textarea name="note" maxlength="300">${esc(r.note)}</textarea></label>
+    <div class="row"><button class="btn primary" type="submit" id="send">Στείλε το αίτημα</button>${editing&&mine?`<button class="btn" type="button" id="back">Πίσω</button>`:""}</div>
+    <p class="err" id="err" aria-live="polite"></p>
+  </form>`;
+}
+function bindForm(){
+  const f=$("#f");
+  $("#back")?.addEventListener("click",()=>{editing=false;render()});
+  f.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const fd=new FormData(f);
+    const d={name:(fd.get("name")||"").trim().slice(0,60),cls:(fd.get("cls")||"").trim().toUpperCase().slice(0,10),
+      topic:fd.get("topic")||"",days:fd.getAll("days"),when:fd.getAll("when"),pace:fd.get("pace")||"",note:(fd.get("note")||"").trim().slice(0,300)};
+    const err=$("#err");
+    if(!d.name){err.textContent="Γράψε το όνομά σου.";f.name.focus();return}
+    if(!d.cls){err.textContent="Γράψε το τμήμα σου.";f.cls.focus();return}
+    if(!d.topic){err.textContent="Διάλεξε ένα θέμα (ή «Άλλο»).";return}
+    const btn=$("#send");btn.disabled=true;btn.textContent="Στέλνεται…";
+    const now=Date.now();
+    const doc={...d,status:"new",createdAt:(editing&&mine&&mine.status==="new"&&mine.createdAt)||now,updatedAt:now};
+    try{
+      await FS.setDoc(FS.doc(fdb,"seaRequests/"+uid),doc);
+      mine=doc;editing=false;render();
+      try{localStorage.setItem("sea-req-name",d.name)}catch(x){}
+    }catch(ex){
+      console.error(ex);btn.disabled=false;btn.textContent="Στείλε το αίτημα";
+      err.textContent="Δεν στάλθηκε. Δοκίμασε ξανά σε λίγο ή πέρνα από το γραφείο 10.";
+    }
+  });
+}
+
+async function start(){
+  try{
+    const B="https://www.gstatic.com/firebasejs/10.12.2/";
+    const [{initializeApp},fs,au]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-firestore.js"),import(B+"firebase-auth.js")]);
+    FS=fs;
+    const app=initializeApp(CFG.firebase,"sea");
+    fdb=fs.getFirestore(app);const auth=au.getAuth(app);
+    au.onAuthStateChanged(auth,async u=>{
+      if(!u){try{await au.signInAnonymously(auth)}catch(e){console.error(e);offline=true;ready=true;render()}return}
+      uid=u.uid;
+      fs.onSnapshot(fs.doc(fdb,"seaRequests/"+uid),s=>{mine=s.exists()?s.data():null;ready=true;if(!editing)render()},
+        e=>{console.warn(e);ready=true;render()});
+    });
+  }catch(e){console.error(e);offline=true;ready=true;render()}
+}
+render();start();
+</script>
+</body>
+</html>
