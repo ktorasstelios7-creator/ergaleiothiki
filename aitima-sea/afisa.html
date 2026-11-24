@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Αφίσα QR · Κλείσε συνάντηση με τον Καθηγητή Σ.Ε.Α.</title>
+<link rel="icon" href="../icons/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,800&family=Commissioner:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Αφίσα A4 για εκτύπωση: πόρτα γραφείου 10, τάξεις, πίνακας ανακοινώσεων. */
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#e9e4ec}
+body{font-family:"Commissioner","DejaVu Sans","Segoe UI",sans-serif;color:#1f1a24}
+.bar{max-width:210mm;margin:14px auto;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.bar a,.bar button{font:600 15px system-ui,sans-serif;border-radius:999px;padding:10px 18px;border:0;cursor:pointer;text-decoration:none;background:#6b3f72;color:#fff}
+.bar a.alt{background:#fff;color:#6b3f72;border:1px solid #cdbfd3}
+.page{width:210mm;height:297mm;margin:0 auto 20px;background:#fff;padding:16mm 16mm 12mm;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5.5mm;overflow:hidden;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.eyebrow{font-size:12pt;letter-spacing:.14em;font-weight:700;color:#6b3f72;text-transform:uppercase}
+h1{font-family:"Literata","DejaVu Serif",Georgia,serif;font-weight:800;font-size:40pt;line-height:1.05;margin:0}
+.lead{font-size:16pt;line-height:1.4;max-width:155mm;color:#3e3646;margin:0}
+.qr{border:3mm solid #6b3f72;border-radius:8mm;padding:5mm;background:#fff}
+.qr img{width:92mm;height:92mm;display:block}
+.how{font-size:15pt;font-weight:600;margin:0}
+.topics{display:flex;flex-wrap:wrap;gap:3mm;justify-content:center;max-width:160mm}
+.topics span{border:1px solid #cdbfd3;background:#f6f1f8;border-radius:999px;padding:2mm 4.5mm;font-size:12.5pt}
+.urgent{margin-top:auto;background:#fff1d6;border-radius:5mm;padding:4.5mm 7mm;font-size:12.5pt;line-height:1.45;max-width:170mm}
+.urgent b{color:#8a5a00}
+.foot{font-size:11pt;color:#5f5868}
+@media print{html,body{background:#fff}.bar{display:none}.page{margin:0}}
+</style>
+</head>
+<body>
+<div class="bar"><button onclick="print()">🖨️ Εκτύπωση</button><a class="alt" href="../files/qr-synantisi-sea.png" download>Μόνο το QR (PNG)</a><a class="alt" href="../files/qr-synantisi-sea.svg" download>Μόνο το QR (SVG)</a></div>
+<div class="page">
+  <span class="eyebrow">Λύκειο Αρχαγγέλου «Απόστολος Μάρκος» · Γραφείο 10</span>
+  <h1>Θέλεις να τα πούμε;</h1>
+  <p class="lead">Κλείσε συνάντηση με τον Καθηγητή Συμβουλευτικής και Επαγγελματικής Αγωγής, απευθείας από το κινητό σου.</p>
+  <div class="qr"><img src="../files/qr-synantisi-sea.png" alt="QR code για τη φόρμα αιτήματος συνάντησης"></div>
+  <p class="how">📱 Σκάναρε με την κάμερα, συμπλήρωσε τη φόρμα και δες εκεί την ώρα της συνάντησης.</p>
+  <div class="topics"><span>Επιλογές μαθημάτων</span><span>Σπουδές &amp; επάγγελμα</span><span>Μελέτη &amp; εξετάσεις</span><span>Φίλοι &amp; σχέσεις</span><span>Άγχος</span><span>Οικογένεια</span><span>Ό,τι σε απασχολεί</span></div>
+  <p class="urgent"><b>Αν είναι επείγον ή δεν νιώθεις ασφαλής, μην περιμένεις:</b> έλα κατευθείαν στο γραφείο 10 ή μίλησε με οποιονδήποτε καθηγητή. Γραμμή για παιδιά και εφήβους <b>116 111</b> · Άμεσος κίνδυνος <b>112</b></p>
+  <p class="foot">ktorasstelios7-creator.github.io/ergaleiothiki/aitima-sea</p>
+</div>
+</body>
+</html>

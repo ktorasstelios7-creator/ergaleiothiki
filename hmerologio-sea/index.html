@@ -345,7 +345,10 @@ const R={signed:false,items:{},err:"",loading:false,showDone:false};
 let FS,fdb,auth,AU,unsub=[];
 function reqView(){
   const link=new URL("../aitima-sea/",location.href).href;
-  const share=`<div class="note no-print"><b>Link για τους μαθητές:</b> <code>${esc(link)}</code> <button class="btn sm" id="copyLink">Αντιγραφή</button><br><span class="small muted">Υπάρχει και ως κάρτα «Κλείσε συνάντηση» στην ενότητα μαθητών της Εργαλειοθήκης.</span></div>`;
+  const share=`<div class="note no-print" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><img src="../files/qr-synantisi-sea.png" alt="QR code για τη φόρμα αιτήματος" width="110" height="110" style="border-radius:8px;background:#fff;padding:4px">
+    <div style="display:grid;gap:6px;flex:1;min-width:220px"><span><b>Link για τους μαθητές:</b> <code>${esc(link)}</code></span>
+    <span class="row"><button class="btn sm" id="copyLink">Αντιγραφή link</button><a class="btn sm" href="../aitima-sea/afisa.html" target="_blank" rel="noopener">🖨️ Αφίσα A4 με QR</a><a class="btn sm" href="../files/qr-synantisi-sea.png" download>QR (PNG)</a></span>
+    <span class="small muted">Υπάρχει και ως κάρτα «Κλείσε συνάντηση» στην ενότητα μαθητών της Εργαλειοθήκης.</span></div></div>`;
   if(!R.signed) return `${share}<form class="login" id="login" style="margin-top:14px"><h2>Σύνδεση</h2><p class="muted small">Με τον ίδιο λογαριασμό της «Ανοιχτής Παρέας». Τα αιτήματα φαίνονται μόνο σε αυτόν.</p>
     <label class="f">Email<input type="email" name="email" value="${esc(CFG.adminEmail)}" autocomplete="username"></label>
     <label class="f">Κωδικός<input type="password" name="pass" autocomplete="current-password" required></label>
