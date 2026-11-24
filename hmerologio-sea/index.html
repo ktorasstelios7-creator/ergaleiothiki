@@ -333,7 +333,7 @@ function openEntry(id,pre){
     else{const rep=+(fd.get("repeat")||0),times=rep===7?8:rep===14?6:1,series=times>1?uidGen():"";
       for(let i=0;i<times;i++){const nid=uidGen();DB.entries[nid]={...base,id:nid,date:addD(base.date,i*rep),follow:i?"":base.follow,series,reqId:pre?.reqId||"",upd:now}}}
     persist();$("#dlg").close();V.cur=base.date;
-    if(pre?.reqId){await updReq(pre.reqId,{status:"scheduled",slot:slotText(base),reply:(fd.get("reply")||"").trim()})}
+    if(pre?.reqId){await updReq(pre.reqId,{status:"scheduled",slot:slotText(base),slotDate:base.date,slotTime:base.start||"",slotPeriod:slotName(base.start)||"",reply:(fd.get("reply")||"").trim()})}
     toast("Αποθηκεύτηκε");render();
   };
   $("#dlg").showModal();setTimeout(()=>f.title.focus(),30);

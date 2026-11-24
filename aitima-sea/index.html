@@ -62,6 +62,19 @@ dt{color:var(--muted)} dd{margin:0}
 .lines b{min-width:80px;color:var(--accent)}
 details summary{cursor:pointer;font-weight:600}
 footer{color:var(--muted);font-size:13.5px;text-align:center}
+.cert{background:#fffdf7;color:#1f1a24;border:2px solid #6b3f72;border-radius:14px;padding:18px 18px 14px;display:grid;gap:10px;font-size:16.5px;line-height:1.55}
+.cert-k{font-size:12.5px;letter-spacing:.09em;font-weight:700;color:#6b3f72;text-transform:uppercase}
+.cert-t b{font-weight:700}
+.cert-s{font-family:var(--display);font-size:17px;line-height:1.35;text-align:right;margin-top:4px}
+.cert-live{font-size:13px;color:#2f7f55;font-weight:600;border-top:1px dashed #cdbfd3;padding-top:8px}
+.certfull{position:fixed;inset:0;z-index:100;background:#f4f1f5;display:grid;align-content:center;justify-items:center;gap:16px;padding:20px;overflow:auto}
+.cert.big{max-width:620px;width:100%;font-size:clamp(18px,4.6vw,24px);padding:26px}
+.cert.big .cert-s{font-size:clamp(19px,5vw,26px)}
+@media print{
+  body.print-cert>*:not(#certFull){display:none!important}
+  body.print-cert #certFull{display:grid!important;position:static;background:#fff}
+  body.print-cert #certFull>button{display:none}
+}
 </style>
 <script>
 // Ίδιο Firebase project με την «Ανοιχτή Παρέα» και το «Παίζουμε;».
@@ -105,6 +118,11 @@ window.SEA_CONFIG = {
   <footer>Το αίτημά σου το βλέπει μόνο ο Καθηγητής Σ.Ε.Α. Η απάντηση εμφανίζεται εδώ, σε αυτή τη συσκευή.<br>Λύκειο Αρχαγγέλου «Απόστολος Μάρκος» · Γραφείο 10</footer>
 </div>
 
+<div class="certfull" id="certFull" hidden role="dialog" aria-modal="true" aria-label="Βεβαίωση συνάντησης">
+  <div class="cert big"></div>
+  <button class="btn" onclick="document.getElementById('certFull').hidden=true">Κλείσιμο</button>
+</div>
+
 <script type="module">
 const CFG=window.SEA_CONFIG;
 const $=s=>document.querySelector(s);
@@ -130,7 +148,10 @@ function statusCard(r){
   return `<section class="card" aria-live="polite">
     <h2>Το αίτημά σου</h2>
     <span class="status ${cls}">${lab}</span>
-    ${r.status==="scheduled"&&r.slot?`<div><p class="hint">Η συνάντησή σου</p><p class="slot">${esc(r.slot)}</p><p class="hint">Γραφείο 10. Αν δεν μπορείς τελικά, πέρνα να το αλλάξουμε.</p></div>`:""}
+    ${r.status==="scheduled"&&r.slot?`<div><p class="hint">Η συνάντησή σου</p><p class="slot">${esc(r.slot)}</p><p class="hint">Γραφείο 10. Αν δεν μπορείς τελικά, πέρνα να το αλλάξουμε.</p></div>
+    <div class="cert" id="cert">${certHtml(r)}</div>
+    <p class="hint">Δείξε αυτή τη βεβαίωση στον καθηγητή του μαθήματος που θα χάσεις.</p>
+    <div class="row"><button class="btn primary" id="showCert">Άνοιγμα βεβαίωσης σε όλη την οθόνη</button><button class="btn" id="printCert">Εκτύπωση</button></div>`:""}
     ${r.reply?`<div class="reply"><p class="hint">Μήνυμα από τον Καθηγητή Σ.Ε.Α.</p><p>${esc(r.reply)}</p></div>`:""}
     ${r.status==="new"?`<p class="hint">Θα δεις εδώ την απάντηση μόλις το δει ο Καθηγητής Σ.Ε.Α. Άνοιξε ξανά αυτή τη σελίδα σε λίγες μέρες, από την ίδια συσκευή.</p>`:""}
     <dl><dt>Όνομα</dt><dd>${esc(r.name)}</dd><dt>Τμήμα</dt><dd>${esc(r.cls)}</dd><dt>Θέμα</dt><dd>${esc(r.topic)}</dd>
@@ -140,7 +161,31 @@ function statusCard(r){
       ${canNew?`<button class="btn primary" id="again">Νέο αίτημα</button>`:""}
     </div><p class="err" id="err" aria-live="polite"></p></section>`;
 }
+function certWhen(r){
+  if(r.slotDate){
+    const [y,m,d]=r.slotDate.split("-").map(Number);
+    let w=new Date(y,m-1,d).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+    w=w.charAt(0).toUpperCase()+w.slice(1);
+    if(r.slotPeriod)w+=", "+r.slotPeriod+(r.slotTime?" ("+r.slotTime+")":"");
+    else if(r.slotTime)w+=", ώρα "+r.slotTime;
+    return w;
+  }
+  return r.slot||"";
+}
+function certHtml(r){
+  return `<p class="cert-k">Βεβαίωση συνάντησης · Γραφείο 10</p>
+    <p class="cert-t">Αγαπητέ/ή συνάδελφε,</p>
+    <p class="cert-t">παρακαλώ επίτρεψε στον/στη μαθητή/τρια <b>${esc(r.name)}</b> του τμήματος <b>${esc(r.cls)}</b> να προσέλθει στο γραφείο μου για την προγραμματισμένη μας συνάντηση την <b>${esc(certWhen(r))}</b>.</p>
+    <p class="cert-t">Ευχαριστώ.</p>
+    <p class="cert-s"><b>Στέλιος Κτώρας</b><br>Καθηγητής Σ.Ε.Α.<br>Γραφείο 10</p>
+    <p class="cert-live">✓ Επιβεβαιωμένο από τον Καθηγητή Σ.Ε.Α. · <span class="clock">${new Date().toLocaleTimeString("el-GR")}</span></p>`;
+}
+let clockT;
+function tickClock(){clearInterval(clockT);clockT=setInterval(()=>document.querySelectorAll(".clock").forEach(c=>c.textContent=new Date().toLocaleTimeString("el-GR")),1000)}
 function bindStatus(){
+  if(mine?.status==="scheduled")tickClock();
+  $("#showCert")?.addEventListener("click",()=>{const o=$("#certFull");o.querySelector(".cert").innerHTML=certHtml(mine);o.hidden=false;o.querySelector("button").focus()});
+  $("#printCert")?.addEventListener("click",()=>{const o=$("#certFull");o.querySelector(".cert").innerHTML=certHtml(mine);document.body.classList.add("print-cert");window.print();document.body.classList.remove("print-cert")});
   $("#edit")?.addEventListener("click",()=>{editing=true;render()});
   $("#again")?.addEventListener("click",()=>{editing=true;mine={...mine,note:""};render()});
   $("#cancel")?.addEventListener("click",async()=>{
