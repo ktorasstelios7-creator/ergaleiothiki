@@ -315,13 +315,15 @@ function openEntry(id,pre){
     ${pre?.reqId?`<label class="f">Μήνυμα στον μαθητή <small>Προαιρετικό, το βλέπει στη σελίδα του αιτήματος</small><input type="text" name="reply" maxlength="300" placeholder="π.χ. Σε περιμένω στο γραφείο 10!"></label>`:""}
     <p class="small" id="fErr" style="color:var(--bad)" aria-live="polite"></p>
     <div class="row" style="justify-content:space-between">
-      <span class="row">${id?`<button type="button" class="btn danger" id="delE">Διαγραφή</button><button type="button" class="btn" id="dupE">Αντίγραφο</button>`:""}</span>
+      <span class="row">${id?`<button type="button" class="btn danger" id="delE">Διαγραφή</button><button type="button" class="btn" id="dupE">Αντίγραφο</button><button type="button" class="btn" id="certE">🖨️ Βεβαίωση</button>`:""}</span>
       <span class="row"><button type="button" class="btn" id="cancelE">Άκυρο</button><button type="submit" class="btn primary">Αποθήκευση</button></span></div>`;
   const f=$("#evForm");let cat=e.cat;
   f.querySelectorAll("#catSel button").forEach(b=>b.onclick=()=>{cat=b.dataset.cat;f.querySelectorAll("#catSel button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   f.querySelectorAll("#slotSel button").forEach(b=>b.onclick=()=>{f.start.value=b.dataset.t;f.querySelectorAll("#slotSel button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
   $("#cancelE").onclick=()=>$("#dlg").close();
   $("#delE")?.addEventListener("click",()=>{if(!confirm("Διαγραφή της καταχώρισης;"))return;DB.entries[id]={id,deleted:true,upd:Date.now()};persist();$("#dlg").close();toast("Διαγράφηκε");render()});
+  $("#certE")?.addEventListener("click",()=>{const x=DB.entries[id];const r=x.reqId&&R.items[x.reqId];const m=(x.who||"").match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+    $("#dlg").close();certDlg({name:r?r.name:(m?m[1]:x.who||""),cls:r?r.cls:(m?m[2]:""),date:x.date,period:slotName(x.start)})});
   $("#dupE")?.addEventListener("click",()=>{const c={...DB.entries[id]};$("#dlg").close();openEntry(null,{...c,date:addD(c.date,7),title:c.title})});
   f.onsubmit=async ev=>{
     ev.preventDefault();
@@ -338,7 +340,50 @@ function openEntry(id,pre){
   };
   $("#dlg").showModal();setTimeout(()=>f.title.focus(),30);
 }
-function slotText(e){let s=fmtLong(e.date);s=s.charAt(0).toUpperCase()+s.slice(1);if(e.start){const n=slotName(e.start);s+=" · "+(n?n+" ("+e.start+")":e.start)}return s}
+function slotText(e){let s=fmtLong(e.date);s=s.charAt(0).toUpperCase()+s.slice(1);if(e.start){const n=slotName(e.start);s+=" · "+(n||e.start)}return s}
+
+// ---------- βεβαίωση συνάντησης (εκτύπωση)
+function certWhenText(date,period){
+  if(!date)return period||"";
+  let w=pd(date).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  w=w.charAt(0).toUpperCase()+w.slice(1);
+  return period?w+", "+period:w;
+}
+function certDlg(c){
+  const sl=slots();
+  $("#dlg2b").innerHTML=`<h2>Βεβαίωση συνάντησης</h2><p class="small muted">Έλεγξε τα στοιχεία και πάτα «Εκτύπωση».</p>
+    <div class="g2"><label class="f">Ονοματεπώνυμο μαθητή<input type="text" id="cN" value="${esc(c.name||"")}"></label>
+    <label class="f">Τμήμα<input type="text" id="cC" value="${esc(c.cls||"")}"></label></div>
+    <div class="g2"><label class="f">Ημερομηνία<input type="date" id="cD" value="${esc(c.date||"")}"></label>
+    <label class="f">Περίοδος<select id="cP"><option value="">—</option>${sl.map(x=>`<option ${x.l===c.period?"selected":""}>${esc(x.l)}</option>`).join("")}</select></label></div>
+    <label class="small"><input type="checkbox" id="c2"> Δύο αντίγραφα σε μία σελίδα A4 (για κόψιμο στη μέση)</label>
+    <div class="row" style="justify-content:flex-end"><button class="btn" id="cX">Άκυρο</button><button class="btn primary" id="cOk">🖨️ Εκτύπωση</button></div>`;
+  $("#cX").onclick=()=>$("#dlg2").close();
+  $("#cOk").onclick=()=>{printCert({name:$("#cN").value.trim(),cls:$("#cC").value.trim(),when:certWhenText($("#cD").value,$("#cP").value)},$("#c2").checked);$("#dlg2").close()};
+  $("#dlg2").showModal();
+}
+function certBlock(c){
+  return `<section class="c"><p class="k">ΒΕΒΑΙΩΣΗ ΣΥΝΑΝΤΗΣΗΣ ΜΕ ΚΑΘΗΓΗΤΗ ΣΕΑ</p><p class="sch">Λύκειο Αρχαγγέλου «Απόστολος Μάρκος»</p>
+    <p>Αγαπητέ/ή συνάδελφε,</p>
+    <p>παρακαλώ επίτρεψε στον/στη μαθητή/τρια <b>${esc(c.name||"……………………………………")}</b> του τμήματος <b>${esc(c.cls||"………")}</b> να προσέλθει στο γραφείο μου για την προγραμματισμένη μας συνάντηση την <b>${esc(c.when||"……………………………………………")}</b>.</p>
+    <p>Ευχαριστώ.</p>
+    <p class="s"><b>Στέλιος Κτώρας</b><br>Καθηγητής Σ.Ε.Α.<br>Γραφείο 10</p><p class="u">Υπογραφή: ………………………</p></section>`;
+}
+function printCert(c,two){
+  const w=window.open("","_blank");
+  if(!w){toast("Ο browser μπλόκαρε το νέο παράθυρο. Επίτρεψε τα αναδυόμενα για αυτή τη σελίδα.");return}
+  w.document.write(`<!DOCTYPE html><html lang="el"><head><meta charset="utf-8"><title>Βεβαίωση συνάντησης · ${esc(c.name)}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,700&family=Commissioner:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>@page{size:A4;margin:14mm}body{margin:0;font:13pt/1.6 "Commissioner","Segoe UI",sans-serif;color:#1f1a24}
+  .c{border:1.5px solid #6b3f72;border-radius:4mm;padding:9mm 11mm;height:${two?"124mm":"auto"};box-sizing:border-box;display:flex;flex-direction:column;gap:2.5mm;page-break-inside:avoid}
+  .c p{margin:0}.k{font:700 14pt "Literata",Georgia,serif;letter-spacing:.06em;color:#6b3f72;text-align:center}
+  .sch{text-align:center;font-size:10.5pt;color:#5f5868;margin-bottom:3mm!important}
+  .s{font-family:"Literata",Georgia,serif;text-align:right;margin-top:auto!important;line-height:1.35}.u{text-align:right;font-size:10.5pt;color:#5f5868}
+  .cut{border:0;border-top:1px dashed #999;margin:9mm 0}</style></head><body>
+  ${certBlock(c)}${two?'<hr class="cut">'+certBlock(c):""}
+  <script>document.fonts.ready.then(()=>setTimeout(()=>print(),200));<\/script></body></html>`);
+  w.document.close();
+}
 
 // ---------- αιτήματα μαθητών (Firebase)
 const R={signed:false,items:{},err:"",loading:false,showDone:false};
@@ -347,7 +392,7 @@ function reqView(){
   const link=new URL("../aitima-sea/",location.href).href;
   const share=`<div class="note no-print" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><img src="../files/qr-synantisi-sea.png" alt="QR code για τη φόρμα αιτήματος" width="110" height="110" style="border-radius:8px;background:#fff;padding:4px">
     <div style="display:grid;gap:6px;flex:1;min-width:220px"><span><b>Link για τους μαθητές:</b> <code>${esc(link)}</code></span>
-    <span class="row"><button class="btn sm" id="copyLink">Αντιγραφή link</button><a class="btn sm" href="../aitima-sea/afisa.html" target="_blank" rel="noopener">🖨️ Αφίσα A4 με QR</a><a class="btn sm" href="../files/qr-synantisi-sea.png" download>QR (PNG)</a></span>
+    <span class="row"><button class="btn sm" id="copyLink">Αντιγραφή link</button><a class="btn sm" href="../aitima-sea/afisa.html" target="_blank" rel="noopener">🖨️ Αφίσα A4 με QR</a><a class="btn sm" href="../files/qr-synantisi-sea.png" download>QR (PNG)</a><button class="btn sm" id="certBlank">🖨️ Βεβαίωση συνάντησης</button></span>
     <span class="small muted">Υπάρχει και ως κάρτα «Κλείσε συνάντηση» στην ενότητα μαθητών της Εργαλειοθήκης.</span></div></div>`;
   if(!R.signed) return `${share}<form class="login" id="login" style="margin-top:14px"><h2>Σύνδεση</h2><p class="muted small">Με τον ίδιο λογαριασμό της «Ανοιχτής Παρέας». Τα αιτήματα φαίνονται μόνο σε αυτόν.</p>
     <label class="f">Email<input type="email" name="email" value="${esc(CFG.adminEmail)}" autocomplete="username"></label>
@@ -371,6 +416,7 @@ function reqCard(r){
     ${r.slot?`<dt>Συνάντηση</dt><dd>${esc(r.slot)}</dd>`:""}${r.reply?`<dt>Μήνυμά σου</dt><dd>${esc(r.reply)}</dd>`:""}</dl>
     <div class="row">${r.status!=="done"?`<button class="btn sm primary" data-plan="${r.id}">${r.status==="scheduled"?"Νέα ώρα":"Κλείσε συνάντηση"}</button>`:""}
       <button class="btn sm" data-reply="${r.id}">Μήνυμα</button>
+      ${r.status==="scheduled"?`<button class="btn sm" data-rcert="${r.id}">🖨️ Βεβαίωση</button>`:""}
       ${r.status!=="done"?`<button class="btn sm" data-rdone="${r.id}">✓ Ολοκληρώθηκε</button>`:""}
       <button class="btn sm danger" data-rdel="${r.id}">Διαγραφή</button></div></article>`;
 }
@@ -511,6 +557,8 @@ function bindMain(){
   $$("#main [data-plan]").forEach(b=>b.onclick=()=>{const r=R.items[b.dataset.plan];
     openEntry(null,{reqId:b.dataset.plan,cat:/Επιλογές|Σπουδές/.test(r.topic)?"epag":"math",title:`${r.name} ${r.cls}`.trim(),who:`${r.name} (${r.cls})`,notes:`Θέμα: ${r.topic}${r.note?"\nΣημείωση μαθητή: "+r.note:""}`,date:nextSchoolDay(r.days),start:firstSlotFor(r.when)})});
   $$("#main [data-reply]").forEach(b=>b.onclick=()=>replyDlg(b.dataset.reply));
+  $$("#main [data-rcert]").forEach(b=>b.onclick=()=>{const r=R.items[b.dataset.rcert];certDlg({name:r.name,cls:r.cls,date:r.slotDate||"",period:r.slotPeriod||""})});
+  $("#certBlank")?.addEventListener("click",()=>certDlg({date:todayStr()}));
   $$("#main [data-rdone]").forEach(b=>b.onclick=()=>updReq(b.dataset.rdone,{status:"done"}));
   $$("#main [data-rdel]").forEach(b=>b.onclick=async()=>{if(!confirm("Οριστική διαγραφή του αιτήματος;"))return;try{await FS.deleteDoc(FS.doc(fdb,"seaRequests/"+b.dataset.rdel))}catch(e){toast("Δεν διαγράφηκε: "+e.code)}});
   // ρυθμίσεις

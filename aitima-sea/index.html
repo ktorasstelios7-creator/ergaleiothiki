@@ -148,7 +148,7 @@ function statusCard(r){
   return `<section class="card" aria-live="polite">
     <h2>Το αίτημά σου</h2>
     <span class="status ${cls}">${lab}</span>
-    ${r.status==="scheduled"&&r.slot?`<div><p class="hint">Η συνάντησή σου</p><p class="slot">${esc(r.slot)}</p><p class="hint">Γραφείο 10. Αν δεν μπορείς τελικά, πέρνα να το αλλάξουμε.</p></div>
+    ${r.status==="scheduled"&&r.slot?`<div><p class="hint">Η συνάντησή σου</p><p class="slot">${esc(r.slotDate?certWhen(r):r.slot)}</p><p class="hint">Γραφείο 10. Αν δεν μπορείς τελικά, πέρνα να το αλλάξουμε.</p></div>
     <div class="cert" id="cert">${certHtml(r)}</div>
     <p class="hint">Δείξε αυτή τη βεβαίωση στον καθηγητή του μαθήματος που θα χάσεις.</p>
     <div class="row"><button class="btn primary" id="showCert">Άνοιγμα βεβαίωσης σε όλη την οθόνη</button><button class="btn" id="printCert">Εκτύπωση</button></div>`:""}
@@ -166,14 +166,13 @@ function certWhen(r){
     const [y,m,d]=r.slotDate.split("-").map(Number);
     let w=new Date(y,m-1,d).toLocaleDateString("el-GR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
     w=w.charAt(0).toUpperCase()+w.slice(1);
-    if(r.slotPeriod)w+=", "+r.slotPeriod+(r.slotTime?" ("+r.slotTime+")":"");
-    else if(r.slotTime)w+=", ώρα "+r.slotTime;
+    if(r.slotPeriod)w+=", "+r.slotPeriod;
     return w;
   }
   return r.slot||"";
 }
 function certHtml(r){
-  return `<p class="cert-k">Βεβαίωση συνάντησης · Γραφείο 10</p>
+  return `<p class="cert-k">ΒΕΒΑΙΩΣΗ ΣΥΝΑΝΤΗΣΗΣ ΜΕ ΚΑΘΗΓΗΤΗ ΣΕΑ</p>
     <p class="cert-t">Αγαπητέ/ή συνάδελφε,</p>
     <p class="cert-t">παρακαλώ επίτρεψε στον/στη μαθητή/τρια <b>${esc(r.name)}</b> του τμήματος <b>${esc(r.cls)}</b> να προσέλθει στο γραφείο μου για την προγραμματισμένη μας συνάντηση την <b>${esc(certWhen(r))}</b>.</p>
     <p class="cert-t">Ευχαριστώ.</p>
