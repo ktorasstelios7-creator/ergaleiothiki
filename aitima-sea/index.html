@@ -66,6 +66,7 @@ footer{color:var(--muted);font-size:13.5px;text-align:center}
 .codebox .row{justify-content:center}
 .code{font:800 34px/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;color:var(--accent)}
 #lk a{color:var(--accent);font-weight:700}
+#lk input::placeholder{text-transform:none;letter-spacing:0;font-weight:400}
 .cert{background:#fffdf7;color:#1f1a24;border:2px solid #6b3f72;border-radius:14px;padding:18px 18px 14px;display:grid;gap:10px;font-size:16.5px;line-height:1.55}
 .cert-k{font-size:12.5px;letter-spacing:.09em;font-weight:700;color:#6b3f72;text-transform:uppercase}
 .cert-t b{font-weight:700}
@@ -194,7 +195,7 @@ function codeBox(c){
 }
 function lookupCard(){
   return `<form class="card" id="lk"><h2>Έστειλες ήδη αίτημα;</h2><p class="hint">Γράψε τον κωδικό σου για να δεις την απάντηση. Αλλιώς, συμπλήρωσε το νέο αίτημα από κάτω.</p>
-    <div class="row"><input type="text" name="code" maxlength="8" placeholder="K7M4QX" autocapitalize="characters" autocomplete="off" style="flex:1;min-width:140px;letter-spacing:.12em;font-weight:700;text-transform:uppercase"><button class="btn primary" type="submit">Δες το αίτημα</button></div>
+    <div class="row"><input type="text" name="code" maxlength="8" placeholder="Γράψε εδώ τον κωδικό" autocapitalize="characters" autocomplete="off" style="flex:1;min-width:140px;letter-spacing:.08em;font-weight:700;text-transform:uppercase"><button class="btn primary" type="submit">Δες το αίτημα</button></div>
     ${getCodes().length?`<p class="hint">Τα αιτήματά σου σε αυτή τη συσκευή: ${getCodes().map(c=>`<a href="?k=${c}" data-code="${c}">${fmtCode(c)}</a>`).join(" · ")}</p>`:""}
     <p class="err" id="lkErr"></p></form>`;
 }
