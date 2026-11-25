@@ -62,6 +62,10 @@ dt{color:var(--muted)} dd{margin:0}
 .lines b{min-width:80px;color:var(--accent)}
 details summary{cursor:pointer;font-weight:600}
 footer{color:var(--muted);font-size:13.5px;text-align:center}
+.codebox{background:var(--soft);border:2px dashed var(--accent);border-radius:14px;padding:14px;display:grid;gap:8px;text-align:center}
+.codebox .row{justify-content:center}
+.code{font:800 34px/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;color:var(--accent)}
+#lk a{color:var(--accent);font-weight:700}
 .cert{background:#fffdf7;color:#1f1a24;border:2px solid #6b3f72;border-radius:14px;padding:18px 18px 14px;display:grid;gap:10px;font-size:16.5px;line-height:1.55}
 .cert-k{font-size:12.5px;letter-spacing:.09em;font-weight:700;color:#6b3f72;text-transform:uppercase}
 .cert-t b{font-weight:700}
@@ -115,7 +119,7 @@ window.SEA_CONFIG = {
     </ul>
   </details>
 
-  <footer>Το αίτημά σου το βλέπει μόνο ο Καθηγητής Σ.Ε.Α. Η απάντηση εμφανίζεται εδώ, σε αυτή τη συσκευή.<br>Λύκειο Αρχαγγέλου «Απόστολος Μάρκος» · Γραφείο 10</footer>
+  <footer>Το αίτημά σου το βλέπει μόνο ο Καθηγητής Σ.Ε.Α. και όποιος έχει τον κωδικό του. Μην τον δίνεις σε άλλους.<br>Λύκειο Αρχαγγέλου «Απόστολος Μάρκος» · Γραφείο 10</footer>
 </div>
 
 <div class="certfull" id="certFull" hidden role="dialog" aria-modal="true" aria-label="Βεβαίωση συνάντησης">
@@ -131,35 +135,73 @@ const TOPICS=["Επιλογές μαθημάτων / κατευθύνσεις","
 const DAYS=["Δευτέρα","Τρίτη","Τετάρτη","Πέμπτη","Παρασκευή"];
 const WHEN=["1ο διάλειμμα","2ο διάλειμμα","Σε ώρα μαθήματος (με άδεια)","Δεν με πειράζει"];
 const STATUS={new:["Στάλθηκε · περιμένει απάντηση","s-new"],scheduled:["Κλείστηκε συνάντηση","s-scheduled"],done:["Ολοκληρώθηκε","s-done"],declined:["Έλα να τα πούμε από κοντά","s-declined"]};
-let FS,fdb,uid,mine=null,editing=false,offline=false,ready=false;
+let FS,fdb,uid,mine=null,curId=null,editing=false,offline=false,ready=false,notFound=false,unsubDoc=null;
+// Κάθε αίτημα έχει δικό του κωδικό (= id εγγράφου). Ο κωδικός ανοίγει το αίτημα από οποιαδήποτε συσκευή.
+const ALPH="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const newCode=()=>{const a=new Uint32Array(6);crypto.getRandomValues(a);return [...a].map(x=>ALPH[x%ALPH.length]).join("")};
+const cleanCode=c=>String(c||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+const fmtCode=c=>c.length===6?c.slice(0,3)+" "+c.slice(3):c;
+const myLink=c=>location.origin+location.pathname+"?k="+c;
+function getCodes(){try{return JSON.parse(localStorage.getItem("sea-codes")||"[]")}catch(e){return[]}}
+function addCode(c){try{localStorage.setItem("sea-codes",JSON.stringify([c,...getCodes().filter(x=>x!==c)].slice(0,10)))}catch(e){}}
+function dropCode(c){try{localStorage.setItem("sea-codes",JSON.stringify(getCodes().filter(x=>x!==c)))}catch(e){}}
+const isOwner=()=>mine&&uid&&(mine.owner===uid||curId===uid);
+function watch(id){
+  if(unsubDoc)unsubDoc();curId=id;notFound=false;
+  if(id.length<=8)history.replaceState(null,"","?k="+id);
+  unsubDoc=FS.onSnapshot(FS.doc(fdb,"seaRequests/"+id),snap=>{
+    mine=snap.exists()?snap.data():null;ready=true;
+    if(mine){if(id.length<=8)addCode(id)}else{notFound=id.length<=8;if(notFound)dropCode(id)}
+    if(!editing)render();
+  },e=>{console.warn(e);mine=null;notFound=true;ready=true;render()});
+}
 
 function render(){
   const v=$("#view");
   if(!ready){v.innerHTML=`<section class="card"><p class="hint">Φορτώνει…</p></section>`;return}
   if(offline){v.innerHTML=`<section class="card"><h2>Η φόρμα δεν φορτώνει τώρα</h2><p>Ίσως δεν υπάρχει σύνδεση στο internet. Μπορείς να περάσεις από το γραφείο 10 ή να αφήσεις σημείωμα με το όνομα και το τμήμα σου.</p><div class="row"><button class="btn" onclick="location.reload()">Δοκίμασε ξανά</button></div></section>`;return}
   if(mine&&!editing){v.innerHTML=statusCard(mine);bindStatus();return}
-  v.innerHTML=formCard(editing?mine:null);bindForm();
+  v.innerHTML=(notFound&&!editing?`<section class="card"><p class="err">Δεν βρέθηκε αίτημα με τον κωδικό ${esc(fmtCode(curId))}. Έλεγξέ τον ή στείλε νέο αίτημα.</p></section>`:"")
+    +(editing?"":lookupCard())+formCard(editing&&editId?mine:prefill);
+  bindForm();bindLookup();
 }
 
 function statusCard(r){
   const [lab,cls]=STATUS[r.status]||STATUS.new;
-  const canEdit=r.status==="new";
+  const canEdit=r.status==="new"&&isOwner();
   const canNew=r.status==="done"||r.status==="declined";
   return `<section class="card" aria-live="polite">
     <h2>Το αίτημά σου</h2>
     <span class="status ${cls}">${lab}</span>
+    ${curId&&curId.length<=8?codeBox(curId):""}
     ${r.status==="scheduled"&&r.slot?`<div><p class="hint">Η συνάντησή σου</p><p class="slot">${esc(r.slotDate?certWhen(r):r.slot)}</p><p class="hint">Γραφείο 10. Αν δεν μπορείς τελικά, πέρνα να το αλλάξουμε.</p></div>
     <div class="cert" id="cert">${certHtml(r)}</div>
     <p class="hint">Δείξε αυτή τη βεβαίωση στον καθηγητή του μαθήματος που θα χάσεις.</p>
     <div class="row"><button class="btn primary" id="showCert">Άνοιγμα βεβαίωσης σε όλη την οθόνη</button><button class="btn" id="printCert">Εκτύπωση</button></div>`:""}
     ${r.reply?`<div class="reply"><p class="hint">Μήνυμα από τον Καθηγητή Σ.Ε.Α.</p><p>${esc(r.reply)}</p></div>`:""}
-    ${r.status==="new"?`<p class="hint">Θα δεις εδώ την απάντηση μόλις το δει ο Καθηγητής Σ.Ε.Α. Άνοιξε ξανά αυτή τη σελίδα σε λίγες μέρες, από την ίδια συσκευή.</p>`:""}
+    ${r.status==="new"?`<p class="hint">Θα δεις εδώ την απάντηση μόλις το δει ο Καθηγητής Σ.Ε.Α. Ξαναμπές σε λίγες μέρες με τον κωδικό σου ή το προσωπικό σου link.</p>`:""}
     <dl><dt>Όνομα</dt><dd>${esc(r.name)}</dd><dt>Τμήμα</dt><dd>${esc(r.cls)}</dd><dt>Θέμα</dt><dd>${esc(r.topic)}</dd>
     <dt>Μέρες</dt><dd>${esc((r.days||[]).join(", ")||"Οποιαδήποτε")}</dd><dt>Πότε</dt><dd>${esc((r.when||[]).join(", ")||"—")}</dd></dl>
     <div class="row">
       ${canEdit?`<button class="btn" id="edit">Διόρθωση</button><button class="btn" id="cancel">Ακύρωση αιτήματος</button>`:""}
-      ${canNew?`<button class="btn primary" id="again">Νέο αίτημα</button>`:""}
+      ${canNew?`<button class="btn primary" id="again">Νέο αίτημα</button>`:`<button class="btn" id="again">Άλλο αίτημα</button>`}
     </div><p class="err" id="err" aria-live="polite"></p></section>`;
+}
+function codeBox(c){
+  return `<div class="codebox"><p class="hint">Ο κωδικός του αιτήματός σου</p><p class="code">${esc(fmtCode(c))}</p>
+    <p class="hint"><b>Κράτα τον!</b> Με αυτόν βλέπεις την απάντηση από οποιοδήποτε κινητό: σκάναρε ξανά το QR και γράψ' τον στο «Έστειλες ήδη αίτημα;», ή άνοιξε το προσωπικό σου link.</p>
+    <div class="row">${navigator.share?`<button class="btn primary" id="shareCode">Στείλ' το στον εαυτό σου</button>`:""}<button class="btn" id="copyCode">Αντιγραφή link</button></div></div>`;
+}
+function lookupCard(){
+  return `<form class="card" id="lk"><h2>Έστειλες ήδη αίτημα;</h2><p class="hint">Γράψε τον κωδικό σου για να δεις την απάντηση. Αλλιώς, συμπλήρωσε το νέο αίτημα από κάτω.</p>
+    <div class="row"><input type="text" name="code" maxlength="8" placeholder="K7M4QX" autocapitalize="characters" autocomplete="off" style="flex:1;min-width:140px;letter-spacing:.12em;font-weight:700;text-transform:uppercase"><button class="btn primary" type="submit">Δες το αίτημα</button></div>
+    ${getCodes().length?`<p class="hint">Τα αιτήματά σου σε αυτή τη συσκευή: ${getCodes().map(c=>`<a href="?k=${c}" data-code="${c}">${fmtCode(c)}</a>`).join(" · ")}</p>`:""}
+    <p class="err" id="lkErr"></p></form>`;
+}
+function bindLookup(){
+  const f=$("#lk");if(!f)return;
+  f.addEventListener("submit",e=>{e.preventDefault();const c=cleanCode(f.code.value);if(c.length!==6){$("#lkErr").textContent="Ο κωδικός έχει 6 γράμματα/αριθμούς.";return}ready=false;render();watch(c)});
+  f.querySelectorAll("[data-code]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();watch(a.dataset.code)}));
 }
 function certWhen(r){
   if(r.slotDate){
@@ -179,17 +221,19 @@ function certHtml(r){
     <p class="cert-s"><b>Στέλιος Κτώρας</b><br>Καθηγητής Σ.Ε.Α.<br>Γραφείο 10</p>
     <p class="cert-live">✓ Επιβεβαιωμένο από τον Καθηγητή Σ.Ε.Α. · <span class="clock">${new Date().toLocaleTimeString("el-GR")}</span></p>`;
 }
-let clockT;
+let clockT,editId=null,prefill=null;
 function tickClock(){clearInterval(clockT);clockT=setInterval(()=>document.querySelectorAll(".clock").forEach(c=>c.textContent=new Date().toLocaleTimeString("el-GR")),1000)}
 function bindStatus(){
   if(mine?.status==="scheduled")tickClock();
   $("#showCert")?.addEventListener("click",()=>{const o=$("#certFull");o.querySelector(".cert").innerHTML=certHtml(mine);o.hidden=false;o.querySelector("button").focus()});
   $("#printCert")?.addEventListener("click",()=>{const o=$("#certFull");o.querySelector(".cert").innerHTML=certHtml(mine);document.body.classList.add("print-cert");window.print();document.body.classList.remove("print-cert")});
-  $("#edit")?.addEventListener("click",()=>{editing=true;render()});
-  $("#again")?.addEventListener("click",()=>{editing=true;mine={...mine,note:""};render()});
+  $("#shareCode")?.addEventListener("click",()=>navigator.share({title:"Το αίτημά μου · Γραφείο 10",text:"Κωδικός αιτήματος: "+fmtCode(curId),url:myLink(curId)}).catch(()=>{}));
+  $("#copyCode")?.addEventListener("click",()=>{navigator.clipboard?.writeText(myLink(curId)).then(()=>{$("#copyCode").textContent="✓ Αντιγράφηκε"},()=>prompt("Αντίγραψε το link:",myLink(curId)))});
+  $("#edit")?.addEventListener("click",()=>{editing=true;editId=curId;render()});
+  $("#again")?.addEventListener("click",()=>{editing=true;editId=null;prefill={name:mine.name,cls:mine.cls};render()});
   $("#cancel")?.addEventListener("click",async()=>{
     if(!confirm("Να ακυρωθεί το αίτημα;"))return;
-    try{await FS.deleteDoc(FS.doc(fdb,"seaRequests/"+uid));mine=null;render()}catch(e){$("#err").textContent="Δεν έγινε η ακύρωση. Δοκίμασε ξανά."}
+    try{await FS.deleteDoc(FS.doc(fdb,"seaRequests/"+curId));dropCode(curId);if(unsubDoc)unsubDoc();unsubDoc=null;mine=null;curId=null;notFound=false;history.replaceState(null,"",location.pathname);render()}catch(e){$("#err").textContent="Δεν έγινε η ακύρωση. Δοκίμασε ξανά."}
   });
 }
 
@@ -213,7 +257,7 @@ function formCard(r){
 }
 function bindForm(){
   const f=$("#f");
-  $("#back")?.addEventListener("click",()=>{editing=false;render()});
+  $("#back")?.addEventListener("click",()=>{editing=false;editId=null;render()});
   f.addEventListener("submit",async e=>{
     e.preventDefault();
     const fd=new FormData(f);
@@ -225,10 +269,13 @@ function bindForm(){
     if(!d.topic){err.textContent="Διάλεξε ένα θέμα (ή «Άλλο»).";return}
     const btn=$("#send");btn.disabled=true;btn.textContent="Στέλνεται…";
     const now=Date.now();
-    const doc={...d,status:"new",createdAt:(editing&&mine&&mine.status==="new"&&mine.createdAt)||now,updatedAt:now};
+    const doc={...d,owner:uid,status:"new",createdAt:(editId&&mine&&mine.createdAt)||now,updatedAt:now};
     try{
-      await FS.setDoc(FS.doc(fdb,"seaRequests/"+uid),doc);
-      mine=doc;editing=false;render();
+      if(!uid)throw new Error("no-auth");
+      let id=editId;
+      if(id){await FS.setDoc(FS.doc(fdb,"seaRequests/"+id),doc)}
+      else{for(let i=0;i<4;i++){id=newCode();try{await FS.setDoc(FS.doc(fdb,"seaRequests/"+id),doc);break}catch(x){if(i===3)throw x}}}
+      editing=false;editId=null;prefill=null;mine=doc;addCode(id);watch(id);render();
       try{localStorage.setItem("sea-req-name",d.name)}catch(x){}
     }catch(ex){
       console.error(ex);btn.disabled=false;btn.textContent="Στείλε το αίτημα";
@@ -247,8 +294,12 @@ async function start(){
     au.onAuthStateChanged(auth,async u=>{
       if(!u){try{await au.signInAnonymously(auth)}catch(e){console.error(e);offline=true;ready=true;render()}return}
       uid=u.uid;
-      fs.onSnapshot(fs.doc(fdb,"seaRequests/"+uid),s=>{mine=s.exists()?s.data():null;ready=true;if(!editing)render()},
-        e=>{console.warn(e);ready=true;render()});
+      if(curId)return;
+      const k=cleanCode(new URLSearchParams(location.search).get("k"));
+      if(k){watch(k);return}
+      const c=getCodes()[0];if(c){watch(c);return}
+      try{const s=await fs.getDoc(fs.doc(fdb,"seaRequests/"+uid));if(s.exists()){watch(uid);return}}catch(e){}
+      ready=true;render();
     });
   }catch(e){console.error(e);offline=true;ready=true;render()}
 }

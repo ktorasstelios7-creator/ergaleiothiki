@@ -411,7 +411,7 @@ function reqView(){
 function reqCard(r){
   const ago=r.createdAt?new Date(r.createdAt).toLocaleDateString("el-GR",{day:"numeric",month:"short"})+" "+new Date(r.createdAt).toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit"}):"";
   return `<article class="req ${esc(r.status)}"><div class="row" style="justify-content:space-between"><h3>${esc(r.name)} · ${esc(r.cls)}</h3><span class="pill p-${esc(r.status)}">${esc(RSTAT[r.status]||r.status)}</span></div>
-    <dl><dt>Θέμα</dt><dd>${esc(r.topic)}</dd><dt>Μέρες</dt><dd>${esc((r.days||[]).join(", ")||"Οποιαδήποτε")}</dd><dt>Πότε</dt><dd>${esc((r.when||[]).join(", ")||"—")}</dd>
+    <dl>${r.id.length<=8?`<dt>Κωδικός</dt><dd><b style="letter-spacing:.1em">${esc(r.id.slice(0,3)+" "+r.id.slice(3))}</b></dd>`:""}<dt>Θέμα</dt><dd>${esc(r.topic)}</dd><dt>Μέρες</dt><dd>${esc((r.days||[]).join(", ")||"Οποιαδήποτε")}</dd><dt>Πότε</dt><dd>${esc((r.when||[]).join(", ")||"—")}</dd>
     <dt>Πόσο σύντομα</dt><dd class="${r.pace==="Θα ήθελα σύντομα"?"soon":""}">${esc(r.pace||"—")}</dd>${r.note?`<dt>Σημείωση</dt><dd>${esc(r.note)}</dd>`:""}<dt>Στάλθηκε</dt><dd>${esc(ago)}</dd>
     ${r.slot?`<dt>Συνάντηση</dt><dd>${esc(r.slot)}</dd>`:""}${r.reply?`<dt>Μήνυμά σου</dt><dd>${esc(r.reply)}</dd>`:""}</dl>
     <div class="row">${r.status!=="done"?`<button class="btn sm primary" data-plan="${r.id}">${r.status==="scheduled"?"Νέα ώρα":"Κλείσε συνάντηση"}</button>`:""}
@@ -423,23 +423,25 @@ function reqCard(r){
 function rulesHelp(){
   return `<p class="small">Πρόσθεσε τους παρακάτω κανόνες στο Firebase Console → Firestore Database → Rules (μέσα στο <code>match /databases/{database}/documents { … }</code>) και πάτα Publish:</p><pre>${esc(RULES)}</pre><button class="btn sm" id="copyRules">Αντιγραφή κανόνων</button>`;
 }
-const RULES=`// Ημερολόγιο Σ.Ε.Α. & αιτήματα μαθητών
-function seaAdmin(){ return request.auth != null && request.auth.token.email == '${CFG.adminEmail}'; }
-function seaStudentDoc(){
-  return request.resource.data.keys().hasOnly(['name','cls','topic','days','when','pace','note','status','createdAt','updatedAt'])
+const RULES=`// Ημερολόγιο Σ.Ε.Α. & αιτήματα μαθητών (μέσα στο match /databases/{database}/documents)
+function seaStudentDoc() {
+  return request.resource.data.keys().hasOnly(['name','cls','topic','days','when','pace','note','status','createdAt','updatedAt','owner'])
     && request.resource.data.status == 'new'
     && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 60
     && request.resource.data.cls is string && request.resource.data.cls.size() <= 10
     && request.resource.data.note is string && request.resource.data.note.size() <= 300;
 }
-match /seaRequests/{uid} {
-  allow read: if seaAdmin() || (request.auth != null && request.auth.uid == uid);
-  allow create: if request.auth != null && request.auth.uid == uid && seaStudentDoc();
-  allow update: if seaAdmin() || (request.auth != null && request.auth.uid == uid && resource.data.status != 'scheduled' && seaStudentDoc());
-  allow delete: if seaAdmin() || (request.auth != null && request.auth.uid == uid && resource.data.status == 'new');
+function seaOwnerNew(rid) { return request.auth != null && (rid == request.auth.uid || request.resource.data.get('owner', '') == request.auth.uid); }
+function seaOwnerOld(rid) { return request.auth != null && (rid == request.auth.uid || resource.data.get('owner', '') == request.auth.uid); }
+match /seaRequests/{rid} {
+  allow get: if true;
+  allow list: if isAdmin();
+  allow create: if seaStudentDoc() && seaOwnerNew(rid);
+  allow update: if isAdmin() || (seaOwnerOld(rid) && resource.data.status != 'scheduled' && seaStudentDoc() && seaOwnerNew(rid));
+  allow delete: if isAdmin() || (seaOwnerOld(rid) && resource.data.status == 'new');
 }
 match /seaPlanner/{doc} {
-  allow read, write: if seaAdmin();
+  allow read, write: if isAdmin();
 }`;
 async function updReq(id,patch){
   if(!R.signed)return;
