@@ -5,8 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Κλείσε συνάντηση με τον Καθηγητή Σ.Ε.Α.</title>
 <meta name="theme-color" content="#6b3f72">
-<link rel="icon" href="../icons/favicon.png">
-<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Γραφείο 10">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,800&family=Commissioner:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -62,6 +67,14 @@ dt{color:var(--muted)} dd{margin:0}
 .lines b{min-width:80px;color:var(--accent)}
 details summary{cursor:pointer;font-weight:600}
 footer{color:var(--muted);font-size:13.5px;text-align:center}
+.install{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.install img{width:52px;height:52px;border-radius:12px}
+.install h2{font-size:19px}
+.install ol{margin:6px 0 0;padding-left:20px;display:grid;gap:4px;font-size:15px}
+.install .row{grid-column:1/-1}
+.share-ic{display:inline-block;vertical-align:-3px;width:18px;height:18px}
+@media (display-mode: standalone){.ergal-top{display:none!important}}
+html.standalone .ergal-top{display:none!important}
 .codebox{background:var(--soft);border:2px dashed var(--accent);border-radius:14px;padding:14px;display:grid;gap:8px;text-align:center}
 .codebox .row{justify-content:center}
 .code{font:800 34px/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;color:var(--accent)}
@@ -107,6 +120,8 @@ window.SEA_CONFIG = {
     <p>Στείλε αίτημα για συνάντηση με τον Καθηγητή Συμβουλευτικής και Επαγγελματικής Αγωγής. Μπορείς να έρθεις για οτιδήποτε: επιλογές μαθημάτων, σπουδές, κάτι που σε απασχολεί, φίλους, οικογένεια ή απλώς για να μιλήσεις.</p>
   </header>
 
+  <section class="card install" id="install" hidden aria-label="Εγκατάσταση στο κινητό"></section>
+
   <main id="view"><section class="card"><p class="hint">Φορτώνει…</p></section></main>
 
   <details class="card">
@@ -128,6 +143,37 @@ window.SEA_CONFIG = {
   <button class="btn" onclick="document.getElementById('certFull').hidden=true">Κλείσιμο</button>
 </div>
 
+<script>
+// «Γραφείο 10» ως εφαρμογή στην αρχική οθόνη (PWA). Ξεχωριστή από την Εργαλειοθήκη: ανοίγει μόνο το κλείσιμο συνάντησης.
+(function(){
+  var ua=navigator.userAgent||"";
+  var standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+  if(standalone)document.documentElement.classList.add("standalone");
+  if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("../sw.js").catch(function(){})});
+  var dismissed=false;try{dismissed=localStorage.getItem("sea-install-no")==="1"}catch(e){}
+  if(standalone||dismissed)return;
+  var isIOS=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  var inApp=/Instagram|FBAN|FBAV|TikTok|Snapchat|Line\//.test(ua);
+  var deferred=null;
+  var shareIc='<svg class="share-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Κοινοποίηση"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg>';
+  function show(body){
+    var el=document.getElementById("install");if(!el)return;
+    el.innerHTML='<img src="icon-192.png" alt=""><div><h2>Βάλ\' το στο κινητό σου σαν εφαρμογή</h2>'+body+'</div>'
+      +'<div class="row">'+(deferred?'<button class="btn primary" id="instBtn">📲 Εγκατάσταση</button>':'')+'<button class="btn" id="instNo">Όχι τώρα</button></div>';
+    el.hidden=false;
+    var b=document.getElementById("instBtn");if(b)b.onclick=function(){deferred.prompt();deferred.userChoice.then(function(){el.hidden=true})};
+    document.getElementById("instNo").onclick=function(){el.hidden=true;try{localStorage.setItem("sea-install-no","1")}catch(e){}};
+  }
+  var tip='<p class="hint" style="margin-top:6px">Συμβουλή: πρόσθεσέ το <b>πριν</b> στείλεις το αίτημα και στείλ\' το μέσα από την εφαρμογή, για να το βρίσκεις εκεί αυτόματα. Αν το έχεις ήδη στείλει, στην εφαρμογή γράφεις μία φορά τον κωδικό σου.</p>';
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;show('<p class="hint">Ένα εικονίδιο «Γραφείο 10» στην αρχική οθόνη: κλείνεις συνάντηση και βλέπεις την απάντηση με ένα πάτημα.</p>'+tip)});
+  window.addEventListener("appinstalled",function(){var el=document.getElementById("install");if(el)el.hidden=true});
+  window.addEventListener("DOMContentLoaded",function(){
+    if(inApp){show('<p class="hint">Άνοιξε αυτή τη σελίδα στον browser του κινητού (Safari ή Chrome) από το μενού <b>⋯</b> → «Άνοιγμα σε browser» και μετά πρόσθεσέ την στην αρχική οθόνη.</p>');return}
+    if(isIOS){show('<ol><li>Πάτα το '+shareIc+' <b>Κοινοποίηση</b> (κάτω ή πάνω στην οθόνη)</li><li>Διάλεξε <b>«Προσθήκη στην οθόνη Αφετηρίας»</b></li><li>Πάτα <b>«Προσθήκη»</b>. Θα δεις το εικονίδιο «Γραφείο 10».</li></ol>'+tip);return}
+    setTimeout(function(){if(!deferred)show('<p class="hint">Από το μενού του browser <b>⋮</b> διάλεξε <b>«Εγκατάσταση εφαρμογής»</b> ή <b>«Προσθήκη στην αρχική οθόνη»</b>.</p>'+tip)},2500);
+  });
+})();
+</script>
 <script type="module">
 const CFG=window.SEA_CONFIG;
 const $=s=>document.querySelector(s);
