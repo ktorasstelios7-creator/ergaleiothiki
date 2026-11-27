@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Φανταστείτε μαζί: Ένα δικοινοτικό ταξίδι για το Κυπριακό</title>
+<meta name="description" content="Διαδραστικό πρόγραμμα για μαθητές Λυκείου: γνωριμία Ελληνοκυπρίων και Τουρκοκυπρίων εφήβων, πολυπρισματική ματιά στην ιστορία και κοινά έργα, με βάση το πρόγραμμα ειρηνικής εκπαίδευσης Imagine.">
+<meta name="theme-color" content="#6b3f72">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Εργαλειοθήκη">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a year-long journey across one island. Four phases as a path of 13 stations; each station opens an activity. Everything stays on the device. */
+:root{
+  --bg:#EEF3F2;--surface:#FFFFFF;--soft:#DCEAE8;--ink:#152A2B;--muted:#55696A;--line:#C9DCDA;
+  --accent:#1F6F78;--accent-ink:#FFFFFF;--warm:#E0A43A;--warm-soft:#FBEED6;
+  --good:#2D8A57;--ok:#B7791F;--bad:#C2412D;
+  --p0:#7B8794;--p1:#1F6F78;--p2:#C0703A;--p3:#6B3F72;--p4:#2D8A57;
+  --font-d:'Literata',Georgia,'Times New Roman',serif;--font-b:'Commissioner',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --r:14px;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1717;--surface:#132222;--soft:#1B302F;--ink:#E2EEED;--muted:#9AB1B0;--line:#284140;
+  --accent:#5EC2CC;--accent-ink:#062022;--warm:#F0BC62;--warm-soft:#3A2D16;
+  --good:#5CC48A;--ok:#E5B04F;--bad:#F07C66;
+  --p0:#A5B1BD;--p1:#5EC2CC;--p2:#EBA06C;--p3:#C49ACB;--p4:#5CC48A;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.5rem)}h2{font-size:1.5rem}h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px;border-radius:6px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.prose{max-width:65ch}
+ul.clean,ol.clean{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--font-d);font-weight:700;font-size:1.2rem}
+.grow{flex:1}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sos{background:var(--warm);border-color:var(--warm);color:#1d1205}
+.btn.ghost{background:transparent}
+main{padding:24px 0 90px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.soft{background:var(--soft);border-color:transparent}
+.take{background:var(--warm-soft);border-left:5px solid var(--warm);border-radius:10px;padding:14px 16px}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.vhead{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sec-title{margin:30px 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);align-self:flex-start}
+.chip.ok{background:color-mix(in srgb,var(--good) 18%,var(--surface));color:var(--good)}
+textarea,input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+textarea{min-height:70px;resize:vertical}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tablebox{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:22px 0 70px;color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1}
+@media print{.top,.no-print,footer,.ergal-top{display:none!important}body{background:#fff;color:#000}.card{border-color:#999}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:stretch}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.hero>*,.lens>*,.grid2>*{min-width:0}
+.btn.sos{white-space:nowrap}
+@media (max-width:420px){.brand{font-size:1.02rem}.btn.sos{padding:8px 12px;font-size:.9rem}}
+html,body{overflow-x:hidden}
+.island{width:100%;height:auto;display:block}
+.bar{height:10px;border-radius:999px;background:var(--soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .4s}
+
+/* path of stations */
+.phase{--pc:var(--p1);border-left:5px solid var(--pc);padding:4px 0 4px 16px;display:flex;flex-direction:column;gap:10px}
+.phase h3 small{display:block;font-family:var(--font-b);font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.03em}
+.stations{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.st{--pc:var(--p1);display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:transform .12s,border-color .12s}
+.st:hover{transform:translateY(-2px);border-color:var(--pc)}
+.st .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:color-mix(in srgb,var(--pc) 16%,var(--surface));color:var(--pc);border:2px solid var(--pc)}
+.st.done .n{background:var(--pc);color:#fff}
+.st b{display:block;line-height:1.3}
+.st span{font-size:.88rem;color:var(--muted)}
+
+/* activities */
+.tag{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;cursor:pointer}
+.tag[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.idc{position:relative;width:min(340px,90vw);aspect-ratio:1;margin:8px auto}
+.idc .core{position:absolute;inset:34%;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;text-align:center;font-weight:700;font-family:var(--font-d);font-size:1.05rem}
+.idc .bub{position:absolute;transform:translate(-50%,-50%);background:var(--warm-soft);border:2px solid var(--warm);border-radius:999px;padding:6px 12px;font-weight:600;font-size:.9rem;white-space:nowrap;max-width:46%;overflow:hidden;text-overflow:ellipsis}
+.sortq{font-family:var(--font-d);font-size:1.3rem;line-height:1.35;padding:20px;border-radius:16px;background:var(--soft)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.s2{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.s1{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.opt.s0{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.dim{opacity:.6}
+.fb{border-radius:12px;padding:14px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.fb b.t2{color:var(--good)}.fb b.t1{color:var(--ok)}.fb b.t0{color:var(--bad)}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (max-width:520px){.three{grid-template-columns:1fr}}
+.flip{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:118px}
+.flip b{font-family:var(--font-d);font-size:1.2rem}
+.flip .bk{display:none;color:var(--ink)}
+.flip .hint{font-size:.8rem;color:var(--muted)}
+.flip[aria-expanded="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.flip[aria-expanded="true"] .bk{display:block}
+.flip[aria-expanded="true"] .hint{display:none}
+.tr{font-family:var(--font-d);font-size:1.25rem;color:var(--accent);font-weight:700}
+.lens{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.lens{grid-template-columns:1fr}}
+.qcard{font-family:var(--font-d);font-size:1.35rem;line-height:1.35;padding:26px 22px;border-radius:18px;background:var(--warm-soft);border:2px dashed var(--warm);text-align:center;min-height:130px;display:grid;place-items:center}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.check input{flex:none;width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
+.sl{display:flex;flex-direction:column;gap:4px}
+.sl input{width:100%;accent-color:var(--accent)}
+.sl .ends{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.cmp{display:grid;grid-template-columns:1fr 60px 60px;gap:6px 12px;align-items:center}
+.cmp .h{font-size:.8rem;color:var(--muted);font-weight:700;text-transform:uppercase}
+.cmp .v{font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.entry{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.line{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line .tel{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--accent);min-width:110px;font-variant-numeric:tabular-nums;text-decoration:none}
+@media (max-width:520px){.line{flex-direction:column;align-items:flex-start;gap:4px}}
+.pact{counter-reset:p;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.pact li{counter-increment:p;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.pact li::before{content:counter(p);flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700;font-size:.9rem}
+.tl{display:flex;flex-direction:column;gap:0;border-left:3px solid var(--line);margin-left:8px}
+.tl div{position:relative;padding:6px 0 14px 18px}
+.tl div::before{content:"";position:absolute;left:-9px;top:10px;width:15px;height:15px;border-radius:50%;background:var(--accent)}
+.tl b{font-family:var(--font-d);font-size:1.1rem}
+</style>
+</head>
+<body>
+<div class="ergal-top" role="navigation" aria-label="Εργαλειοθήκη"><a class="ergal-top-a" id="ergalTop" href="../">← Επιστροφή στην Εργαλειοθήκη</a></div>
+<style>.ergal-top{display:block;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 6px;position:relative;z-index:30;text-align:left}.ergal-top-a{display:inline-flex;align-items:center;gap:6px;background:#6b3f72;color:#fff!important;text-decoration:none!important;font:600 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;padding:11px 16px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.18)}.ergal-top-a:hover{background:#5a3360}.ergal-top-a:focus-visible{outline:3px solid #e0b84f;outline-offset:2px}@media print{.ergal-top{display:none!important}}</style>
+<script>try{if(localStorage.getItem('ergal-st')==='1')document.getElementById('ergalTop').href='../?mathites'}catch(e){}</script>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Φανταστείτε μαζί, αρχική">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="var(--accent)"/><path d="M8 19c3-1 4-5 8-5s5 2 9 1" fill="none" stroke="var(--accent-ink)" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="11" r="2.4" fill="var(--warm)"/><circle cx="22" cy="11" r="2.4" fill="var(--accent-ink)"/><path d="M9 24h16" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>
+      Φανταστείτε μαζί
+    </a>
+    <div class="grow"></div>
+    <a class="btn sos" href="#help">Ζήτα βοήθεια</a>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer><div class="wrap stack" style="gap:6px">
+  <p>«Φανταστείτε μαζί», Στέλιος Κτώρας, Καθηγητής Σ.Ε.Α., Γραφείο 10. Μέρος της <a href="https://ktorasstelios7-creator.github.io/ergaleiothiki/">Σύγχρονης Εργαλειοθήκης για εκπαιδευτικούς και μαθητές</a>. Βασίζεται στο πρόγραμμα ειρηνικής εκπαίδευσης <a href="#imagine">Imagine</a> και σε διεθνή προγράμματα συνύπαρξης.</p>
+  <p class="small">Ό,τι γράφεις μένει μόνο σε αυτή τη συσκευή. Δεν το βλέπει κανείς άλλος και μπορείς να το σβήσεις όποτε θέλεις. <a href="#teachers">Για εκπαιδευτικούς</a> · <a href="#imagine">Τι είναι το Imagine</a></p>
+</div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const app=document.getElementById('app');
+const back='<a class="back" href="#home">← Η διαδρομή μου</a>';
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2400);}
+
+/* ---------- state (local only) ---------- */
+const KEY='fantasteite-mazi-v1';
+let S={done:{},ids:[],idFree:'',journal:{},pre:null,post:null,pact:[],proj:{type:null,steps:{},notes:''},iv:{},lens:{a:'',b:'',q:{}}};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------- the year ---------- */
+const PH=[
+ {k:'p1',c:'var(--p1)',t:'Φάση 1 · Κοιτάμε μέσα μας',w:'Ιανουάριος–Φεβρουάριος · στο σχολείο'},
+ {k:'p2',c:'var(--p2)',t:'Φάση 2 · Συναντιόμαστε',w:'Μάρτιος–Απρίλιος · Σπίτι της Συνεργασίας, Λήδρα Πάλας'},
+ {k:'p3',c:'var(--p3)',t:'Φάση 3 · Δημιουργούμε μαζί',w:'Απρίλιος–Μάιος · μικτές ομάδες, online και από κοντά'},
+ {k:'p4',c:'var(--p4)',t:'Φάση 4 · Μοιραζόμαστε',w:'Μάιος–Ιούνιος · κοινή εκδήλωση και αναστοχασμός'}
+];
+const ST=[
+ {p:0,t:'Ποιοι είμαστε;',d:'Ο κύκλος της ταυτότητάς μου',r:'taftotita'},
+ {p:0,t:'Τι ακούμε για «τους άλλους»;',d:'Γεγονός, άποψη ή στερεότυπο;',r:'stereotypa'},
+ {p:0,t:'Δύο ιστορίες, ένα νησί',d:'Ένα γεγονός, δύο αφηγήσεις',r:'istories'},
+ {p:0,t:'Η ιστορία της οικογένειάς μου',d:'Μια συνέντευξη που ακούει',r:'synenteuxi'},
+ {p:0,t:'Διαφωνώ χωρίς να πληγώνω',d:'Σενάρια για δύσκολες στιγμές',r:'diafonia'},
+ {p:1,t:'Η πρώτη συνάντηση',d:'10 λέξεις-γέφυρες και το σύμφωνό μας',r:'lexeis'},
+ {p:1,t:'Περίπατος στη Λευκωσία',d:'Μια πόλη, πολλές μνήμες',r:'peripatos'},
+ {p:1,t:'Κύκλος μαρτυριών',d:'Ακούω πριν απαντήσω',r:'martyries'},
+ {p:2,t:'Διαλέγουμε κοινό έργο',d:'Podcast, playlist, φωτογραφία ή χάρτης',r:'ergo'},
+ {p:2,t:'Δουλεύουμε online',d:'Κανόνες για την ψηφιακή μας ομάδα',r:'online'},
+ {p:2,t:'Τελευταίες πινελιές',d:'Πρόβα παρουσίασης',r:'ergo'},
+ {p:3,t:'«Φανταστείτε μαζί»',d:'Η κοινή εκδήλωση',r:'ekdilosi'},
+ {p:3,t:'Τι κρατάω',d:'Πριν και μετά: τι άλλαξε σε μένα',r:'prin-meta'}
+];
+
+/* ---------- home ---------- */
+function home(){
+ const n=ST.filter((s,i)=>S.done[i]).length, pc=Math.round(n/ST.length*100);
+ let h=`<section class="hero">
+  <div class="stack">
+   <span class="eyebrow">Δικοινοτικό πρόγραμμα · Λύκειο</span>
+   <h1>Φανταστείτε μαζί</h1>
+   <p class="prose">Ένα ταξίδι μιας χρονιάς, όπου Ελληνοκύπριοι και Τουρκοκύπριοι έφηβοι γνωρίζονται, ακούν ο ένας τον άλλο και φτιάχνουν κάτι μαζί. Δεν θα «λύσουμε» το Κυπριακό. Θα μάθουμε να μιλάμε γι' αυτό με περιέργεια και σεβασμό.</p>
+   <div class="row"><a class="btn primary" href="#st-${firstOpen()}">${n?'Συνέχισε':'Ξεκίνα'} τη διαδρομή</a><a class="btn" href="#imerologio">📓 Το ημερολόγιό μου</a></div>
+   <div class="stack" style="gap:6px"><div class="row small muted" style="justify-content:space-between"><span>Σταθμοί που ολοκλήρωσες</span><b style="color:var(--ink)">${n} / ${ST.length}</b></div><div class="bar" role="progressbar" aria-valuenow="${pc}" aria-valuemin="0" aria-valuemax="100" aria-label="Πρόοδος"><i style="width:${pc}%"></i></div></div>
+  </div>
+  <div class="card soft" style="display:grid;place-items:center">${islandSVG()}</div>
+ </section>
+ <h2 class="sec-title">Η διαδρομή της χρονιάς</h2><div class="stack" style="gap:22px">`;
+ PH.forEach((p,pi)=>{
+  h+=`<div class="phase" style="--pc:${p.c}"><h3>${p.t}<small>${p.w}</small></h3><div class="stations">`;
+  ST.forEach((s,i)=>{ if(s.p!==pi) return;
+   h+=`<a class="st${S.done[i]?' done':''}" style="--pc:${p.c}" href="#st-${i}"><span class="n">${S.done[i]?'✓':i+1}</span><div><b>${s.t}</b><span>${s.d}</span></div></a>`;});
+  h+=`</div></div>`;
+ });
+ h+=`</div>
+ <h2 class="sec-title">Εργαλεία για όλη τη χρονιά</h2>
+ <div class="grid3">
+  <a class="card" style="text-decoration:none;color:inherit" href="#prin-meta"><b>🧭 Πριν και μετά</b><p class="small muted">Πέντε ερωτήσεις στην αρχή και στο τέλος. Δες τι άλλαξε.</p></a>
+  <a class="card" style="text-decoration:none;color:inherit" href="#imerologio"><b>📓 Ημερολόγιο</b><p class="small muted">Τρεις γραμμές μετά από κάθε συνάντηση.</p></a>
+  <a class="card" style="text-decoration:none;color:inherit" href="#symfono"><b>🤝 Το σύμφωνό μας</b><p class="small muted">Οι κανόνες της ομάδας, για εκτύπωση.</p></a>
+  <a class="card" style="text-decoration:none;color:inherit" href="#lexeis"><b>💬 Λέξεις-γέφυρες</b><p class="small muted">Βασικά τουρκικά και ελληνικά για την πρώτη γνωριμία.</p></a>
+ </div>
+ <div class="take" style="margin-top:22px"><b>Κάτι σε βάραινε σε κάποια συνάντηση;</b> Είναι φυσικό. Μίλα με τον Καθηγητή ΣΕΑ ή έναν ενήλικα που εμπιστεύεσαι. <a href="#help">Πού μπορώ να μιλήσω</a></div>`;
+ return h;
+}
+function firstOpen(){for(let i=0;i<ST.length;i++) if(!S.done[i]) return i; return ST.length-1;}
+function islandSVG(){
+ return `<svg class="island" viewBox="0 0 320 190" role="img" aria-label="Το νησί με δύο φιγούρες που κρατιούνται από το χέρι">
+  <path d="M30 120c18-20 46-24 70-34 26-11 40-36 72-38 22-1 30 12 52 12 20 0 40-14 62-26-6 18-24 28-30 40 12 2 26 0 34 8-18 8-42 4-58 16-20 15-30 40-62 44-26 3-44-10-70-6-24 4-44 0-70-16z" fill="color-mix(in srgb,var(--accent) 22%,var(--surface))" stroke="var(--accent)" stroke-width="2"/>
+  <path d="M60 112c40-6 80-8 120-14s70-10 100-20" fill="none" stroke="var(--warm)" stroke-width="2" stroke-dasharray="5 6"/>
+  <g transform="translate(128 52)"><circle cx="0" cy="0" r="9" fill="var(--warm)"/><path d="M0 9v26M0 18l-12 12M0 35l-9 18M0 35l9 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></g>
+  <g transform="translate(176 52)"><circle cx="0" cy="0" r="9" fill="var(--accent)"/><path d="M0 9v26M0 18l12 12M0 35l-9 18M0 35l9 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></g>
+  <path d="M128 70q24 14 48 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="160" y="182" text-anchor="middle" font-family="Literata,Georgia,serif" font-size="15" fill="var(--muted)">ένα νησί · πολλές φωνές</text>
+ </svg>`;
+}
+
+/* ---------- station wrapper ---------- */
+function station(i){
+ const s=ST[i]; if(!s) return home(); const p=PH[s.p];
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow" style="color:${p.c}">${p.t} · Σταθμός ${i+1}</span><h1>${s.t}</h1><p class="muted">${s.d}</p></div>
+ <div class="row no-print" style="margin-bottom:18px"><a class="btn primary" href="#${s.r}">Άνοιξε τη δραστηριότητα</a><button class="btn" data-done="${i}">${S.done[i]?'✓ Ολοκληρώθηκε (αναίρεση)':'Σημείωσε ως ολοκληρωμένο'}</button><a class="btn ghost" href="#imerologio?${i}">📓 Γράψε στο ημερολόγιο</a></div>
+ ${PREP[i]||''}`;
+}
+const EKD=()=>`<div class="card stack"><p>Οι μικτές ομάδες παρουσιάζουν τα έργα τους σε γονείς, εκπαιδευτικούς και φίλους από τις δύο κοινότητες. Στο τέλος διαβάζουμε μαζί μια σύντομη κοινή δήλωση: <i>τι μάθαμε ο ένας για τον άλλο</i>.</p><label class="stack" style="gap:6px"><b>Μία πρόταση που θα ήθελα να μπει στην κοινή δήλωση</b><textarea id="decl" maxlength="300">${esc(S.decl||'')}</textarea></label><div><button class="btn primary" id="saveDecl">Αποθήκευση</button></div></div>`;
+const PREP={
+ 5:`<div class="card stack"><h3>Πριν φύγουμε για τη Λευκωσία</h3><ul class="clean"><li>Η συνάντηση γίνεται στο <b>Σπίτι της Συνεργασίας</b>, στη νεκρή ζώνη στη Λήδρα Πάλας, με εκπαιδευτές του AHDR.</li><li>Θα δουλεύεις σε μικτό ζευγάρι, που θα μείνει ίδιο όλη τη χρονιά.</li><li>Κοινή γλώσσα: συνήθως τα αγγλικά. Δεν χρειάζεται να είναι τέλεια.</li><li>Είναι φυσικό να έχεις άγχος. Και ο/η συνομήλικός σου πιθανότατα έχει.</li></ul></div>`
+};
+
+/* ---------- 1. identity circle ---------- */
+const IDS=['Έφηβος/η','Μαθητής/τρια','Κύπριος/α','Από το χωριό μου','Από την πόλη μου','Αδελφός/ή','Φίλος/η','Μουσική','Ποδόσφαιρο','Gaming','Θρησκεία μου','Γλώσσα μου','Χορός','Τέχνη','Φύση','Μαγειρική','Τεχνολογία','Βιβλία','Εθελοντισμός','Ταξίδια','Ζώα','Κινηματογράφος','Social media','Οικογένεια'];
+function taftotita(){
+ const sel=S.ids, all=sel.concat(S.idFree?[S.idFree]:[]).slice(0,6);
+ let bub=all.map((t,k)=>{const a=(k/Math.max(all.length,1))*Math.PI*2-Math.PI/2;const x=50+38*Math.cos(a),y=50+38*Math.sin(a);return `<span class="bub" style="left:${x}%;top:${y}%">${esc(t)}</span>`}).join('');
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 1</span><h1>Ο κύκλος της ταυτότητάς μου</h1><p class="prose muted">Διάλεξε μέχρι 5 πράγματα που σε περιγράφουν. Μπορείς να γράψεις κι ένα δικό σου.</p></div>
+ <div class="hero"><div class="stack">
+  <div class="tags">${IDS.map(t=>`<button class="tag" data-id="${esc(t)}" aria-pressed="${sel.includes(t)}">${esc(t)}</button>`).join('')}</div>
+  <label class="stack" style="gap:6px"><span class="small muted">Κάτι δικό μου</span><input type="text" id="idFree" maxlength="24" value="${esc(S.idFree)}" placeholder="π.χ. κιθάρα"></label>
+ </div>
+ <div class="card"><div class="idc" aria-live="polite"><div class="core">Εγώ</div>${bub}</div></div></div>
+ <div class="take" style="margin-top:18px"><b>Για συζήτηση:</b> Πόσα από αυτά θα μπορούσε να έχει διαλέξει κι ένας Τουρκοκύπριος συνομήλικός σου; Η εθνική ταυτότητα είναι σημαντική, αλλά είναι μία από πολλές. Στην πρώτη συνάντηση θα φτιάξετε τον κύκλο σας μαζί και θα ψάξετε τι μοιράζεστε.</div>
+ <div class="row" style="margin-top:16px"><a class="btn" href="#st-0">← Σταθμός 1</a><button class="btn primary" data-done="0" data-go="st-1">Ολοκληρώθηκε · επόμενος σταθμός</button></div>`;
+}
+
+/* ---------- 2. fact / opinion / stereotype ---------- */
+const SQ=[
+ ['Στην Κύπρο, σύμφωνα με το Σύνταγμα του 1960, επίσημες γλώσσες είναι τα ελληνικά και τα τουρκικά.','g','Γεγονός. Μπορείς να το ελέγξεις στο Σύνταγμα της Κυπριακής Δημοκρατίας.'],
+ ['«Όλοι τους σκέφτονται το ίδιο.»','s','Στερεότυπο. Βάζει μια ολόκληρη κοινότητα σε ένα καλούπι. Σε κάθε κοινότητα υπάρχουν πολλές και διαφορετικές απόψεις, όπως και στη δική σου.'],
+ ['Πιστεύω ότι οι νέοι των δύο κοινοτήτων πρέπει να γνωρίζονται.','a','Άποψη. Είναι μια θέση με την οποία κάποιος μπορεί να διαφωνεί. Οι απόψεις συζητιούνται, δεν «αποδεικνύονται».'],
+ ['Το 1974 χιλιάδες άνθρωποι και από τις δύο κοινότητες έχασαν τα σπίτια τους και έγιναν εκτοπισμένοι.','g','Γεγονός. Ο αριθμός ήταν πολύ μεγαλύτερος για τους Ελληνοκύπριους, αλλά εκτοπισμένους είχαν και οι δύο κοινότητες. Και τα δύο είναι μέρος της αλήθειας.'],
+ ['«Οι νέοι της άλλης κοινότητας δεν ενδιαφέρονται για λύση.»','s','Στερεότυπο. Το ίδιο ακριβώς λέγεται συχνά και από την άλλη πλευρά για τη δική σου κοινότητα. Δοκίμασε να το ρωτήσεις, όχι να το υποθέσεις.'],
+ ['Η Διερευνητική Επιτροπή Αγνοουμένων (ΔΕΑ) δουλεύει με μέλη και από τις δύο κοινότητες.','g','Γεγονός. Είναι δικοινοτική επιτροπή και αναζητεί αγνοούμενους και των δύο κοινοτήτων.'],
+ ['«Το φαγητό τους δεν έχει καμία σχέση με το δικό μας.»','s','Γενίκευση που δεν ισχύει. Χαλλούμι (hellim), κολοκάσι (kolokas), σιεφταλιά (şeftali kebabı): πολλά φαγητά είναι κοινά.'],
+ ['Πιστεύω ότι η ιστορία πρέπει να διδάσκεται και από την πλευρά της άλλης κοινότητας.','a','Άποψη. Υπάρχουν άνθρωποι που συμφωνούν και άλλοι που διαφωνούν, για διάφορους λόγους. Μπορούμε να το συζητήσουμε με σεβασμό.']
+];
+const SL={g:'Γεγονός',a:'Άποψη',s:'Στερεότυπο / γενίκευση'};
+let sqI=0,sqA=null,sqScore=0;
+function stereotypa(){
+ if(sqI>=SQ.length) return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 2</span><h1>Μπράβο, τελείωσες!</h1></div>
+  <div class="card stack"><p class="tr">${sqScore} / ${SQ.length} σωστές</p><p>Το πιο σημαντικό δεν είναι το σκορ. Είναι να πιάνεις τον εαυτό σου τη στιγμή που μια φράση γενικεύει για «όλους».</p><div class="take"><b>Άσκηση της εβδομάδας:</b> Γράψε στο ημερολόγιο μία φράση που άκουσες για την άλλη κοινότητα (στο σπίτι, στο γήπεδο, στα social media). Ήταν γεγονός, άποψη ή στερεότυπο;</div>
+  <div class="row"><button class="btn" id="sqRe">Ξανά από την αρχή</button><button class="btn primary" data-done="1" data-go="st-2">Επόμενος σταθμός</button></div></div>`;
+ const q=SQ[sqI];
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 2 · ${sqI+1} από ${SQ.length}</span><h1>Γεγονός, άποψη ή στερεότυπο;</h1></div>
+ <div class="stack"><div class="sortq">${esc(q[0])}</div>
+ <div class="three">${['g','a','s'].map(k=>{let c='';if(sqA){c=k===q[1]?' s2':(k===sqA?' s0':' dim');}return `<button class="opt${c}" data-sq="${k}" ${sqA?'disabled':''}>${SL[k]}</button>`}).join('')}</div>
+ ${sqA?`<div class="fb" aria-live="polite"><b class="${sqA===q[1]?'t2':'t0'}">${sqA===q[1]?'Σωστά!':'Όχι ακριβώς.'}</b><p>${esc(q[2])}</p></div><div class="next"><span></span><button class="btn primary" id="sqNext">Επόμενη φράση →</button></div>`:''}</div>`;
+}
+
+/* ---------- 3. two stories ---------- */
+const LENSQ=['Ποιος μιλάει; Από ποια θέση;','Τι τονίζει περισσότερο;','Τι αφήνει έξω ή λέει λίγο;','Ποιο συναίσθημα κυριαρχεί (πόνος, φόβος, θυμός, περηφάνια);','Ποιες λέξεις διαλέγει; Τι «φορτίο» έχουν;','Τι θα ήθελα να ρωτήσω αυτόν που το γράφει;'];
+const WORDS=[
+ ['Το καλοκαίρι του 1974','Οι Ελληνοκύπριοι μιλούν συνήθως για το πραξικόπημα και την «τουρκική εισβολή». Πολλοί Τουρκοκύπριοι μιλούν για «ειρηνευτική επιχείρηση» ή «επέμβαση». Η ίδια χρονιά θυμίζει στη μία κοινότητα προσφυγιά και απώλεια, ενώ στην άλλη συχνά το τέλος ενός φόβου, που ακολουθήθηκε κι αυτό από εκτοπισμό.'],
+ ['1963–1964','Για πολλούς Τουρκοκύπριους η περίοδος αυτή θυμίζει βία, εγκλωβισμούς (θύλακες) και αγνοούμενους. Για πολλούς Ελληνοκύπριους θυμίζει μια σύγκρουση που περιγράφεται συχνά ως «ανταρσία». Θύματα και αγνοούμενους είχαν και οι δύο κοινότητες.'],
+ ['Το βόρειο μέρος του νησιού','Οι Ελληνοκύπριοι λένε «κατεχόμενα». Οι Τουρκοκύπριοι λένε συνήθως «ΤΔΒΚ» ή «Βόρεια Κύπρος». Η ΤΔΒΚ αναγνωρίζεται μόνο από την Τουρκία, και ο ΟΗΕ θεωρεί την Κυπριακή Δημοκρατία το μοναδικό νόμιμο κράτος. Το να καταλαβαίνεις γιατί ο άλλος λέει αυτό που λέει δεν σημαίνει ότι συμφωνείς.']
+];
+function istories(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 3</span><h1>Δύο ιστορίες, ένα νησί</h1><p class="prose muted">Το ίδιο γεγονός μπορεί να το θυμούνται δύο κοινότητες πολύ διαφορετικά. Δεν ψάχνουμε ποια αφήγηση «κερδίζει». Ψάχνουμε να καταλάβουμε γιατί η καθεμιά λέει αυτό που λέει.</p></div>
+ <div class="card soft stack"><h3>Ζέσταμα: ο καβγάς στο διάλειμμα</h3><p>Ο Άντρος λέει: <i>«Μου πήρε τη θέση στο κυλικείο, ήμουν πρώτος.»</i> Η Δανάη λέει: <i>«Περίμενα από πριν, απλώς πήγα να πάρω το πορτοφόλι μου.»</i></p><p class="muted small">Λέει κάποιος ψέματα; Ή ο καθένας θυμάται το κομμάτι που τον πόνεσε; Αυτό που συμβαίνει σε έναν καβγά στο διάλειμμα συμβαίνει και στην ιστορία, απλώς σε πολύ μεγαλύτερη κλίμακα.</p></div>
+ <h2 class="sec-title">Λέξεις με βάρος</h2><p class="muted" style="margin-bottom:10px">Πάτησε κάθε κάρτα. Κάθε κοινότητα χρησιμοποιεί άλλες λέξεις για τα ίδια γεγονότα.</p>
+ <div class="grid3">${WORDS.map(w=>`<button class="flip" aria-expanded="false"><b>${w[0]}</b><span class="bk">${w[1]}</span><span class="hint">Πάτησε για να δεις</span></button>`).join('')}</div>
+ <h2 class="sec-title">Ο φακός: διαβάζω μια αφήγηση</h2>
+ <p class="muted" style="margin-bottom:10px">Ο καθηγητής σας θα σας δώσει δύο σύντομα κείμενα για το ίδιο γεγονός, από το υλικό πολυπρισματικής ιστορίας του AHDR. Γράψε τις σκέψεις σου για το καθένα.</p>
+ <div class="lens"><label class="stack" style="gap:6px"><b>Κείμενο Α: τι κρατάω</b><textarea id="lensA" maxlength="800">${esc(S.lens.a)}</textarea></label><label class="stack" style="gap:6px"><b>Κείμενο Β: τι κρατάω</b><textarea id="lensB" maxlength="800">${esc(S.lens.b)}</textarea></label></div>
+ <div class="stack" style="margin-top:12px;gap:8px">${LENSQ.map((q,k)=>`<label class="check"><input type="checkbox" data-lq="${k}" ${S.lens.q[k]?'checked':''}><span>${q}</span></label>`).join('')}</div>
+ <div class="take" style="margin-top:16px"><b>Αν κάτι σε πονάει:</b> Αν στην οικογένειά σου υπάρχουν πρόσφυγες, αγνοούμενοι ή θύματα, αυτά τα θέματα μπορεί να είναι βαριά. Μπορείς να παρακολουθήσεις χωρίς να μιλήσεις ή να το πεις στον καθηγητή. <a href="#help">Μίλα με κάποιον</a></div>
+ <div class="row" style="margin-top:16px"><button class="btn primary" id="saveLens">Αποθήκευση σκέψεων</button><button class="btn" data-done="2" data-go="st-3">Ολοκληρώθηκε · επόμενος σταθμός</button></div>`;
+}
+
+/* ---------- 4. family interview ---------- */
+const IVQ=['Πού μεγάλωσες; Πώς ήταν η γειτονιά σου;','Θυμάσαι Τουρκοκύπριους (ή Ελληνοκύπριους) στο χωριό ή στη δουλειά σου; Πώς ήταν η σχέση σας;','Υπάρχει ένα πρόσωπο από την άλλη κοινότητα που θυμάσαι;','Ποια φαγητά, τραγούδια ή λέξεις μοιραζόσασταν;','Τι θα ήθελες να ξέρουν οι νέοι σήμερα;'];
+function synenteuxi(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 4 · προαιρετικό</span><h1>Η ιστορία της οικογένειάς μου</h1><p class="prose muted">Ρώτησε έναν παππού, μια γιαγιά ή έναν μεγαλύτερο συγγενή. Πρώτα ζήτα άδεια. Αν κάποια ερώτηση φέρνει πόνο, προχώρα στην επόμενη ή σταμάτα εκεί.</p></div>
+ <div class="card soft stack" style="margin-bottom:14px"><b>Πώς ακούω</b><ul class="clean"><li>Αφήνω τον άλλο να τελειώσει. Δεν διορθώνω και δεν διαφωνώ.</li><li>Ρωτάω «πώς ένιωσες;», όχι μόνο «τι έγινε;».</li><li>Στην τάξη μοιράζομαι μόνο ό,τι ο συγγενής μου συμφωνεί να πω.</li></ul></div>
+ <div class="stack">${IVQ.map((q,k)=>`<label class="stack" style="gap:6px"><b>${k+1}. ${q}</b><textarea data-iv="${k}" maxlength="800" placeholder="Σημειώσεις…">${esc(S.iv[k]||'')}</textarea></label>`).join('')}</div>
+ <div class="row" style="margin-top:16px"><button class="btn primary" id="saveIv">Αποθήκευση</button><button class="btn" onclick="print()">🖨️ Εκτύπωση ερωτήσεων</button><button class="btn" data-done="3" data-go="st-4">Ολοκληρώθηκε · επόμενος σταθμός</button></div>`;
+}
+
+/* ---------- 5. disagree scenarios ---------- */
+const SC=[
+ {s:'Σε μια μικτή ομάδα, κάποιος λέει μια λέξη για το 1974 που σε ενοχλεί πολύ.',o:[['«Αυτό που λες είναι ψέμα!»',0,'Κλείνει την κουβέντα. Ο άλλος θα αμυνθεί και δεν θα ακούσει τίποτα από όσα θες να πεις.'],['Δεν λες τίποτα και κλείνεσαι στον εαυτό σου ως το τέλος.',1,'Είναι κατανοητό, αλλά το συναίσθημα μένει μέσα σου. Μπορείς να το πεις αργότερα ή στον συντονιστή.'],['«Αυτή η λέξη για μένα έχει άλλο βάρος. Μπορώ να σου πω γιατί; Θέλω να ακούσω κι εσένα.»',2,'Μιλάς για εσένα, όχι για «αυτούς», και ανοίγεις χώρο να μιλήσει κι ο άλλος.']]},
+ {s:'Ο/η συνομήλικός σου από την άλλη κοινότητα σου λέει για μια οικογένεια που έχασε κάποιον. Δεν το ήξερες.',o:[['«Ναι, αλλά κι εμείς χάσαμε πολλούς περισσότερους.»',0,'Ο πόνος δεν είναι διαγωνισμός. Όταν συγκρίνεις, ο άλλος νιώθει ότι δεν τον άκουσες.'],['«Λυπάμαι πολύ. Πώς είναι για την οικογένειά σου σήμερα;»',2,'Η ακρόαση χωρίς σύγκριση είναι η πιο δυνατή γέφυρα. Τη δική σου ιστορία μπορείς να την πεις σε άλλη στιγμή.'],['Αλλάζεις αμέσως θέμα γιατί αμηχανείς.',1,'Η αμηχανία είναι φυσική. Μια απλή φράση όπως «δεν το ήξερα, ευχαριστώ που μου το είπες» αρκεί.']]},
+ {s:'Ένας φίλος από το σχολείο σε πειράζει: «Τι πας και κάνεις με αυτούς;»',o:[['Του εξηγείς ήρεμα τι κάνετε και τι σου άρεσε.',2,'Δεν χρειάζεται να τον πείσεις. Μοιράζεσαι την εμπειρία σου και αυτό μπορεί να τον κάνει να σκεφτεί.'],['Σταματάς να πηγαίνεις για να μη σε κοροϊδεύουν.',0,'Η επιλογή είναι δική σου, αλλά μην την αφήσεις στην πίεση των άλλων. Μίλα πρώτα με τον καθηγητή ΣΕΑ.'],['Απαντάς με ειρωνεία και τσακώνεστε.',1,'Ο θυμός είναι κατανοητός, αλλά ο καβγάς σπάνια αλλάζει γνώμες.']]},
+ {s:'Στην ομαδική εργασία ο άλλος θέλει τραγούδι στα τουρκικά και εσύ στα ελληνικά.',o:[['Επιμένεις ώσπου να υποχωρήσει.',0,'Μπορεί να «κερδίσεις», αλλά χάνετε την ομάδα.'],['Προτείνεις ένα τραγούδι από τον καθένα ή ένα κοινό κυπριακό παραδοσιακό.',2,'Λύση όπου κερδίζουν και οι δύο. Έτσι δουλεύει η συνεργασία.'],['Αφήνεις τον άλλο να διαλέξει για να μη χαλάσει το κλίμα.',1,'Είναι γενναιόδωρο, αλλά και η δική σου φωνή μετράει.']]}
+];
+let scI=0,scA=null;
+function diafonia(){
+ if(scI>=SC.length) return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 5</span><h1>Τέσσερα εργαλεία για δύσκολες στιγμές</h1></div>
+  <div class="grid2"><div class="card"><b>🗣️ Μιλώ για μένα</b><p class="small muted">«Εγώ νιώθω…», όχι «Εσείς πάντα…».</p></div><div class="card"><b>👂 Ακούω ως το τέλος</b><p class="small muted">Πριν απαντήσω, λέω με δικά μου λόγια τι κατάλαβα.</p></div><div class="card"><b>⚖️ Χωρίς σύγκριση πόνου</b><p class="small muted">Ο πόνος του άλλου δεν μικραίνει τον δικό μου.</p></div><div class="card"><b>⏸️ Παύση</b><p class="small muted">Αν θυμώσω, ζητάω ένα λεπτό. Επιτρέπεται.</p></div></div>
+  <div class="row" style="margin-top:16px"><button class="btn" id="scRe">Ξανά τα σενάρια</button><button class="btn primary" data-done="4" data-go="st-5">Είμαι έτοιμος/η για τη συνάντηση →</button></div>`;
+ const c=SC[scI];
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 5 · Σενάριο ${scI+1} από ${SC.length}</span><h1>Τι θα έκανες;</h1></div>
+ <div class="stack"><div class="sortq">${esc(c.s)}</div><div class="opts">${c.o.map((o,k)=>{let cl='';if(scA!==null){cl=' s'+o[1]+(k===scA?'':' dim');}return `<button class="opt${cl}" data-sc="${k}" ${scA!==null?'disabled':''}>${esc(o[0])}</button>`}).join('')}</div>
+ ${scA!==null?`<div class="fb" aria-live="polite"><b class="t${c.o[scA][1]}">${['Αυτό μάλλον θα πληγώσει','Κατανοητό, αλλά υπάρχει κάτι καλύτερο','Πολύ καλή επιλογή'][c.o[scA][1]]}</b><p>${esc(c.o[scA][2])}</p></div><div class="next"><span></span><button class="btn primary" id="scNext">Επόμενο →</button></div>`:''}</div>`;
+}
+
+/* ---------- 6. bridge words ---------- */
+const WB=[['Γεια σου','Merhaba','μερχαμπά'],['Καλημέρα','Günaydın','γκιουνάιντιν'],['Με λένε…','Benim adım…','μπενίμ αντίμ'],['Πώς σε λένε;','Adın ne?','αντίν νε;'],['Χάρηκα','Memnun oldum','μεμνούν ολντούμ'],['Ευχαριστώ','Teşekkürler / Sağol','τεσεκιουρλέρ / σαόλ'],['Φίλος / φίλη','Arkadaş','αρκαντάς'],['Τι μουσική ακούς;','Ne müzik dinliyorsun?','νε μιουζίκ ντινλιγιορσούν;'],['Ναι / Όχι','Evet / Hayır','εβέτ / χαΐρ'],['Τα λέμε!','Görüşürüz!','γκιορουσιουρούζ!']];
+function lexeis(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 6 · Η πρώτη συνάντηση</span><h1>10 λέξεις-γέφυρες</h1><p class="prose muted">Δεν χρειάζεται να μάθεις τουρκικά. Ένα «merhaba» όμως λέει «σε υπολογίζω». Πάτησε κάθε κάρτα. Ο/η συνομήλικός σου θα μάθει κι αυτός/ή κάποιες ελληνικές λέξεις.</p></div>
+ <div class="grid3">${WB.map(w=>`<button class="flip" aria-expanded="false"><b>${w[0]}</b><span class="bk"><span class="tr">${w[1]}</span><br><span class="muted small">προφέρεται: ${w[2]}</span></span><span class="hint">Πάτησε για τα τουρκικά</span></button>`).join('')}</div>
+ <div class="take" style="margin-top:18px"><b>Ήξερες ότι…</b> πολλές λέξεις της καθημερινότητας είναι κοινές στα κυπριακά ελληνικά και στα κυπριακά τουρκικά; Χαλλούμι / hellim, κολοκάσι / kolokas, ταψί / tepsi. Βρείτε μαζί κι άλλες στην πρώτη συνάντηση.</div>
+ <div class="row" style="margin-top:16px"><a class="btn primary" href="#symfono">Φτιάξτε το σύμφωνό σας →</a><button class="btn" data-done="5">Σημείωσε τον σταθμό ως ολοκληρωμένο</button></div>`;
+}
+
+/* ---------- pact ---------- */
+const PACT=['Μιλάμε για τον εαυτό μας, όχι εξ ονόματος όλης της κοινότητας.','Ακούμε μέχρι το τέλος πριν απαντήσουμε.','Διαφωνούμε με την ιδέα, όχι με τον άνθρωπο.','Δεν συγκρίνουμε τον πόνο.','Ό,τι προσωπικό ακουστεί εδώ, μένει εδώ.','Κανείς δεν είναι υποχρεωμένος να μιλήσει.','Δεν βγάζουμε φωτογραφίες χωρίς άδεια.','Ρωτάμε όταν δεν καταλαβαίνουμε μια λέξη.','Γελάμε μαζί, όχι με κάποιον.','Αν κάτι μας βαραίνει, το λέμε στον συντονιστή.'];
+function symfono(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Για την πρώτη συνάντηση</span><h1>Το σύμφωνό μας</h1><p class="prose muted">Διαλέξτε μαζί, στη μικτή ομάδα, τους κανόνες που θέλετε. Μετά εκτυπώστε το και υπογράψτε το και οι δύο πλευρές, όπως κάνουν τα σχολεία-εταίροι σε άλλες χώρες.</p></div>
+ <div class="hero"><div class="stack" style="gap:8px">${PACT.map((p,k)=>`<label class="check no-print"><input type="checkbox" data-pact="${k}" ${S.pact.includes(k)?'checked':''}><span>${p}</span></label>`).join('')}<label class="stack no-print" style="gap:6px;margin-top:6px"><span class="small muted">Δικός σας κανόνας</span><input type="text" id="pactOwn" maxlength="120" value="${esc(S.pactOwn||'')}"></label></div>
+ <div class="card stack"><h2 style="text-align:center">Σύμφωνο συνεργασίας<br><small class="muted" style="font-size:.9rem">İşbirliği Sözleşmesi · Partnership Agreement</small></h2>
+ ${S.pact.length||S.pactOwn?`<ol class="pact">${S.pact.slice().sort((a,b)=>a-b).map(k=>`<li>${PACT[k]}</li>`).join('')}${S.pactOwn?`<li>${esc(S.pactOwn)}</li>`:''}</ol>`:'<p class="muted">Διάλεξε κανόνες από τα αριστερά.</p>'}
+ <div class="grid2" style="margin-top:20px"><div style="border-top:1px solid var(--ink);padding-top:6px" class="small muted">Υπογραφές · Λύκειο Αρχαγγέλου</div><div style="border-top:1px solid var(--ink);padding-top:6px" class="small muted">İmzalar · αδελφό σχολείο</div></div></div></div>
+ <div class="row no-print" style="margin-top:16px"><button class="btn primary" onclick="print()">🖨️ Εκτύπωση</button><a class="btn" href="#st-6">Επόμενος σταθμός →</a></div>`;
+}
+
+/* ---------- 7. walk ---------- */
+function peripatos(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 7</span><h1>Περίπατος στη Λευκωσία</h1><p class="prose muted">Η παλιά πόλη μέσα στα τείχη είναι μια πόλη με πολλές μνήμες: εκκλησίες και τζαμιά, αγορές, σπίτια που άλλαξαν ιδιοκτήτες, η Πράσινη Γραμμή. Ο περίπατος γίνεται με εκπαιδευτές του AHDR και ακολουθεί πάντα ό,τι επιτρέπει η εγκύκλιος του Υπουργείου.</p></div>
+ <div class="grid2"><div class="card stack"><h3>📸 Κυνήγι εικόνων</h3><p class="small muted">Βρες και φωτογράφισε (χωρίς πρόσωπα):</p><ul class="clean"><li>Μια επιγραφή σε δύο γλώσσες</li><li>Κάτι που δείχνει τη διαίρεση</li><li>Κάτι που δείχνει συνύπαρξη</li><li>Μια λεπτομέρεια που κανείς άλλος δεν πρόσεξε</li></ul></div>
+ <div class="card stack"><h3>💭 Ερωτήσεις στη διαδρομή</h3><ul class="clean"><li>Ποιοι ζούσαν εδώ πριν από 70 χρόνια;</li><li>Τι ήχους ακούς; Τι μυρωδιές;</li><li>Πώς νιώθεις μπροστά στη νεκρή ζώνη;</li><li>Τι θα ήθελες να δεις εδώ σε 20 χρόνια;</li></ul></div></div>
+ <div class="row" style="margin-top:16px"><a class="btn primary" href="#imerologio?6">📓 Γράψε τι είδες</a><button class="btn" data-done="6" data-go="st-7">Ολοκληρώθηκε · επόμενος σταθμός</button></div>`;
+}
+
+/* ---------- 8. testimonies ---------- */
+const QC=['Τι σας έδωσε τη δύναμη να μιλάτε για αυτό;','Πότε νιώσατε πρώτη φορά ότι μπορείτε να εμπιστευτείτε κάποιον από την άλλη κοινότητα;','Τι θα θέλατε να ξέρουμε εμείς οι νέοι;','Τι σας δίνει ελπίδα;','Υπάρχει κάτι που μετανιώνετε που δεν είπατε;','Τι ρωτούν συνήθως οι νέοι και σας εκπλήσσει;','Πώς μιλάτε για αυτά στην οικογένειά σας;'];
+let qcI=0;
+function martyries(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 8</span><h1>Κύκλος μαρτυριών</h1><p class="prose muted">Δύο καλεσμένοι, ένας Ελληνοκύπριος και ένας Τουρκοκύπριος, μιλούν για μια απώλεια ή έναν εκτοπισμό και για το πώς βρήκαν τον δρόμο του διαλόγου. Εμείς ακούμε.</p></div>
+ <div class="grid2"><div class="card stack"><h3>Κανόνες του κύκλου</h3><ul class="clean"><li>Σιωπή όσο μιλάει ο καλεσμένος.</li><li>Δεν κρίνουμε την ιστορία κανενός.</li><li>Ρωτάμε με σεβασμό, όχι για να «πιάσουμε» τον άλλο.</li><li>Μπορώ να βγω για λίγο αν με βαραίνει.</li></ul></div>
+ <div class="stack"><div class="qcard" aria-live="polite">${QC[qcI]}</div><button class="btn primary" id="qcNext" style="align-self:center">🎲 Άλλη ερώτηση</button><p class="small muted" style="text-align:center">Δεν ξέρεις τι να ρωτήσεις; Πάρε ιδέα από εδώ.</p></div></div>
+ <div class="row" style="margin-top:16px"><a class="btn primary" href="#imerologio?7">📓 Μία σκέψη μετά τον κύκλο</a><button class="btn" data-done="7" data-go="st-8">Ολοκληρώθηκε · επόμενος σταθμός</button></div>`;
+}
+
+/* ---------- 9/11. project ---------- */
+const PJ={
+ podcast:{i:'🎙️',t:'Δίγλωσσο podcast',d:'«Μεγαλώνοντας στο ίδιο νησί»: ένα επεισόδιο 8–10 λεπτών σε ελληνικά, τουρκικά και αγγλικά.',s:['Διαλέξτε θέμα (σχολείο, μουσική, όνειρα, φόβοι)','Γράψτε 5 ερωτήσεις που θα κάνετε ο ένας στον άλλο','Μοιράστε ρόλους: παρουσίαση, ήχος, μοντάζ','Ηχογραφήστε με το κινητό σε ήσυχο χώρο','Μοντάρετε και προσθέστε μουσική χωρίς πνευματικά δικαιώματα','Ακούστε το μαζί πριν το παρουσιάσετε']},
+ playlist:{i:'🎶',t:'Κοινή playlist',d:'Τραγούδια που ακούνε οι δύο κοινότητες, με σύντομα σχόλια για το καθένα.',s:['Ο καθένας φέρνει 3 τραγούδια που αγαπά','Ψάξτε κυπριακά παραδοσιακά τραγούδια που υπάρχουν και στις δύο γλώσσες','Γράψτε μία πρόταση για κάθε τραγούδι: γιατί το διάλεξα','Βάλτε τα σε σειρά που λέει μια ιστορία','Ετοιμάστε μια σύντομη παρουσίαση ή ένα «ραδιοφωνικό» intro']},
+ foto:{i:'📷',t:'Φωτογραφική έκθεση',d:'«Η μέρα μου / Η μέρα σου»: η ίδια ώρα της μέρας σε δύο σπίτια του ίδιου νησιού.',s:['Συμφωνήστε 6 στιγμές (πρωινό, δρόμος, σχολείο, φαγητό, ελεύθερος χρόνος, βράδυ)','Ο καθένας φωτογραφίζει τις δικές του (χωρίς πρόσωπα τρίτων)','Βάλτε τις φωτογραφίες σε ζευγάρια','Γράψτε λεζάντες σε δύο γλώσσες','Τυπώστε και στήστε την έκθεση']},
+ xartis:{i:'🗺️',t:'Ψηφιακός χάρτης',d:'Κοινοί τόποι μνήμης και ιστορίες συνύπαρξης στο νησί.',s:['Ο καθένας διαλέγει 3 τόπους που σημαίνουν κάτι για την οικογένειά του','Γράψτε μια σύντομη ιστορία για τον καθένα','Προσθέστε τους σε έναν κοινό ψηφιακό χάρτη που επιτρέπει το σχολείο','Βρείτε τόπους που σημαίνουν κάτι και για τις δύο κοινότητες','Ετοιμάστε μια ξενάγηση 5 λεπτών στον χάρτη']}
+};
+function ergo(){
+ const p=S.proj.type&&PJ[S.proj.type];
+ let h=`${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμοί 9 και 11 · Φάση 3</span><h1>Κάνουμε κάτι μαζί</h1><p class="prose muted">Σε μικτή ομάδα (3 + 3) διαλέγετε ένα έργο. Θα το δουλέψετε για δύο μήνες και θα το παρουσιάσετε στην κοινή εκδήλωση.</p></div>
+ <div class="grid2">${Object.entries(PJ).map(([k,v])=>`<button class="opt${S.proj.type===k?' s2':''}" data-pj="${k}" aria-pressed="${S.proj.type===k}"><b style="font-size:1.1rem">${v.i} ${v.t}</b><br><span class="small muted">${v.d}</span></button>`).join('')}</div>`;
+ if(p){const dn=p.s.filter((x,k)=>S.proj.steps[k]).length;
+  h+=`<h2 class="sec-title">${p.i} ${p.t}: τα βήματα (${dn}/${p.s.length})</h2><div class="stack" style="gap:8px">${p.s.map((x,k)=>`<label class="check"><input type="checkbox" data-ps="${k}" ${S.proj.steps[k]?'checked':''}><span>${x}</span></label>`).join('')}</div>
+  <label class="stack" style="gap:6px;margin-top:14px"><b>Σημειώσεις της ομάδας</b><textarea id="pjNotes" maxlength="1500">${esc(S.proj.notes)}</textarea></label>
+  <div class="row" style="margin-top:12px"><button class="btn primary" id="savePj">Αποθήκευση</button><button class="btn" data-done="8">✓ Σταθμός 9</button><button class="btn" data-done="10">✓ Σταθμός 11</button></div>`;}
+ return h;
+}
+function online(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 10</span><h1>Δουλεύουμε online</h1><p class="prose muted">Ανάμεσα στις συναντήσεις, η ομάδα δουλεύει σε ψηφιακό χώρο που έχει εγκρίνει το σχολείο, πάντα με παρουσία εκπαιδευτικού.</p></div>
+ <div class="grid2"><div class="card stack"><h3>✅ Κάνουμε</h3><ul class="clean"><li>Δουλεύουμε στον κοινό χώρο της ομάδας</li><li>Απαντάμε μέσα σε λογικό χρόνο</li><li>Γράφουμε απλά, γιατί για όλους είναι δεύτερη γλώσσα</li><li>Βάζουμε emoji για να φαίνεται ο τόνος</li></ul></div>
+ <div class="card stack"><h3>🚫 Δεν κάνουμε</h3><ul class="clean"><li>Δεν ανταλλάσσουμε προσωπικά στοιχεία χωρίς άδεια</li><li>Δεν ανεβάζουμε φωτογραφίες άλλων στα social media</li><li>Δεν προωθούμε μηνύματα της ομάδας αλλού</li><li>Αν κάτι online μας ενοχλεί, το λέμε αμέσως στον καθηγητή</li></ul></div></div>
+ <div class="row" style="margin-top:16px"><a class="btn primary" href="#ergo">Στο έργο μας →</a><button class="btn" data-done="9">Σημείωσε ως ολοκληρωμένο</button></div>`;
+}
+function ekdilosi(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Σταθμός 12 · Φάση 4</span><h1>«Φανταστείτε μαζί»: η κοινή εκδήλωση</h1></div>${EKD()}<div class="row" style="margin-top:16px"><button class="btn" data-done="11" data-go="st-12">Ολοκληρώθηκε · τελευταίος σταθμός</button></div>`;
+}
+
+/* ---------- before / after ---------- */
+const PM=[['Πόσο άνετα θα ένιωθα να μιλήσω με έναν Τουρκοκύπριο συνομήλικο;','Καθόλου','Πολύ'],['Πόσο καλά νομίζω ότι ξέρω πώς ζουν οι νέοι της άλλης κοινότητας;','Καθόλου','Πολύ'],['Πόσο μπορώ να ακούσω μια άποψη για την ιστορία που δεν μου αρέσει, χωρίς να θυμώσω;','Καθόλου','Πολύ'],['Πόσο πιστεύω ότι οι δύο κοινότητες έχουν κοινά;','Ελάχιστα','Πολλά'],['Πόσο θα ήθελα να ξαναβρεθώ με νέους από την άλλη κοινότητα;','Καθόλου','Πολύ']];
+function prinMeta(){
+ const mode=S.pre?(S.post?'both':'post'):'pre', cur=mode==='post'?{}:null;
+ let h=`${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Αρχή και τέλος της χρονιάς</span><h1>Πριν και μετά</h1><p class="prose muted">Απάντησε ειλικρινά. Δεν είναι τεστ και δεν το βλέπει κανείς. Στο τέλος της χρονιάς απαντάς ξανά και βλέπεις τι άλλαξε.</p></div>`;
+ if(mode!=='both'){
+  h+=`<div class="card stack"><h3>${mode==='pre'?'Στην αρχή':'Στο τέλος'}</h3>${PM.map((q,k)=>`<div class="sl"><label for="pm${k}"><b>${q[0]}</b></label><input type="range" id="pm${k}" min="1" max="5" value="3"><div class="ends"><span>${q[1]}</span><span>${q[2]}</span></div></div>`).join('')}<div><button class="btn primary" id="savePm" data-mode="${mode}">Αποθήκευση</button></div></div>`;
+  if(S.pre) h+=`<p class="small muted" style="margin-top:10px">Η πρώτη σου απάντηση αποθηκεύτηκε. Αυτή είναι η τελική.</p>`;
+ } else {
+  h+=`<div class="card"><div class="cmp"><span class="h">Ερώτηση</span><span class="h" style="text-align:center">Πριν</span><span class="h" style="text-align:center">Μετά</span>${PM.map((q,k)=>{const d=S.post[k]-S.pre[k];return `<span>${q[0]}</span><span class="v">${S.pre[k]}</span><span class="v" style="color:${d>0?'var(--good)':d<0?'var(--bad)':'inherit'}">${S.post[k]}${d>0?' ↑':d<0?' ↓':''}</span>`}).join('')}</div></div>
+  <div class="take" style="margin-top:14px"><b>Τι κρατάω:</b> Κοίτα πού άλλαξες περισσότερο. Τι το έκανε να αλλάξει; Γράψ' το στο ημερολόγιο.</div>
+  <div class="row" style="margin-top:14px"><a class="btn primary" href="#imerologio?12">📓 Γράψε στο ημερολόγιο</a><button class="btn" data-done="12">✓ Σταθμός 13</button><button class="btn" id="pmReset">Σβήσε τις απαντήσεις</button></div>`;
+ }
+ return h;
+}
+
+/* ---------- journal ---------- */
+function imerologio(sel){
+ const i=sel==null||isNaN(sel)?firstOpen():sel, e=S.journal[i]||{};
+ const list=Object.keys(S.journal).map(Number).sort((a,b)=>a-b).filter(k=>{const j=S.journal[k];return j&&(j.a||j.b||j.c)});
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Το ημερολόγιό μου</span><h1>Τρεις γραμμές μετά από κάθε συνάντηση</h1></div>
+ <div class="card stack"><label class="stack" style="gap:6px"><b>Σταθμός</b><select id="jSel" style="padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surface)">${ST.map((s,k)=>`<option value="${k}" ${k===i?'selected':''}>${k+1}. ${s.t}</option>`).join('')}</select></label>
+ <label class="stack" style="gap:6px"><b>😮 Τι με εξέπληξε</b><textarea id="ja" maxlength="500">${esc(e.a)}</textarea></label>
+ <label class="stack" style="gap:6px"><b>😣 Τι με δυσκόλεψε</b><textarea id="jb" maxlength="500">${esc(e.b)}</textarea></label>
+ <label class="stack" style="gap:6px"><b>❓ Τι θέλω να ρωτήσω την επόμενη φορά</b><textarea id="jc" maxlength="500">${esc(e.c)}</textarea></label>
+ <div class="row"><button class="btn primary" id="saveJ">Αποθήκευση</button></div></div>
+ ${list.length?`<h2 class="sec-title">Όσα έγραψα</h2><div class="stack">${list.map(k=>{const j=S.journal[k];return `<div class="entry"><b>${k+1}. ${ST[k].t}</b>${j.a?`<p class="small">😮 ${esc(j.a)}</p>`:''}${j.b?`<p class="small">😣 ${esc(j.b)}</p>`:''}${j.c?`<p class="small">❓ ${esc(j.c)}</p>`:''}</div>`}).join('')}</div>`:''}
+ <div class="row no-print" style="margin-top:20px"><button class="btn" onclick="print()">🖨️ Εκτύπωση</button><button class="btn" id="wipe">Σβήσε όλα τα δεδομένα μου</button></div>`;
+}
+
+/* ---------- Imagine ---------- */
+function imagine(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Η βάση του προγράμματος</span><h1>Τι είναι το Imagine</h1><p class="prose muted">Το Imagine είναι πρόγραμμα αντιρατσιστικής εκπαίδευσης και εκπαίδευσης για μια κουλτούρα ειρήνης. Το δημιούργησε ο Σύνδεσμος για τον Ιστορικό Διάλογο και την Έρευνα (AHDR) και λειτουργεί υπό την αιγίδα της δικοινοτικής Τεχνικής Επιτροπής Παιδείας. Συναντήσεις γίνονται στο Σπίτι της Συνεργασίας (H4C), στη νεκρή ζώνη της Λευκωσίας.</p></div>
+ <div class="tl">
+  <div><b>2016–2017</b><p>Ξεκινά το Imagine. Πρώτα εργαστήρια μέσα στην τάξη, μετά συναντήσεις μικτών ομάδων στη νεκρή ζώνη.</p></div>
+  <div><b>2017–2022</b><p>Χιλιάδες μαθητές και εκπαιδευτικοί από τις δύο κοινότητες συμμετέχουν. Το πρόγραμμα παίρνει το βραβείο GENE Global Education Award 2020/21.</p></div>
+  <div><b>2022</b><p>Η τουρκοκυπριακή πλευρά αποσύρεται από το δικοινοτικό σκέλος. Το πρόγραμμα συνεχίζει σε περιορισμένη μορφή.</p></div>
+  <div><b>Φεβρουάριος 2026</b><p>Εγκύκλιος του Υπουργείου Παιδείας επιτρέπει ξανά την εθελοντική συμμετοχή των σχολείων.</p></div>
+  <div><b>Σεπτέμβριος 2026</b><p>Το AHDR ξεκινά την Imagine Peace Academy, με δίκτυο Νέων Πρεσβευτών για μαθητές.</p></div>
+  <div><b>9 Νοεμβρίου 2026</b><p>Οι ηγέτες των δύο κοινοτήτων συμφωνούν να ξαναρχίσει το Imagine. Οι πρακτικές λεπτομέρειες για τα σχολεία αναμένονται.</p></div>
+ </div>
+ <div class="card soft stack" style="margin-top:16px"><h3>Από πού πήραμε ιδέες</h3><p class="small">Εκτός από το Imagine, το πρόγραμμα αξιοποιεί ιδέες από τη <b>Shared Education</b> (Βόρεια Ιρλανδία), το <b>PRIME</b> (δύο αφηγήσεις της ιστορίας), το <b>Parents Circle</b> (μαρτυρίες), το <b>Hand in Hand</b> (δίγλωσσα σχολεία), το <b>RYCO</b> (σύμφωνα συνεργασίας σχολείων), το <b>UNAOC Young Peacebuilders</b>, το <b>European Youth Parliament</b> και το <b>Corridors</b>.</p></div>`;
+}
+
+/* ---------- teachers ---------- */
+function teachers(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Για εκπαιδευτικούς</span><h1>Οδηγός συντονιστή</h1><p class="prose muted">Ετήσιο πρόγραμμα για 20–25 μαθητές Α΄ και Β΄ Λυκείου, με εθελοντική συμμετοχή και ένα σταθερό αδελφό τουρκοκυπριακό Λύκειο μέσω AHDR.</p></div>
+ <div class="tablebox card"><table><thead><tr><th>Φάση</th><th>Πότε</th><th>Πού</th><th>Σταθμοί</th></tr></thead><tbody>
+ <tr><td><b>0. Θεμέλια</b></td><td>Δεκέμβριος</td><td>Σχολείο</td><td>Επαφή με AHDR, έγκριση Διεύθυνσης, επιλογή ομάδας, βραδιά γονέων, «Πριν»</td></tr>
+ <tr><td><b>1. Κοιτάμε μέσα μας</b></td><td>Ιαν.–Φεβ.</td><td>Σχολείο</td><td>1–5</td></tr>
+ <tr><td><b>2. Συναντιόμαστε</b></td><td>Μαρ.–Απρ.</td><td>H4C, εντός τειχών</td><td>6–8</td></tr>
+ <tr><td><b>3. Δημιουργούμε μαζί</b></td><td>Απρ.–Μάιος</td><td>Online + H4C</td><td>9–11</td></tr>
+ <tr><td><b>4. Μοιραζόμαστε</b></td><td>Μάιος–Ιούνιος</td><td>H4C, σχολείο</td><td>12–13, «Μετά»</td></tr></tbody></table></div>
+ <p class="small muted" style="margin-top:8px">Ρυθμός: μία συνάντηση το δεκαπενθήμερο, 2 διδακτικές περίοδοι. Οι μικτές συναντήσεις είναι μισοήμερες. Από το 2027–28 το πρόγραμμα θα ξεκινά τον Σεπτέμβριο.</p>
+ <h2 class="sec-title">Αρχές</h2><ul class="clean prose"><li>Ο συντονιστής δεν παίρνει κομματική θέση και δεν προωθεί σχέδιο λύσης. Κρατά τη διαδικασία ασφαλή.</li><li>Η διαφορετική ορολογία δεν κρύβεται. Γίνεται θέμα συζήτησης (Σταθμός 3).</li><li>Γραπτή γονική συγκατάθεση, δικαίωμα αποχώρησης χωρίς εξηγήσεις, ρόλος παρατηρητή σε δύσκολες δραστηριότητες.</li><li>Ευαισθησία στο τραύμα: πρόσφυγες, αγνοούμενοι, θύματα. Ατομική συζήτηση μετά και, όπου χρειάζεται, παραπομπή στην Εκπαιδευτική Ψυχολογική Υπηρεσία.</li><li>Όλες οι δραστηριότητες μέσα στο πλαίσιο της εγκυκλίου του Υπουργείου.</li></ul>
+ <h2 class="sec-title">Λίστα Δεκεμβρίου</h2><div class="stack" style="gap:8px">${['Email στο AHDR: ahdr@ahdr.info · 22445740','Έλεγχος ισχύουσας εγκυκλίου του Υπουργείου για το Imagine','Έγκριση Διευθυντή και ενημέρωση Συλλόγου Καθηγητών','Ανοιχτή πρόσκληση και επιλογή 20–25 μαθητών','Έντυπο γονικής συγκατάθεσης (δραστηριότητες, μετακινήσεις, φωτογραφίες)','Μεταφορά, συνοδοί, ασφάλιση','Επιβεβαίωση με το AHDR για τη γλώσσα και τη διερμηνεία'].map((t,k)=>`<label class="check"><input type="checkbox" data-tc="${k}" ${(S.tc||{})[k]?'checked':''}><span>${t}</span></label>`).join('')}</div>
+ <h2 class="sec-title">Σχέδιο Β</h2><p class="prose">Αν καθυστερήσει το δικοινοτικό σκέλος, η Φάση 1 γίνεται κανονικά, ο περίπατος γίνεται μόνο στη νότια πλευρά χωρίς διέλευση οδοφράγματος, και η επαφή με το αδελφό σχολείο γίνεται online. Μόλις ανοίξουν οι συναντήσεις, η Φάση 2 μεταφέρεται για Απρίλιο–Μάιο.</p>
+ <h2 class="sec-title">Αξιολόγηση</h2><p class="prose">Ανώνυμο «Πριν/Μετά» (εδώ, στη συσκευή του μαθητή, ή σε έντυπο), ημερολόγιο τριών γραμμών, ομάδα εστίασης τον Ιούνιο, αποτύπωση συντονιστή ανά φάση. Ενδεικτικοί δείκτες: τουλάχιστον 80% των μαθητών μένουν ως το τέλος, όλες οι μικτές ομάδες παρουσιάζουν έργο, οι μαθητές δηλώνουν ότι κρατούν επαφή.</p>`;
+}
+
+/* ---------- help ---------- */
+const LINES=[['112','Άμεσος κίνδυνος','Αν εσύ ή κάποιος άλλος κινδυνεύει τώρα.'],['1466','Hope For Children','24 ώρες, δωρεάν. Για κάθε δυσκολία, βία ή κακοποίηση.'],['116 111','Ευρωπαϊκή Γραμμή Στήριξης Παιδιών και Εφήβων','Δωρεάν συμβουλευτική για ό,τι σε απασχολεί.'],['1410','Οργανισμός Νεολαίας Κύπρου (ΟΝΕΚ)','Συμβουλευτική και στήριξη για παιδιά, εφήβους και γονείς.'],['1480','CYberSafety','Αν σε πληγώνει κάτι που συμβαίνει online.']];
+function help(){
+ return `${back}<div class="vhead" style="margin-top:12px"><span class="eyebrow">Δεν είσαι μόνος/η</span><h1>Πού μπορώ να μιλήσω</h1><p class="prose">Τα θέματα του Κυπριακού αγγίζουν οικογενειακές ιστορίες και μπορεί να ξυπνήσουν δύσκολα συναισθήματα. Αν κάτι σε βαραίνει, <b>μίλα με τον Καθηγητή ΣΕΑ ή έναν ενήλικα που εμπιστεύεσαι</b>.</p></div>
+ <div class="row" style="margin-bottom:16px"><a class="btn primary" href="../aitima-sea/">Κλείσε συνάντηση στο Γραφείο 10</a><a class="btn" href="../anasa/">Ανάσα: ηρέμησε τώρα</a></div>
+ <div class="stack">${LINES.map(l=>`<div class="line"><a class="tel" href="tel:${l[0].replace(/\s/g,'')}">${l[0]}</a><div><b>${l[1]}</b><p class="small muted">${l[2]}</p></div></div>`).join('')}</div>`;
+}
+
+/* ---------- router ---------- */
+function route(){
+ const h=(location.hash||'#home').slice(1), [r,arg]=h.split('?');
+ let out;
+ if(r.startsWith('st-')) out=station(+r.slice(3));
+ else out=({home,taftotita,stereotypa,istories,synenteuxi,diafonia,lexeis,symfono,peripatos,martyries,ergo,online,ekdilosi,'prin-meta':prinMeta,imerologio:()=>imerologio(arg!=null?+arg:null),imagine,teachers,help}[r]||home)();
+ app.innerHTML=out; scrollTo(0,0); app.focus({preventScroll:true});
+}
+addEventListener('hashchange',route);
+function rerender(){const y=scrollY;route();scrollTo(0,y);}
+
+app.addEventListener('click',e=>{
+ const t=e.target;
+ const d=t.closest('[data-done]'); if(d){const i=+d.dataset.done; if(d.dataset.go){S.done[i]=true;save();toast('Ο σταθμός ολοκληρώθηκε ✓');location.hash='#'+d.dataset.go;return;} S.done[i]=!S.done[i]; save(); toast(S.done[i]?'Ο σταθμός ολοκληρώθηκε ✓':'Αναιρέθηκε'); rerender(); return;}
+ const fl=t.closest('.flip'); if(fl){fl.setAttribute('aria-expanded',fl.getAttribute('aria-expanded')==='true'?'false':'true');return;}
+ const id=t.closest('[data-id]'); if(id){const v=id.dataset.id,k=S.ids.indexOf(v); if(k>=0)S.ids.splice(k,1); else if(S.ids.length<5)S.ids.push(v); else {toast('Μέχρι 5. Ποια σε περιγράφουν περισσότερο;');return;} save(); rerender(); return;}
+ const sq=t.closest('[data-sq]'); if(sq&&!sqA){sqA=sq.dataset.sq; if(sqA===SQ[sqI][1])sqScore++; rerender(); return;}
+ if(t.closest('#sqNext')){sqI++;sqA=null;route();return;}
+ if(t.closest('#sqRe')){sqI=0;sqA=null;sqScore=0;route();return;}
+ const sc=t.closest('[data-sc]'); if(sc&&scA===null){scA=+sc.dataset.sc; rerender(); return;}
+ if(t.closest('#scNext')){scI++;scA=null;route();return;}
+ if(t.closest('#scRe')){scI=0;scA=null;route();return;}
+ if(t.closest('#qcNext')){qcI=(qcI+1+Math.floor(Math.random()*(QC.length-1)))%QC.length; rerender(); return;}
+ const pj=t.closest('[data-pj]'); if(pj){if(S.proj.type!==pj.dataset.pj){S.proj.type=pj.dataset.pj;S.proj.steps={};} save(); rerender(); return;}
+ if(t.closest('#saveLens')){S.lens.a=document.getElementById('lensA').value;S.lens.b=document.getElementById('lensB').value;save();toast('Αποθηκεύτηκε');return;}
+ if(t.closest('#saveIv')){document.querySelectorAll('[data-iv]').forEach(x=>S.iv[x.dataset.iv]=x.value);save();toast('Αποθηκεύτηκε');return;}
+ if(t.closest('#savePj')){S.proj.notes=document.getElementById('pjNotes').value;save();toast('Αποθηκεύτηκε');return;}
+ if(t.closest('#saveDecl')){S.decl=document.getElementById('decl').value;save();toast('Αποθηκεύτηκε');return;}
+ if(t.closest('#saveJ')){const i=+document.getElementById('jSel').value;S.journal[i]={a:document.getElementById('ja').value,b:document.getElementById('jb').value,c:document.getElementById('jc').value};save();toast('Αποθηκεύτηκε στο ημερολόγιο 📓');location.hash='#imerologio?'+i;rerender();return;}
+ const pm=t.closest('#savePm'); if(pm){const v=PM.map((q,k)=>+document.getElementById('pm'+k).value); S[pm.dataset.mode]=v; save(); toast('Αποθηκεύτηκε'); rerender(); return;}
+ if(t.closest('#pmReset')){if(confirmArm('pm')){S.pre=null;S.post=null;save();rerender();toast('Σβήστηκαν');}return;}
+ if(t.closest('#wipe')){if(confirmArm('wipe')){try{localStorage.removeItem(KEY)}catch(e){} S={done:{},ids:[],idFree:'',journal:{},pre:null,post:null,pact:[],proj:{type:null,steps:{},notes:''},iv:{},lens:{a:'',b:'',q:{}}};location.hash='#home';route();toast('Όλα σβήστηκαν');}return;}
+});
+let armed=null;
+function confirmArm(k){if(armed===k){armed=null;return true;} armed=k; toast('Πάτησε ξανά για επιβεβαίωση'); setTimeout(()=>{if(armed===k)armed=null},3000); return false;}
+app.addEventListener('change',e=>{
+ const t=e.target;
+ if(t.id==='idFree'){S.idFree=t.value.trim().slice(0,24);save();rerender();return;}
+ if(t.dataset.lq!=null){S.lens.q[t.dataset.lq]=t.checked;save();return;}
+ if(t.dataset.pact!=null){const k=+t.dataset.pact,i=S.pact.indexOf(k); if(t.checked&&i<0)S.pact.push(k); if(!t.checked&&i>=0)S.pact.splice(i,1); save(); rerender(); return;}
+ if(t.id==='pactOwn'){S.pactOwn=t.value.trim().slice(0,120);save();rerender();return;}
+ if(t.dataset.ps!=null){S.proj.steps[t.dataset.ps]=t.checked;save();rerender();return;}
+ if(t.dataset.tc!=null){S.tc=S.tc||{};S.tc[t.dataset.tc]=t.checked;save();return;}
+ if(t.id==='jSel'){location.hash='#imerologio?'+t.value;return;}
+});
+route();
+})();
+</script>
+</body></html>
