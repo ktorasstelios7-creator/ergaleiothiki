@@ -273,13 +273,16 @@ function home(){
 }
 function firstOpen(){for(let i=0;i<NST;i++) if(!S.done[i]) return i; return NST-1;}
 function islandSVG(){
- return `<svg class="island" viewBox="0 0 320 190" role="img" aria-label="${t('Το νησί με δύο φιγούρες που κρατιούνται από το χέρι','El ele tutuşan iki figürle ada')}">
-  <path d="M30 120c18-20 46-24 70-34 26-11 40-36 72-38 22-1 30 12 52 12 20 0 40-14 62-26-6 18-24 28-30 40 12 2 26 0 34 8-18 8-42 4-58 16-20 15-30 40-62 44-26 3-44-10-70-6-24 4-44 0-70-16z" fill="color-mix(in srgb,var(--accent) 22%,var(--surface))" stroke="var(--accent)" stroke-width="2"/>
-  <path d="M60 112c40-6 80-8 120-14s70-10 100-20" fill="none" stroke="var(--warm)" stroke-width="2" stroke-dasharray="5 6"/>
-  <g transform="translate(128 52)"><circle cx="0" cy="0" r="9" fill="var(--warm)"/><path d="M0 9v26M0 18l-12 12M0 35l-9 18M0 35l9 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></g>
-  <g transform="translate(176 52)"><circle cx="0" cy="0" r="9" fill="var(--accent)"/><path d="M0 9v26M0 18l12 12M0 35l-9 18M0 35l9 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></g>
-  <path d="M128 70q24 14 48 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <text x="160" y="182" text-anchor="middle" font-family="Literata,Georgia,serif" font-size="15" fill="var(--muted)">${t('ένα νησί · πολλές φωνές','tek ada · birçok ses')}</text>
+ return `<svg class="island" viewBox="0 0 320 222" role="img" aria-label="${t('Ο χάρτης της Κύπρου με δύο φιγούρες που κρατιούνται από το χέρι στη Λευκωσία','Lefkoşa’da el ele tutuşan iki figürle Kıbrıs haritası')}">
+  <defs><linearGradient id="cySea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="color-mix(in srgb,var(--accent) 30%,var(--surface))"/><stop offset="1" stop-color="color-mix(in srgb,var(--accent) 16%,var(--surface))"/></linearGradient></defs>
+  <path d="M18.8 105.3C19.4 103.8 23.1 109.9 26.2 111.4C29.3 112.9 34.4 114.7 37.5 114.4C40.6 114.1 42.3 112.8 45.0 109.8C47.7 106.8 49.5 99.0 53.7 96.2C57.9 93.4 64.2 92.6 70.0 93.1C75.8 93.6 83.5 99.5 88.7 99.2C93.9 99.0 98.5 95.1 101.2 91.6C103.9 88.0 102.9 83.2 105.0 77.9C107.1 72.6 109.8 61.7 113.7 59.7C117.7 57.7 122.6 64.3 128.7 65.8C134.8 67.3 141.7 68.5 150.0 68.8C158.3 69.0 169.8 68.3 178.7 67.3C187.6 66.3 195.3 64.2 203.7 62.7C212.0 61.2 221.5 60.2 228.8 58.2C236.1 56.2 241.3 53.4 247.5 50.6C253.7 47.8 259.9 44.9 266.2 41.4C272.4 37.9 278.5 33.6 285.0 29.3C291.5 25.0 300.8 17.6 305.0 15.6C309.2 13.6 311.2 15.1 310.0 17.1C308.8 19.1 302.5 23.8 297.5 27.8C292.5 31.9 286.2 36.9 280.0 41.4C273.8 45.9 266.5 51.0 260.0 55.1C253.5 59.2 246.4 62.5 241.2 65.8C236.0 69.1 231.3 70.9 228.8 74.9C226.3 79.0 226.2 85.5 226.2 90.1C226.2 94.6 227.3 98.4 228.8 102.2C230.3 106.0 232.3 108.8 235.0 112.9C237.7 117.0 245.0 124.8 245.0 126.6C245.0 128.4 239.8 123.5 235.0 123.5C230.2 123.5 223.7 125.1 216.2 126.6C208.7 128.1 195.2 129.1 190.0 132.6C184.8 136.1 189.0 143.7 185.0 147.8C181.0 151.9 171.8 154.5 166.2 157.0C160.6 159.5 157.4 161.5 151.2 163.0C144.9 164.5 134.7 164.8 128.7 166.1C122.7 167.4 117.7 168.1 115.0 170.6C112.3 173.1 113.8 178.5 112.5 181.3C111.2 184.1 109.4 187.9 107.5 187.4C105.6 186.9 103.9 180.7 101.2 178.2C98.5 175.7 95.6 172.7 91.2 172.2C86.8 171.7 79.6 175.2 75.0 175.2C70.4 175.2 68.7 173.7 63.7 172.2C58.7 170.7 49.8 168.4 45.0 166.1C40.2 163.8 38.1 163.6 35.0 158.5C31.9 153.4 28.3 142.0 26.2 135.7C24.1 129.4 23.7 125.6 22.5 120.5C21.3 115.4 18.2 106.8 18.8 105.3Z" fill="url(#cySea)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M72.5 94.6 L103.8 100.7 L135.0 97.7 L155.0 93.9 L178.7 96.2 L203.7 102.2 L226.2 105.3" fill="none" stroke="var(--warm)" stroke-width="2.2" stroke-dasharray="5 5" stroke-linecap="round"/>
+  <g transform="translate(155 90) scale(.82)">
+   <g transform="translate(-17 0)"><circle cx="0" cy="0" r="9" fill="var(--warm)"/><path d="M0 9v26M0 18l-12 12M0 35l-9 18M0 35l9 18" stroke="var(--ink)" stroke-width="3.4" stroke-linecap="round" fill="none"/></g>
+   <g transform="translate(17 0)"><circle cx="0" cy="0" r="9" fill="var(--accent)"/><path d="M0 9v26M0 18l12 12M0 35l-9 18M0 35l9 18" stroke="var(--ink)" stroke-width="3.4" stroke-linecap="round" fill="none"/></g>
+   <path d="M-17 18q17 15 34 0" stroke="var(--ink)" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="160" y="214" text-anchor="middle" font-family="Literata,Georgia,serif" font-size="15" fill="var(--muted)">${t('ένα νησί · πολλές φωνές','tek ada · birçok ses')}</text>
  </svg>`;
 }
 
